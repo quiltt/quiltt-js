@@ -1,1 +1,2 @@
-# quiltt-public
+# Quiltt
+Welcome to Quiltt's open source software repository! In this repository, you will find a collection of our open source projects, each designed to solve a specific problem or challenge in the software development process. We encourage developers to contribute to our projects, as we believe that collaboration and community involvement are essential to creating the best possible software solutions. Whether you are a seasoned developer or just starting out, we hope that you will find our projects useful and informative.
