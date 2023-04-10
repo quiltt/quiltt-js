@@ -1,0 +1,27 @@
+{
+  "name": "quiltt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiltt's Open Source Projects",
+  "main": "index.js",
+  "packageManager": "pnpm@8.2.0",
+  "scripts": {
+    "analyze": "turbo run analyze",
+    "build": "turbo run build",
+    "changeset": "npx changeset",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev --parallel",
+    "postbuild": "turbo run postbuild",
+    "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'",
+    "prebuild": "[[ $CI = true ]] && npx pnpm@8 install --store=node_modules/.pnpm-store || echo skiping pnpm install; turbo run prebuild",
+    "prepublish": "pnpm install && pnpm run build",
+    "publish": "pnpm -r publish packages --no-git-checks",
+    "setup": "turbo run setup",
+    "version": "npx changeset version"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.1",
+    "pnpm": "^8.2.0",
+    "turbo": "^1.8.8"
+  }
+}
