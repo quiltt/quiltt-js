@@ -17,7 +17,7 @@ export type RegisteredClaims = {
 
 const MATCHER = /^(?:[\w-]+\.){2}[\w-]+$/
 
-export const parse = <T>(token: Maybe<string> | undefined): Maybe<JsonWebToken<T>> | undefined => {
+export const JsonWebTokenParse = <T>(token: Maybe<string> | undefined): Maybe<JsonWebToken<T>> | undefined => {
   if (typeof token === 'undefined' || token === null) return token
 
   if (!MATCHER.test(token)) {
@@ -32,8 +32,4 @@ export const parse = <T>(token: Maybe<string> | undefined): Maybe<JsonWebToken<T
   } catch (error) {
     console.error(`Invalid Session Token: ${error}`)
   }
-}
-
-export default {
-  parse: parse
 }

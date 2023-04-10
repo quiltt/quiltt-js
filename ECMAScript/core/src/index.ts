@@ -1,4 +1,4 @@
-export { default as JsonWebToken } from './JsonWebToken'
+export * from './JsonWebToken'
 export * from './Observable'
 export * from './Storage'
 export * from './Storage/Local'

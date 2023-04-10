@@ -1,5 +1,4 @@
 import type { Maybe } from '../types'
-
 import type { Observer } from '../Observable'
 
 /**
