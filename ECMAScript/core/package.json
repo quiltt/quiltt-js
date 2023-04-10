@@ -34,6 +34,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "devDependencies": {
+    "@types/react": "^18.0.34",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4"
   }
