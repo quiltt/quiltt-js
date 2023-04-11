@@ -1,0 +1,57 @@
+{
+  "name": "@quiltt/react",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks/index.js",
+      "require": "./dist/hooks/index.cjs",
+      "types": "./dist/hooks/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quiltt/quiltt-public.git",
+    "directory": "ECMAScript/hooks"
+  },
+  "publishConfig": {
+    "access": "public",
+    "@quiltt:registry": "https://npm.pkg.github.com"
+  },
+  "sideEffects": [
+    "./src/hooks/useQuilttSettings.ts",
+    "./src/hooks/useSession.ts",
+    "./src/hooks/useStorage.ts"
+  ],
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "clean": "rimraf .turbo dist",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "TIMING=1 eslint src --fix",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@apollo/client": "^3.7.11",
+    "@types/react": "^18.0.34",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "@quiltt/core": "workspace:*"
+  }
+}
