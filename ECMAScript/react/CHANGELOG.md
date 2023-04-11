@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.5
+
+### Patch Changes
+
+- 795bf20: Improve how graphql client is loaded
+- Updated dependencies [795bf20]
+  - @quiltt/core@1.0.5
+
 ## 1.0.4
 
 ### Patch Changes
