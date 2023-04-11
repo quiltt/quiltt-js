@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.3
+
+### Patch Changes
+
+- 19a5f41: Allow client id to be optional for token based apps
+
 ## 1.0.2
 
 ### Patch Changes
