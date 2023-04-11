@@ -3,18 +3,11 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useState } from 'react'
 
-import type { JsonWebToken, Maybe } from '@quiltt/core'
-import { Timeoutable, JsonWebTokenParse } from '@quiltt/core'
+import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
+import { JsonWebTokenParse, Timeoutable } from '@quiltt/core'
 
 import { useStorage } from './useStorage'
 
-export type PrivateClaims = {
-  oid: string // Organization ID
-  did: string // Deployment ID
-  aid: string // Administrator ID
-  ver: number // Session Token Version
-}
-export type QuilttJWT = JsonWebToken<PrivateClaims>
 export type SetSession = Dispatch<SetStateAction<Maybe<string> | undefined>>
 
 const parse = JsonWebTokenParse<PrivateClaims>
