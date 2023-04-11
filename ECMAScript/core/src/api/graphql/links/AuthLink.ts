@@ -13,7 +13,10 @@ export type UnauthorizedCallback = (token: string) => void
 export class AuthLink extends ApolloLink {
   constructor(token: string | undefined, unauthorizedCallback?: UnauthorizedCallback) {
     if (!token) {
-      super((operation, forward) => forward(operation))
+      super(() => {
+        console.warn(`QuilttLink attempted to send an unauthenticated Query`)
+        return null
+      })
     } else {
       super((operation, forward) => {
         operation.setContext(({ headers = {} }) => ({
