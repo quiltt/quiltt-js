@@ -9,7 +9,7 @@
     "**/*.mjs",
     "**/*.cjs",
     "**/*.json",
-    "**/*.config.js",
-    ".eslintrc.js"
-, "../config.ts"  ]
+    ".eslintrc.js",
+    "../config.ts"
+  ]
 }
