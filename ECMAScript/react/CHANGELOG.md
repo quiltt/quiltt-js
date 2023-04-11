@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.8
+
+### Patch Changes
+
+- 250f817: Refactor AuthLink to improve compiling
+- Updated dependencies [250f817]
+  - @quiltt/core@1.0.8
+
 ## 1.0.7
 
 ### Patch Changes
