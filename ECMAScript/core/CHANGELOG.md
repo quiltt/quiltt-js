@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.12
+
+### Patch Changes
+
+- 3eb86ce: Force load all of apollo esms
+
 ## 1.0.11
 
 ### Patch Changes
