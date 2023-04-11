@@ -1,6 +1,6 @@
 import { ApolloLink } from '@apollo/client'
 
-import { version } from '../../../../config'
+import { version } from '../../../../../config'
 
 export const VersionLink = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
