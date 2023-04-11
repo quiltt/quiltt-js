@@ -1,6 +1,5 @@
-import type { ServerError } from '@apollo/client'
+import type { FetchResult, NextLink, Observable, Operation, ServerError } from '@apollo/client'
 import { ApolloLink } from '@apollo/client'
-import { onError } from '@apollo/client/link/error'
 
 export type UnauthorizedCallback = (token: string) => void
 
@@ -11,31 +10,37 @@ export type UnauthorizedCallback = (token: string) => void
  * valid sessions during rotation and networking weirdness.
  */
 export class AuthLink extends ApolloLink {
-  constructor(token: string | undefined, unauthorizedCallback?: UnauthorizedCallback) {
-    if (!token) {
-      super(() => {
-        console.warn(`QuilttLink attempted to send an unauthenticated Query`)
-        return null
-      })
-    } else {
-      super((operation, forward) => {
-        operation.setContext(({ headers = {} }) => ({
-          headers: {
-            ...headers,
-            authorization: `Bearer ${token}`,
-          },
-        }))
-        return forward(operation)
-      })
+  token: undefined | string
+  unauthorizedCallback: undefined | UnauthorizedCallback
 
-      this.concat(
-        onError(({ networkError }) => {
-          if (networkError && (networkError as ServerError).statusCode === 401 && unauthorizedCallback) {
-            unauthorizedCallback(token)
-          }
-        })
-      )
+  constructor(token: string | undefined, unauthorizedCallback?: UnauthorizedCallback) {
+    super();
+    this.token = token
+    this.unauthorizedCallback = unauthorizedCallback
+  }
+
+  request(operation: Operation, forward: NextLink): Observable<FetchResult> | null {
+    if (!this.token) {
+      console.warn(`QuilttLink attempted to send an unauthenticated Query`)
+      return null
     }
+
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        authorization: `Bearer ${this.token}`,
+      },
+    }))
+
+    const observable = forward(operation)
+
+    observable.subscribe({ error: ({ networkError }: { networkError: ServerError }) => {
+      if (networkError?.statusCode === 401 && this.unauthorizedCallback) {
+        this.unauthorizedCallback(this.token as string)
+      }
+    }})
+
+    return observable
   }
 }
 
