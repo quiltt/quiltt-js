@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig((options) => ({
-  entry: ['src/index.ts'],
+  entry: ['src/**/*.ts'],
   target: 'es6',
   format: ['cjs', 'esm'],
   splitting: false,
@@ -9,7 +9,7 @@ export default defineConfig((options) => ({
   clean: true,
   sourcemap: !options.watch,
   minify: !options.watch,
-  external: ['react', 'react-dom'],
+  external: [],
   dts: true,
   tsconfig: './tsconfig.json',
 }))
