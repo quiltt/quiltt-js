@@ -1,5 +1,5 @@
 import type { ServerError } from '@apollo/client'
-import { RetryLink as ApolloRetryLink } from '@apollo/client/link/retry'
+import { RetryLink as ApolloRetryLink } from '@apollo/client/link/retry/retryLink'
 
 export const RetryLink = new ApolloRetryLink({
   attempts: {
