@@ -3,12 +3,10 @@
 import { createContext, useContext } from 'react'
 
 type QuilttSettingsContext = {
-  clientId: string
+  clientId?: string | undefined
 }
 
-export const QuilttSettings = createContext<QuilttSettingsContext>({
-  clientId: '',
-})
+export const QuilttSettings = createContext<QuilttSettingsContext>({})
 
 export const useQuilttSettings = () => {
   const settings = useContext(QuilttSettings)

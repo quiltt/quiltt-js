@@ -36,9 +36,9 @@ export type UnprocessableResponse = AxiosResponse<UnprocessableData>
 
 // https://www.quiltt.dev/api-reference/rest/auth#
 export class AuthAPI {
-  clientId: string
+  clientId: string | undefined
 
-  constructor(clientId: string) {
+  constructor(clientId?: string | undefined) {
     this.clientId = clientId
   }
 
@@ -99,6 +99,10 @@ export class AuthAPI {
   private validateStatus = (status: number) => status < 500
 
   private body = (payload: any) => {
+    if (!this.clientId) {
+      console.error('Quiltt Client ID is not set. Unable to identify & authenticate')
+    }
+
     return {
       session: {
         deploymentId: this.clientId, // Rename API?
