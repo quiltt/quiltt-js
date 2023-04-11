@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.10
+
+### Patch Changes
+
+- f014a84: Set apollo links to load esm from .js
+
 ## 1.0.9
 
 ### Patch Changes
