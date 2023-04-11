@@ -3,10 +3,11 @@
 import type { FC, PropsWithChildren } from 'react'
 import { useState } from 'react'
 
+import type { Maybe } from '@quiltt/core'
 import { QuilttSettings } from '../hooks'
 
 type QuilttSettingsProviderProps = PropsWithChildren & {
-  clientId: string
+  clientId?: string
 }
 
 export const QuilttSettingsProvider: FC<QuilttSettingsProviderProps> = ({ clientId, children }) => {

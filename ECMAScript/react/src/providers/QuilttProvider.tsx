@@ -5,7 +5,7 @@ import { QuilttGraphQLProvider } from './QuilttGraphQLProvider'
 import { QuilttSettingsProvider } from './QuilttSettingsProvider'
 
 type QuilttProviderProps = PropsWithChildren & {
-  clientId: string
+  clientId?: string
   token?: string
 }
 
