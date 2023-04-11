@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.4
+
+### Patch Changes
+
+- 9bc26d1: Import action cable code to help with building
+
 ## 1.0.3
 
 ### Patch Changes

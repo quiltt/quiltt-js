@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.4
+
+### Patch Changes
+
+- 9bc26d1: Import action cable code to help with building
+- Updated dependencies [9bc26d1]
+  - @quiltt/core@1.0.4
+
 ## 1.0.3
 
 ### Patch Changes
