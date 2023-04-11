@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.9
+
+### Patch Changes
+
+- be8e696: Attempt to improve esm loading of apollo links
+- Updated dependencies [be8e696]
+  - @quiltt/core@1.0.9
+
 ## 1.0.8
 
 ### Patch Changes
