@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.11
+
+### Patch Changes
+
+- 2932555: Load ActionLinkCable Apollo esms
+- Updated dependencies [2932555]
+  - @quiltt/core@1.0.11
+
 ## 1.0.10
 
 ### Patch Changes
