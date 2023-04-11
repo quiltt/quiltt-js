@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.13
+
+### Patch Changes
+
+- 24d28f3: Add missing apollo esms
+- Updated dependencies [24d28f3]
+  - @quiltt/core@1.0.13
+
 ## 1.0.12
 
 ### Patch Changes
