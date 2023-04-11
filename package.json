@@ -17,11 +17,14 @@
     "prepublish": "pnpm install && pnpm run build",
     "publish": "pnpm -r publish packages --no-git-checks",
     "setup": "turbo run setup",
-    "version": "npx changeset version"
+    "version": "npx changeset version",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.1",
-    "pnpm": "^8.2.0",
-    "turbo": "^1.8.8"
+    "@changesets/cli": "2.26.1",
+    "@types/node": "18.15.11",
+    "pnpm": "8.2.0",
+    "turbo": "1.9.0"
   }
 }

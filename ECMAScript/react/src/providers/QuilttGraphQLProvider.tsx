@@ -7,7 +7,7 @@ import { useQuilttSession } from '../hooks'
 
 let client = new QuilttClient({
   token: undefined,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 })
 
 export const QuilttGraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -17,7 +17,7 @@ export const QuilttGraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
     client = new QuilttClient({
       token: session?.token,
       unauthorizedCallback: forgetSession,
-      cache: new InMemoryCache()
+      cache: new InMemoryCache(),
     })
   }, [session?.token, forgetSession])
 
