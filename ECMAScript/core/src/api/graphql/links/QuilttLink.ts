@@ -21,7 +21,7 @@ export class QuilttLink extends ApolloLink {
       })
       return
     } else {
-      super()
+      super((operation, forward) => forward(operation))
     }
 
     const isSubscriptionOperation = (operation: Operation) => {
