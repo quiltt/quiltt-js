@@ -8,4 +8,4 @@ Welcome to Quiltt's open-source software repository! In this repository, you wil
 `ECMAScript/core` contains the shared standard library for supporting Node, React, and other plain javascript use cases.
 
 ### React
-`ECMAScript/core` contains the library for supporting React-based websites.
+`ECMAScript/react` contains the library for supporting React-based websites.
