@@ -1,7 +1,7 @@
 'use client'
 
 import type { FC, PropsWithChildren } from 'react'
-import { useEffect } from 'react'
+import { useEffect, Fragment } from 'react'
 
 import { useQuilttSession } from '../hooks'
 
@@ -18,7 +18,7 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
     }
   }, [importSession, token])
 
-  return <>{children}</>
+  return <Fragment>{children}</Fragment>
 }
 
 export default QuilttAuthProvider
