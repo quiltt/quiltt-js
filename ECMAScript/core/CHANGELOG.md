@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.11
+
+### Patch Changes
+
+- 2932555: Load ActionLinkCable Apollo esms
+
 ## 1.0.10
 
 ### Patch Changes
