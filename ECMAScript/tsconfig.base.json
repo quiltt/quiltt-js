@@ -14,7 +14,7 @@
     "strict": true,
     "strictNullChecks": true,
     "target": "esnext",
-    "useUnknownInCatchVariables": true
+    "useUnknownInCatchVariables": true,
   },
   "exclude": ["**/node_modules", ".next", ".out", "dist", "build", "public"]
 }

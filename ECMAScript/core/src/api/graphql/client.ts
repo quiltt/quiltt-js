@@ -3,7 +3,7 @@ import { ApolloClient } from '@apollo/client'
 
 import type { UnauthorizedCallback } from './links'
 
-import { debugging } from '../../../config'
+import { debugging } from '../../../../config'
 import { QuilttLink } from './links'
 
 export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, "link"> & {
