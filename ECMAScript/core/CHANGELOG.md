@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.5
+
+### Patch Changes
+
+- 795bf20: Improve how graphql client is loaded
+
 ## 1.0.4
 
 ### Patch Changes
