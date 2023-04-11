@@ -11,5 +11,5 @@
     "**/*.json",
     "**/*.config.js",
     ".eslintrc.js"
-  ]
+, "../config.ts"  ]
 }

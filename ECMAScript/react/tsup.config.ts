@@ -11,5 +11,5 @@ export default defineConfig((options) => ({
   minify: !options.watch,
   external: ['react', 'react-dom'],
   dts: true,
-  tsconfig: './tsconfig.json',
+  tsconfig: './tsconfig.json'
 }))

@@ -27,7 +27,11 @@
     "access": "public",
     "@quiltt:registry": "https://npm.pkg.github.com"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/hooks/useQuilttSettings.ts",
+    "./src/hooks/useSession.ts",
+    "./src/hooks/useStorage.ts"
+  ],
   "files": [
     "dist/**"
   ],
@@ -39,12 +43,15 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@quiltt/core": "workspace:*",
+    "@apollo/client": "^3.7.11",
     "@types/react": "^18.0.34",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "@quiltt/core": "workspace:*"
   }
 }
