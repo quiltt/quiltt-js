@@ -1,5 +1,5 @@
 import type { ServerError } from '@apollo/client'
-import { onError } from '@apollo/client/link/error/index'
+import { onError } from '@apollo/client/link/error/index.js'
 
 export const ErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
