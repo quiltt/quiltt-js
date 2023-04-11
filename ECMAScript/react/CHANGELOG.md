@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.7
+
+### Patch Changes
+
+- 9e78757: Fix issues with QuilttClient/Link not working
+- Updated dependencies [9e78757]
+  - @quiltt/core@1.0.7
+
 ## 1.0.6
 
 ### Patch Changes
