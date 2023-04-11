@@ -1,5 +1,5 @@
-import type { ApolloClientOptions, Operation } from '@apollo/client'
-import { ApolloClient, ApolloLink } from '@apollo/client'
+import type { ApolloClientOptions, Operation } from '@apollo/client/index.js'
+import { ApolloClient, ApolloLink } from '@apollo/client/index.js'
 
 import type { UnauthorizedCallback } from './links'
 

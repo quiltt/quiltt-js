@@ -1,5 +1,5 @@
-import type { FetchResult, NextLink, Observable, Operation, ServerError } from '@apollo/client'
-import { ApolloLink } from '@apollo/client'
+import type { FetchResult, NextLink, Observable, Operation, ServerError } from '@apollo/client/index.js'
+import { ApolloLink } from '@apollo/client/index.js'
 
 export type UnauthorizedCallback = (token: string) => void
 

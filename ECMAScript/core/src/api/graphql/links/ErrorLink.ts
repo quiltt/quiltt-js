@@ -1,4 +1,4 @@
-import type { ServerError } from '@apollo/client'
+import type { ServerError } from '@apollo/client/index.js'
 import { onError } from '@apollo/client/link/error/index.js'
 
 export const ErrorLink = onError(({ graphQLErrors, networkError }) => {

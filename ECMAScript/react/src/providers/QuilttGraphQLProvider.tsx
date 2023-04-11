@@ -2,7 +2,7 @@ import type { FC, PropsWithChildren } from 'react'
 import { useEffect, useMemo } from 'react'
 
 import { QuilttClient, InMemoryCache } from '@quiltt/core'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/index.js'
 import { useQuilttSession } from '../hooks'
 
 let client = new QuilttClient({
