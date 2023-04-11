@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.6
+
+### Patch Changes
+
+- 882b229: Set default forwardlink within quiltt link
+
 ## 1.0.5
 
 ### Patch Changes
