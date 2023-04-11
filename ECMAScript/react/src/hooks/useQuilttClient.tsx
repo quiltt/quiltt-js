@@ -1,4 +1,4 @@
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient } from '@apollo/client/index.js'
 
 export const useQuilttClient = useApolloClient
 

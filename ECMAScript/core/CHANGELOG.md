@@ -1,5 +1,35 @@
 # @quiltt/core
 
+## 1.0.13
+
+### Patch Changes
+
+- 24d28f3: Add missing apollo esms
+
+## 1.0.12
+
+### Patch Changes
+
+- 3eb86ce: Force load all of apollo esms
+
+## 1.0.11
+
+### Patch Changes
+
+- 2932555: Load ActionLinkCable Apollo esms
+
+## 1.0.10
+
+### Patch Changes
+
+- f014a84: Set apollo links to load esm from .js
+
+## 1.0.9
+
+### Patch Changes
+
+- be8e696: Attempt to improve esm loading of apollo links
+
 ## 1.0.8
 
 ### Patch Changes

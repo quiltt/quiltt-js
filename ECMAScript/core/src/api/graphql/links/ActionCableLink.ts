@@ -1,8 +1,8 @@
 'use client'
 
 import type { Consumer } from './actioncable'
-import type { FetchResult, Operation, NextLink } from '@apollo/client/core'
-import { ApolloLink, Observable } from '@apollo/client/core'
+import type { FetchResult, Operation, NextLink } from '@apollo/client/core/index.js'
+import { ApolloLink, Observable } from '@apollo/client/core/index.js'
 
 import { print } from 'graphql'
 
