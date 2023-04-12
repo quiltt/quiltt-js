@@ -1,7 +1,9 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "./src"
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "**/*.ts",
@@ -9,7 +11,7 @@
     "**/*.mjs",
     "**/*.cjs",
     "**/*.json",
-    ".eslintrc.js",
+    ".eslintrc.cjs",
     "../config.ts"
   ]
 }

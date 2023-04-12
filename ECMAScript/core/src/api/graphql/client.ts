@@ -16,7 +16,7 @@ import {
   VersionLink,
 } from './links'
 
-export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, "link"> & {
+export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
   token: string | undefined
   unauthorizedCallback?: UnauthorizedCallback
 }
@@ -56,4 +56,3 @@ export class QuilttClient<T> extends ApolloClient<T> {
 
 export { InMemoryCache, gql, useMutation, useQuery, useSubscription } from '@apollo/client/index.js'
 export type { NormalizedCacheObject, OperationVariables } from '@apollo/client/index.js'
-

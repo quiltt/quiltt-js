@@ -1,4 +1,4 @@
-export * from './session/'
+export * from './session'
 export * from './useQuilttClient'
 export * from './useQuilttSession'
 export * from './useQuilttSettings'
