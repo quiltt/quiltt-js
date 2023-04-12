@@ -1,5 +1,12 @@
 # @quiltt/core
 
+## 1.0.14
+
+### Patch Changes
+
+- a97e9c8: Pin Dependencies & Update Linting
+- 6d35bae: Remove unused global declares
+
 ## 1.0.13
 
 ### Patch Changes
