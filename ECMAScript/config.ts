@@ -1,13 +1,5 @@
 import { name as packageName, version as packageVersion } from './react/package.json'
 
-declare global {
-  interface Window {
-    quiltt: {
-      config?: any
-    }
-  }
-}
-
 const QUILTT_API_INSECURE = (() => {
   try {
     return process.env.QUILTT_API_INSECURE
