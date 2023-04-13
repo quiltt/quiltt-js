@@ -23,6 +23,8 @@ export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
 }
 
 export class QuilttClient<T> extends ApolloClient<T> {
+  subscriptionsLink: SubscriptionLink | undefined
+
   constructor(options: QuilttClientOptions<T>) {
     if (!options.connectToDevTools) options.connectToDevTools = debugging
 
@@ -52,6 +54,18 @@ export class QuilttClient<T> extends ApolloClient<T> {
       link: quilttLink,
       ...options,
     })
+
+    if (options.token) {
+      this.subscriptionsLink = subscriptionsLink as SubscriptionLink
+    }
+  }
+
+  disconnect() {
+    if (this.subscriptionsLink) {
+      this.subscriptionsLink.disconnect()
+    }
+
+    this.clearStore()
   }
 }
 
