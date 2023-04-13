@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.16
+
+### Patch Changes
+
+- c284002: Add some types to actioncable and connect logging to config
+- Updated dependencies [c284002]
+  - @quiltt/core@1.0.16
+
 ## 1.0.15
 
 ### Patch Changes
