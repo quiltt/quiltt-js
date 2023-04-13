@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.17
+
+### Patch Changes
+
+- 190df4d: Fix issue with ActionCableLink calling the wrong #perform
+
 ## 1.0.16
 
 ### Patch Changes
