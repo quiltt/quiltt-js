@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.18
+
+### Patch Changes
+
+- bf25cc4: Prevent websockets from attempting to connect without a token
+- Updated dependencies [bf25cc4]
+  - @quiltt/core@1.0.18
+
 ## 1.0.17
 
 ### Patch Changes
