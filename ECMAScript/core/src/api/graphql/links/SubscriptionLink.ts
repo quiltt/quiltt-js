@@ -1,12 +1,17 @@
 import { endpointWebsockets } from '../../../../../config'
 import ActionCableLink from './ActionCableLink'
-import { createConsumer } from './actioncable'
+import { Consumer, createConsumer } from './actioncable'
+
+let cable: Consumer | undefined
 
 export class SubscriptionLink extends ActionCableLink {
   constructor(token: string | undefined) {
     const endpoint = endpointWebsockets + (token ? `?token=${token}` : '')
 
-    super({ cable: createConsumer(endpoint) })
+    if (cable) cable.disconnect()
+    cable = createConsumer(endpoint)
+
+    super({ cable })
   }
 
   disconnect() {

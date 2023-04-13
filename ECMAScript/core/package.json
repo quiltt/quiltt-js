@@ -23,7 +23,8 @@
     "@quiltt:registry": "https://npm.pkg.github.com"
   },
   "sideEffects": [
-    "./src/Storage/Local.ts"
+    "./src/Storage/Local.ts",
+    "./src/api/graphql/links/SubscriptionLink.ts"
   ],
   "files": [
     "dist/**"
