@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.25
+
+### Patch Changes
+
+- 2ffea2f: Fix issue with this being undefined for ActionCableLink
+
 ## 1.0.24
 
 ### Patch Changes

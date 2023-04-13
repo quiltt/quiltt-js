@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.25
+
+### Patch Changes
+
+- 2ffea2f: Fix issue with this being undefined for ActionCableLink
+- Updated dependencies [2ffea2f]
+  - @quiltt/core@1.0.25
+
 ## 1.0.24
 
 ### Patch Changes
