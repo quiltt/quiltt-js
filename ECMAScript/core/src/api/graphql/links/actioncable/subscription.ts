@@ -1,5 +1,8 @@
-// @ts-nocheck
-const extend = function (object, properties) {
+import type { Consumer } from './consumer'
+
+type Data = {[id: string]: string | object}
+
+const extend = function (object: Data, properties: Data) {
   if (properties != null) {
     for (const key in properties) {
       const value = properties[key]
@@ -9,20 +12,23 @@ const extend = function (object, properties) {
   return object
 }
 
-export default class Subscription {
-  constructor(consumer, params = {}, mixin) {
+export class Subscription {
+  consumer: Consumer
+  identifier: string
+
+  constructor(consumer: Consumer, params: Data = {}, mixin: Data) {
     this.consumer = consumer
     this.identifier = JSON.stringify(params)
-    extend(this, mixin)
+    extend(this as unknown as Data, mixin)
   }
 
   // Perform a channel action with the optional data passed as an attribute
-  perform(action, data = {}) {
+  perform(action: string, data: Data = {}) {
     data.action = action
     return this.send(data)
   }
 
-  send(data) {
+  send(data: object) {
     return this.consumer.send({
       command: 'message',
       identifier: this.identifier,
@@ -34,3 +40,5 @@ export default class Subscription {
     return this.consumer.subscriptions.remove(this)
   }
 }
+
+export default Subscription

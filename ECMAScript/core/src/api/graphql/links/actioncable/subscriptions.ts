@@ -13,7 +13,7 @@ import SubscriptionGuarantor from './subscription_guarantor'
 //
 // For more details on how you'd configure an actual channel subscription, see ActionCable.Subscription.
 
-export default class Subscriptions {
+export class Subscriptions {
   constructor(consumer) {
     this.consumer = consumer
     this.guarantor = new SubscriptionGuarantor(this)
@@ -104,3 +104,5 @@ export default class Subscriptions {
     return this.consumer.send({ command, identifier })
   }
 }
+
+export default Subscriptions

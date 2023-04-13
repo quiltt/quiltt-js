@@ -1,13 +1,16 @@
-// @ts-nocheck
+import { debugging } from '../../../../../../config'
 import adapters from './adapters'
 
-const logger = {
+class Logger {
+  enabled = debugging
+
   log(...messages: Array<any>) {
-    if (this.enabled) {
+    if (adapters.logger && this.enabled) {
       messages.push(Date.now())
       adapters.logger.log('[ActionCable]', ...messages)
     }
-  },
+  }
 }
 
+export const logger = new Logger
 export default logger

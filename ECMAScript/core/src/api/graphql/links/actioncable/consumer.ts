@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Connection from './connection'
 import Subscriptions from './subscriptions'
 
@@ -28,8 +27,13 @@ import Subscriptions from './subscriptions'
 // Any channel subscriptions which existed prior to disconnecting will
 // automatically resubscribe.
 
-export default class Consumer {
-  constructor(url) {
+export class Consumer {
+  _url: string
+  subscriptions: Subscriptions
+  connection: Connection
+  subprotocols: Array<string>
+
+  constructor(url: string) {
     this._url = url
     this.subscriptions = new Subscriptions(this)
     this.connection = new Connection(this)
@@ -40,7 +44,7 @@ export default class Consumer {
     return createWebSocketURL(this._url)
   }
 
-  send(data) {
+  send(data: object) {
     return this.connection.send(data)
   }
 
@@ -58,12 +62,12 @@ export default class Consumer {
     }
   }
 
-  addSubProtocol(subprotocol) {
+  addSubProtocol(subprotocol: string) {
     this.subprotocols = [...this.subprotocols, subprotocol]
   }
 }
 
-export function createWebSocketURL(url) {
+export function createWebSocketURL(url: string | (() => string)): string {
   if (typeof url === 'function') {
     url = url()
   }
@@ -79,3 +83,5 @@ export function createWebSocketURL(url) {
     return url
   }
 }
+
+export default Consumer
