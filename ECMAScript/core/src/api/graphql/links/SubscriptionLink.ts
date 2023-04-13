@@ -1,17 +1,15 @@
 import { endpointWebsockets } from '../../../config'
-import ActionCableLink from './ActionCableLink'
-import { Consumer, createConsumer } from './actioncable'
-
-let cable: Consumer | undefined
+import { createConsumer } from '@rails/actioncable'
+import ActionCableLink from 'graphql-ruby-client/subscriptions/ActionCableLink'
 
 export class SubscriptionLink extends ActionCableLink {
   constructor(token: string | undefined) {
     const endpoint = endpointWebsockets + (token ? `?token=${token}` : '')
 
-    if (cable) cable.disconnect()
-    cable = createConsumer(endpoint)
-
-    super({ cable, channelName: 'GraphQLChannel' })
+    super({
+      cable: createConsumer(endpoint),
+      channelName: 'GraphQLChannel',
+    })
   }
 
   disconnect() {
