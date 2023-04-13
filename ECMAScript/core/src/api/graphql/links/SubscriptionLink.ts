@@ -1,4 +1,4 @@
-import { endpointWebsockets } from '../../../../../config'
+import { endpointWebsockets } from '../../../config'
 import ActionCableLink from './ActionCableLink'
 import { Consumer, createConsumer } from './actioncable'
 

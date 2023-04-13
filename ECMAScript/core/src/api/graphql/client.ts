@@ -3,7 +3,7 @@ import { ApolloClient, ApolloLink } from '@apollo/client/index.js'
 
 import type { UnauthorizedCallback } from './links'
 
-import { debugging } from '../../../../config'
+import { debugging } from '../../config'
 import {
   AuthLink,
   BatchHttpLink,
