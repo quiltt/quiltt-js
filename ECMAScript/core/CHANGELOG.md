@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.21
+
+### Patch Changes
+
+- 49f108a: Fix graphql subscriptions from not working due to channel name mismatch
+
 ## 1.0.20
 
 ### Patch Changes
