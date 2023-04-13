@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.17
+
+### Patch Changes
+
+- 190df4d: Fix issue with ActionCableLink calling the wrong #perform
+- Updated dependencies [190df4d]
+  - @quiltt/core@1.0.17
+
 ## 1.0.16
 
 ### Patch Changes
