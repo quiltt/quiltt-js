@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.19
+
+### Patch Changes
+
+- 866407c: Improve websocket subscriptions lifecycle handling
+- Updated dependencies [866407c]
+  - @quiltt/core@1.0.19
+
 ## 1.0.18
 
 ### Patch Changes

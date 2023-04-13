@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.19
+
+### Patch Changes
+
+- 866407c: Improve websocket subscriptions lifecycle handling
+
 ## 1.0.18
 
 ### Patch Changes
