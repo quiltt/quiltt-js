@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.20
+
+### Patch Changes
+
+- 7e0d314: Set cable to be a singleton to reduce the chance of having multiple trying to run
+
 ## 1.0.19
 
 ### Patch Changes
