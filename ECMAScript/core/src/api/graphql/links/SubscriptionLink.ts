@@ -11,7 +11,7 @@ export class SubscriptionLink extends ActionCableLink {
     if (cable) cable.disconnect()
     cable = createConsumer(endpoint)
 
-    super({ cable })
+    super({ cable, channelName: 'GraphQLChannel' })
   }
 
   disconnect() {
