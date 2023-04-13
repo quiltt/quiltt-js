@@ -13,6 +13,7 @@ import {
   PreviewLink,
   RetryLink,
   SubscriptionLink,
+  TerminatingLink,
   VersionLink,
 } from './links'
 
@@ -41,7 +42,7 @@ export class QuilttClient<T> extends ApolloClient<T> {
     }
 
     const authLink = new AuthLink(options.token, options.unauthorizedCallback)
-    const subscriptionsLink = new SubscriptionLink(options.token)
+    const subscriptionsLink = options.token ? new SubscriptionLink(options.token) : TerminatingLink
     const quilttLink = ApolloLink.from([VersionLink, authLink, ErrorLink, RetryLink])
       .split(isSubscriptionOperation, subscriptionsLink, ForwardableLink)
       .split(isPreviewable, PreviewLink, ForwardableLink)
@@ -56,3 +57,4 @@ export class QuilttClient<T> extends ApolloClient<T> {
 
 export { InMemoryCache, gql, useMutation, useQuery, useSubscription } from '@apollo/client/index.js'
 export type { NormalizedCacheObject, OperationVariables } from '@apollo/client/index.js'
+
