@@ -1,3 +1,5 @@
+'use client'
+
 import { endpointWebsockets } from '../../../config'
 import { createConsumer } from '@rails/actioncable'
 import ActionCableLink from 'graphql-ruby-client/subscriptions/ActionCableLink'
