@@ -48,7 +48,7 @@ class ActionCableLink extends ApolloLink {
         ),
         {
           connected: () => {
-            (this as unknown as Subscription).perform(actionName, {
+            channel.perform(actionName, {
               query: operation.query ? print(operation.query) : null,
               variables: operation.variables,
               // This is added for persisted operation support:
