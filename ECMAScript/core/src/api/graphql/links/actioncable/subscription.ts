@@ -1,6 +1,6 @@
 import type { Consumer } from './consumer'
 
-type Data = {[id: string]: string | object}
+export type Data = {[id: string]: string | object | null | undefined}
 
 const extend = function (object: Data, properties: Data) {
   if (properties != null) {

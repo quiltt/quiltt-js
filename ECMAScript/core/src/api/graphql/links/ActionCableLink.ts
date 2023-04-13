@@ -1,8 +1,6 @@
-'use client'
-
-import type { Consumer } from './actioncable'
-import type { FetchResult, Operation, NextLink } from '@apollo/client/core/index.js'
+import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index.js'
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
+import type { Consumer, Subscription } from './actioncable'
 
 import { print } from 'graphql'
 
@@ -38,7 +36,7 @@ class ActionCableLink extends ApolloLink {
         typeof this.connectionParams === 'function'
           ? this.connectionParams(operation)
           : this.connectionParams
-      // @ts-ignore
+
       const channel = this.cable.subscriptions.create(
         Object.assign(
           {},
@@ -49,8 +47,8 @@ class ActionCableLink extends ApolloLink {
           connectionParams
         ),
         {
-          connected: function () {
-            channel.perform(actionName, {
+          connected: () => {
+            (this as unknown as Subscription).perform(actionName, {
               query: operation.query ? print(operation.query) : null,
               variables: operation.variables,
               // This is added for persisted operation support:
@@ -58,8 +56,8 @@ class ActionCableLink extends ApolloLink {
               operationName: operation.operationName,
             })
           },
-          // @ts-ignore
-          received: function (payload) {
+A
+          received: (payload: any) => {
             if (payload?.result?.data || payload?.result?.errors) {
               observer.next(payload.result)
             }
