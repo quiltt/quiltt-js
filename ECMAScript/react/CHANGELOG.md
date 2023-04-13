@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.22
+
+### Patch Changes
+
+- 4a06719: Revert back to upstream packages
+- Updated dependencies [4a06719]
+  - @quiltt/core@1.0.22
+
 ## 1.0.21
 
 ### Patch Changes

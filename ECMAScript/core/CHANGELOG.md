@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.22
+
+### Patch Changes
+
+- 4a06719: Revert back to upstream packages
+
 ## 1.0.21
 
 ### Patch Changes
