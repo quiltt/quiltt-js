@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.15
+
+### Patch Changes
+
+- 2f6f903: Fix issue with importing sessions and cache resetting causing request cancelations during race conditions
+- Updated dependencies [2f6f903]
+  - @quiltt/core@1.0.15
+
 ## 1.0.14
 
 ### Patch Changes
