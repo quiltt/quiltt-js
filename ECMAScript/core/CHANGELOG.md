@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.23
+
+### Patch Changes
+
+- 9fb69ae: Fix issues with SSR on nextjs and subscriptions
+
 ## 1.0.22
 
 ### Patch Changes
