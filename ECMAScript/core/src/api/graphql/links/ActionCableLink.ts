@@ -56,7 +56,7 @@ class ActionCableLink extends ApolloLink {
               operationName: operation.operationName,
             })
           },
-A
+
           received: (payload: any) => {
             if (payload?.result?.data || payload?.result?.errors) {
               observer.next(payload.result)
