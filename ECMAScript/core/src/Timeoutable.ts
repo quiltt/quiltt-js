@@ -1,8 +1,8 @@
 import type { Observer } from './Observable'
 
 /**
- * This is designed to support singletons to timeouts that can broadcast to any
- * observers, preventing race conditions with multiple timeouts.
+ * This is designed to support singletons to timeouts that can broadcast
+ * to any observers, preventing race conditions with multiple timeouts.
  */
 export class Timeoutable {
   private timeout?: ReturnType<typeof setTimeout>

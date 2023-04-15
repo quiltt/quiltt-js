@@ -1,10 +1,14 @@
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index.js'
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
-import type { Consumer, Subscription } from './actioncable'
+import type { Consumer } from './actioncable'
 
 import { print } from 'graphql'
 
-type RequestResult = FetchResult<{ [key: string]: any }, Record<string, any>, Record<string, any>>
+type RequestResult = FetchResult<
+  { [key: string]: unknown },
+  Record<string, unknown>,
+  Record<string, unknown>
+>
 type ConnectionParams = object | ((operation: Operation) => object)
 
 class ActionCableLink extends ApolloLink {
@@ -57,7 +61,7 @@ class ActionCableLink extends ApolloLink {
             })
           },
 
-          received: (payload: any) => {
+          received: (payload: { result: RequestResult; more: any }) => {
             if (payload?.result?.data || payload?.result?.errors) {
               observer.next(payload.result)
             }

@@ -39,21 +39,25 @@
     "clean": "rimraf .turbo dist",
     "dev": "tsup --watch",
     "build": "tsup",
-    "lint": "TIMING=1 eslint --fix",
+    "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
     "@quiltt/core": "workspace:*"
   },
   "devDependencies": {
-    "@apollo/client": "3.7.11",
+    "@apollo/client": "3.7.12",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
     "@types/node": "18.15.11",
-    "@types/react": "18.0.34",
+    "@types/react": "18.0.35",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
     "eslint": "8.38.0",
+    "eslint-config-prettier": "8.8.0",
     "eslint-plugin-jsx-a11y": "6.7.1",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
     "graphql": "16.6.0",
     "prettier": "2.8.7",
     "tsup": "6.7.0",

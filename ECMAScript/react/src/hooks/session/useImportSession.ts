@@ -34,7 +34,7 @@ export const useImportSession: UseImportSession = (auth, session, setSession) =>
           throw new Error(`Unexpected auth ping response status: ${response.status}`)
       }
     },
-    [session]
+    [auth, session, setSession]
   )
 
   return importSession

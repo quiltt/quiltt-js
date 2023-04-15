@@ -4,7 +4,12 @@ import { useSession } from './useSession'
 
 import { AuthAPI } from '@quiltt/core'
 
-import { useAuthenticateSession, useIdentifySession, useImportSession, useRevokeSession } from './session'
+import {
+  useAuthenticateSession,
+  useIdentifySession,
+  useImportSession,
+  useRevokeSession,
+} from './session'
 import { useQuilttSettings } from './useQuilttSettings'
 
 export const useQuilttSession = () => {
