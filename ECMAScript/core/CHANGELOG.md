@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.26
+
+### Patch Changes
+
+- 4a03bc8: Update types & fix linting
+
 ## 1.0.25
 
 ### Patch Changes

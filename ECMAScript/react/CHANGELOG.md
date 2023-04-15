@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.26
+
+### Patch Changes
+
+- 4a03bc8: Update types & fix linting
+- Updated dependencies [4a03bc8]
+  - @quiltt/core@1.0.26
+
 ## 1.0.25
 
 ### Patch Changes
