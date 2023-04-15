@@ -1,4 +1,10 @@
-import type { FetchResult, NextLink, Observable, Operation, ServerError } from '@apollo/client/index.js'
+import type {
+  FetchResult,
+  NextLink,
+  Observable,
+  Operation,
+  ServerError,
+} from '@apollo/client/index.js'
 import { ApolloLink } from '@apollo/client/index.js'
 
 export type UnauthorizedCallback = (token: string) => void
@@ -10,11 +16,11 @@ export type UnauthorizedCallback = (token: string) => void
  * valid sessions during rotation and networking weirdness.
  */
 export class AuthLink extends ApolloLink {
-  token: undefined | string
-  unauthorizedCallback: undefined | UnauthorizedCallback
+  token: string | undefined
+  unauthorizedCallback?: UnauthorizedCallback
 
   constructor(token: string | undefined, unauthorizedCallback?: UnauthorizedCallback) {
-    super();
+    super()
     this.token = token
     this.unauthorizedCallback = unauthorizedCallback
   }
@@ -34,11 +40,13 @@ export class AuthLink extends ApolloLink {
 
     const observable = forward(operation)
 
-    observable.subscribe({ error: ({ networkError }: { networkError: ServerError }) => {
-      if (networkError?.statusCode === 401 && this.unauthorizedCallback) {
-        this.unauthorizedCallback(this.token as string)
-      }
-    }})
+    observable.subscribe({
+      error: ({ networkError }: { networkError: ServerError }) => {
+        if (networkError?.statusCode === 401 && this.unauthorizedCallback) {
+          this.unauthorizedCallback(this.token as string)
+        }
+      },
+    })
 
     return observable
   }

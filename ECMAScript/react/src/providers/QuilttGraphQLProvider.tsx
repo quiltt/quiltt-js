@@ -28,7 +28,7 @@ export const QuilttGraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
       unauthorizedCallback: forgetSession,
       cache: new InMemoryCache(),
     })
-  }, [session?.token])
+  }, [forgetSession, session?.token])
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
 }

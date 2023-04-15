@@ -28,7 +28,9 @@ export type QuilttJWT = JsonWebToken<PrivateClaims>
 
 const MATCHER = /^(?:[\w-]+\.){2}[\w-]+$/
 
-export const JsonWebTokenParse = <T>(token: Maybe<string> | undefined): Maybe<JsonWebToken<T>> | undefined => {
+export const JsonWebTokenParse = <T>(
+  token: Maybe<string> | undefined
+): Maybe<JsonWebToken<T>> | undefined => {
   if (typeof token === 'undefined' || token === null) return token
 
   if (!MATCHER.test(token)) {

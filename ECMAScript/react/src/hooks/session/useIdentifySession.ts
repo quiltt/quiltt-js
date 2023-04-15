@@ -1,9 +1,14 @@
 import { useCallback } from 'react'
 
-import type { AuthAPI, SessionResponse, UnprocessableData, UnprocessableResponse, UsernamePayload } from '@quiltt/core'
+import type {
+  AuthAPI,
+  SessionResponse,
+  UnprocessableData,
+  UnprocessableResponse,
+  UsernamePayload,
+} from '@quiltt/core'
 
 import type { SetSession } from '../useSession'
-
 
 type IdentifySessionCallbacks = {
   onSuccess?: () => unknown
@@ -21,6 +26,7 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
   const identifySession = useCallback<IdentifySession>(
     async (payload, callbacks) => {
       const response = await auth.identify(payload)
+      const unprocessableResponse = response as UnprocessableResponse
 
       switch (response.status) {
         case 201:
@@ -33,7 +39,6 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
           break
 
         case 422:
-          const unprocessableResponse = response as UnprocessableResponse
           if (callbacks.onError) return callbacks.onError(unprocessableResponse.data)
           break
 

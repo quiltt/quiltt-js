@@ -1,3 +1,4 @@
+// @ts-ignore
 import { name as packageName, version as packageVersion } from './react/package.json'
 
 const QUILTT_API_INSECURE = (() => {

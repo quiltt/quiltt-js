@@ -1,6 +1,12 @@
 import { useCallback } from 'react'
 
-import type { AuthAPI, PasscodePayload, SessionResponse, UnprocessableData, UnprocessableResponse } from '@quiltt/core'
+import type {
+  AuthAPI,
+  PasscodePayload,
+  SessionResponse,
+  UnprocessableData,
+  UnprocessableResponse,
+} from '@quiltt/core'
 
 import type { SetSession } from '../'
 
@@ -17,7 +23,7 @@ type AuthenticateSession = (
 type UseAuthenticateSession = (auth: AuthAPI, setSession: SetSession) => AuthenticateSession
 
 export const useAuthenticateSession: UseAuthenticateSession = (auth, setSession) => {
-  const authenticateSession = useCallback<AuthenticateSession>(
+  const authenticateSession: AuthenticateSession = useCallback(
     async (payload, callbacks) => {
       const response = await auth.authenticate(payload)
 
@@ -39,7 +45,7 @@ export const useAuthenticateSession: UseAuthenticateSession = (auth, setSession)
           throw new Error(`Unexpected auth authenticate response status: ${response.status}`)
       }
     },
-    [auth]
+    [auth, setSession]
   )
 
   return authenticateSession

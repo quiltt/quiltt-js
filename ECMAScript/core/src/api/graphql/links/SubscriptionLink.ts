@@ -10,7 +10,7 @@ export class SubscriptionLink extends ActionCableLink {
 
     super({
       cable: createConsumer(endpoint),
-      channelName: 'GraphQLChannel'
+      channelName: 'GraphQLChannel',
     })
   }
 

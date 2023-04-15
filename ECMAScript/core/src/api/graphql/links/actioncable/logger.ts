@@ -4,9 +4,9 @@ import adapters from './adapters'
 class Logger {
   enabled = debugging
 
-  log(...messages: Array<any>) {
+  log(...messages: Array<string>) {
     if (adapters.logger && this.enabled) {
-      messages.push(Date.now())
+      messages.push(Date.now().toString())
       adapters.logger.log('[ActionCable]', ...messages)
     }
   }
