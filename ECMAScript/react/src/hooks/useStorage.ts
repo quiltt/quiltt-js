@@ -75,6 +75,13 @@ export const useStorage = <T>(
     [key, getStorage, setStorage]
   )
 
+  /**
+   * The empty dependency array ensures that the effect runs only once when the component mounts
+   * and doesn't re-run unnecessarily on subsequent renders because it doesn't depend on any
+   * props or state variables that could change during the component's lifetime.
+   *
+   * Use an empty dependency array to avoid unnecessary re-renders.
+   */
   useEffect(() => {
     storage.subscribe(key, setHookState)
 
