@@ -8,12 +8,6 @@ import { Storage } from '@quiltt/core'
 
 import { useEventListener } from './helpers'
 
-declare global {
-  interface WindowEventMap {
-    'quiltt.storage': CustomEvent
-  }
-}
-
 /**
  * This is an singleton to share the memory states across all instance of
  * the hook; This basically acts like shared memory when there is no localStorage.
@@ -90,8 +84,6 @@ export const useStorage = <T>(
     return () => storage.unsubscribe(key, setHookState)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEventListener('quiltt.storage', handleStorageChange)
 
   return [hookState, setStorage]
 }
