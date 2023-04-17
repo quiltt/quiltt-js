@@ -19,7 +19,7 @@ export class MemoryStorage<T> {
     }
   }
 
-  set = (key: string, state: Maybe<T> | undefined) => {
+  set = (key: string, state: Maybe<T> | undefined): void => {
     if (!this.observables[key]) {
       this.observables[key] = new Observable<T>(state)
     } else {
@@ -27,14 +27,16 @@ export class MemoryStorage<T> {
     }
   }
 
-  subscribe = (key: string, observer: Observer<T>) => {
+  subscribe = (key: string, observer: Observer<T>): void => {
     if (!this.observables[key]) this.observables[key] = new Observable<T>()
 
     this.observables[key].subscribe(observer)
   }
 
-  unsubscribe = (key: string, observer: Observer<T>) => {
-    this.observables[key].unsubscribe(observer)
+  unsubscribe = (key: string, observer: Observer<T>): void => {
+    if (this.observables[key]) {
+      this.observables[key].unsubscribe(observer)
+    }
   }
 }
 

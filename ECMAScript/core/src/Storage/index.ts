@@ -17,15 +17,11 @@ export class Storage<T> {
   /**
    * Checks memoryStorage before falling back to localStorage.
    */
-  get = (key: string) => {
-    let state
+  get = (key: string): Maybe<T> | undefined => {
+    let state = this.memoryStore.get(key)
 
-    if ((state = this.memoryStore.get(key)) !== undefined) {
-      return state
-    }
-
-    if ((state = this.localStore.get(key)) !== undefined) {
-      return state
+    if (state === undefined) {
+      state = this.localStore.get(key)
     }
 
     return state
@@ -66,6 +62,9 @@ export class Storage<T> {
 
     this.memoryStore.unsubscribe(key, observer)
     this.localStore.unsubscribe(key, match[1])
+
+    // Remove the observer from the map to prevent memory leaks
+    this.observersMap = this.observersMap.filter(([ori, _]) => ori !== observer)
   }
 }
 

@@ -6,6 +6,14 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Maybe } from '@quiltt/core'
 import { Storage } from '@quiltt/core'
 
+import { useEventListener } from './helpers'
+
+declare global {
+  interface WindowEventMap {
+    'quiltt.storage': CustomEvent
+  }
+}
+
 /**
  * This is an singleton to share the memory states across all instance of
  * the hook; This basically acts like shared memory when there is no localStorage.
@@ -46,13 +54,26 @@ export const useStorage = <T>(
 
   const [hookState, setHookState] = useState<Maybe<T> | undefined>(getStorage())
 
-  const setStorage = (nextState: Maybe<T> | SetStateAction<Maybe<T> | undefined>) => {
-    const newState = nextState instanceof Function ? nextState(hookState) : nextState
+  const setStorage = useCallback(
+    (nextState: Maybe<T> | SetStateAction<Maybe<T> | undefined>) => {
+      const newState = nextState instanceof Function ? nextState(hookState) : nextState
 
-    if (hookState != newState) {
-      storage.set(key, newState)
-    }
-  }
+      if (hookState !== newState) {
+        storage.set(key, newState)
+      }
+    },
+    [key, hookState]
+  )
+
+  const handleStorageChange = useCallback(
+    (event: StorageEvent | CustomEvent) => {
+      if ((event as StorageEvent)?.key && (event as StorageEvent).key !== key) {
+        return
+      }
+      setStorage(getStorage())
+    },
+    [key, getStorage, setStorage]
+  )
 
   useEffect(() => {
     storage.subscribe(key, setHookState)
@@ -62,6 +83,9 @@ export const useStorage = <T>(
     return () => storage.unsubscribe(key, setHookState)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEventListener('storage', handleStorageChange)
+  useEventListener('quiltt.storage', handleStorageChange)
 
   return [hookState, setStorage]
 }

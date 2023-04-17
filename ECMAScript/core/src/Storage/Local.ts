@@ -2,9 +2,10 @@ import type { Maybe } from '../types'
 import type { Observer } from '../Observable'
 
 /**
- * A error and type safe wrapper for localStorage. It allows you to subscribe to
- * changes; but localStorage changes only fire with another window updates the
- * record.
+ * An error and type safe wrapper for localStorage.
+ * It allows you to subscribe to changes;
+ * but localStorage changes only fire with another
+ * window updates the record.
  */
 export class LocalStorage<T> {
   private observers: { [key: string]: Observer<T>[] } = {}
@@ -28,13 +29,14 @@ export class LocalStorage<T> {
   isDisabled = (): boolean => !this.isEnabled()
 
   get = (key: string): Maybe<T> | undefined => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') return undefined
 
     try {
       const state = window.localStorage.getItem(`quiltt.${key}`)
       return state ? JSON.parse(state) : state
     } catch (error) {
       console.warn(`localStorage Error: "quiltt.${key}">`, error)
+      return undefined
     }
   }
 
@@ -42,7 +44,7 @@ export class LocalStorage<T> {
     if (typeof window === 'undefined') return
 
     try {
-      if (state) {
+      if (state !== undefined) {
         window.localStorage.setItem(`quiltt.${key}`, JSON.stringify(state))
       } else {
         window.localStorage.removeItem(`quiltt.${key}`)
@@ -67,7 +69,7 @@ export class LocalStorage<T> {
   }
 
   unsubscribe = (key: string, observer: Observer<T>) => {
-    this.observers[key] = this.observers[key].filter((update) => update !== observer)
+    this.observers[key] = this.observers[key]?.filter((update) => update !== observer)
   }
 
   // if there is a key, then trigger the related updates. If there is not key
