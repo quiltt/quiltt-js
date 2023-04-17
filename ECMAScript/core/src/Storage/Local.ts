@@ -44,7 +44,7 @@ export class LocalStorage<T> {
     if (typeof window === 'undefined') return
 
     try {
-      if (state !== undefined) {
+      if (state) {
         window.localStorage.setItem(`quiltt.${key}`, JSON.stringify(state))
       } else {
         window.localStorage.removeItem(`quiltt.${key}`)

@@ -91,7 +91,6 @@ export const useStorage = <T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEventListener('storage', handleStorageChange)
   useEventListener('quiltt.storage', handleStorageChange)
 
   return [hookState, setStorage]
