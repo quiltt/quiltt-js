@@ -1,7 +1,6 @@
 import type { Maybe } from '../types'
 
 import type { Observer } from '../Observable'
-import { Observable } from '../Observable'
 import { LocalStorage } from './Local'
 import { MemoryStorage } from './Memory'
 
