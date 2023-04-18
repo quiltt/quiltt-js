@@ -6,8 +6,6 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Maybe } from '@quiltt/core'
 import { Storage } from '@quiltt/core'
 
-import { useEventListener } from './helpers'
-
 /**
  * This is an singleton to share the memory states across all instance of
  * the hook; This basically acts like shared memory when there is no localStorage.
@@ -57,16 +55,6 @@ export const useStorage = <T>(
       }
     },
     [key, hookState]
-  )
-
-  const handleStorageChange = useCallback(
-    (event: StorageEvent | CustomEvent) => {
-      if ((event as StorageEvent)?.key && (event as StorageEvent).key !== key) {
-        return
-      }
-      setStorage(getStorage())
-    },
-    [key, getStorage, setStorage]
   )
 
   /**
