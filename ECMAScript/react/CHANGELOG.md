@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.28
+
+### Patch Changes
+
+- 3877274: Fix issues with graphql client not being updated with new sessions
+- Updated dependencies [3877274]
+  - @quiltt/core@1.0.28
+
 ## 1.0.27
 
 ### Patch Changes
