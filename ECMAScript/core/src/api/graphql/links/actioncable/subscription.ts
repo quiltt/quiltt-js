@@ -3,7 +3,7 @@ import type { Consumer } from './consumer'
 export type Data = { [id: string]: string | object | null | undefined }
 
 const extend = function (object: Data, properties: Data) {
-  if (properties != null) {
+  if (properties !== null) {
     for (const key in properties) {
       const value = properties[key]
       object[key] = value

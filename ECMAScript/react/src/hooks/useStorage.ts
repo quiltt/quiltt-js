@@ -46,14 +46,24 @@ export const useStorage = <T>(
 
   const [hookState, setHookState] = useState<Maybe<T> | undefined>(getStorage())
 
-  const setStorage = (nextState: Maybe<T> | SetStateAction<Maybe<T> | undefined>) => {
-    const newState = nextState instanceof Function ? nextState(hookState) : nextState
+  const setStorage = useCallback(
+    (nextState: Maybe<T> | SetStateAction<Maybe<T> | undefined>) => {
+      const newState = nextState instanceof Function ? nextState(hookState) : nextState
 
-    if (hookState != newState) {
-      storage.set(key, newState)
-    }
-  }
+      if (hookState !== newState) {
+        storage.set(key, newState)
+      }
+    },
+    [key, hookState]
+  )
 
+  /**
+   * The empty dependency array ensures that the effect runs only once when the component mounts
+   * and doesn't re-run unnecessarily on subsequent renders because it doesn't depend on any
+   * props or state variables that could change during the component's lifetime.
+   *
+   * Use an empty dependency array to avoid unnecessary re-renders.
+   */
   useEffect(() => {
     storage.subscribe(key, setHookState)
 

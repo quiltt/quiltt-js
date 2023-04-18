@@ -21,6 +21,8 @@ export class Observable<T> {
   }
 
   set = (nextState: Maybe<T> | undefined) => {
+    if (this.state === nextState) return
+
     this.state = nextState
     this.observers.forEach((update) => update(nextState))
   }
