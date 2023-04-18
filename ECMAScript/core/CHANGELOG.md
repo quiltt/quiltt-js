@@ -1,5 +1,13 @@
 # @quiltt/core
 
+## 1.0.27
+
+### Patch Changes
+
+- 1b073ea: - Fix potential bugs and memory leaks in `Storage`
+  - Add helper hooks to compose other hooks
+  - Update useStorage hook
+
 ## 1.0.26
 
 ### Patch Changes
