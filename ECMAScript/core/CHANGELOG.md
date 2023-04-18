@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.29
+
+### Patch Changes
+
+- 098710f: Fix useEffect and useState looping hell
+
 ## 1.0.28
 
 ### Patch Changes
