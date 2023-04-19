@@ -1,7 +1,7 @@
 'use client'
 
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
 import { JsonWebTokenParse, Timeoutable } from '@quiltt/core'
@@ -73,7 +73,7 @@ export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
   }, [token])
 
   // Bubbles up from Login
-  const setSession = (
+  const setSession = useCallback((
     nextState: Maybe<string> | undefined | SetStateAction<Maybe<string> | undefined>
   ) => {
     const newState = nextState instanceof Function ? nextState(token) : nextState
@@ -81,7 +81,7 @@ export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
     if (token !== newState && (!newState || parse(newState))) {
       setToken(newState)
     }
-  }
+  }, [token, setToken])
 
   return [session, setSession]
 }
