@@ -73,15 +73,16 @@ export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
   }, [token])
 
   // Bubbles up from Login
-  const setSession = useCallback((
-    nextState: Maybe<string> | undefined | SetStateAction<Maybe<string> | undefined>
-  ) => {
-    const newState = nextState instanceof Function ? nextState(token) : nextState
+  const setSession = useCallback(
+    (nextState: Maybe<string> | undefined | SetStateAction<Maybe<string> | undefined>) => {
+      const newState = nextState instanceof Function ? nextState(token) : nextState
 
-    if (token !== newState && (!newState || parse(newState))) {
-      setToken(newState)
-    }
-  }, [token, setToken])
+      if (token !== newState && (!newState || parse(newState))) {
+        setToken(newState)
+      }
+    },
+    [token, setToken]
+  )
 
   return [session, setSession]
 }

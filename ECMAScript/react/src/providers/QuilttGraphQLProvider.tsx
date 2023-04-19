@@ -8,6 +8,7 @@ import { InMemoryCache, QuilttClient } from '@quiltt/core'
 import { useQuilttSession } from '../hooks'
 
 export const QuilttGraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const { session, forgetSession } = useQuilttSession()
   const [client, setClient] = useState<QuilttClient<unknown>>(
     new QuilttClient({
@@ -32,6 +33,23 @@ export const QuilttGraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
       })
     })
   }, [session?.token, forgetSession, setClient])
+
+  /**
+   * Session can take a moment to update, then it flushes through and then
+   * the client can take a moment to update. This loading state is to things
+   * wait until everything has been updated to help prevent unauth'd requests.
+   *
+   * TODO: Consider accepting a loading component.
+   */
+  useEffect(() => {
+    if (!isLoading && session?.token !== client.token) {
+      setIsLoading(true)
+    } else if (isLoading && session?.token === client.token) {
+      setIsLoading(false)
+    }
+  }, [isLoading, session?.token, client.token])
+
+  if (isLoading) return null
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
 }
