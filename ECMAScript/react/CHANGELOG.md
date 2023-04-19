@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.31
+
+### Patch Changes
+
+- 18cb0a2: Add loading state to graphql provider to reduce unauthd requests
+- Updated dependencies [18cb0a2]
+  - @quiltt/core@1.0.31
+
 ## 1.0.30
 
 ### Patch Changes
