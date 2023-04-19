@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.30
+
+### Patch Changes
+
+- 5d6027b: Fix issue with useSession setSession not being wrapped in useCallback, causing invalidations every render
+- Updated dependencies [5d6027b]
+  - @quiltt/core@1.0.30
+
 ## 1.0.29
 
 ### Patch Changes
