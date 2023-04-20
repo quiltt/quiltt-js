@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.32
+
+### Patch Changes
+
+- 97aa921: Revert adding loading state to graphql as it causes unexpected resets to subcomponents
+
 ## 1.0.31
 
 ### Patch Changes
