@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.33
+
+### Patch Changes
+
+- f0c60dd: Update useSession hook to memoize initialSession
+
 ## 1.0.32
 
 ### Patch Changes
