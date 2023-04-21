@@ -1,7 +1,7 @@
 'use client'
 
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
 import { JsonWebTokenParse, Timeoutable } from '@quiltt/core'
@@ -35,16 +35,18 @@ const sessionTimer = new Timeoutable()
 export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
   const [token, setToken] = useStorage<string>('session')
 
-  const initializeState = () => {
+  const initializeState = useCallback(() => {
     const initalState = parse(token)
     if (initalState === undefined && token) {
       setToken(null)
     } else {
       return initalState
     }
-  }
+  }, [setToken, token])
 
-  const [session, setState] = useState<Maybe<QuilttJWT> | undefined>(initializeState())
+  const initialSession = useMemo(() => initializeState(), [initializeState])
+
+  const [session, setState] = useState<Maybe<QuilttJWT> | undefined>(initialSession)
 
   // Clear session if/when it expires
   useEffect(() => {
@@ -74,7 +76,7 @@ export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
 
   // Bubbles up from Login
   const setSession = useCallback(
-    (nextState: Maybe<string> | undefined | SetStateAction<Maybe<string> | undefined>) => {
+    (nextState: Maybe<string> | SetStateAction<Maybe<string> | undefined> | undefined) => {
       const newState = nextState instanceof Function ? nextState(token) : nextState
 
       if (token !== newState && (!newState || parse(newState))) {

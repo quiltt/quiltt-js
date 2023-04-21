@@ -12,7 +12,7 @@ import type { SetSession } from '../useSession'
 
 type IdentifySessionCallbacks = {
   onSuccess?: () => unknown
-  onChallanged?: () => unknown
+  onChallenged?: () => unknown
   onError?: (errors: UnprocessableData) => unknown
 }
 type IdentifySession = (
@@ -35,7 +35,7 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
           break
 
         case 202:
-          if (callbacks.onChallanged) return callbacks.onChallanged()
+          if (callbacks.onChallenged) return callbacks.onChallenged()
           break
 
         case 422:
