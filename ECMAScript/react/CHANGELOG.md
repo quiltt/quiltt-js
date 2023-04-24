@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.34
+
+### Patch Changes
+
+- 54a6574: Save localstorage before memorystorage to give localstorage more time to flush
+- Updated dependencies [54a6574]
+  - @quiltt/core@1.0.34
+
 ## 1.0.33
 
 ### Patch Changes
