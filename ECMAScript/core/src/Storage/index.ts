@@ -39,8 +39,8 @@ export class Storage<T> {
   set = (key: string, newState: Maybe<T> | undefined) => {
     this.monitorLocalStorageChanges(key)
 
-    this.memoryStore.set(key, newState)
     this.localStore.set(key, newState)
+    this.memoryStore.set(key, newState)
 
     this.observers[key]?.forEach((update) => update(newState))
   }
