@@ -71,6 +71,7 @@ export class Storage<T> {
    */
   private monitorLocalStorageChanges = (key: string) => {
     if (this.monitors.has(key)) return
+    this.monitors.add(key)
 
     this.localStore.subscribe(key, (nextState) => {
       const prevValue = this.memoryStore.get(key)
@@ -79,8 +80,6 @@ export class Storage<T> {
       this.memoryStore.set(key, newState)
       this.observers[key]?.forEach((update) => update(newState))
     })
-
-    this.monitors.add(key)
   }
 }
 
