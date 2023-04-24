@@ -1,5 +1,12 @@
 # @quiltt/core
 
+## 1.0.35
+
+### Patch Changes
+
+- 14309ed: Update deps
+- 6b8d7a4: Reduce the risk of race conditions double subscribing to localstorage changes
+
 ## 1.0.34
 
 ### Patch Changes
