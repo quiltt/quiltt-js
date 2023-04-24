@@ -1,5 +1,15 @@
 # @quiltt/react
 
+## 1.0.35
+
+### Patch Changes
+
+- 14309ed: Update deps
+- 6b8d7a4: Reduce the risk of race conditions double subscribing to localstorage changes
+- Updated dependencies [14309ed]
+- Updated dependencies [6b8d7a4]
+  - @quiltt/core@1.0.35
+
 ## 1.0.34
 
 ### Patch Changes
