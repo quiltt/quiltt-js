@@ -4,7 +4,7 @@
   "private": true,
   "description": "Quiltt's Open Source Projects",
   "main": "index.js",
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@8.3.1",
   "scripts": {
     "analyze": "turbo run analyze",
     "build": "turbo run build",
@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "2.26.1",
-    "@types/node": "18.15.11",
-    "pnpm": "8.2.0",
+    "@types/node": "18.16.0",
+    "pnpm": "8.3.1",
     "turbo": "1.9.3"
   }
 }
