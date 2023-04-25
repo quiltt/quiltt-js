@@ -34,19 +34,7 @@ const sessionTimer = new Timeoutable()
  */
 export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
   const [token, setToken] = useStorage<string>('session')
-
-  const initializeState = useCallback(() => {
-    const initalState = parse(token)
-    if (initalState === undefined && token) {
-      setToken(null)
-    } else {
-      return initalState
-    }
-  }, [setToken, token])
-
-  const initialSession = useMemo(() => initializeState(), [initializeState])
-
-  const [session, setState] = useState<Maybe<QuilttJWT> | undefined>(initialSession)
+  const [session, setState] = useState<Maybe<QuilttJWT> | undefined>(parse(token))
 
   // Clear session if/when it expires
   useEffect(() => {
