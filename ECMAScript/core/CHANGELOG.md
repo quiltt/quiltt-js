@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.37
+
+### Patch Changes
+
+- 9169fde: Reduce complexity of useSession by replacing useState with useMemo
+
 ## 1.0.36
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.0.37
+
+### Patch Changes
+
+- 9169fde: Reduce complexity of useSession by replacing useState with useMemo
+- Updated dependencies [9169fde]
+  - @quiltt/core@1.0.37
+
 ## 1.0.36
 
 ### Patch Changes
