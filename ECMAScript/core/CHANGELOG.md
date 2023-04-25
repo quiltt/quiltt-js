@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.0.36
+
+### Patch Changes
+
+- 9f34730: Remove redundant initializeState logic from useSession
+
 ## 1.0.35
 
 ### Patch Changes
