@@ -1,8 +1,10 @@
 'use client'
 
-import type { FC, PropsWithChildren } from 'react'
-import { Fragment, useEffect, useState } from 'react'
+import { FC, PropsWithChildren, useMemo } from 'react'
+import { useEffect } from 'react'
 
+import { ApolloProvider } from '@apollo/client/index.js'
+import { InMemoryCache, QuilttClient } from '@quiltt/core'
 import { useQuilttSession } from '../hooks'
 
 type QuilttAuthProviderProps = PropsWithChildren & {
@@ -15,27 +17,31 @@ type QuilttAuthProviderProps = PropsWithChildren & {
  * into a loading state and the children are not rendered to prevent race conditions
  * from triggering within the transitionary state.
  *
- * TODO: Consider accepting a loading component.
  */
 export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, children }) => {
-  const { session, importSession } = useQuilttSession()
-  const [isLoading, setIsLoading] = useState(false)
+  const { session, importSession, forgetSession } = useQuilttSession()
+  const client = useMemo<QuilttClient<unknown>>(
+    () =>
+      new QuilttClient({
+        unauthorizedCallback: forgetSession,
+        cache: new InMemoryCache(),
+      }),
+    [forgetSession]
+  )
 
+  // Import Passed in Tokens
   useEffect(() => {
-    if (session?.token == token) {
-      if (isLoading) setIsLoading(false)
-      return
-    }
+    if (token) importSession(token)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
-    if (token && !isLoading) {
-      setIsLoading(true)
-      importSession(token)
-    }
-  }, [session?.token, token, isLoading, setIsLoading, importSession])
+  // Reset Client Store when logging in or out
+  useEffect(() => {
+    client.resetStore()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session])
 
-  if (isLoading) return null
-
-  return <Fragment>{children}</Fragment>
+  return <ApolloProvider client={client}>{children}</ApolloProvider>
 }
 
 export default QuilttAuthProvider

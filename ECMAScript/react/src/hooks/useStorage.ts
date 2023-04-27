@@ -4,13 +4,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 
 import type { Maybe } from '@quiltt/core'
-import { Storage } from '@quiltt/core'
-
-/**
- * This is an singleton to share the memory states across all instance of
- * the hook; This basically acts like shared memory when there is no localStorage.
- */
-const storage = new Storage<any>()
+import { GlobalStorage } from '@quiltt/core'
 
 /**
  * Attempt to persist state with local storage, so it remains after refresh and
@@ -37,7 +31,7 @@ export const useStorage = <T>(
   const getStorage = useCallback(() => {
     let state
 
-    if ((state = storage.get(key)) !== undefined) {
+    if ((state = GlobalStorage.get(key)) !== undefined) {
       return state
     }
 
@@ -51,7 +45,7 @@ export const useStorage = <T>(
       const newState = nextState instanceof Function ? nextState(hookState) : nextState
 
       if (hookState !== newState) {
-        storage.set(key, newState)
+        GlobalStorage.set(key, newState)
       }
     },
     [key, hookState]
@@ -65,11 +59,11 @@ export const useStorage = <T>(
    * Use an empty dependency array to avoid unnecessary re-renders.
    */
   useEffect(() => {
-    storage.subscribe(key, setHookState)
+    GlobalStorage.subscribe(key, setHookState)
 
     setHookState(getStorage())
 
-    return () => storage.unsubscribe(key, setHookState)
+    return () => GlobalStorage.unsubscribe(key, setHookState)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

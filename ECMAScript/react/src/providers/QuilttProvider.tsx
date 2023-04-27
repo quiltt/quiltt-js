@@ -1,7 +1,6 @@
 import type { FC, PropsWithChildren } from 'react'
 
 import { QuilttAuthProvider } from './QuilttAuthProvider'
-import { QuilttGraphQLProvider } from './QuilttGraphQLProvider'
 import { QuilttSettingsProvider } from './QuilttSettingsProvider'
 
 type QuilttProviderProps = PropsWithChildren & {
@@ -12,9 +11,7 @@ type QuilttProviderProps = PropsWithChildren & {
 export const QuilttProvider: FC<QuilttProviderProps> = ({ clientId, token, children }) => {
   return (
     <QuilttSettingsProvider clientId={clientId}>
-      <QuilttAuthProvider token={token}>
-        <QuilttGraphQLProvider>{children}</QuilttGraphQLProvider>
-      </QuilttAuthProvider>
+      <QuilttAuthProvider token={token}>{children}</QuilttAuthProvider>
     </QuilttSettingsProvider>
   )
 }

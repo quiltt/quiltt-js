@@ -1,8 +1,10 @@
+import { GlobalStorage } from '@/Storage'
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index.js'
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
-import type { Consumer } from './actioncable'
-
 import { print } from 'graphql'
+import { endpointWebsockets } from '../../../config'
+import type { Consumer } from './actioncable'
+import { createConsumer } from './actioncable'
 
 type RequestResult = FetchResult<
   { [key: string]: unknown },
@@ -12,19 +14,18 @@ type RequestResult = FetchResult<
 type ConnectionParams = object | ((operation: Operation) => object)
 
 class ActionCableLink extends ApolloLink {
-  cable: Consumer
+  cables: { [id: string]: Consumer }
   channelName: string
   actionName: string
   connectionParams: ConnectionParams
 
   constructor(options: {
-    cable: Consumer
     channelName?: string
     actionName?: string
     connectionParams?: ConnectionParams
   }) {
     super()
-    this.cable = options.cable
+    this.cables = {}
     this.channelName = options.channelName || 'GraphqlChannel'
     this.actionName = options.actionName || 'execute'
     this.connectionParams = options.connectionParams || {}
@@ -32,7 +33,18 @@ class ActionCableLink extends ApolloLink {
 
   // Interestingly, this link does _not_ call through to `next` because
   // instead, it sends the request to ActionCable.
-  request(operation: Operation, _next: NextLink): Observable<RequestResult> {
+  request(operation: Operation, _next: NextLink): Observable<RequestResult> | null {
+    const token = GlobalStorage.get('session')
+
+    if (!token) {
+      console.warn(`QuilttLink attempted to send an unauthenticated Subscription`)
+      return null
+    }
+
+    if (!this.cables[token]) {
+      this.cables[token] = createConsumer(endpointWebsockets + (token ? `?token=${token}` : ''))
+    }
+
     return new Observable((observer) => {
       const channelId = Math.round(Date.now() + Math.random() * 100000).toString(16)
       const actionName = this.actionName
@@ -41,7 +53,7 @@ class ActionCableLink extends ApolloLink {
           ? this.connectionParams(operation)
           : this.connectionParams
 
-      const channel = this.cable.subscriptions.create(
+      const channel = this.cables[token].subscriptions.create(
         Object.assign(
           {},
           {

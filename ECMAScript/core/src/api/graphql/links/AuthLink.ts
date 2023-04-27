@@ -7,6 +7,8 @@ import type {
 } from '@apollo/client/index.js'
 import { ApolloLink } from '@apollo/client/index.js'
 
+import { GlobalStorage } from '@/Storage'
+
 export type UnauthorizedCallback = (token: string) => void
 
 /**
@@ -16,17 +18,17 @@ export type UnauthorizedCallback = (token: string) => void
  * valid sessions during rotation and networking weirdness.
  */
 export class AuthLink extends ApolloLink {
-  token: string | undefined
   unauthorizedCallback?: UnauthorizedCallback
 
-  constructor(token: string | undefined, unauthorizedCallback?: UnauthorizedCallback) {
+  constructor(unauthorizedCallback?: UnauthorizedCallback) {
     super()
-    this.token = token
     this.unauthorizedCallback = unauthorizedCallback
   }
 
   request(operation: Operation, forward: NextLink): Observable<FetchResult> | null {
-    if (!this.token) {
+    const token = GlobalStorage.get('session')
+
+    if (!token) {
       console.warn(`QuilttLink attempted to send an unauthenticated Query`)
       return null
     }
@@ -34,7 +36,7 @@ export class AuthLink extends ApolloLink {
     operation.setContext(({ headers = {} }) => ({
       headers: {
         ...headers,
-        authorization: `Bearer ${this.token}`,
+        authorization: `Bearer ${token}`,
       },
     }))
 
@@ -43,7 +45,7 @@ export class AuthLink extends ApolloLink {
     observable.subscribe({
       error: ({ networkError }: { networkError: ServerError }) => {
         if (networkError?.statusCode === 401 && this.unauthorizedCallback) {
-          this.unauthorizedCallback(this.token as string)
+          this.unauthorizedCallback(token as string)
         }
       },
     })

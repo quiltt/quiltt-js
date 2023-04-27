@@ -85,4 +85,9 @@ export class Storage<T> {
 
 export * from './Local'
 export * from './Memory'
-export default Storage
+
+/**
+ * This is an singleton to share the memory states across all instances; This
+ * basically acts like shared memory when there is no localStorage.
+ */
+export const GlobalStorage = new Storage<any>()

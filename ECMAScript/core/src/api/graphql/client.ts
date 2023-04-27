@@ -13,12 +13,10 @@ import {
   PreviewLink,
   RetryLink,
   SubscriptionLink,
-  TerminatingLink,
   VersionLink,
 } from './links'
 
 export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
-  token: string | undefined
   unauthorizedCallback?: UnauthorizedCallback
 }
 
@@ -43,8 +41,9 @@ export class QuilttClient<T> extends ApolloClient<T> {
       return operation.getContext().batchable ?? true
     }
 
-    const authLink = new AuthLink(options.token, options.unauthorizedCallback)
-    const subscriptionsLink = options.token ? new SubscriptionLink(options.token) : TerminatingLink
+    const authLink = new AuthLink(options.unauthorizedCallback)
+    const subscriptionsLink = new SubscriptionLink()
+
     const quilttLink = ApolloLink.from([VersionLink, authLink, ErrorLink, RetryLink])
       .split(isSubscriptionOperation, subscriptionsLink, ForwardableLink)
       .split(isPreviewable, PreviewLink, ForwardableLink)
@@ -54,18 +53,6 @@ export class QuilttClient<T> extends ApolloClient<T> {
       link: quilttLink,
       ...options,
     })
-
-    if (options.token) {
-      this.subscriptionsLink = subscriptionsLink as SubscriptionLink
-    }
-  }
-
-  disconnect() {
-    if (this.subscriptionsLink) {
-      this.subscriptionsLink.disconnect()
-    }
-
-    this.clearStore()
   }
 }
 
