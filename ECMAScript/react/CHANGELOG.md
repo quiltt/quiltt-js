@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.1.1
+
+### Patch Changes
+
+- 0a78cd2: Move session revoking to be directly to storage
+- Updated dependencies [0a78cd2]
+  - @quiltt/core@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
