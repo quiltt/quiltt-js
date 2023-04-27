@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.1.5
+
+### Patch Changes
+
+- 4e237ce: Expose useEventListener
+
 ## 1.1.4
 
 ### Patch Changes

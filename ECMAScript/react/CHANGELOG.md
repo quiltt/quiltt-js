@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.1.5
+
+### Patch Changes
+
+- 4e237ce: Expose useEventListener
+- Updated dependencies [4e237ce]
+  - @quiltt/core@1.1.5
+
 ## 1.1.4
 
 ### Patch Changes
