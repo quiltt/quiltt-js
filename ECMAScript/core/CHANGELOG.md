@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.1.3
+
+### Patch Changes
+
+- d8fdcaa: Add option to set QuilttProvider to reset on session change
+
 ## 1.1.2
 
 ### Patch Changes
