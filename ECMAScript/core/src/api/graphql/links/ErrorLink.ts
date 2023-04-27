@@ -1,3 +1,5 @@
+import { GlobalStorage } from '@/Storage'
+
 import type { ServerError } from '@apollo/client/index.js'
 import { onError } from '@apollo/client/link/error/index.js'
 
@@ -8,8 +10,13 @@ export const ErrorLink = onError(({ graphQLErrors, networkError }) => {
     })
   }
 
-  if (networkError && (networkError as ServerError).statusCode !== 401) {
-    console.warn('[Network error]:', networkError)
+  if (networkError) {
+    if ((networkError as ServerError).statusCode === 401) {
+      console.warn('[Authentication error]:', networkError)
+      GlobalStorage.set('session', null)
+    } else {
+      console.warn('[Network error]:', networkError)
+    }
   }
 })
 

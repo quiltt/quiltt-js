@@ -1,15 +1,7 @@
-import type {
-  FetchResult,
-  NextLink,
-  Observable,
-  Operation,
-  ServerError,
-} from '@apollo/client/index.js'
+import type { FetchResult, NextLink, Observable, Operation } from '@apollo/client/index.js'
 import { ApolloLink } from '@apollo/client/index.js'
 
 import { GlobalStorage } from '@/Storage'
-
-export type UnauthorizedCallback = (token: string) => void
 
 /**
  * unauthorizedCallback only triggers in the event the the token is present, and
@@ -33,17 +25,7 @@ export class AuthLink extends ApolloLink {
       },
     }))
 
-    const observable = forward(operation)
-
-    observable.subscribe({
-      error: ({ networkError }: { networkError: ServerError }) => {
-        if (networkError?.statusCode === 401) {
-          GlobalStorage.set('session', null)
-        }
-      },
-    })
-
-    return observable
+    return forward(operation)
   }
 }
 
