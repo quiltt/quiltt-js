@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.1.3
+
+### Patch Changes
+
+- d8fdcaa: Add option to set QuilttProvider to reset on session change
+- Updated dependencies [d8fdcaa]
+  - @quiltt/core@1.1.3
+
 ## 1.1.2
 
 ### Patch Changes
