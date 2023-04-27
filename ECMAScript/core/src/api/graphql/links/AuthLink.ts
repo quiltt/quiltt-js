@@ -18,13 +18,6 @@ export type UnauthorizedCallback = (token: string) => void
  * valid sessions during rotation and networking weirdness.
  */
 export class AuthLink extends ApolloLink {
-  unauthorizedCallback?: UnauthorizedCallback
-
-  constructor(unauthorizedCallback?: UnauthorizedCallback) {
-    super()
-    this.unauthorizedCallback = unauthorizedCallback
-  }
-
   request(operation: Operation, forward: NextLink): Observable<FetchResult> | null {
     const token = GlobalStorage.get('session')
 
@@ -44,8 +37,8 @@ export class AuthLink extends ApolloLink {
 
     observable.subscribe({
       error: ({ networkError }: { networkError: ServerError }) => {
-        if (networkError?.statusCode === 401 && this.unauthorizedCallback) {
-          this.unauthorizedCallback(token as string)
+        if (networkError?.statusCode === 401) {
+          GlobalStorage.set('session', null)
         }
       },
     })

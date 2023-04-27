@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, PropsWithChildren, useMemo } from 'react'
+import { FC, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 
 import { ApolloProvider } from '@apollo/client/index.js'
@@ -11,6 +11,10 @@ type QuilttAuthProviderProps = PropsWithChildren & {
   token?: string
 }
 
+const Client = new QuilttClient({
+  cache: new InMemoryCache(),
+})
+
 /**
  * If a token is provided, will validate the token against the api and then import
  * it into trusted storage. While this process is happening, the component is put
@@ -19,15 +23,7 @@ type QuilttAuthProviderProps = PropsWithChildren & {
  *
  */
 export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, children }) => {
-  const { session, importSession, forgetSession } = useQuilttSession()
-  const client = useMemo<QuilttClient<unknown>>(
-    () =>
-      new QuilttClient({
-        unauthorizedCallback: forgetSession,
-        cache: new InMemoryCache(),
-      }),
-    [forgetSession]
-  )
+  const { session, importSession } = useQuilttSession()
 
   // Import Passed in Tokens
   useEffect(() => {
@@ -37,11 +33,11 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
 
   // Reset Client Store when logging in or out
   useEffect(() => {
-    client.resetStore()
+    Client.resetStore()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>
+  return <ApolloProvider client={Client}>{children}</ApolloProvider>
 }
 
 export default QuilttAuthProvider

@@ -16,13 +16,9 @@ import {
   VersionLink,
 } from './links'
 
-export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
-  unauthorizedCallback?: UnauthorizedCallback
-}
+export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'>
 
 export class QuilttClient<T> extends ApolloClient<T> {
-  subscriptionsLink: SubscriptionLink | undefined
-
   constructor(options: QuilttClientOptions<T>) {
     if (!options.connectToDevTools) options.connectToDevTools = debugging
 
@@ -41,7 +37,7 @@ export class QuilttClient<T> extends ApolloClient<T> {
       return operation.getContext().batchable ?? true
     }
 
-    const authLink = new AuthLink(options.unauthorizedCallback)
+    const authLink = new AuthLink()
     const subscriptionsLink = new SubscriptionLink()
 
     const quilttLink = ApolloLink.from([VersionLink, authLink, ErrorLink, RetryLink])
