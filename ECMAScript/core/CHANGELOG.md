@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.1.4
+
+### Patch Changes
+
+- c67e98d: Revert attempt to force reset through renders
+
 ## 1.1.3
 
 ### Patch Changes
