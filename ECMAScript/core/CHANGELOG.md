@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.1.0
+
+### Minor Changes
+
+- 7a1e387: Attempt to reduce race conditions with session changes by pulling token changing logic directly into the respective apollo links
+
 ## 1.0.37
 
 ### Patch Changes
