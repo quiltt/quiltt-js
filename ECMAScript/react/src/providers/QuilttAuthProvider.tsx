@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, PropsWithChildren, useState } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 
 import { ApolloProvider } from '@apollo/client/index.js'
@@ -29,8 +29,6 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
   children,
 }) => {
   const { session, importSession } = useQuilttSession()
-  const [isResetting, setIsResetting] = useState(false)
-  const [isResettingRenders, setIsResettingRenders] = useState(0)
 
   // Import Passed in Tokens
   useEffect(() => {
@@ -40,22 +38,11 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
 
   // Reset Client Store when logging in or out
   useEffect(() => {
-    setIsResetting(true)
-    setIsResettingRenders(2) // two is to ensure that 2 passes, or 1 frame is rendered null
-    Client.resetStore().then(() => setIsResetting(false))
+    Client.resetStore()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
-  // Ensure that at least 1 render renders out null
-  if (isResettingRenders > 0) {
-    setIsResettingRenders((count) => count - 1)
-  }
-
-  return (
-    <ApolloProvider client={Client}>
-      {resetOnSessionChange && (isResetting || isResettingRenders > 0) ? null : children}
-    </ApolloProvider>
-  )
+  return <ApolloProvider client={Client}>{children}</ApolloProvider>
 }
 
 export default QuilttAuthProvider
