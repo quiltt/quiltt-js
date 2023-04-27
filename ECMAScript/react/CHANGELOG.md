@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.1.2
+
+### Patch Changes
+
+- dcf2c5c: Improve session yanking after getting a 401
+- Updated dependencies [dcf2c5c]
+  - @quiltt/core@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes

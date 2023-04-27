@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.1.2
+
+### Patch Changes
+
+- dcf2c5c: Improve session yanking after getting a 401
+
 ## 1.1.1
 
 ### Patch Changes
