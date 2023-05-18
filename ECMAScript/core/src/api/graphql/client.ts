@@ -8,7 +8,6 @@ import {
   ErrorLink,
   ForwardableLink,
   HttpLink,
-  PreviewLink,
   RetryLink,
   SubscriptionLink,
   VersionLink,
@@ -27,10 +26,6 @@ export class QuilttClient<T> extends ApolloClient<T> {
       )
     }
 
-    const isPreviewable = (operation: Operation) => {
-      return !!operation.getContext().preview
-    }
-
     const isBatchable = (operation: Operation) => {
       return operation.getContext().batchable ?? true
     }
@@ -40,7 +35,6 @@ export class QuilttClient<T> extends ApolloClient<T> {
 
     const quilttLink = ApolloLink.from([VersionLink, authLink, ErrorLink, RetryLink])
       .split(isSubscriptionOperation, subscriptionsLink, ForwardableLink)
-      .split(isPreviewable, PreviewLink, ForwardableLink)
       .split(isBatchable, BatchHttpLink, HttpLink)
 
     super({
