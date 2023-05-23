@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.2.0
+
+### Minor Changes
+
+- 215662a: Update deps
+
 ## 1.1.5
 
 ### Patch Changes
