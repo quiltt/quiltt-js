@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.2.1
+
+### Patch Changes
+
+- 01e1247: Update packages
+- Updated dependencies [01e1247]
+  - @quiltt/core@1.2.1
+
 ## 1.2.0
 
 ### Minor Changes
