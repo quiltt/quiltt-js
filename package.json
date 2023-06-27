@@ -4,27 +4,27 @@
   "private": true,
   "description": "Quiltt's Open Source Projects",
   "main": "index.js",
-  "packageManager": "pnpm@8.6.2",
   "scripts": {
     "analyze": "turbo run analyze",
+    "prebuild": "[[ $CI = true ]] && npx pnpm@8 install --store=node_modules/.pnpm-store || echo skiping pnpm install; turbo run prebuild",
     "build": "turbo run build",
+    "postbuild": "turbo run postbuild",
     "changeset": "npx changeset",
     "clean": "turbo run clean",
     "dev": "turbo run dev --parallel",
-    "postbuild": "turbo run postbuild",
-    "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'",
-    "prebuild": "[[ $CI = true ]] && npx pnpm@8 install --store=node_modules/.pnpm-store || echo skiping pnpm install; turbo run prebuild",
+    "lint": "turbo run lint",
     "prepublish": "pnpm install && pnpm run build",
     "publish": "pnpm -r publish packages --no-git-checks",
     "setup": "turbo run setup",
+    "typecheck": "turbo run typecheck",
     "version": "npx changeset version",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck"
+    "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'"
   },
   "devDependencies": {
-    "@changesets/cli": "2.26.1",
-    "@types/node": "18.16.14",
-    "pnpm": "8.6.2",
-    "turbo": "1.10.1"
-  }
+    "@changesets/cli": "2.26.2",
+    "@types/node": "18.16.18",
+    "pnpm": "8.6.5",
+    "turbo": "1.10.6"
+  },
+  "packageManager": "pnpm@8.6.5"
 }

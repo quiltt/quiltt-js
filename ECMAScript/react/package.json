@@ -1,10 +1,18 @@
 {
   "name": "@quiltt/react",
   "version": "1.2.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quiltt/quiltt-public.git",
+    "directory": "ECMAScript/hooks"
+  },
+  "license": "MIT",
+  "sideEffects": [
+    "./src/hooks/useQuilttSettings.ts",
+    "./src/hooks/useSession.ts",
+    "./src/hooks/useStorage.ts"
+  ],
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -17,28 +25,16 @@
       "types": "./dist/hooks/index.d.ts"
     }
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/quiltt/quiltt-public.git",
-    "directory": "ECMAScript/hooks"
-  },
-  "publishConfig": {
-    "access": "public",
-    "@quiltt:registry": "https://npm.pkg.github.com"
-  },
-  "sideEffects": [
-    "./src/hooks/useQuilttSettings.ts",
-    "./src/hooks/useSession.ts",
-    "./src/hooks/useStorage.ts"
-  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist/**"
   ],
   "scripts": {
+    "build": "tsup",
     "clean": "rimraf .turbo dist",
     "dev": "tsup --watch",
-    "build": "tsup",
     "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
@@ -46,24 +42,28 @@
     "@quiltt/core": "workspace:*"
   },
   "devDependencies": {
-    "@apollo/client": "3.7.15",
+    "@apollo/client": "3.7.16",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
-    "@types/node": "18.16.16",
-    "@types/react": "18.2.7",
-    "@typescript-eslint/eslint-plugin": "5.59.9",
-    "@typescript-eslint/parser": "5.59.9",
-    "eslint": "8.41.0",
+    "@types/node": "18.16.18",
+    "@types/react": "18.2.14",
+    "@typescript-eslint/eslint-plugin": "5.60.1",
+    "@typescript-eslint/parser": "5.60.1",
+    "eslint": "8.43.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-jsx-a11y": "6.7.1",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "graphql": "16.6.0",
+    "graphql": "16.7.1",
     "prettier": "2.8.8",
-    "tsup": "6.7.0",
-    "typescript": "5.0.4"
+    "tsup": "7.1.0",
+    "typescript": "5.1.3"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "publishConfig": {
+    "@quiltt:registry": "https://npm.pkg.github.com",
+    "access": "public"
   }
 }
