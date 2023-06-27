@@ -1,6 +1,7 @@
 export * from './helpers'
 export * from './session'
 export * from './useQuilttClient'
+export * from './useQuilttConnector'
 export * from './useQuilttSession'
 export * from './useQuilttSettings'
 export * from './useSession'
