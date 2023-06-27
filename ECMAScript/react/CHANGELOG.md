@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.2.2
+
+### Patch Changes
+
+- 89fca3b: Add useQuilttConnector hook
+- Updated dependencies [89fca3b]
+  - @quiltt/core@1.2.2
+
 ## 1.2.1
 
 ### Patch Changes

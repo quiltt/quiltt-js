@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.2.2
+
+### Patch Changes
+
+- 89fca3b: Add useQuilttConnector hook
+
 ## 1.2.1
 
 ### Patch Changes
