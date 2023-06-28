@@ -1,19 +1,18 @@
 import { useEffect, useId, useMemo, useState } from 'react'
 
-type SharedConfig = {
-  connectorId: string
-  token?: string
-}
-
-type ModalConfig = SharedConfig & {
-  button: string
-}
-
-type InlineConfig = SharedConfig & {
-  container: string
-}
-
-export type QuilttConnectorConfig = ModalConfig | InlineConfig
+export type QuilttConnectorConfig =
+  | {
+      connectorId: string
+      token?: string
+      button: string
+      container?: never
+    }
+  | {
+      connectorId: string
+      token?: string
+      container: string
+      button?: never
+    }
 
 export type UseQuilttConnectorReturn = {
   ready: boolean
@@ -26,9 +25,7 @@ export const useQuilttConnector = (options: QuilttConnectorConfig): UseQuilttCon
   const [ready, setReady] = useState(false)
 
   const dataset: DOMStringMap = useMemo(() => {
-    const { connectorId, token } = options
-    const button = (options as ModalConfig)?.button
-    const container = (options as InlineConfig)?.container
+    const { button, container, connectorId, token } = options
 
     return {
       quilttConnectorId: connectorId,
