@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.2.3
+
+### Patch Changes
+
+- 71ba4d9: Add react and react-dom as devDependency
+- Updated dependencies [71ba4d9]
+  - @quiltt/core@1.2.3
+
 ## 1.2.2
 
 ### Patch Changes
