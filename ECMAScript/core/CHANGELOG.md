@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.2.4
+
+### Patch Changes
+
+- a05ccfc: Revert types/react and tsup
+
 ## 1.2.3
 
 ### Patch Changes
