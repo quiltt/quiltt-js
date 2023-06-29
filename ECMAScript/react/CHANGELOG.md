@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.2.5
+
+### Patch Changes
+
+- ba18907: Publish to npm registry
+- Updated dependencies [ba18907]
+  - @quiltt/core@1.2.5
+
 ## 1.2.4
 
 ### Patch Changes
