@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 1.2.8
+
+### Patch Changes
+
+- fa07b6a: Add READMEs
+- Updated dependencies [fa07b6a]
+  - @quiltt/core@1.2.8
+
 ## 1.2.7
 
 ### Patch Changes
