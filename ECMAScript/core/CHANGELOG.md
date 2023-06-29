@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.2.6
+
+### Patch Changes
+
+- 1594b4a: Pass NPM_TOKEN for publishing
+
 ## 1.2.5
 
 ### Patch Changes
