@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.2.8
+
+### Patch Changes
+
+- fa07b6a: Add READMEs
+
 ## 1.2.7
 
 ### Patch Changes
