@@ -40,21 +40,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Modify .npmrc in root folder
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create .npmrc in home folder
         run: |
           cat << EOF > "$HOME/.npmrc"
             strict-peer-dependencies=false
             git-checks=false
-            @quiltt:registry=https://npm.pkg.github.com
-            //npm.pkg.github.com/:_authToken=$GITHUB_TOKEN
+            registry=https://registry.npmjs.org/
           EOF
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release pull request or release to GitHub packages
         id: changesets
@@ -72,5 +64,4 @@ jobs:
           pnpm run build
           pnpm run publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
