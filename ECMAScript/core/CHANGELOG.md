@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 1.2.7
+
+### Patch Changes
+
+- 0321f3e: Filter packages to publish
+
 ## 1.2.6
 
 ### Patch Changes
