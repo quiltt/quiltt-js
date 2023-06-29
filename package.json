@@ -1,7 +1,6 @@
 {
-  "name": "quiltt",
+  "name": "@quiltt/quiltt-public",
   "version": "1.0.0",
-  "private": true,
   "description": "Quiltt's Open Source Projects",
   "main": "index.js",
   "scripts": {

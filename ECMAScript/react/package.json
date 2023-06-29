@@ -4,7 +4,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/quiltt/quiltt-public.git",
-    "directory": "ECMAScript/hooks"
+    "directory": "ECMAScript/react"
   },
   "license": "MIT",
   "sideEffects": [
@@ -68,7 +68,6 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "publishConfig": {
-    "@quiltt:registry": "https://npm.pkg.github.com",
     "access": "public"
   }
 }
