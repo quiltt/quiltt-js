@@ -27,7 +27,7 @@ jobs:
         id: pnpm-cache
         shell: bash
         run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
 
       - name: Setup pnpm cache
         uses: actions/cache@v3
@@ -42,11 +42,14 @@ jobs:
 
       - name: Create .npmrc in home folder
         run: |
-          cat << EOF > "$HOME/.npmrc"
-            strict-peer-dependencies=false
-            git-checks=false
-            registry=https://registry.npmjs.org/
-          EOF
+          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" >> $HOME/.npmrc
+          echo "strict-peer-dependencies=false" >> $HOME/.npmrc
+          echo "git-checks=false" >> $HOME/.npmrc
+
+      - name: Authenticate with npm registry
+        run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create release pull request or release to npm
         id: changesets
@@ -54,9 +57,9 @@ jobs:
         with:
           version: pnpm run version
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish packages
         if: steps.changesets.outputs.hasChangesets == 'false'
@@ -64,4 +67,4 @@ jobs:
           pnpm run build
           pnpm run publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
