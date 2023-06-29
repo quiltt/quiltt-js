@@ -30,3 +30,8 @@ logs
 
 # Typescript
 tsconfig.tsbuildinfo
+
+# npm
+npm-debug.log*
+npm-debug.log
+.npmrc
