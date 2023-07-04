@@ -2,6 +2,7 @@
   "name": "@quiltt/quiltt-public",
   "version": "1.0.0",
   "description": "Quiltt's Open Source Projects",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "analyze": "turbo run analyze",
