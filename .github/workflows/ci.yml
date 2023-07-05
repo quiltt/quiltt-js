@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: "Validate with Node v${{ matrix.node-version }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["16.17.0", "18.12.0"]
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Setup Node with v${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
