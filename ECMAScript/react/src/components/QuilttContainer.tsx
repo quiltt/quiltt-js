@@ -1,24 +1,29 @@
-import { FC, DetailedHTMLProps, HTMLAttributes } from 'react'
+import { PropsWithChildren } from 'react'
 import { useQuilttConnector } from '..'
+import { AnyTag, PropsOf } from '../types'
 
-type QuilttContainerProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+type QuilttContainerProps<T extends AnyTag> = {
+  as?: T
   connectorId: string
   connectionId?: string // For Reconnect Mode
-}
+} & PropsWithChildren
 
-export const QuilttContainer: FC<QuilttContainerProps> = ({
+export const QuilttContainer = <T extends AnyTag = 'div'>({
+  as,
   connectorId,
   connectionId,
-  children,
   ...props
-}) => {
+}: QuilttContainerProps<T> & PropsOf<T>) => {
   useQuilttConnector()
 
+  const Container = as || 'div'
+
   return (
-    // eslint-disable-next-line react/no-unknown-property
-    <div quiltt-container={connectorId} quiltt-connection={connectionId} {...props}>
-      {children}
-    </div>
+    <Container
+      quiltt-container={connectorId}
+      quiltt-connection={connectionId}
+      {...props}
+    ></Container>
   )
 }
 
