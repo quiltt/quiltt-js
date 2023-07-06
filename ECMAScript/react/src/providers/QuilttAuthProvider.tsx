@@ -3,7 +3,7 @@
 import type { FC, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 
-import { ApolloProvider } from '@apollo/client/index.js'
+import { ApolloProvider } from '@apollo/client'
 import { InMemoryCache, QuilttClient } from '@quiltt/core'
 import { useQuilttSession } from '../hooks'
 
