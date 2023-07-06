@@ -2,7 +2,7 @@
 
 import { useQuilttConnector } from '@quiltt/react'
 
-export const TestCustomLauncher = () => {
+export const TestHTMLLauncher = () => {
   // Load the script
   useQuilttConnector()
 
@@ -16,4 +16,4 @@ export const TestCustomLauncher = () => {
     </a>
   )
 }
-export default TestCustomLauncher
+export default TestHTMLLauncher

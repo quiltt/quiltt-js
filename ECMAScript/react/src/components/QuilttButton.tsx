@@ -1,28 +1,24 @@
-import { FC, DetailedHTMLProps, ButtonHTMLAttributes } from 'react'
+import { PropsWithChildren } from 'react'
 import { useQuilttConnector } from '..'
+import { AnyTag, PropsOf } from '../types'
 
-type QuilttButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> & {
+type QuilttButtonProps<T extends AnyTag> = {
+  as?: T
   connectorId: string
   connectionId?: string // For Reconnect Mode
-}
+} & PropsWithChildren
 
-export const QuilttButton: FC<QuilttButtonProps> = ({
+export const QuilttButton = <T extends AnyTag = 'button'>({
+  as,
   connectorId,
   connectionId,
-  children,
   ...props
-}) => {
+}: QuilttButtonProps<T> & PropsOf<T>) => {
   useQuilttConnector()
 
-  return (
-    // eslint-disable-next-line react/no-unknown-property
-    <button quiltt-button={connectorId} quiltt-connection={connectionId} {...props}>
-      {children}
-    </button>
-  )
+  const Button = as || 'button'
+
+  return <Button quiltt-button={connectorId} quiltt-connection={connectionId} {...props}></Button>
 }
 
 export default QuilttButton
