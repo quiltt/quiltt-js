@@ -1,5 +1,14 @@
 # @quiltt/core
 
+## 1.3.0
+
+### Minor Changes
+
+- 6936687: - Fix transpilation issues caused by importing React components
+  - Add CI via Github Action
+  - Add test Next.js app
+  - Misc cleanups
+
 ## 1.2.8
 
 ### Patch Changes
