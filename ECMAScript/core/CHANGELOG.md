@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 2.0.0
+
+### Major Changes
+
+- bc6fd8c: Create new React Connector SDK helper components supported by refactored hook
+
 ## 1.3.0
 
 ### Minor Changes
