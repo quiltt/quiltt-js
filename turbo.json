@@ -1,49 +1,26 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
-    "analyze": {
-      "cache": false
-    },
-    "setup": {
-      "cache": false,
-      "outputs": [".env.local", ".env.test.local"]
+    "build": {
+      "dependsOn": ["prebuild", "^build"],
+      "outputs": ["dist/**", ".next/**"]
     },
     "clean": {
       "cache": false,
       "outputs": []
     },
-    "sanity": {
-      "cache": false
-    },
     "dev": {
-      "cache": false
-    },
-    "dev:apps": {
-      "cache": false
-    },
-    "dev:packages": {
-      "cache": false
-    },
-    "dev:test": {
-      "dependsOn": ["build:packages"]
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
     },
     "prebuild": {
       "dependsOn": ["^prebuild"],
       "outputs": ["dist/**", ".next/**"],
       "cache": false
     },
-    "build": {
-      "dependsOn": ["prebuild", "^build"],
-      "outputs": ["dist/**", ".next/**"],
-      "cache": false
-    },
     "start": {
       "dependsOn": ["^build"],
-      "cache": false
-    },
-    "postbuild": {
-      "dependsOn": ["^postbuild"],
-      "outputs": ["dist/**", ".next/**"],
       "cache": false
     },
     "lint": {
@@ -57,16 +34,6 @@
       "cache": false,
       "dependsOn": ["^test"],
       "outputs": []
-    },
-    "test:headless": {
-      "cache": false,
-      "dependsOn": ["^test:headless"],
-      "outputs": ["coverage/**", ".nyc_output/**"]
-    },
-    "test:ci": {
-      "cache": false,
-      "dependsOn": ["^test:ci"],
-      "outputs": ["coverage/**", ".nyc_output/**"]
     }
   }
 }

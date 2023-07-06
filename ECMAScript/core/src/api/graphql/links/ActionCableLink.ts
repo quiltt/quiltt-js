@@ -2,7 +2,7 @@ import { GlobalStorage } from '@/Storage'
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index.js'
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
 import { print } from 'graphql'
-import { endpointWebsockets } from '../../../config'
+import { endpointWebsockets } from '../../../configuration'
 import type { Consumer } from './actioncable'
 import { createConsumer } from './actioncable'
 
