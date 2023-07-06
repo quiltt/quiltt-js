@@ -17,14 +17,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
 
+      # @note caching is disabled to avoid cypress binary from being restored from the wrong version's cache
       - name: Setup Node with ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: pnpm build
