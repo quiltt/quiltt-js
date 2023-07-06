@@ -11,6 +11,7 @@ jobs:
     name: "Validate with Node ${{ matrix.node-version }}"
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: ["current", "18", "16"]
     steps:
