@@ -27,6 +27,52 @@ The following exports are available from `@quiltt/core`:
 
 - JSON Web Token functionality, observable patterns, storage management, timeouts, API handling, and TypeScript types.
 
+### React Components
+
+The following components are available from `@quiltt/react/components`:
+
+- `QuilttButton`: A component for launching the Quiltt Connector as a modal.
+- `QuilttContainer`: A component for launching the Quiltt Connector inside a container.
+
+#### Usage
+
+##### QuilttButton
+
+```tsx
+import { QuilttButton } from '@quiltt/react'
+
+export const App = () => {
+  return (
+    <QuilttButton
+      connectorId="{YOUR_CONNECTOR_ID}"
+      className="my-css-class"
+      styles={{ borderWidth: '2px' }}
+    >
+      Launch with Component
+    </QuilttButton>
+  )
+}
+export default App
+```
+
+##### QuilttContainer
+
+```tsx
+import { QuilttContainer } from '@quiltt/react'
+
+export const App = () => {
+  return (
+    <QuilttContainer
+      connectorId="{YOUR_CONNECTOR_ID}"
+      className="my-css-class"
+      styles={{ height: '100%' }}
+    />
+  )
+}
+
+export default App
+```
+
 ### React Hooks
 
 The following hooks are available from `@quiltt/react/hooks`:
