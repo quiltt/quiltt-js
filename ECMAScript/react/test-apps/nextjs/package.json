@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "test": "cypress open"
+    "cypress": "cypress open",
+    "test": "cypress run --component --browser chrome"
   },
   "dependencies": {
     "@quiltt/react": "workspace:*",
