@@ -1,7 +1,7 @@
 {
   "name": "nextjs",
   "description": "Quiltt's React SDK integrated into Next.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "private": true,
   "scripts": {
