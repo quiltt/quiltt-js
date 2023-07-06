@@ -87,24 +87,14 @@ The following hooks are available from `@quiltt/react/hooks`:
 ##### useQuilttConnector
 
 ```tsx
-import { type FC } from 'react'
 import { useQuilttConnector } from '@quiltt/react'
 
-type ConnectorLauncherProps = {
-  connectorId: string
-}
-
-const ConnectorLauncher: FC<ConnectorLauncherProps> = ({ connectorId }) => {
-  const launcherClass = 'connector-launcher'
-
-  const { ready } = useQuilttConnector({
-    connectorId,
-    button: `.${launcherClass}`,
-  })
+const App = () => {
+  useQuilttConnector()
 
   return (
-    <button type="button" disabled={!ready} className={launcherClass}>
-      Launch with Component
+    <button connectorId="{MY_CONNECTOR_ID}" type="button">
+      Launch Connector
     </button>
   )
 }
