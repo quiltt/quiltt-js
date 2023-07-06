@@ -1,76 +1,39 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+'use client'
 
-export type QuilttConnectorConfig =
-  | {
-      connectorId: string
-      token?: string
-      button: string
-      container?: never
-    }
-  | {
-      connectorId: string
-      token?: string
-      container: string
-      button?: never
-    }
-
-export type UseQuilttConnectorReturn = {
-  ready: boolean
-}
+import { useEffect } from 'react'
+import { useQuilttSession } from './useQuilttSession'
 
 const QUILTT_CDN_BASE = process.env.QUILTT_CDN_BASE || 'https://cdn.quiltt.io'
 
-export const useQuilttConnector = (options: QuilttConnectorConfig): UseQuilttConnectorReturn => {
-  const id = useId() // Generates a unique stable ID between server and client components
-  const [ready, setReady] = useState(false)
+// Script Element Singleton
+let scriptElement: HTMLScriptElement
 
-  const dataset: DOMStringMap = useMemo(() => {
-    const { button, container, connectorId, token } = options
+export const useQuilttConnector = () => {
+  const { session } = useQuilttSession()
 
-    return {
-      quilttConnectorId: connectorId,
-      quilttToken: token,
-      quilttButton: button,
-      quilttContainer: container,
-    }
-  }, [options])
-
+  // Create Script Element
   useEffect(() => {
-    const { connectorId } = options
-    const script = document.createElement('script')
+    if (scriptElement) return
 
-    script.src = `${QUILTT_CDN_BASE}/v1/connector.js?id=${connectorId}`
-    script.id = `quiltt-connector-${id}-${connectorId}`
-    for (const key in dataset) {
-      if (dataset[key]) {
-        script.dataset[key] = dataset[key]
-      }
+    scriptElement = document.createElement('script')
+    scriptElement.src = `${QUILTT_CDN_BASE}/v1/connector.js`
+
+    if (session?.token) {
+      scriptElement.setAttribute('quiltt-token', session.token)
     }
 
-    // Append the script to the <body> tag unless it's already injected
-    if (!document.getElementById(script.id)) {
-      document.body.appendChild(script)
+    document.head.appendChild(scriptElement)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Update Script Element
+  useEffect(() => {
+    if (!scriptElement) return
+
+    if (session?.token && session.token !== scriptElement.getAttribute('quiltt-token')) {
+      scriptElement.setAttribute('quiltt-token', session.token)
+    } else if (!session?.token && scriptElement.getAttribute('quiltt-token')) {
+      scriptElement.removeAttribute('quiltt-token')
     }
-
-    setReady(true)
-
-    // Remove the script when the component unmounts
-    return () => {
-      document
-        .querySelectorAll(`[data-quiltt-connector-id="${connectorId}"]`)
-        .forEach((element) => {
-          element.remove()
-        })
-
-      if (document.getElementById(script.id)) {
-        document.body.removeChild(script)
-      }
-
-      setReady(false)
-    }
-  }, [options, dataset, id])
-
-  return {
-    ready,
-  }
+  }, [session?.token])
 }

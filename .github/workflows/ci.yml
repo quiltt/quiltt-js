@@ -1,10 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: push
 
 jobs:
   build:
@@ -17,20 +13,18 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
 
+      # @note caching is disabled to avoid cypress binary from being restored from the wrong version's cache
       - name: Setup Node with ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: pnpm build
@@ -40,3 +34,16 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - if: ${{ failure() }}
+        name: Upload Error Screenshot
+        uses: actions/upload-artifact@v3
+        with:
+          name: error_screenshots_node_version_${{ matrix.node-version }}
+          path: |
+            ${{github.workspace}}/**/cypress/screenshots
+            ${{github.workspace}}/**/cypress/videos
+          retention-days: 3
