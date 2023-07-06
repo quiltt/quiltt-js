@@ -1,5 +1,16 @@
 # @quiltt/react
 
+## 2.1.0
+
+### Minor Changes
+
+- 7debd45: Add support for custom components 'as' props
+
+### Patch Changes
+
+- Updated dependencies [7debd45]
+  - @quiltt/core@2.1.0
+
 ## 2.0.0
 
 ### Major Changes
