@@ -1,10 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: push
 
 jobs:
   build:
@@ -17,8 +13,6 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
