@@ -13,6 +13,7 @@
     "lint": "turbo run lint",
     "prepublish": "pnpm install && pnpm run build",
     "publish": "pnpm -r publish packages --no-git-checks --filter=./ECMAScript/**",
+    "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "version": "npx changeset version",
     "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'"
