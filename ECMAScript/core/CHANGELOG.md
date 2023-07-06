@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 2.1.0
+
+### Minor Changes
+
+- 7debd45: Add support for custom components 'as' props
+
 ## 2.0.0
 
 ### Major Changes
