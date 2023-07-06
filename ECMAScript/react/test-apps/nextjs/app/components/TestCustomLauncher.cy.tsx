@@ -7,8 +7,8 @@ describe('<TestCustomLauncher />', () => {
 
     cy.get('a').should('contains.text', 'Launch with custom launcher!')
 
-    // Wait for script to become interactive
-    cy.wait(250)
+    // Wait for script to become interactive. This is almost instananeous locally but takes time in CI.
+    cy.wait(1000)
 
     // Launch the Connector
     cy.get('iframe#quiltt--frame').should('not.exist')
