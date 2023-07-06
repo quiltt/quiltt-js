@@ -5,7 +5,7 @@ describe('<TestCustomLauncher />', () => {
   it('renders', () => {
     cy.mount(<TestCustomLauncher />)
 
-    cy.get('a').should('contains.text', 'Launch with custom launcher!')
+    cy.get('a').should('contains.text', 'Launch with HTML')
 
     // Wait for script to become interactive. This is almost instananeous locally but takes time in CI.
     cy.wait(1250)

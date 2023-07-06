@@ -5,7 +5,7 @@ describe('<TestQuilttButton />', () => {
   it('renders', () => {
     cy.mount(<TestQuilttButton />)
 
-    cy.get('button[quiltt-button="connector"]').should('have.text', 'Launch Connector')
+    cy.get('button[quiltt-button="connector"]').should('have.text', 'Launch with Component')
 
     // Wait for script to become interactive. This is almost instananeous locally but takes time in CI.
     cy.wait(1250)

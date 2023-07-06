@@ -19,7 +19,7 @@ export const QuilttButton: FC<QuilttButtonProps> = ({
 
   return (
     // eslint-disable-next-line react/no-unknown-property
-    <button quiltt-connector={connectorId} quiltt-connection={connectionId} {...props}>
+    <button quiltt-button={connectorId} quiltt-connection={connectionId} {...props}>
       {children}
     </button>
   )

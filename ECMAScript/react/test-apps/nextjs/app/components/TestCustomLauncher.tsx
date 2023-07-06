@@ -1,7 +1,5 @@
 'use client'
 
-import type { FC } from 'react'
-
 import { useQuilttConnector } from '@quiltt/react'
 
 export const TestCustomLauncher = () => {
@@ -11,10 +9,10 @@ export const TestCustomLauncher = () => {
   // Render a custom <a> launcher
   return (
     <a
-      data-quiltt-button="connector"
+      quiltt-button="connector"
       className="border-2 border-purple-500 hover:bg-purple-500 text-white py-2 px-4 rounded-full cursor-pointer"
     >
-      Launch with custom launcher!
+      Launch with HTML
     </a>
   )
 }

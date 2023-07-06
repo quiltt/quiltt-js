@@ -58,7 +58,7 @@ const ConnectorLauncher: FC<ConnectorLauncherProps> = ({ connectorId }) => {
 
   return (
     <button type="button" disabled={!ready} className={launcherClass}>
-      Launch Connector
+      Launch with Component
     </button>
   )
 }

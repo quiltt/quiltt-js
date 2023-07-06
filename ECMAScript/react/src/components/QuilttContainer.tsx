@@ -16,7 +16,7 @@ export const QuilttContainer: FC<QuilttContainerProps> = ({
 
   return (
     // eslint-disable-next-line react/no-unknown-property
-    <div quiltt-connector={connectorId} quiltt-connection={connectionId} {...props}>
+    <div quiltt-container={connectorId} quiltt-connection={connectionId} {...props}>
       {children}
     </div>
   )
