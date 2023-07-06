@@ -37,3 +37,13 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - if: ${{ failure() }}
+        name: Upload Error Screenshot
+        uses: actions/upload-artifact@v3
+        with:
+          name: error_screenshots_node_version_${{ matrix.node-version }}
+          path: |
+            ${{github.workspace}}/**/cypress/screenshots
+            ${{github.workspace}}/**/cypress/videos
+          retention-days: 3
