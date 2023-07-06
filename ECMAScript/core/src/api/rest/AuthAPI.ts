@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
 
-import { endpointAuth } from '../../config'
+import { endpointAuth } from '../../configuration'
 
 export enum AuthStrategies {
   Email = 'email',

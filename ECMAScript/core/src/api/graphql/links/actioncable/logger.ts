@@ -1,4 +1,4 @@
-import { debugging } from '../../../../config'
+import { debugging } from '../../../../configuration'
 import adapters from './adapters'
 
 class Logger {

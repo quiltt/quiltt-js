@@ -1,7 +1,7 @@
 import type { ApolloClientOptions, Operation } from '@apollo/client/index.js'
 import { ApolloClient, ApolloLink } from '@apollo/client/index.js'
 
-import { debugging } from '../../config'
+import { debugging } from '../../configuration'
 import {
   AuthLink,
   BatchHttpLink,
