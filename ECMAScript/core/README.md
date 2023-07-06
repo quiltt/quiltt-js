@@ -1,18 +1,20 @@
 # @quiltt/core
 
-## Overview
+[![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
 
-`@quiltt/core` is a comprehensive JavaScript library that provides essential functionality for building applications. It offers various modules, utilities, and types that can be utilized to enhance your development workflow.
+`@quiltt/core` provides provides essential functionality for building Javascript-based applications with Quiltt. It offers modules and utilities for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
 
-## Installation
-
-To install `@quiltt/core` in your project, you need to have Node.js and npm (Node Package Manager) installed. Then, you can run the following command:
+## Install
 
 ```shell
-npm install @quiltt/core
+$ npm install @quiltt/core
+# or
+$ yarn add @quiltt/core
+# or
+$ pnpm add @quiltt/core
 ```
 
-## Features
+## Available modules
 
 ### JsonWebToken
 
@@ -51,6 +53,6 @@ import { JsonWebToken, Observable, Storage, Timeoutable, api, types } from '@qui
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE.md) file for more information.
 
-For information on how to contribute to this project, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+## Contributing
 
-By moving the development guidelines to a CONTRIBUTING.md file, it allows you to provide more detailed instructions on how to contribute, including information on setting up a development environment, running tests, coding guidelines, and submitting pull requests.
+For information on how to contribute to this project, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
