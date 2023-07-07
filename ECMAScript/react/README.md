@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
 [![CI](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml)
 
-`@quiltt/react` provides essential functionality for building React.js applications using Quiltt.
+`@quiltt/react` provides React Components and Hooks for integrating Quiltt into React-based applications.
 
 ## Installation
 
@@ -17,19 +17,19 @@ $ pnpm add @quiltt/react
 
 ## Core Modules and Types
 
-The `@quiltt/react` library is built on top of the `@quiltt/core` library, which provides modules and utilities for JSON Web Token functionality, observable patterns, storage management, timeouts, API handling, and TypeScript types.
+The `@quiltt/react` library ships with `@quiltt/core`, which provides an Auth API and essential functionality for building Javascript-based applications with Quiltt. See the [Core README](../core/README.md) for more information.
 
 ## React Components
 
-All components automatically handle session token management under the hood, using the `useQuilttSession` hook.
+All components automatically handle Session token management under the hood, using the `useQuilttSession` hook.
 
-To pre-authenticate the Connector for one of your user profiles, make sure to set your token using the `QuilttProvider` provider or the `useQuilttSession` hook. See the [Authentication guides](https://www.quiltt.dev/guides/authentication) for how to generate a session.
+To pre-authenticate the Connector for one of your user profiles, make sure to set your token using the `QuilttProvider` provider or the `useQuilttSession` hook. See the [Authentication guides](https://www.quiltt.dev/guides/authentication) for how to generate a Session.
 
 ### QuilttButton
 
 Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) as a pop-out modal.
 
-By default, the rendered component will be a `<button>` but you can supply your own component via the `as` prop.
+By default, the rendered component will be a `<button>` but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
 #### Example
 
@@ -54,7 +54,7 @@ export default App
 
 Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) inside a container.
 
-By default, the rendered component will be a `<div>` but you can supply your own component via the `as` prop.
+By default, the rendered component will be a `<div>` but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
 ##### Example
 
@@ -76,7 +76,7 @@ export default App
 
 ### QuilttProvider
 
-A provider component for passing session and settings down to the rest of your application.
+A provider component for passing Session and settings down to the rest of your application.
 
 #### Example
 
@@ -145,7 +145,7 @@ const App = () => {
   if (session) {
     console.log('Session token: ', session.token)
   } else {
-    console.log('No session available')
+    console.log('No Session available')
   }
 
   return (
@@ -158,6 +158,10 @@ const App = () => {
 
 export default App
 ```
+
+## Typescript support
+
+`@quiltt/react` is written in Typescript and ships with its own type definitions. It also ships with the type definitions from `@quiltt/core`.
 
 ## License
 

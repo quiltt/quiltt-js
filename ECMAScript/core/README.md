@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
 [![CI](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml)
 
-`@quiltt/core` provides essential functionality for building Javascript-based applications with Quiltt. It offers modules and utilities for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
+`@quiltt/core` provides essential functionality for building Javascript-based applications with Quiltt. It provides an Auth API client and modules for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
 
 ## Install
 
@@ -15,7 +15,23 @@ $ yarn add @quiltt/core
 $ pnpm add @quiltt/core
 ```
 
-## Available modules
+## Auth API Client
+
+```ts
+// Import Auth API client
+import { AuthAPI } from '@quiltt/core'
+
+// Set up client instance
+const auth = new AuthAPI()
+
+// Check if a Session token is valid
+auth.ping('{SESSION_TOKEN}')
+
+// Revoke a Session token
+auth.revoke('{SESSION_TOKEN}')
+```
+
+## Modules
 
 ### JsonWebToken
 
@@ -49,6 +65,10 @@ import { JsonWebToken, Observable, Storage, Timeoutable, api, types } from '@qui
 // Example usage of the library modules
 // ...
 ```
+
+## Typescript support
+
+`@quiltt/core` is written in Typescript and ships with its own type definitions.
 
 ## License
 
