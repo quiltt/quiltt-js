@@ -1,137 +1,172 @@
 # @quiltt/react
 
-## Overview
+[![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
+[![CI](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml)
 
-`@quiltt/react` is a comprehensive JavaScript library that provides essential functionality for building applications using React. It extends the capabilities of React by offering various modules, utilities, and types from `@quiltt/core` that can be utilized to enhance your development workflow.
+`@quiltt/react` provides React Components and Hooks for integrating Quiltt into React-based applications.
 
 ## Installation
 
-To install `@quiltt/react` in your project, you need to have Node.js and npm (Node Package Manager) installed. Then, you can run the following command:
-
 ```shell
-npm install @quiltt/react
+$ npm install @quiltt/react
+# or
+$ yarn add @quiltt/react
+# or
+$ pnpm add @quiltt/react
 ```
 
-## Features
+## Core Modules and Types
 
-`@quiltt/react` provides the following features:
+The `@quiltt/react` library ships with `@quiltt/core`, which provides an Auth API and essential functionality for building Javascript-based applications with Quiltt. See the [Core README](../core/README.md) for more information.
 
-- Integration with `@quiltt/core` library, which includes modules for JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and TypeScript types.
-- Additional React-specific hooks and utilities for session management, storage, and Quiltt client integration.
+## React Components
 
-## Available Exports
+All components automatically handle Session token management under the hood, using the `useQuilttSession` hook.
 
-### Core Modules and Types
+To pre-authenticate the Connector for one of your user profiles, make sure to set your token using the `QuilttProvider` provider or the `useQuilttSession` hook. See the [Authentication guides](https://www.quiltt.dev/guides/authentication) for how to generate a Session.
 
-The following exports are available from `@quiltt/core`:
+### QuilttButton
 
-- JSON Web Token functionality, observable patterns, storage management, timeouts, API handling, and TypeScript types.
+Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) as a pop-out modal.
 
-### React Hooks
+By default, the rendered component will be a `<button>` but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
-The following hooks are available from `@quiltt/react/hooks`:
-
-- Helpers for handling Quiltt sessions and client integration.
-- `useQuilttConnector`: A hook for connecting to the Quiltt backend.
-- `useQuilttSession`: A hook for managing Quiltt sessions.
-- `useQuilttSettings`: A hook for accessing Quiltt settings.
-
-#### Usage
-
-##### useQuilttConnector
+#### Example
 
 ```tsx
-import { type FC } from 'react'
-import { useQuilttConnector } from '@quiltt/react'
+import { QuilttButton } from '@quiltt/react'
 
-type ConnectorLauncherProps = {
-  connectorId: string
-}
-
-const ConnectorLauncher: FC<ConnectorLauncherProps> = ({ connectorId }) => {
-  const launcherClass = 'connector-launcher'
-
-  const { ready } = useQuilttConnector({
-    connectorId,
-    button: `.${launcherClass}`,
-  })
-
+export const App = () => {
   return (
-    <button type="button" disabled={!ready} className={launcherClass}>
-      Launch with Component
-    </button>
+    <QuilttButton
+      connectorId="{YOUR_CONNECTOR_ID}"
+      className="my-css-class"
+      styles={{ borderWidth: '2px' }}
+    >
+      Add Account
+    </QuilttButton>
   )
 }
+export default App
 ```
 
-##### useQuilttSession
+### QuilttContainer
+
+Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) inside a container.
+
+By default, the rendered component will be a `<div>` but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
+
+##### Example
 
 ```tsx
-import { useEffect } from 'react'
-import { useQuilttSession } from '@quiltt/react'
+import { QuilttContainer } from '@quiltt/react'
 
-const MyComponent = () => {
-  const { session, importSession, authenticateSession, revokeSession } = useQuilttSession()
-
-  useEffect(() => {
-    // Import session from local storage or any other source
-    importSession()
-
-    // Authenticate session with your backend if necessary
-    authenticateSession()
-
-    // Clean up session when component unmounts
-    return () => {
-      revokeSession()
-    }
-  }, [importSession, authenticateSession, revokeSession])
-
-  return <div>{session ? <p>Session token: {session.token}</p> : <p>No session available</p>}</div>
-}
-
-export default MyComponent
-```
-
-##### useQuilttSettings
-
-```tsx
-import { QuilttSettings, useQuilttSettings } from '@quiltt/react'
-
-const App = () => {
-  // Wrap your application with QuilttSettingsProvider to provide the settings
+export const App = () => {
   return (
-    <QuilttSettings.Provider value={{ clientId: 'YOUR_CLIENT_ID' }}>
-      <MyComponent />
-    </QuilttSettings.Provider>
-  )
-}
-
-const MyComponent = () => {
-  const { clientId } = useQuilttSettings()
-
-  return (
-    <div>
-      <p>Quiltt Client ID: {clientId}</p>
-      {/* Rest of your component */}
-    </div>
+    <QuilttContainer
+      connectorId="{YOUR_CONNECTOR_ID}"
+      className="my-css-class"
+      styles={{ height: '100%' }}
+    />
   )
 }
 
 export default App
 ```
 
-### React Providers
+### QuilttProvider
 
-The following providers are available from `@quiltt/react/providers`:
+A provider component for passing Session and settings down to the rest of your application.
 
-- `QuilttAuthProvider`: A provider component for authenticating with Quiltt.
-- `QuilttProvider`: A provider component for initializing Quiltt.
-- `QuilttSettingsProvider`: A provider component for managing Quiltt settings.
+#### Example
+
+```tsx
+import { QuilttProvider } from '@quiltt/react'
+
+const Layout = ({ children }) => {
+  return <QuilttProvider token="{SESSION_TOKEN}">{children}</QuilttProvider>
+}
+
+export default Layout
+```
+
+## React Hooks
+
+For maximum control over the lifecycle of Quiltt Connector and Quiltt Sessions, you can also use hooks directly.
+
+### useQuilttConnector
+
+A hook to manage the the lifecycle of [Quiltt Connector](https://www.quiltt.dev/guides/connector).
+
+#### Example
+
+```tsx
+import { useQuilttConnector } from '@quiltt/react'
+
+const App = () => {
+  useQuilttConnector()
+
+  return (
+    <button connectorId="{MY_CONNECTOR_ID}" type="button">
+      Launch Connector
+    </button>
+  )
+}
+```
+
+### useQuilttSession
+
+A hook to manage the lifecycle of Quiltt Sessions.
+
+See the [Authentication guides](https://www.quiltt.dev/guides/authentication) for more information.
+
+#### Example
+
+```tsx
+import { useCallback, useEffect } from 'react'
+
+import { useQuilttSession } from '@quiltt/react'
+
+const App = () => {
+  const { session, importSession, revokeSession } = useQuilttSession()
+
+  useEffect(() => {
+    // Import session from API call, local storage, query param, etc.
+    importSession('{SESSION_TOKEN}')
+  }, [importSession])
+
+  const logOut = useCallback(() => {
+    // Revoke and clear the Quiltt session
+    revokeSession()
+
+    // do other stuff!
+  }, [revokeSession])
+
+  if (session) {
+    console.log('Session token: ', session.token)
+  } else {
+    console.log('No Session available')
+  }
+
+  return (
+    <>
+      <div>Hello world!</div>
+      <button onClick={logOut}>Log Out</button>
+    </>
+  )
+}
+
+export default App
+```
+
+## Typescript support
+
+`@quiltt/react` is written in Typescript and ships with its own type definitions. It also ships with the type definitions from `@quiltt/core`.
 
 ## License
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE.md) file for more information.
 
-For information on how to contribute to this project, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+## Contributing
 
-By contributing to `@quiltt/react`, you can help improve its features and functionality. We appreciate your contributions and thank you for your support!
+For information on how to contribute to this project, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.

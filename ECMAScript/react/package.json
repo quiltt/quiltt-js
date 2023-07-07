@@ -1,6 +1,7 @@
 {
   "name": "@quiltt/react",
   "version": "2.1.0",
+  "description": "React components and hooks for Quiltt Connector",
   "repository": {
     "type": "git",
     "url": "https://github.com/quiltt/quiltt-public.git",
