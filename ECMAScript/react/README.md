@@ -1,6 +1,7 @@
 # @quiltt/react
 
 [![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
+[![CI](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml)
 
 `@quiltt/react` provides essential functionality for building React.js applications using Quiltt.
 

@@ -1,8 +1,9 @@
 # @quiltt/core
 
 [![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
+[![CI](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml)
 
-`@quiltt/core` provides provides essential functionality for building Javascript-based applications with Quiltt. It offers modules and utilities for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
+`@quiltt/core` provides essential functionality for building Javascript-based applications with Quiltt. It offers modules and utilities for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
 
 ## Install
 
