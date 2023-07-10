@@ -24,7 +24,9 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist/**"
+    "dist/**",
+    "src/**",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup",
