@@ -107,7 +107,7 @@ const App = () => {
   useQuilttConnector()
 
   return (
-    <button connectorId="{MY_CONNECTOR_ID}" type="button">
+    <button quilttButton="{MY_CONNECTOR_ID}" type="button">
       Launch Connector
     </button>
   )
