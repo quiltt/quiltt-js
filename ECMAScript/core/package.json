@@ -7,6 +7,11 @@
     "url": "https://github.com/quiltt/quiltt-public.git",
     "directory": "ECMAScript/core"
   },
+  "homepage": "https://github.com/quiltt/quiltt-public/tree/main/ECMAScript/core#readme",
+  "keywords": [
+    "quiltt",
+    "typescript"
+  ],
   "license": "MIT",
   "sideEffects": [
     "./src/Storage/Local.ts",
