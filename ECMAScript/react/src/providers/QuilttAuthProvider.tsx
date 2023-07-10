@@ -8,7 +8,6 @@ import { InMemoryCache, QuilttClient } from '@quiltt/core'
 import { useQuilttSession } from '../hooks'
 
 type QuilttAuthProviderProps = PropsWithChildren & {
-  resetOnSessionChange?: boolean
   token?: string
 }
 
@@ -23,11 +22,7 @@ const Client = new QuilttClient({
  * from triggering within the transitionary state.
  *
  */
-export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
-  resetOnSessionChange, // If enabled, skips rendering children for a frame to trigger a reset
-  token,
-  children,
-}) => {
+export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, children }) => {
   const { session, importSession } = useQuilttSession()
 
   // Import Passed in Tokens

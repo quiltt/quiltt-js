@@ -29,7 +29,7 @@ To pre-authenticate the Connector for one of your user profiles, make sure to se
 
 Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) as a pop-out modal.
 
-By default, the rendered component will be a `<button>` but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
+By default, the rendered component will be a `<button>` element, but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
 #### Example
 
@@ -54,7 +54,7 @@ export default App
 
 Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) inside a container.
 
-By default, the rendered component will be a `<div>` but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
+By default, the rendered component will be a `<div>` element, but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
 ##### Example
 
@@ -96,7 +96,7 @@ For maximum control over the lifecycle of Quiltt Connector and Quiltt Sessions, 
 
 ### useQuilttConnector
 
-A hook to manage the the lifecycle of [Quiltt Connector](https://www.quiltt.dev/guides/connector).
+A hook to manage the lifecycle of [Quiltt Connector](https://www.quiltt.dev/guides/connector).
 
 #### Example
 
