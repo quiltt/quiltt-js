@@ -1,5 +1,13 @@
 # @quiltt/core
 
+## 2.1.1
+
+### Patch Changes
+
+- 43131d5: - Add code examples to README
+  - Auto-create Github Releases
+  - Misc cleanups
+
 ## 2.1.0
 
 ### Minor Changes
