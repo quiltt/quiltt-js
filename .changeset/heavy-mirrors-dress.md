@@ -4,4 +4,5 @@
 ---
 
 - Add code examples to README
+- Auto-create Github Releases
 - Misc cleanups
