@@ -4,7 +4,7 @@ import { ApolloLink } from '@apollo/client/index.js'
 import { GlobalStorage } from '@/Storage'
 
 /**
- * unauthorizedCallback only triggers in the event the the token is present, and
+ * unauthorizedCallback only triggers in the event the token is present, and
  * returns the token; This allows sessions to be forgotten without race conditions
  * causing null sessions to kill valid sessions, or invalid sessions for killing
  * valid sessions during rotation and networking weirdness.
