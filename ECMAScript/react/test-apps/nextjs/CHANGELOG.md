@@ -1,5 +1,12 @@
 # nextjs
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [43131d5]
+  - @quiltt/react@2.1.1
+
 ## 1.1.0
 
 ### Minor Changes
