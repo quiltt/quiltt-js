@@ -25,6 +25,7 @@
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
     "cypress": "^12.16.0",
+    "encoding":"^0.1.13",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.7",
     "postcss": "8.4.24",
