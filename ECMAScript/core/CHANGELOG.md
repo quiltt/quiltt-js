@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 2.1.2
+
+### Patch Changes
+
+- 541c809: `@quiltt/react`: Add support for using a custom storage key in the `useSession` hook
+
 ## 2.1.1
 
 ### Patch Changes
