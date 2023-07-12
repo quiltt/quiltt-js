@@ -32,8 +32,8 @@ const sessionTimer = new Timeoutable()
  *    This happens when a page is reloaded or a person returns, and everything is
  *    reinitialized.
  */
-export const useSession = (): [Maybe<QuilttJWT> | undefined, SetSession] => {
-  const [token, setToken] = useStorage<string>('session')
+export const useSession = (storageKey = 'session'): [Maybe<QuilttJWT> | undefined, SetSession] => {
+  const [token, setToken] = useStorage<string>(storageKey)
   const session = useMemo(() => parse(token), [token])
 
   // Clear session if/when it expires
