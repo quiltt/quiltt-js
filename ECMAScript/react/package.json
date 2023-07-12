@@ -45,14 +45,14 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@quiltt/core": "workspace:*"
+    "@quiltt/core": "workspace:*",
+    "@apollo/client": "^3.7.16"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@apollo/client": "3.7.16",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
     "@types/node": "18.16.18",
     "@types/react": "18.2.7",
