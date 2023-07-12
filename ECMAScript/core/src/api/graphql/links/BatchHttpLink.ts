@@ -1,4 +1,4 @@
-import { BatchHttpLink as ApolloHttpLink } from '@apollo/client/link/batch-http/index.js'
+import { BatchHttpLink as ApolloHttpLink } from '@apollo/client/link/batch-http'
 
 import fetch from 'cross-fetch'
 

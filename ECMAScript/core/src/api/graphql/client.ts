@@ -1,5 +1,5 @@
-import type { ApolloClientOptions, Operation } from '@apollo/client/index.js'
-import { ApolloClient, ApolloLink } from '@apollo/client/index.js'
+import type { ApolloClientOptions, Operation } from '@apollo/client'
+import { ApolloClient, ApolloLink } from '@apollo/client'
 
 import { debugging } from '../../configuration'
 import {
@@ -44,5 +44,5 @@ export class QuilttClient<T> extends ApolloClient<T> {
   }
 }
 
-export { InMemoryCache, gql, useMutation, useQuery, useSubscription } from '@apollo/client/index.js'
-export type { NormalizedCacheObject, OperationVariables } from '@apollo/client/index.js'
+export { InMemoryCache, gql, useMutation, useQuery, useSubscription } from '@apollo/client'
+export type { NormalizedCacheObject, OperationVariables } from '@apollo/client'
