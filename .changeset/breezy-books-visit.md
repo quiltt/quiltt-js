@@ -35,9 +35,9 @@ Now if you want to do something more complex, and expect to be working with mult
     Quiltt.authenticate("<SESSION_TOKEN>");
 
     const connector = Quiltt.connect("<CONNECTOR_ID>", {
-      onExitSuccess: (metadata) =>
+      onExitSuccess: (metadata) => {
         console.log("Connector onExitSuccess", metadata.connectionId),
-    });
+      });
 
     connector.open();
   </script>
