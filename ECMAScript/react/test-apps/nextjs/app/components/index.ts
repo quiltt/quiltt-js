@@ -1,5 +1,6 @@
 export * from './TestCustomButton'
 export * from './TestCustomContainer'
 export * from './TestHTMLLauncher'
+export * from './TestJSLauncher'
 export * from './TestQuilttButton'
 export * from './TestQuilttContainer'

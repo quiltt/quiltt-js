@@ -1,6 +1,13 @@
 'use client'
 
-import { TestCustomButton, TestCustomContainer, TestHTMLLauncher, TestQuilttButton, TestQuilttContainer } from './components'
+import {
+  TestCustomButton,
+  TestCustomContainer,
+  TestHTMLLauncher,
+  TestJSLauncher,
+  TestQuilttButton,
+  TestQuilttContainer,
+} from './components'
 
 export default function Home() {
   return (
@@ -8,6 +15,7 @@ export default function Home() {
       <div className="flex flex-col space-y-5">
         <h1 className="text-2xl text-center py-6">Modal launchers</h1>
         <TestHTMLLauncher />
+        <TestJSLauncher />
         <TestQuilttButton />
         <TestCustomButton />
       </div>

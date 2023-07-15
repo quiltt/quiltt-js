@@ -1,6 +1,6 @@
 # @quiltt/react
 
-[![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
+[![npm version](https://badge.fury.io/js/@quiltt%2Freact.svg)](https://badge.fury.io/js/@quiltt%2Freact)
 [![CI](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-public/actions/workflows/ci.yml)
 
 `@quiltt/react` provides React Components and Hooks for integrating Quiltt into React-based applications.
@@ -34,14 +34,22 @@ By default, the rendered component will be a `<button>` element, but you can sup
 #### Example
 
 ```tsx
+import { useState } from 'react'
 import { QuilttButton } from '@quiltt/react'
 
 export const App = () => {
+  const [connectionId, setConnectionId] = useState<string>()
+  const handleExitSuccess = (metadata) => {
+    setConnectionId(metadata?.connectionId)
+  }
+
   return (
     <QuilttButton
-      connectorId="{YOUR_CONNECTOR_ID}"
+      connectorId="<CONNECTOR_ID>"
+      onExitSuccess={handleExitSuccess}
       className="my-css-class"
       styles={{ borderWidth: '2px' }}
+      // ... other props to pass through to the button
     >
       Add Account
     </QuilttButton>
@@ -59,14 +67,22 @@ By default, the rendered component will be a `<div>` element, but you can supply
 ##### Example
 
 ```tsx
+import { useState } from 'react'
 import { QuilttContainer } from '@quiltt/react'
 
 export const App = () => {
+  const [connectionId, setConnectionId] = useState<string>()
+  const handleExitSuccess = (metadata) => {
+    setConnectionId(metadata?.connectionId)
+  }
+
   return (
     <QuilttContainer
-      connectorId="{YOUR_CONNECTOR_ID}"
+      connectorId="<CONNECTOR_ID>"
+      onExitSuccess={handleExitSuccess}
       className="my-css-class"
       styles={{ height: '100%' }}
+      // ... other props to pass through to the container
     />
   )
 }
@@ -104,10 +120,13 @@ A hook to manage the lifecycle of [Quiltt Connector](https://www.quiltt.dev/guid
 import { useQuilttConnector } from '@quiltt/react'
 
 const App = () => {
-  useQuilttConnector()
+  const { open } = useQuilttConnector('<CONNECTOR_ID>', {
+    onEvent: (type) => console.log(`Received Quiltt Event: ${type}`)
+    onExitSuccess: (metadata) => console.log("Connector onExitSuccess", metadata.connectionId),
+  })
 
-  return (
-    <button quilttButton="{MY_CONNECTOR_ID}" type="button">
+  return(
+    <button onClick={open}>
       Launch Connector
     </button>
   )

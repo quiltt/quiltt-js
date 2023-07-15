@@ -11,7 +11,7 @@ const CustomButton = ({ children, ...props }: any) => {
 
 export const TestCustomButton = () => {
   return (
-    <QuilttButton as={CustomButton} connectorId="connector">
+    <QuilttButton as={CustomButton} connectorId="connector" onExitSuccess={() => console.log('onExitSuccess')}>
       Launch with Custom Component
     </QuilttButton>
   )

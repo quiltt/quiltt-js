@@ -2,23 +2,38 @@ import { PropsWithChildren } from 'react'
 import { useQuilttConnector } from '..'
 import { AnyTag, PropsOf } from '../types'
 
+import { Callbacks } from '@quiltt/core'
+
 type QuilttButtonProps<T extends AnyTag> = {
   as?: T
   connectorId: string
   connectionId?: string // For Reconnect Mode
-} & PropsWithChildren
+} & Callbacks &
+  PropsWithChildren
 
 export const QuilttButton = <T extends AnyTag = 'button'>({
   as,
   connectorId,
   connectionId,
+  onEvent,
+  onExit,
+  onExitSuccess,
+  onExitAbort,
+  onExitError,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
-  useQuilttConnector()
+  const { open } = useQuilttConnector(connectorId, {
+    connectionId: connectionId,
+    onEvent: onEvent,
+    onExit: onExit,
+    onExitSuccess: onExitSuccess,
+    onExitAbort: onExitAbort,
+    onExitError: onExitError,
+  })
 
   const Button = as || 'button'
 
-  return <Button quiltt-button={connectorId} quiltt-connection={connectionId} {...props}></Button>
+  return <Button onClick={open} quiltt-connection={connectionId} {...props}></Button>
 }
 
 export default QuilttButton

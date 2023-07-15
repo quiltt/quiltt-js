@@ -1,11 +1,11 @@
 import React from 'react'
-import TestQuilttButton from './TestQuilttButton'
+import TestJSLauncher from './TestJSLauncher'
 
-describe('<TestQuilttButton />', () => {
+describe('<TestJSLauncher />', () => {
   it('renders', () => {
-    cy.mount(<TestQuilttButton />)
+    cy.mount(<TestJSLauncher />)
 
-    cy.get('button').should('have.text', 'Launch with Component')
+    cy.get('button').should('contains.text', 'Launch with Javascript')
 
     // Wait for script to become interactive. This is almost instananeous locally but takes time in CI.
     cy.wait(1250)
