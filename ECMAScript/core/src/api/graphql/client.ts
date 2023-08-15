@@ -45,4 +45,8 @@ export class QuilttClient<T> extends ApolloClient<T> {
 }
 
 export { InMemoryCache, gql, useMutation, useQuery, useSubscription } from '@apollo/client/index.js'
-export type { NormalizedCacheObject, OperationVariables } from '@apollo/client/index.js'
+export type {
+  NormalizedCacheObject,
+  OperationVariables,
+  ApolloError,
+} from '@apollo/client/index.js'
