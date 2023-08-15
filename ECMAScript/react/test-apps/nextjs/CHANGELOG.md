@@ -1,5 +1,13 @@
 # nextjs
 
+## 1.2.1
+
+### Patch Changes
+
+- b4dd03c: Add ApolloError to graphql exports
+- Updated dependencies [b4dd03c]
+  - @quiltt/react@2.2.1
+
 ## 1.2.0
 
 ### Minor Changes

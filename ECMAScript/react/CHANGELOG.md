@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 2.2.1
+
+### Patch Changes
+
+- b4dd03c: Add ApolloError to graphql exports
+- Updated dependencies [b4dd03c]
+  - @quiltt/core@2.2.1
+
 ## 2.2.0
 
 ### Minor Changes

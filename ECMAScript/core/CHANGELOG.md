@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 2.2.1
+
+### Patch Changes
+
+- b4dd03c: Add ApolloError to graphql exports
+
 ## 2.2.0
 
 ### Minor Changes
