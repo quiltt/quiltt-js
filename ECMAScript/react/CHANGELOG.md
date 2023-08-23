@@ -1,5 +1,16 @@
 # @quiltt/react
 
+## 2.3.0
+
+### Minor Changes
+
+- 264fb68: Add EID to Session JWT Type
+
+### Patch Changes
+
+- Updated dependencies [264fb68]
+  - @quiltt/core@2.3.0
+
 ## 2.2.1
 
 ### Patch Changes
