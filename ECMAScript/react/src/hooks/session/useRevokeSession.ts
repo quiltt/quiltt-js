@@ -4,7 +4,7 @@ import type { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
 
 import type { SetSession } from '../useSession'
 
-type RevokeSession = () => Promise<void>
+export type RevokeSession = () => Promise<void>
 
 type UseRevokeSession = (
   auth: AuthAPI,

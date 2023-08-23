@@ -15,7 +15,7 @@ type AuthenticateSessionCallbacks = {
   onFailure?: () => unknown
   onError?: (errors: UnprocessableData) => unknown
 }
-type AuthenticateSession = (
+export type AuthenticateSession = (
   payload: PasscodePayload,
   callbacks: AuthenticateSessionCallbacks
 ) => Promise<unknown>

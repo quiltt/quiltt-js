@@ -15,7 +15,7 @@ type IdentifySessionCallbacks = {
   onChallenged?: () => unknown
   onError?: (errors: UnprocessableData) => unknown
 }
-type IdentifySession = (
+export type IdentifySession = (
   payload: UsernamePayload,
   callbacks: IdentifySessionCallbacks
 ) => Promise<unknown>

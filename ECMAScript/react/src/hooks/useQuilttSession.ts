@@ -2,9 +2,13 @@ import { useCallback } from 'react'
 
 import { useSession } from './useSession'
 
-import { AuthAPI } from '@quiltt/core'
+import { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
 
 import {
+  AuthenticateSession,
+  IdentifySession,
+  ImportSession,
+  RevokeSession,
   useAuthenticateSession,
   useIdentifySession,
   useImportSession,
@@ -12,7 +16,16 @@ import {
 } from './session'
 import { useQuilttSettings } from './useQuilttSettings'
 
-export const useQuilttSession = () => {
+export type UseQuilttSession = () => {
+  session: Maybe<QuilttJWT> | undefined
+  importSession: ImportSession
+  identifySession: IdentifySession
+  authenticateSession: AuthenticateSession
+  revokeSession: RevokeSession
+  forgetSession: (token?: string) => Promise<void>
+}
+
+export const useQuilttSession: UseQuilttSession = () => {
   const { clientId } = useQuilttSettings()
   const [session, setSession] = useSession()
 

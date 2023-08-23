@@ -4,7 +4,7 @@ import type { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
 
 import type { SetSession } from '../useSession'
 
-type ImportSession = (token: string) => Promise<boolean>
+export type ImportSession = (token: string) => Promise<boolean>
 
 type UseImportSession = (
   auth: AuthAPI,
