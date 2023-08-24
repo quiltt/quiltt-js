@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/core",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Javascript API client and utilities for Quiltt",
   "repository": {
     "type": "git",

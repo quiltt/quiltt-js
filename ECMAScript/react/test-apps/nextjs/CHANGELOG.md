@@ -1,5 +1,13 @@
 # nextjs
 
+## 1.3.1
+
+### Patch Changes
+
+- 108899b: Add ability for session import to validate environment
+- Updated dependencies [108899b]
+  - @quiltt/react@2.3.1
+
 ## 1.3.0
 
 ### Minor Changes
