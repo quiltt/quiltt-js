@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 2.3.1
+
+### Patch Changes
+
+- 108899b: Add ability for session import to validate environment
+
 ## 2.3.0
 
 ### Minor Changes

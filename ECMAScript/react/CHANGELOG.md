@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 2.3.1
+
+### Patch Changes
+
+- 108899b: Add ability for session import to validate environment
+- Updated dependencies [108899b]
+  - @quiltt/core@2.3.1
+
 ## 2.3.0
 
 ### Minor Changes
