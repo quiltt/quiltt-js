@@ -16,7 +16,7 @@ import {
 } from './session'
 import { useQuilttSettings } from './useQuilttSettings'
 
-export type UseQuilttSession = () => {
+export type UseQuilttSession = (environmentId?: string) => {
   session: Maybe<QuilttJWT> | undefined
   importSession: ImportSession
   identifySession: IdentifySession
@@ -25,12 +25,12 @@ export type UseQuilttSession = () => {
   forgetSession: (token?: string) => Promise<void>
 }
 
-export const useQuilttSession: UseQuilttSession = () => {
+export const useQuilttSession: UseQuilttSession = (environmentId) => {
   const { clientId } = useQuilttSettings()
   const [session, setSession] = useSession()
 
   const auth = new AuthAPI(clientId)
-  const importSession = useImportSession(auth, session, setSession)
+  const importSession = useImportSession(auth, session, setSession, environmentId)
   const identifySession = useIdentifySession(auth, setSession)
   const authenticateSession = useAuthenticateSession(auth, setSession)
   const revokeSession = useRevokeSession(auth, session, setSession)
