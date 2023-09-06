@@ -29,16 +29,16 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
       const unprocessableResponse = response as UnprocessableResponse
 
       switch (response.status) {
-        case 201:
+        case 201: // Created
           setSession((response as SessionResponse).data.token)
           if (callbacks.onSuccess) return callbacks.onSuccess()
           break
 
-        case 202:
+        case 202: // Accepted
           if (callbacks.onChallenged) return callbacks.onChallenged()
           break
 
-        case 422:
+        case 422: // Unprocessable Content
           if (callbacks.onError) return callbacks.onError(unprocessableResponse.data)
           break
 
