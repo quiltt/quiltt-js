@@ -1,5 +1,13 @@
 # nextjs
 
+## 1.3.2
+
+### Patch Changes
+
+- c4ac918: Add retries to auth api when dealing with network related errors
+- Updated dependencies [c4ac918]
+  - @quiltt/react@2.3.2
+
 ## 1.3.1
 
 ### Patch Changes
