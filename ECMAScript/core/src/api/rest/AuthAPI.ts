@@ -1,5 +1,5 @@
-import type { AxiosRequestConfig, AxiosResponse } from 'axios'
-import axios from 'axios'
+import type { AxiosRequestConfig, AxiosResponse } from './axios'
+import { axios } from './axios'
 
 import { endpointAuth } from '../../configuration'
 
@@ -93,6 +93,7 @@ export class AuthAPI {
     return {
       headers: headers,
       validateStatus: this.validateStatus,
+      retry: true,
     }
   }
 
