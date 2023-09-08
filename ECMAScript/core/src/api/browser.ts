@@ -2,6 +2,8 @@ export interface ConnectorSDK extends CallbackManager {
   authenticate(token: string | null | undefined): void
   connect(connectorId: string, options?: ConnectOptions): ConnectorSDKConnector
   reconnect(connectorId: string, options: ReconnectOptions): ConnectorSDKConnector
+
+  reset(): void
 }
 
 export interface ConnectorSDKConnector extends CallbackManager {
