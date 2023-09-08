@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 2.4.0
+
+### Minor Changes
+
+- 48ae700: Add Reset to the SDK API
+
 ## 2.3.2
 
 ### Patch Changes

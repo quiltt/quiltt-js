@@ -1,5 +1,16 @@
 # nextjs
 
+## 1.4.0
+
+### Minor Changes
+
+- 48ae700: Add Reset to the SDK API
+
+### Patch Changes
+
+- Updated dependencies [48ae700]
+  - @quiltt/react@2.4.0
+
 ## 1.3.2
 
 ### Patch Changes
