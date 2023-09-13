@@ -7,7 +7,7 @@ export type AxiosRequestConfig<D = any> = RequestConfig<D> & {
 }
 
 const RETRY_DELAY = 150 // ms
-const RETRIES = 3 // 150, 300, 450 = 900 ms
+const RETRIES = 5 // 150, 300, 450, 600, 750 = 2.250s
 
 // Create an axios singleton for Quiltt, to prevent mutating other instances
 const axios = Axios.create()
@@ -41,7 +41,7 @@ axios.interceptors.response.use(undefined, (error) => {
   }
 
   const delay = new Promise<void>((resolve) => {
-    setTimeout(() => resolve(), RETRY_DELAY)
+    setTimeout(() => resolve(), RETRY_DELAY * (RETRIES - config.retriesRemaining))
   })
 
   return delay.then(() => axios(config))
