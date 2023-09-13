@@ -1,5 +1,13 @@
 # nextjs
 
+## 1.4.1
+
+### Patch Changes
+
+- 44e9759: Fix bug with backoff timer, extend max delay before failure
+- Updated dependencies [44e9759]
+  - @quiltt/react@2.4.1
+
 ## 1.4.0
 
 ### Minor Changes
