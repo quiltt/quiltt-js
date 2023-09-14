@@ -2,13 +2,13 @@ import { PropsWithChildren } from 'react'
 import { useQuilttConnector } from '..'
 import { AnyTag, PropsOf } from '../types'
 
-import { Callbacks } from '@quiltt/core'
+import { ConnectorSDKCallbacks } from '@quiltt/core'
 
 type QuilttButtonProps<T extends AnyTag> = {
   as?: T
   connectorId: string
   connectionId?: string // For Reconnect Mode
-} & Callbacks &
+} & ConnectorSDKCallbacks &
   PropsWithChildren
 
 export const QuilttButton = <T extends AnyTag = 'button'>({
