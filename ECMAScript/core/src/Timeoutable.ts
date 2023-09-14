@@ -25,7 +25,9 @@ export class Timeoutable {
   private broadcast = () => {
     if (this.observers.length === 0) return
 
-    this.observers[0](undefined)
+    if (this.observers[0]) {
+      this.observers[0](undefined)
+    }
   }
 }
 

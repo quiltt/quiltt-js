@@ -42,7 +42,7 @@ export const JsonWebTokenParse = <T>(
   const [_header, payload, _signature] = token.split('.')
 
   try {
-    return { token: token, claims: JSON.parse(atob(payload)) }
+    return { token: token, claims: JSON.parse(atob(payload!)) }
   } catch (error) {
     console.error(`Invalid Session Token: ${error}`)
   }

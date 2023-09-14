@@ -13,7 +13,7 @@ export class MemoryStorage<T> {
 
   get = (key: string) => {
     if (this.observables[key]) {
-      return this.observables[key].get()
+      return this.observables[key]?.get()
     } else {
       return undefined
     }
@@ -23,19 +23,19 @@ export class MemoryStorage<T> {
     if (!this.observables[key]) {
       this.observables[key] = new Observable<T>(state)
     } else {
-      this.observables[key].set(state)
+      this.observables[key]?.set(state)
     }
   }
 
   subscribe = (key: string, observer: Observer<T>): void => {
     if (!this.observables[key]) this.observables[key] = new Observable<T>()
 
-    this.observables[key].subscribe(observer)
+    this.observables[key]?.subscribe(observer)
   }
 
   unsubscribe = (key: string, observer: Observer<T>): void => {
     if (this.observables[key]) {
-      this.observables[key].unsubscribe(observer)
+      this.observables[key]?.unsubscribe(observer)
     }
   }
 }

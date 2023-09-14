@@ -52,11 +52,13 @@ export class Storage<T> {
   subscribe = (key: string, observer: Observer<T>) => {
     if (!this.observers[key]) this.observers[key] = []
 
-    this.observers[key].push(observer)
+    this.observers[key]?.push(observer)
   }
 
   unsubscribe = (key: string, observer: Observer<T>) => {
-    this.observers[key] = this.observers[key]?.filter((update) => update !== observer)
+    this.observers[key] = this.observers[key]?.filter(
+      (update) => update !== observer
+    ) as Observer<T>[]
   }
 
   /**

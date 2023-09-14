@@ -65,11 +65,13 @@ export class LocalStorage<T> {
   subscribe = (key: string, observer: Observer<T>) => {
     if (!this.observers[key]) this.observers[key] = []
 
-    this.observers[key].push(observer)
+    this.observers[key]?.push(observer)
   }
 
   unsubscribe = (key: string, observer: Observer<T>) => {
-    this.observers[key] = this.observers[key]?.filter((update) => update !== observer)
+    this.observers[key] = this.observers[key]?.filter(
+      (update) => update !== observer
+    ) as Observer<T>[]
   }
 
   // if there is a key, then trigger the related updates. If there is not key
@@ -79,7 +81,7 @@ export class LocalStorage<T> {
       const newState = event.newValue ? JSON.parse(event.newValue) : null
 
       if (this.observers[event.key]) {
-        this.observers[event.key].forEach((update) => update(newState))
+        this.observers[event.key]?.forEach((update) => update(newState))
       }
     } else {
       Object.entries(this.observers).forEach(([key, observers]) => {

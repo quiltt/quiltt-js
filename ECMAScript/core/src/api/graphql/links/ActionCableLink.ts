@@ -3,7 +3,7 @@ import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
 import { print } from 'graphql'
 import { endpointWebsockets } from '../../../configuration'
-import type { Consumer } from './actioncable'
+import type { Consumer, Subscription } from './actioncable'
 import { createConsumer } from './actioncable'
 
 type RequestResult = FetchResult<
@@ -53,7 +53,7 @@ class ActionCableLink extends ApolloLink {
           ? this.connectionParams(operation)
           : this.connectionParams
 
-      const channel = this.cables[token].subscriptions.create(
+      const channel = this.cables[token]?.subscriptions.create(
         Object.assign(
           {},
           {
@@ -74,7 +74,7 @@ class ActionCableLink extends ApolloLink {
           },
 
           received: (payload: { result: RequestResult; more: any }) => {
-            if (payload?.result?.data || payload?.result?.errors) {
+            if (payload && ('data' in payload.result || 'errors' in payload.result)) {
               observer.next(payload.result)
             }
 
@@ -83,7 +83,7 @@ class ActionCableLink extends ApolloLink {
             }
           },
         }
-      )
+      ) as Subscription
       // Make the ActionCable subscription behave like an Apollo subscription
       return Object.assign(channel, { closed: false })
     })
