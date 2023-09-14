@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.0.0
+
+### Major Changes
+
+- e12a1ef: Rename Connector SDK Types for better namespacing
+
 ## 2.4.1
 
 ### Patch Changes
