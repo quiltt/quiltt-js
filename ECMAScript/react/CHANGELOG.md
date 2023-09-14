@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.0.1
+
+### Patch Changes
+
+- c8bfa0a: Export additional ConnectorSDK types
+- Updated dependencies [c8bfa0a]
+  - @quiltt/core@3.0.1
+
 ## 3.0.0
 
 ### Major Changes
