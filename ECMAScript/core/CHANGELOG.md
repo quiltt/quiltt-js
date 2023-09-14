@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.0.1
+
+### Patch Changes
+
+- c8bfa0a: Export additional ConnectorSDK types
+
 ## 3.0.0
 
 ### Major Changes
