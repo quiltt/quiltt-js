@@ -1,16 +1,16 @@
 interface CallbackManager {
-  onEvent(callback: OnEventCallback): void
-  onExit(callback: OnEventExitCallback): void
-  onExitSuccess(callback: OnExitSuccessCallback): void
-  onExitAbort(callback: OnExitAbortCallback): void
-  onExitError(callback: OnExitErrorCallback): void
+  onEvent(callback: ConnectorSDKOnEventCallback): void
+  onExit(callback: ConnectorSDKOnEventExitCallback): void
+  onExitSuccess(callback: ConnectorSDKOnExitSuccessCallback): void
+  onExitAbort(callback: ConnectorSDKOnExitAbortCallback): void
+  onExitError(callback: ConnectorSDKOnExitErrorCallback): void
 
   // Because it's well within React behavior to try to register a billion functions
-  offEvent(callback: OnEventCallback): void
-  offExit(callback: OnEventExitCallback): void
-  offExitSuccess(callback: OnExitSuccessCallback): void
-  offExitAbort(callback: OnExitAbortCallback): void
-  offExitError(callback: OnExitErrorCallback): void
+  offEvent(callback: ConnectorSDKOnEventCallback): void
+  offExit(callback: ConnectorSDKOnEventExitCallback): void
+  offExitSuccess(callback: ConnectorSDKOnExitSuccessCallback): void
+  offExitAbort(callback: ConnectorSDKOnExitAbortCallback): void
+  offExitError(callback: ConnectorSDKOnExitErrorCallback): void
 }
 
 export interface ConnectorSDK extends CallbackManager {
@@ -26,23 +26,26 @@ export interface ConnectorSDKConnector extends CallbackManager {
 }
 
 export type ConnectorSDKCallbacks = {
-  onEvent?: OnEventCallback
-  onExit?: OnEventExitCallback
-  onExitSuccess?: OnExitSuccessCallback
-  onExitAbort?: OnExitAbortCallback
-  onExitError?: OnExitErrorCallback
+  onEvent?: ConnectorSDKOnEventCallback
+  onExit?: ConnectorSDKOnEventExitCallback
+  onExitSuccess?: ConnectorSDKOnExitSuccessCallback
+  onExitAbort?: ConnectorSDKOnExitAbortCallback
+  onExitError?: ConnectorSDKOnExitErrorCallback
 }
 
-type OnEventCallback = (type: ConnectorSDKEventType, metadata: ConnectorSDKCallbackMetadata) => void
-
-type OnEventExitCallback = (
+export type ConnectorSDKOnEventCallback = (
   type: ConnectorSDKEventType,
   metadata: ConnectorSDKCallbackMetadata
 ) => void
 
-type OnExitSuccessCallback = (metadata: ConnectorSDKCallbackMetadata) => void
-type OnExitAbortCallback = (metadata: ConnectorSDKCallbackMetadata) => void
-type OnExitErrorCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+export type ConnectorSDKOnEventExitCallback = (
+  type: ConnectorSDKEventType,
+  metadata: ConnectorSDKCallbackMetadata
+) => void
+
+export type ConnectorSDKOnExitSuccessCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+export type ConnectorSDKOnExitAbortCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+export type ConnectorSDKOnExitErrorCallback = (metadata: ConnectorSDKCallbackMetadata) => void
 
 export enum ConnectorSDKEventType {
   ExitSuccess = 'exited.successful',
