@@ -1,15 +1,3 @@
-export interface ConnectorSDK extends CallbackManager {
-  authenticate(token: string | null | undefined): void
-  connect(connectorId: string, options?: ConnectOptions): ConnectorSDKConnector
-  reconnect(connectorId: string, options: ReconnectOptions): ConnectorSDKConnector
-
-  reset(): void
-}
-
-export interface ConnectorSDKConnector extends CallbackManager {
-  open(): void
-}
-
 interface CallbackManager {
   onEvent(callback: OnEventCallback): void
   onExit(callback: OnEventExitCallback): void
@@ -25,7 +13,19 @@ interface CallbackManager {
   offExitError(callback: OnExitErrorCallback): void
 }
 
-export type Callbacks = {
+export interface ConnectorSDK extends CallbackManager {
+  authenticate(token: string | null | undefined): void
+  connect(connectorId: string, options?: ConnectorSDKConnectOptions): ConnectorSDKConnector
+  reconnect(connectorId: string, options: ConnectorSDKReconnectOptions): ConnectorSDKConnector
+
+  reset(): void
+}
+
+export interface ConnectorSDKConnector extends CallbackManager {
+  open(): void
+}
+
+export type ConnectorSDKCallbacks = {
   onEvent?: OnEventCallback
   onExit?: OnEventExitCallback
   onExitSuccess?: OnExitSuccessCallback
@@ -33,28 +33,33 @@ export type Callbacks = {
   onExitError?: OnExitErrorCallback
 }
 
-type OnEventCallback = (type: EventType, metadata: Metadata) => void
-type OnEventExitCallback = (type: EventType, metadata: Metadata) => void
-type OnExitSuccessCallback = (metadata: Metadata) => void
-type OnExitAbortCallback = (metadata: Metadata) => void
-type OnExitErrorCallback = (metadata: Metadata) => void
+type OnEventCallback = (type: ConnectorSDKEventType, metadata: ConnectorSDKCallbackMetadata) => void
 
-export enum EventType {
+type OnEventExitCallback = (
+  type: ConnectorSDKEventType,
+  metadata: ConnectorSDKCallbackMetadata
+) => void
+
+type OnExitSuccessCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+type OnExitAbortCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+type OnExitErrorCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+
+export enum ConnectorSDKEventType {
   ExitSuccess = 'exited.successful',
   ExitAbort = 'exited.aborted',
   ExitError = 'exited.errored',
 }
 
-type Metadata = {
+export type ConnectorSDKCallbackMetadata = {
   connectorId: string
   connectionId?: string
 }
 
-type ConnectOptions = Callbacks
-type ReconnectOptions = Callbacks & {
+export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks
+export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   connectionId: string
 }
 
-export type ConnectorSDKConnectorOptions = Callbacks & {
+export type ConnectorSDKConnectorOptions = ConnectorSDKConnectOptions & {
   connectionId?: string
 }
