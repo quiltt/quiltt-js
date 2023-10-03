@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.0.2
+
+### Patch Changes
+
+- 315de22: Increase 429 handling for ci/cd
+
 ## 3.0.1
 
 ### Patch Changes

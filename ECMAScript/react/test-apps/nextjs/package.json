@@ -1,7 +1,7 @@
 {
   "name": "@quiltt/react-test-nextjs",
   "description": "Quiltt's React SDK integrated into Next.js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "MIT",
   "private": true,
   "scripts": {
