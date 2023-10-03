@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.0.2
+
+### Patch Changes
+
+- 315de22: Increase 429 handling for ci/cd
+- Updated dependencies [315de22]
+  - @quiltt/react@3.0.2
+
 ## 2.0.1
 
 ### Patch Changes
