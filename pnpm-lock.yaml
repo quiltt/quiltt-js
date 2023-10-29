@@ -25,7 +25,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.16
-        version: 3.7.16(graphql@16.7.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 3.7.16(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       axios:
         specifier: ^1.4.0
         version: 1.4.0
@@ -33,11 +33,11 @@ importers:
         specifier: ^3.1.8
         version: 3.1.8
       graphql:
-        specifier: ^16.7.1
-        version: 16.7.1
+        specifier: ^16.8.1
+        version: 16.8.1
       graphql-ruby-client:
         specifier: ^1.11.8
-        version: 1.11.8(@apollo/client@3.7.16)(graphql@16.7.1)
+        version: 1.11.8(@apollo/client@3.7.16)(graphql@16.8.1)
     devDependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: 4.1.1
@@ -81,7 +81,7 @@ importers:
     devDependencies:
       '@apollo/client':
         specifier: 3.7.16
-        version: 3.7.16(graphql@16.7.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 3.7.16(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@trivago/prettier-plugin-sort-imports':
         specifier: 4.1.1
         version: 4.1.1(prettier@2.8.8)
@@ -195,7 +195,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /@apollo/client@3.7.16(graphql@16.7.1)(react-dom@18.2.0)(react@18.2.0):
+  /@apollo/client@3.7.16(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-rdhoc7baSD7ZzcjavEpYN8gZJle1KhjEKj4SJeMgBpcnO4as7oXUVU4LtFpotzZdFlo57qaLrNzfvppSTsKvZQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -213,12 +213,12 @@ packages:
       subscriptions-transport-ws:
         optional: true
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.7.1)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       '@wry/context': 0.7.0
       '@wry/equality': 0.5.3
       '@wry/trie': 0.4.3
-      graphql: 16.7.1
-      graphql-tag: 2.12.6(graphql@16.7.1)
+      graphql: 16.8.1
+      graphql-tag: 2.12.6(graphql@16.8.1)
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.2
       prop-types: 15.8.1
@@ -842,12 +842,12 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@graphql-typed-document-node/core@3.2.0(graphql@16.7.1):
+  /@graphql-typed-document-node/core@3.2.0(graphql@16.8.1):
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      graphql: 16.7.1
+      graphql: 16.8.1
 
   /@humanwhocodes/config-array@0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
@@ -3233,7 +3233,7 @@ packages:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
 
-  /graphql-ruby-client@1.11.8(@apollo/client@3.7.16)(graphql@16.7.1):
+  /graphql-ruby-client@1.11.8(@apollo/client@3.7.16)(graphql@16.8.1):
     resolution: {integrity: sha512-kMqcZiIg7Rt+GRI9ZhrdcxRWdBdgi3UBN74z/VO3IfppkIuJPT53tX9Nu99GQIUEj8gqwTc+sr8Ff+cuT8aTcw==}
     engines: {node: '>=10'}
     hasBin: true
@@ -3241,23 +3241,23 @@ packages:
       '@apollo/client': '>=3.3.6'
       graphql: '>=14.3.1'
     dependencies:
-      '@apollo/client': 3.7.16(graphql@16.7.1)(react-dom@18.2.0)(react@18.2.0)
+      '@apollo/client': 3.7.16(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       glob: 7.2.3
-      graphql: 16.7.1
+      graphql: 16.8.1
       minimist: 1.2.8
     dev: false
 
-  /graphql-tag@2.12.6(graphql@16.7.1):
+  /graphql-tag@2.12.6(graphql@16.8.1):
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
-      graphql: 16.7.1
+      graphql: 16.8.1
       tslib: 2.5.0
 
-  /graphql@16.7.1:
-    resolution: {integrity: sha512-DRYR9tf+UGU0KOsMcKAlXeFfX89UiiIZ0dRU3mR0yJfu6OjZqUcp68NnFLnqQU5RexygFoDy1EW+ccOYcPfmHg==}
+  /graphql@16.8.1:
+    resolution: {integrity: sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   /hard-rejection@2.1.0:
