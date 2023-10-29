@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.0.3
+
+### Patch Changes
+
+- 977a6a5: Bump graphql from 16.7.1 to 16.8.1
+- Updated dependencies [977a6a5]
+  - @quiltt/core@3.0.3
+
 ## 3.0.2
 
 ### Patch Changes
