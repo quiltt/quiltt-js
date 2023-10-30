@@ -48,6 +48,7 @@ export type ConnectorSDKOnExitAbortCallback = (metadata: ConnectorSDKCallbackMet
 export type ConnectorSDKOnExitErrorCallback = (metadata: ConnectorSDKCallbackMetadata) => void
 
 export enum ConnectorSDKEventType {
+  Load = 'loaded',
   ExitSuccess = 'exited.successful',
   ExitAbort = 'exited.aborted',
   ExitError = 'exited.errored',
