@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.1.1
+
+### Patch Changes
+
+- a66f1bd: Add onLoad callbacks
+
 ## 3.1.0
 
 ### Minor Changes

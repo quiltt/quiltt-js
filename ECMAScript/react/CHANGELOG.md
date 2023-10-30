@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.1.1
+
+### Patch Changes
+
+- a66f1bd: Add onLoad callbacks
+- Updated dependencies [a66f1bd]
+  - @quiltt/core@3.1.1
+
 ## 3.1.0
 
 ### Minor Changes
