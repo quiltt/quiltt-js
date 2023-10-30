@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.1.0
+
+### Minor Changes
+
+- af052a7: Add 'Load' to ConnectorSDKEventType
+
 ## 3.0.3
 
 ### Patch Changes
