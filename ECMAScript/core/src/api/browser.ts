@@ -1,6 +1,6 @@
 interface CallbackManager {
   onEvent(callback: ConnectorSDKOnEventCallback): void
-  onLoad(callback: ConnectorSDKOnEventCallback): void
+  onLoad(callback: ConnectorSDKOnEventLoadCallback): void
   onExit(callback: ConnectorSDKOnEventExitCallback): void
   onExitSuccess(callback: ConnectorSDKOnExitSuccessCallback): void
   onExitAbort(callback: ConnectorSDKOnExitAbortCallback): void
@@ -8,7 +8,7 @@ interface CallbackManager {
 
   // Because it's well within React behavior to try to register a billion functions
   offEvent(callback: ConnectorSDKOnEventCallback): void
-  offLoad(callback: ConnectorSDKOnEventCallback): void
+  offLoad(callback: ConnectorSDKOnEventLoadCallback): void
   offExit(callback: ConnectorSDKOnEventExitCallback): void
   offExitSuccess(callback: ConnectorSDKOnExitSuccessCallback): void
   offExitAbort(callback: ConnectorSDKOnExitAbortCallback): void
@@ -29,7 +29,7 @@ export interface ConnectorSDKConnector extends CallbackManager {
 
 export type ConnectorSDKCallbacks = {
   onEvent?: ConnectorSDKOnEventCallback
-  onLoad?: ConnectorSDKOnEventCallback
+  onLoad?: ConnectorSDKOnEventLoadCallback
   onExit?: ConnectorSDKOnEventExitCallback
   onExitSuccess?: ConnectorSDKOnExitSuccessCallback
   onExitAbort?: ConnectorSDKOnExitAbortCallback
@@ -42,7 +42,7 @@ export type ConnectorSDKOnEventCallback = (
 ) => void
 
 export type ConnectorSDKOnEventLoadCallback = (
-  type: ConnectorSDKEventType,
+  type: ConnectorSDKEventType.Load,
   metadata: ConnectorSDKCallbackMetadata
 ) => void
 
