@@ -4,12 +4,13 @@ import { AnyTag, PropsOf } from '../types'
 
 import { ConnectorSDKCallbacks } from '@quiltt/core'
 
-type QuilttContainerProps<T extends AnyTag> = {
-  as?: T
-  connectorId: string
-  connectionId?: string // For Reconnect Mode
-} & ConnectorSDKCallbacks &
-  PropsWithChildren
+type QuilttContainerProps<T extends AnyTag> = PropsWithChildren<
+  {
+    as?: T
+    connectorId: string
+    connectionId?: string // For Reconnect Mode
+  } & ConnectorSDKCallbacks
+>
 
 /**
  * QuilttContainer uses globally shared callbacks. It's recommended you only use
@@ -20,28 +21,29 @@ export const QuilttContainer = <T extends AnyTag = 'div'>({
   connectorId,
   connectionId,
   onEvent,
+  onLoad,
   onExit,
   onExitSuccess,
   onExitAbort,
   onExitError,
+  children,
   ...props
 }: QuilttContainerProps<T> & PropsOf<T>) => {
   useQuilttConnector(connectorId, {
-    onEvent: onEvent,
-    onExit: onExit,
-    onExitSuccess: onExitSuccess,
-    onExitAbort: onExitAbort,
-    onExitError: onExitError,
+    onEvent,
+    onLoad,
+    onExit,
+    onExitSuccess,
+    onExitAbort,
+    onExitError,
   })
 
   const Container = as || 'div'
 
   return (
-    <Container
-      quiltt-container={connectorId}
-      quiltt-connection={connectionId}
-      {...props}
-    ></Container>
+    <Container quiltt-container={connectorId} quiltt-connection={connectionId} {...props}>
+      {children}
+    </Container>
   )
 }
 

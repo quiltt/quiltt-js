@@ -44,6 +44,14 @@ export const useQuilttConnector = (
     return () => connector.offEvent(options.onEvent as any)
   }, [connector, options?.onEvent])
 
+  // onLoad
+  useEffect(() => {
+    if (!connector || !options?.onLoad) return
+
+    connector.onLoad(options.onLoad)
+    return () => connector.offLoad(options.onLoad as any)
+  }, [connector, options?.onLoad])
+
   // onExit
   useEffect(() => {
     if (!connector || !options?.onExit) return
