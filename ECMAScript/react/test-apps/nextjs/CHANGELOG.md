@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.0.5
+
+### Patch Changes
+
+- a66f1bd: Add onLoad callbacks
+- Updated dependencies [a66f1bd]
+  - @quiltt/react@3.1.1
+
 ## 2.0.4
 
 ### Patch Changes
