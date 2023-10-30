@@ -3,6 +3,7 @@ import TestQuilttButton from './TestQuilttButton'
 
 describe('<TestQuilttButton />', () => {
   it('renders', () => {
+    // @ts-ignore
     cy.mount(<TestQuilttButton />)
 
     cy.get('button').should('have.text', 'Launch with Component')

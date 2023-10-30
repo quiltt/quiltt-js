@@ -3,6 +3,7 @@ import TestHTMLLauncher from './TestHTMLLauncher'
 
 describe('<TestHTMLLauncher />', () => {
   it('renders', () => {
+    // @ts-ignore
     cy.mount(<TestHTMLLauncher />)
 
     cy.get('a').should('contains.text', 'Launch with HTML')

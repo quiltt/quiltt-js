@@ -4,6 +4,7 @@ import { TestQuilttContainer } from './TestQuilttContainer'
 describe('<TestQuilttContainer />', () => {
   it('renders', () => {
     // see: https://on.cypress.io/mounting-react
+    // @ts-ignore
     cy.mount(<TestQuilttContainer />)
 
     // Find the iframe in the container

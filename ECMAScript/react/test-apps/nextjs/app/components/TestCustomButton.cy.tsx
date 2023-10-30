@@ -3,6 +3,7 @@ import TestCustomButton from './TestCustomButton'
 
 describe('<TestCustomButton />', () => {
   it('renders', () => {
+    // @ts-ignore
     cy.mount(<TestCustomButton />)
 
     cy.get('button').should('have.text', 'Launch with Custom Component')

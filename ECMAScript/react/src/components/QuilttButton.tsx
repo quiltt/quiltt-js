@@ -4,12 +4,13 @@ import { AnyTag, PropsOf } from '../types'
 
 import { ConnectorSDKCallbacks } from '@quiltt/core'
 
-type QuilttButtonProps<T extends AnyTag> = {
-  as?: T
-  connectorId: string
-  connectionId?: string // For Reconnect Mode
-} & ConnectorSDKCallbacks &
-  PropsWithChildren
+type QuilttButtonProps<T extends AnyTag> = PropsWithChildren<
+  {
+    as?: T
+    connectorId: string
+    connectionId?: string // For Reconnect Mode
+  } & ConnectorSDKCallbacks
+>
 
 export const QuilttButton = <T extends AnyTag = 'button'>({
   as,
@@ -20,6 +21,7 @@ export const QuilttButton = <T extends AnyTag = 'button'>({
   onExitSuccess,
   onExitAbort,
   onExitError,
+  children,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
   const { open } = useQuilttConnector(connectorId, {
@@ -33,7 +35,11 @@ export const QuilttButton = <T extends AnyTag = 'button'>({
 
   const Button = as || 'button'
 
-  return <Button onClick={open} quiltt-connection={connectionId} {...props}></Button>
+  return (
+    <Button onClick={open} quiltt-connection={connectionId} {...props}>
+      {children}
+    </Button>
+  )
 }
 
 export default QuilttButton

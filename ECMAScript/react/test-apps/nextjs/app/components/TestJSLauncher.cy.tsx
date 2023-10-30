@@ -3,6 +3,7 @@ import TestJSLauncher from './TestJSLauncher'
 
 describe('<TestJSLauncher />', () => {
   it('renders', () => {
+    // @ts-ignore
     cy.mount(<TestJSLauncher />)
 
     cy.get('button').should('contains.text', 'Launch with Javascript')
