@@ -27,6 +27,12 @@ export interface ConnectorSDKConnector extends CallbackManager {
   open(): void
 }
 
+/**
+ * Types for optional callbacks in the ConnectorSDK.
+ *
+ * Leaf event nodes return only metadata.
+ * Internal nodes return both event type and metadata.
+ */
 export type ConnectorSDKCallbacks = {
   onEvent?: ConnectorSDKOnEventCallback
   onLoad?: ConnectorSDKOnLoadCallback
