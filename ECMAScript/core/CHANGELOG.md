@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.1.2
+
+### Patch Changes
+
+- 5ca68bf: Update ConnectorSDKOnLoadCallback type
+
 ## 3.1.1
 
 ### Patch Changes
