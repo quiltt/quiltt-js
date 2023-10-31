@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.1.2
+
+### Patch Changes
+
+- 5ca68bf: Update ConnectorSDKOnLoadCallback type
+- Updated dependencies [5ca68bf]
+  - @quiltt/core@3.1.2
+
 ## 3.1.1
 
 ### Patch Changes
