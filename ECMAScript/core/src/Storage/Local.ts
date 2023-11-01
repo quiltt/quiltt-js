@@ -11,7 +11,7 @@ export class LocalStorage<T> {
   private observers: { [key: string]: Observer<T>[] } = {}
 
   constructor() {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !window?.expo) {
       window.addEventListener('storage', this.handleStorageEvent.bind(this))
     }
   }
