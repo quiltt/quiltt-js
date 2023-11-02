@@ -29,7 +29,7 @@ export class LocalStorage<T> {
   isDisabled = (): boolean => !this.isEnabled()
 
   get = (key: string): Maybe<T> | undefined => {
-    if (typeof window === 'undefined') return undefined
+    if (typeof window === 'undefined' || !!window.expo) return undefined
 
     try {
       const state = window.localStorage.getItem(`quiltt.${key}`)
@@ -41,7 +41,7 @@ export class LocalStorage<T> {
   }
 
   set = (key: string, state: Maybe<T> | undefined): void => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !!window.expo) return
 
     try {
       if (state) {
