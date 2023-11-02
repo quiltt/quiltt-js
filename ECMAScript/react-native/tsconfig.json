@@ -10,5 +10,8 @@
     "**/*.cjs",
     "**/*.json",
     ".eslintrc.cjs"
+  ],
+  "exclude": [
+    "example/**/*",
   ]
 }
