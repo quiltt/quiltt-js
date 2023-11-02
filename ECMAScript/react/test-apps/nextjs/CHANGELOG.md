@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.0.7
+
+### Patch Changes
+
+- ab55ccb: Skip browser code when in expo app
+- Updated dependencies [ab55ccb]
+  - @quiltt/react@3.1.3
+
 ## 2.0.6
 
 ### Patch Changes
