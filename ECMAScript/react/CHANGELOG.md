@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.1.3
+
+### Patch Changes
+
+- ab55ccb: Skip browser code when in expo app
+- Updated dependencies [ab55ccb]
+  - @quiltt/core@3.1.3
+
 ## 3.1.2
 
 ### Patch Changes
