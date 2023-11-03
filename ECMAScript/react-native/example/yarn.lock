@@ -1672,10 +1672,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@quiltt/core@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@quiltt/core/-/core-3.1.3.tgz#0a7687a0e5b474276605bc73d2cbbd5b5a5b8955"
-  integrity sha512-O5lAKcmyFkjtoPF3twIXxix/SEHQ0PJswS33r78iosO6nGDaGSsQM7hcf/Jbqwv21nQ7ChKJVK4VucPSAji6tw==
+"@quiltt/core@3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@quiltt/core/-/core-3.2.2.tgz#3e8cd678aa09d49de75e79de7c0bb77c889d6afc"
+  integrity sha512-UFVUPB/kLlc1QHd3YHc6Rq/3oIPNymzYvoAWOUOf72CutT5dSzIf4EYSEKG02TlBo+491h9nsGxOodABFBDF1Q==
   dependencies:
     "@apollo/client" "^3.7.16"
     axios "^1.4.0"
@@ -1683,12 +1683,22 @@
     graphql "^16.8.1"
     graphql-ruby-client "^1.11.8"
 
-"@quiltt/react@3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@quiltt/react/-/react-3.1.3.tgz#b4ffbd88b09a2c5e48b53028915497e974008b47"
-  integrity sha512-P0KgaaziiNLWT7PsNcWwbFDDFpF7q5LPq9fBGsYkkXRB3MEljzwpkjakrzu66lKPKwN1KY7S7fR/w7VLHq+VPQ==
+"@quiltt/react-native@3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@quiltt/react-native/-/react-native-3.2.2.tgz#a1846b15d17cd0764efd6d5a22c9f24c40da4e5f"
+  integrity sha512-wUD177WqF/tPhh97nNWHNkuqkbjxeLClvX7FV31XE6BnfUMCxOw0TYuAe3LYQVeCOdv+Y1EuE1qBHHy87u3wDQ==
   dependencies:
-    "@quiltt/core" "3.1.3"
+    "@quiltt/core" "3.2.2"
+    "@quiltt/react" "3.2.2"
+    core-js "3.33.2"
+    react-native-webview "13.6.2"
+
+"@quiltt/react@3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@quiltt/react/-/react-3.2.2.tgz#9b9a7a146f3936c1a8749b164e9aa21b60573f72"
+  integrity sha512-rrBvYuoNv8Rd5c5NAJcWGtwdAccwDAaKJgxnn/thMnYDAIHtQaZkmqHnqgDU4utlFDeRDyTaHWvXrbhYlUbZkg==
+  dependencies:
+    "@quiltt/core" "3.2.2"
 
 "@react-native-community/cli-clean@11.3.7":
   version "11.3.7"
@@ -2541,7 +2551,7 @@ buffer-from@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"
   integrity sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==
 
-buffer@^5.4.3, buffer@^5.5.0:
+buffer@^5.5.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.7.1.tgz#ba62e7c13133053582197160851a8f648e99eed0"
   integrity sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==
@@ -5401,11 +5411,6 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-punycode@^2.1.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
-  integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
-
 qrcode-terminal@0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/qrcode-terminal/-/qrcode-terminal-0.11.0.tgz#ffc6c28a2fc0bfb47052b47e23f4f446a5fbdb9e"
@@ -5518,17 +5523,10 @@ react-native-screens@~3.22.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-url-polyfill@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-url-polyfill/-/react-native-url-polyfill-2.0.0.tgz#db714520a2985cff1d50ab2e66279b9f91ffd589"
-  integrity sha512-My330Do7/DvKnEvwQc0WdcBnFPploYKp9CYlefDXzIdEaA+PAhDYllkvGeEroEzvc4Kzzj2O4yVdz8v6fjRvhA==
-  dependencies:
-    whatwg-url-without-unicode "8.0.0-3"
-
-react-native-webview@13.2.2:
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.2.2.tgz#06b04db8e1f4ed57a9dc92f4094aa0e41271b89b"
-  integrity sha512-uT70y2GUqQzaj2RwRb/QuKRdXeDjXM6oN3DdPqYQlOOMFTCT8r62fybyjVVRoik8io+KLa5KnmuSoS5B2O1BmA==
+react-native-webview@13.6.2:
+  version "13.6.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.6.2.tgz#0a9b18793e915add5b5dbdbf32509d7751b49167"
+  integrity sha512-QzhQ5JCU+Nf2W285DtvCZOVQy/MkJXMwNDYPZvOWQbAOgxJMSSO+BtqXTMA1UPugDsko6PxJ0TxSlUwIwJijDg==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
@@ -6630,24 +6628,10 @@ webidl-conversions@^3.0.0:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
   integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
 
-webidl-conversions@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-5.0.0.tgz#ae59c8a00b121543a2acc65c0434f57b0fc11aff"
-  integrity sha512-VlZwKPCkYKxQgeSbH5EyngOmRp7Ww7I9rQLERETtf5ofd9pGeswWiOtogpEO850jziPRarreGxn5QIiTqpb2wA==
-
 whatwg-fetch@^3.0.0:
   version "3.6.19"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.19.tgz#caefd92ae630b91c07345537e67f8354db470973"
   integrity sha512-d67JP4dHSbm2TrpFj8AbO8DnL1JXL5J9u0Kq2xW6d0TFDbCA3Muhdt8orXC22utleTVj7Prqt82baN6RBvnEgw==
-
-whatwg-url-without-unicode@8.0.0-3:
-  version "8.0.0-3"
-  resolved "https://registry.yarnpkg.com/whatwg-url-without-unicode/-/whatwg-url-without-unicode-8.0.0-3.tgz#ab6df4bf6caaa6c85a59f6e82c026151d4bb376b"
-  integrity sha512-HoKuzZrUlgpz35YO27XgD28uh/WJH4B0+3ttFqRo//lmq+9T/mIOJ6kqmINI9HpUpz1imRC/nR/lxKpJiv0uig==
-  dependencies:
-    buffer "^5.4.3"
-    punycode "^2.1.1"
-    webidl-conversions "^5.0.0"
 
 whatwg-url@^5.0.0:
   version "5.0.0"
