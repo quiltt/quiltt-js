@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.2.1
+
+### Patch Changes
+
+- 31b7543: Drop react-native-url-polyfill
+- Updated dependencies [31b7543]
+  - @quiltt/core@3.2.1
+
 ## 3.2.0
 
 ### Minor Changes
