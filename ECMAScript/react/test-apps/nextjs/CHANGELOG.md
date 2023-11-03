@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.1.2
+
+### Patch Changes
+
+- 9f3783a: Fix React Native package entry point
+- Updated dependencies [9f3783a]
+  - @quiltt/react@3.2.2
+
 ## 2.1.1
 
 ### Patch Changes

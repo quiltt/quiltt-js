@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.2.2
+
+### Patch Changes
+
+- 9f3783a: Fix React Native package entry point
+- Updated dependencies [9f3783a]
+  - @quiltt/core@3.2.2
+
 ## 3.2.1
 
 ### Patch Changes
