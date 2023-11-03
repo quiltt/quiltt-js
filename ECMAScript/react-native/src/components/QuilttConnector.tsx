@@ -8,7 +8,6 @@ import { Linking } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
-import { URL } from 'react-native-url-polyfill'
 import { useQuilttSession } from '@quiltt/react'
 
 type QuilttConnectorProps = {
