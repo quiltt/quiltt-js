@@ -17,7 +17,8 @@ export default function App() {
     console.log(url)
   }, [url])
 
-  const token = 'PUT_A_REAL_TOKEN_HERE'
+  // See: https://www.quiltt.dev/api-reference/rest/auth#/paths/~1v1~1users~1sessions/post
+  const token = 'GET_THIS_TOKEN_FROM_YOUR_SERVER'
 
   return (
     <QuilttProvider token={token}>
