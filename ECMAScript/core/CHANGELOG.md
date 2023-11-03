@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.2.0
+
+### Minor Changes
+
+- 07bc9f3: Release React Native SDK
+
 ## 3.1.3
 
 ### Patch Changes
