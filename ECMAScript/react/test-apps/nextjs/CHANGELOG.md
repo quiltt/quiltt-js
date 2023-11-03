@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.1.1
+
+### Patch Changes
+
+- 31b7543: Drop react-native-url-polyfill
+- Updated dependencies [31b7543]
+  - @quiltt/react@3.2.1
+
 ## 2.1.0
 
 ### Minor Changes
