@@ -67,6 +67,7 @@ export enum ConnectorSDKEventType {
 
 export type ConnectorSDKCallbackMetadata = {
   connectorId: string
+  profileId?: string
   connectionId?: string
 }
 
