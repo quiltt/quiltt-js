@@ -1,5 +1,16 @@
 # nextjs
 
+## 2.2.0
+
+### Minor Changes
+
+- 2a6410f: Add profileId to ConnectorSDKCallbackMetadata
+
+### Patch Changes
+
+- Updated dependencies [2a6410f]
+  - @quiltt/react@3.3.0
+
 ## 2.1.2
 
 ### Patch Changes

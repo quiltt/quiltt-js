@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.0
+
+### Minor Changes
+
+- 2a6410f: Add profileId to ConnectorSDKCallbackMetadata
+
 ## 3.2.2
 
 ### Patch Changes
