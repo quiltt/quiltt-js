@@ -1,5 +1,16 @@
 # @quiltt/react
 
+## 3.3.0
+
+### Minor Changes
+
+- 2a6410f: Add profileId to ConnectorSDKCallbackMetadata
+
+### Patch Changes
+
+- Updated dependencies [2a6410f]
+  - @quiltt/core@3.3.0
+
 ## 3.2.2
 
 ### Patch Changes
