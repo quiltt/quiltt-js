@@ -52,6 +52,14 @@ export const useQuilttConnector = (
     return () => connector.offLoad(options.onLoad as any)
   }, [connector, options?.onLoad])
 
+  // onAuthenticate
+  useEffect(() => {
+    if (!connector || !options?.onAuthenticate) return
+
+    connector.onAuthenticate(options.onAuthenticate)
+    return () => connector.offAuthenticate(options.onAuthenticate as any)
+  }, [connector, options?.onAuthenticate])
+
   // onExit
   useEffect(() => {
     if (!connector || !options?.onExit) return

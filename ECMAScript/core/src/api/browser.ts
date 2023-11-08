@@ -1,6 +1,7 @@
 interface CallbackManager {
   onEvent(callback: ConnectorSDKOnEventCallback): void
   onLoad(callback: ConnectorSDKOnLoadCallback): void
+  onAuthenticate(callback: ConnectorSDKOnAuthenticateCallback): void
   onExit(callback: ConnectorSDKOnEventExitCallback): void
   onExitSuccess(callback: ConnectorSDKOnExitSuccessCallback): void
   onExitAbort(callback: ConnectorSDKOnExitAbortCallback): void
@@ -9,6 +10,7 @@ interface CallbackManager {
   // Because it's well within React behavior to try to register a billion functions
   offEvent(callback: ConnectorSDKOnEventCallback): void
   offLoad(callback: ConnectorSDKOnLoadCallback): void
+  offAuthenticate(callback: ConnectorSDKOnAuthenticateCallback): void
   offExit(callback: ConnectorSDKOnEventExitCallback): void
   offExitSuccess(callback: ConnectorSDKOnExitSuccessCallback): void
   offExitAbort(callback: ConnectorSDKOnExitAbortCallback): void
@@ -36,6 +38,7 @@ export interface ConnectorSDKConnector extends CallbackManager {
 export type ConnectorSDKCallbacks = {
   onEvent?: ConnectorSDKOnEventCallback
   onLoad?: ConnectorSDKOnLoadCallback
+  onAuthenticate?: ConnectorSDKOnAuthenticateCallback
   onExit?: ConnectorSDKOnEventExitCallback
   onExitSuccess?: ConnectorSDKOnExitSuccessCallback
   onExitAbort?: ConnectorSDKOnExitAbortCallback
@@ -48,6 +51,7 @@ export type ConnectorSDKOnEventCallback = (
 ) => void
 
 export type ConnectorSDKOnLoadCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+export type ConnectorSDKOnAuthenticateCallback = (metadata: ConnectorSDKCallbackMetadata) => void
 
 export type ConnectorSDKOnEventExitCallback = (
   type: ConnectorSDKEventType,
@@ -60,6 +64,7 @@ export type ConnectorSDKOnExitErrorCallback = (metadata: ConnectorSDKCallbackMet
 
 export enum ConnectorSDKEventType {
   Load = 'loaded',
+  Authenticate = 'authenticated',
   ExitSuccess = 'exited.successful',
   ExitAbort = 'exited.aborted',
   ExitError = 'exited.errored',
@@ -68,6 +73,7 @@ export enum ConnectorSDKEventType {
 export type ConnectorSDKCallbackMetadata = {
   connectorId: string
   connectionId?: string
+  profileId?: string
 }
 
 export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks
