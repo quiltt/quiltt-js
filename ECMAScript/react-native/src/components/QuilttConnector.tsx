@@ -73,7 +73,7 @@ export const QuilttConnector = ({
 
     const eventType = url.host
     switch (eventType) {
-      case 'Loaded':
+      case 'Load':
         initInjectedJavaScript()
         onEvent?.(ConnectorSDKEventType.Load, metadata)
         onLoad?.(metadata)
