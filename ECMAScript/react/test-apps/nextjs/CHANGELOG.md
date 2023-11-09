@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.1
+
+### Patch Changes
+
+- 9bfbc03: Match eventType with MessageType in react native sdk
+- Updated dependencies [9bfbc03]
+  - @quiltt/react@3.3.1
+
 ## 2.2.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.3.1
+
+### Patch Changes
+
+- 9bfbc03: Match eventType with MessageType in react native sdk
+- Updated dependencies [9bfbc03]
+  - @quiltt/core@3.3.1
+
 ## 3.3.0
 
 ### Minor Changes
