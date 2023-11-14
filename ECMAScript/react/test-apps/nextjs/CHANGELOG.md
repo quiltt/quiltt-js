@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.2
+
+### Patch Changes
+
+- 4a9118b: React Native sdk to support Plaid Oauth url
+- Updated dependencies [4a9118b]
+  - @quiltt/react@3.3.2
+
 ## 2.2.1
 
 ### Patch Changes
