@@ -54,11 +54,15 @@ export const QuilttConnector = ({
 
   const eventHandler = (request: ShouldStartLoadRequest) => {
     const url = new URL(request.url)
+    if (url.host.includes('quiltt')) return true
     if (url.protocol === 'quilttconnector:') {
       handleQuilttEvent(url)
       return false
     }
-    return true
+    // Plaid set oauth url by doing window.location.href = url
+    // This is the only way I know to handle this.
+    handleOAuthUrl(url.href)
+    return false
   }
 
   const clearLocalStorage = () => {
@@ -97,13 +101,15 @@ export const QuilttConnector = ({
         onExitSuccess?.(metadata)
         break
       case 'OauthRequested':
-        Linking.openURL(url.searchParams.get('oauthUrl') as string)
+        handleOAuthUrl(url.searchParams.get('oauthUrl') as string)
         break
       default:
         console.log('unhandled event', url)
         break
     }
   }
+
+  const handleOAuthUrl = (oauthUrl: string) => Linking.openURL(oauthUrl)
 
   return (
     <AndroidSafeAreaView>
