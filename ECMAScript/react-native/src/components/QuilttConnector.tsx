@@ -52,7 +52,9 @@ export const QuilttConnector = ({
     webViewRef.current?.injectJavaScript(script)
   }, [connectionId, connectorId, session?.token])
 
-  // Convert it to a list from Quiltt Server to prevent MX changes
+  // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
+  // For other urls, we assume those are bank urls, which needs to be handle in external browser.
+  // @todo Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
   const allowedListUrl = [
     'quiltt.app',
     'quiltt.dev',
