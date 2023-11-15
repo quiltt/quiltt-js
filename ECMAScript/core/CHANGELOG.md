@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.3
+
+### Patch Changes
+
+- 48a50d0: Fix handle plaid oauth link bug
+
 ## 3.3.2
 
 ### Patch Changes

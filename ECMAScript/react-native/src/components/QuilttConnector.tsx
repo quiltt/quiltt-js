@@ -52,16 +52,27 @@ export const QuilttConnector = ({
     webViewRef.current?.injectJavaScript(script)
   }, [connectionId, connectorId, session?.token])
 
-  const eventHandler = (request: ShouldStartLoadRequest) => {
+  // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
+  // For other urls, we assume those are bank urls, which needs to be handle in external browser.
+  // @todo Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
+  const allowedListUrl = [
+    'quiltt.app',
+    'quiltt.dev',
+    'moneydesktop.com',
+    'cdn.plaid.com/link/v2/stable/link.html',
+  ]
+  const shouldRender = (url: URL) => allowedListUrl.some((href) => url.href.includes(href))
+
+  const requestHandler = (request: ShouldStartLoadRequest) => {
     const url = new URL(request.url)
-    if (url.host.includes('quiltt')) return true
+    if (shouldRender(url)) return true
     if (url.protocol === 'quilttconnector:') {
       handleQuilttEvent(url)
       return false
     }
     // Plaid set oauth url by doing window.location.href = url
     // This is the only way I know to handle this.
-    handleOAuthUrl(url.href)
+    handleOAuthUrl(url)
     return false
   }
 
@@ -100,8 +111,11 @@ export const QuilttConnector = ({
         onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
         onExitSuccess?.(metadata)
         break
+      case 'Authenticate':
+        // @todo handle Authenticate
+        break
       case 'OauthRequested':
-        handleOAuthUrl(url.searchParams.get('oauthUrl') as string)
+        handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
         break
       default:
         console.log('unhandled event', url)
@@ -109,7 +123,15 @@ export const QuilttConnector = ({
     }
   }
 
-  const handleOAuthUrl = (oauthUrl: string) => Linking.openURL(oauthUrl)
+  const handleOAuthUrl = async (oauthUrl: URL) => {
+    if (oauthUrl.protocol !== 'https:') {
+      console.log(`handleOAuthUrl - Skipping non https url - ${oauthUrl.href}`)
+      return
+    }
+    if (await Linking.canOpenURL(oauthUrl.href)) {
+      Linking.openURL(oauthUrl.href)
+    }
+  }
 
   return (
     <AndroidSafeAreaView>
@@ -117,7 +139,7 @@ export const QuilttConnector = ({
         ref={webViewRef}
         originWhitelist={['https://*', 'quilttconnector://*']} // Maybe relax this to *?
         source={{ uri: connectorUrl }}
-        onShouldStartLoadWithRequest={eventHandler}
+        onShouldStartLoadWithRequest={requestHandler}
         javaScriptEnabled
         domStorageEnabled // To enable localStorage in Android webview
         webviewDebuggingEnabled // Not sure if this works
