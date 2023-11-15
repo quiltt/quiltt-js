@@ -1,5 +1,14 @@
 # @quiltt/react-native
 
+## 3.3.3
+
+### Patch Changes
+
+- 48a50d0: Fix handle plaid oauth link bug
+- Updated dependencies [48a50d0]
+  - @quiltt/core@3.3.3
+  - @quiltt/react@3.3.3
+
 ## 3.3.2
 
 ### Patch Changes
