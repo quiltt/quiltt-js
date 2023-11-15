@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.3
+
+### Patch Changes
+
+- 48a50d0: Fix handle plaid oauth link bug
+- Updated dependencies [48a50d0]
+  - @quiltt/react@3.3.3
+
 ## 2.2.2
 
 ### Patch Changes
