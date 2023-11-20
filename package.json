@@ -15,8 +15,9 @@
     "cypress": "turbo run cypress",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "version": "npx changeset version",
-    "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'"
+    "version": "npx changeset version && pnpm run sync_flutter",
+    "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'",
+    "sync_flutter": "node sync_flutter.js"
   },
   "devDependencies": {
     "@changesets/cli": "2.26.2",
