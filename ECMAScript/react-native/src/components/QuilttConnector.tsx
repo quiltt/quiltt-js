@@ -142,7 +142,7 @@ export const QuilttConnector = ({
         onShouldStartLoadWithRequest={requestHandler}
         javaScriptEnabled
         domStorageEnabled // To enable localStorage in Android webview
-        webviewDebuggingEnabled // Not sure if this works
+        setBuiltInZoomControls={false} // Setting this to false will prevent the use of a pinch gesture to control zooming in Android
       />
     </AndroidSafeAreaView>
   )
