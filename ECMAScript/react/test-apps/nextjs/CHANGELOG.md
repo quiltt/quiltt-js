@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.4
+
+### Patch Changes
+
+- b659537: Fix MX OAuth and move some lib into peer dependencies
+- Updated dependencies [b659537]
+  - @quiltt/react@3.3.4
+
 ## 2.2.3
 
 ### Patch Changes
