@@ -1,5 +1,14 @@
 # @quiltt/react-native
 
+## 3.3.4
+
+### Patch Changes
+
+- b659537: Fix MX OAuth and move some lib into peer dependencies
+- Updated dependencies [b659537]
+  - @quiltt/core@3.3.4
+  - @quiltt/react@3.3.4
+
 ## 3.3.3
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/react-native",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "React Native components for Quiltt Connector",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
