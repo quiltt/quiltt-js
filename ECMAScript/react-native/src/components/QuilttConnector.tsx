@@ -61,15 +61,18 @@ export const QuilttConnector = ({
     'moneydesktop.com',
     'cdn.plaid.com/link/v2/stable/link.html',
   ]
-  const shouldRender = (url: URL) => allowedListUrl.some((href) => url.href.includes(href))
+  const shouldRender = (url: URL) => {
+    if (url.protocol === 'quilttconnector:') return false
+    return allowedListUrl.some((href) => url.href.includes(href))
+  }
 
   const requestHandler = (request: ShouldStartLoadRequest) => {
     const url = new URL(request.url)
-    if (shouldRender(url)) return true
     if (url.protocol === 'quilttconnector:') {
       handleQuilttEvent(url)
       return false
     }
+    if (shouldRender(url)) return true
     // Plaid set oauth url by doing window.location.href = url
     // This is the only way I know to handle this.
     handleOAuthUrl(url)
@@ -115,6 +118,7 @@ export const QuilttConnector = ({
         // @todo handle Authenticate
         break
       case 'OauthRequested':
+        console.log('OauthRequested')
         handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
         break
       default:
