@@ -62,13 +62,13 @@ export const QuilttConnector = ({
     'cdn.plaid.com/link/v2/stable/link.html',
   ]
   const shouldRender = (url: URL) => {
-    if (url.protocol === 'quilttconnector:') return false
+    if (isQuilttEvent(url)) return false
     return allowedListUrl.some((href) => url.href.includes(href))
   }
 
   const requestHandler = (request: ShouldStartLoadRequest) => {
     const url = new URL(request.url)
-    if (url.protocol === 'quilttconnector:') {
+    if (isQuilttEvent(url)) {
       handleQuilttEvent(url)
       return false
     }
@@ -83,6 +83,8 @@ export const QuilttConnector = ({
     const script = 'localStorage.clear();'
     webViewRef.current?.injectJavaScript(script)
   }
+
+  const isQuilttEvent = (url: URL) => url.protocol === 'quilttconnector:'
 
   const handleQuilttEvent = (url: URL) => {
     url.searchParams.delete('source')
@@ -118,7 +120,6 @@ export const QuilttConnector = ({
         // @todo handle Authenticate
         break
       case 'OauthRequested':
-        console.log('OauthRequested')
         handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
         break
       default:
