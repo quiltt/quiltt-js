@@ -20,7 +20,7 @@ export interface ConnectorSDK extends CallbackManager {
   connect(connectorId: string, options?: ConnectorSDKConnectOptions): ConnectorSDKConnector
   reconnect(connectorId: string, options: ConnectorSDKReconnectOptions): ConnectorSDKConnector
 
-  reset(): void
+  reset(): void // For Test and Development Use
 }
 
 export interface ConnectorSDKConnector extends CallbackManager {
