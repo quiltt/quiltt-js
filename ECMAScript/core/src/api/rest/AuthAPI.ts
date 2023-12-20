@@ -106,7 +106,7 @@ export class AuthAPI {
 
     return {
       session: {
-        deploymentId: this.clientId, // Rename API?
+        clientId: this.clientId,
         ...payload,
       },
     }
