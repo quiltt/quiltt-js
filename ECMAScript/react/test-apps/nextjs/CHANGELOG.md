@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.5
+
+### Patch Changes
+
+- f633be3: [Internal] Rename Deployments to Clients in Auth
+- Updated dependencies [f633be3]
+  - @quiltt/react@3.3.5
+
 ## 2.2.4
 
 ### Patch Changes

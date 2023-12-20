@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.3.5
+
+### Patch Changes
+
+- f633be3: [Internal] Rename Deployments to Clients in Auth
+- Updated dependencies [f633be3]
+  - @quiltt/core@3.3.5
+
 ## 3.3.4
 
 ### Patch Changes
