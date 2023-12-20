@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.5
+
+### Patch Changes
+
+- f633be3: [Internal] Rename Deployments to Clients in Auth
+
 ## 3.3.4
 
 ### Patch Changes
