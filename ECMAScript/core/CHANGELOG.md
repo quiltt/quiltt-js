@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.4
+
+### Patch Changes
+
+- b659537: Fix MX OAuth and move some lib into peer dependencies
+
 ## 3.3.3
 
 ### Patch Changes

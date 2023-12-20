@@ -143,13 +143,13 @@ importers:
         specifier: workspace:*
         version: link:../react
       core-js:
-        specifier: 3.33.2
+        specifier: ^3.26.0
         version: 3.33.2
       react-native:
         specifier: ^0.72.5
         version: 0.72.5(@babel/core@7.23.2)(@babel/preset-env@7.23.2)(react@18.2.0)
       react-native-webview:
-        specifier: 13.6.2
+        specifier: ^13.0.0
         version: 13.6.2(react-native@0.72.5)(react@18.2.0)
     devDependencies:
       '@apollo/client':

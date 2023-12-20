@@ -1672,10 +1672,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@quiltt/core@3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@quiltt/core/-/core-3.2.2.tgz#3e8cd678aa09d49de75e79de7c0bb77c889d6afc"
-  integrity sha512-UFVUPB/kLlc1QHd3YHc6Rq/3oIPNymzYvoAWOUOf72CutT5dSzIf4EYSEKG02TlBo+491h9nsGxOodABFBDF1Q==
+"@quiltt/core@3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@quiltt/core/-/core-3.3.3.tgz#ff3bdb2d8fda8ed2bf7ccb99c1312f50d7e276f5"
+  integrity sha512-CBMtl6SO2SkloRGLYqI6yyg1w6O3i6cBJj7aTT4BJm3J/THQ5LjD2n6ZvQVd2xCcWa6/VtbCLoCx7S+kEE4YsQ==
   dependencies:
     "@apollo/client" "^3.7.16"
     axios "^1.4.0"
@@ -1683,22 +1683,12 @@
     graphql "^16.8.1"
     graphql-ruby-client "^1.11.8"
 
-"@quiltt/react-native@3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@quiltt/react-native/-/react-native-3.2.2.tgz#a1846b15d17cd0764efd6d5a22c9f24c40da4e5f"
-  integrity sha512-wUD177WqF/tPhh97nNWHNkuqkbjxeLClvX7FV31XE6BnfUMCxOw0TYuAe3LYQVeCOdv+Y1EuE1qBHHy87u3wDQ==
+"@quiltt/react@3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@quiltt/react/-/react-3.3.3.tgz#56035182c09537c2a8852c6278d1a735647416ae"
+  integrity sha512-b0uwqdu+X10C66fGWM9SoySakwvJ9ZCIO9vXkz1lhad6JAqOi3JT/3NfBFZTu+O4fT2Ej9+1L1QMAW2HViE0aA==
   dependencies:
-    "@quiltt/core" "3.2.2"
-    "@quiltt/react" "3.2.2"
-    core-js "3.33.2"
-    react-native-webview "13.6.2"
-
-"@quiltt/react@3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@quiltt/react/-/react-3.2.2.tgz#9b9a7a146f3936c1a8749b164e9aa21b60573f72"
-  integrity sha512-rrBvYuoNv8Rd5c5NAJcWGtwdAccwDAaKJgxnn/thMnYDAIHtQaZkmqHnqgDU4utlFDeRDyTaHWvXrbhYlUbZkg==
-  dependencies:
-    "@quiltt/core" "3.2.2"
+    "@quiltt/core" "3.3.3"
 
 "@react-native-community/cli-clean@11.3.7":
   version "11.3.7"
@@ -5523,10 +5513,10 @@ react-native-screens@~3.22.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-webview@13.6.2:
-  version "13.6.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.6.2.tgz#0a9b18793e915add5b5dbdbf32509d7751b49167"
-  integrity sha512-QzhQ5JCU+Nf2W285DtvCZOVQy/MkJXMwNDYPZvOWQbAOgxJMSSO+BtqXTMA1UPugDsko6PxJ0TxSlUwIwJijDg==
+react-native-webview@13.2.2:
+  version "13.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.2.2.tgz#06b04db8e1f4ed57a9dc92f4094aa0e41271b89b"
+  integrity sha512-uT70y2GUqQzaj2RwRb/QuKRdXeDjXM6oN3DdPqYQlOOMFTCT8r62fybyjVVRoik8io+KLa5KnmuSoS5B2O1BmA==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"

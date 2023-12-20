@@ -20,7 +20,7 @@ export type RegisteredClaims = {
 export type PrivateClaims = {
   oid: string // Organization ID
   eid: string // Environment ID
-  did: string // Deployment ID
+  cid: string // Client ID
   aid: string // Administrator ID
   ver: number // Session Token Version
 }
