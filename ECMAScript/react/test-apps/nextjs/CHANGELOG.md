@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.6
+
+### Patch Changes
+
+- bb47eb5: Retry GraphQL requests on Network Errors
+- Updated dependencies [bb47eb5]
+  - @quiltt/react@3.3.6
+
 ## 2.2.5
 
 ### Patch Changes
