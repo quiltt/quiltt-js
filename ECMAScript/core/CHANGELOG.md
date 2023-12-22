@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.6
+
+### Patch Changes
+
+- bb47eb5: Retry GraphQL requests on Network Errors
+
 ## 3.3.5
 
 ### Patch Changes

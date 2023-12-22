@@ -1,5 +1,13 @@
 # @quiltt/react
 
+## 3.3.6
+
+### Patch Changes
+
+- bb47eb5: Retry GraphQL requests on Network Errors
+- Updated dependencies [bb47eb5]
+  - @quiltt/core@3.3.6
+
 ## 3.3.5
 
 ### Patch Changes
