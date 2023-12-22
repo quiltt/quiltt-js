@@ -4,12 +4,12 @@ on: push
 
 jobs:
   build:
-    name: "Validate with Node ${{ matrix.node-version }}"
+    name: 'Validate with Node ${{ matrix.node-version }}'
     runs-on: buildjet-2vcpu-ubuntu-2204
     strategy:
       fail-fast: false
       matrix:
-        node-version: ["current", "18", "16"]
+        node-version: ['current', '18']
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          check-latest: true
 
       - name: Install dependencies
         run: pnpm install
