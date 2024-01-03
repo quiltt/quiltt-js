@@ -10,23 +10,14 @@
 `@quiltt/react-native` expects `react`, `react-native`,`react-native-webview`, `base-64` and `react-native-url-polyfill` as peer dependencies.
 
 ```shell
-$ npm install react-native-webview
-$ npm install base-64
-$ npm install react-native-url-polyfill
-$ npm install @quiltt/react
+$ npm install base-64 react-native-webview react-native-url-polyfill
 $ npm install @quiltt/react-native
 # or
-$ yarn add react-native-webview
-$ yarn add base-64
-$ yarn add react-native-url-polyfill
-$ yarn add @quiltt/react
+$ yarn add base-64 react-native-webview react-native-url-polyfill
 $ yarn add @quiltt/react-native
 # or
 # Please note that you will need to add `node-linker=hoisted` in `.npmrc` if you are using pnpm in expo app.`
-$ pnpm add react-native-webview
-$ pnpm add base-64
-$ pnpm add react-native-url-polyfill
-$ pnpm add @quiltt/react
+$ pnpm add base-64 react-native-webview react-native-url-polyfill
 $ pnpm add @quiltt/react-native
 ```
 
