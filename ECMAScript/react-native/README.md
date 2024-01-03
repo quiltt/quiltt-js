@@ -27,6 +27,7 @@ $ pnpm add react-native-webview
 $ pnpm add base-64
 $ pnpm add react-native-url-polyfill
 $ pnpm add @quiltt/react
+$ pnpm add @quiltt/react-native
 ```
 
 ### QuilttConnector
