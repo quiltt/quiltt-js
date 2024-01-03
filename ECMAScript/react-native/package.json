@@ -26,8 +26,9 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-native": "^0.72.5",
-    "core-js": "^3.26.0",
-    "react-native-webview": "^13.0.0"
+    "react-native-webview": "^13.0.0",
+    "base-64": "*",
+    "react-native-url-polyfill": "*"
   },
   "dependencies": {
     "@quiltt/core": "workspace:*",
