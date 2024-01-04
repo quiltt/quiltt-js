@@ -1,5 +1,14 @@
 # @quiltt/react-native
 
+## 3.3.7
+
+### Patch Changes
+
+- 13bdf9f: Fix URL and atob polyfill
+- Updated dependencies [13bdf9f]
+  - @quiltt/core@3.3.7
+  - @quiltt/react@3.3.7
+
 ## 3.3.6
 
 ### Patch Changes
