@@ -142,12 +142,15 @@ importers:
       '@quiltt/react':
         specifier: workspace:*
         version: link:../react
-      core-js:
-        specifier: ^3.26.0
-        version: 3.33.2
+      base-64:
+        specifier: '*'
+        version: 0.1.0
       react-native:
         specifier: ^0.72.5
         version: 0.72.5(@babel/core@7.23.2)(@babel/preset-env@7.23.2)(react@18.2.0)
+      react-native-url-polyfill:
+        specifier: '*'
+        version: 1.0.0(react-native@0.72.5)
       react-native-webview:
         specifier: ^13.0.0
         version: 13.6.2(react-native@0.72.5)(react@18.2.0)
@@ -158,6 +161,9 @@ importers:
       '@trivago/prettier-plugin-sort-imports':
         specifier: 4.1.1
         version: 4.1.1(prettier@2.8.8)
+      '@types/base-64':
+        specifier: 0.1.0
+        version: 0.1.0
       '@types/node':
         specifier: 18.16.18
         version: 18.16.18
@@ -2724,6 +2730,10 @@ packages:
       - supports-color
     dev: true
 
+  /@types/base-64@0.1.0:
+    resolution: {integrity: sha512-2UmyGiKL5JE9y6KZ2PT1AEzIwcwHthSUAxkwQWjxM+rsSFNDYqsVM7v9BZHAzH0mdZVBr9gM7c32H7mosj74VQ==}
+    dev: true
+
   /@types/is-ci@3.0.0:
     resolution: {integrity: sha512-Q0Op0hdWbYd1iahB+IFNQcWXFq4O0Q5MwQP7uN0souuQ4rPg1vEYcnIOfr1gY+M+6rc8FGoRaBO1mOOvL29sEQ==}
     dependencies:
@@ -3484,6 +3494,10 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
+  /base-64@0.1.0:
+    resolution: {integrity: sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==}
+    dev: false
+
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
@@ -3907,11 +3921,6 @@ packages:
     resolution: {integrity: sha512-6pYKNOgD/j/bkC5xS5IIg6bncid3rfrI42oBH1SQJbsmYPKF7rhzcFzYCcxYMmNQQ0rCEB8WqpW7QHndOggaeQ==}
     dependencies:
       browserslist: 4.22.1
-
-  /core-js@3.33.2:
-    resolution: {integrity: sha512-XeBzWI6QL3nJQiHmdzbAOiMYqjrb7hwU7A39Qhvd/POSa/t9E1AeZyEZx3fNvp/vtM8zXwhoL0FsiS0hD0pruQ==}
-    requiresBuild: true
-    dev: false
 
   /core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
@@ -6396,7 +6405,6 @@ packages:
 
   /lodash.sortby@4.7.0:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
-    dev: true
 
   /lodash.startcase@4.4.0:
     resolution: {integrity: sha512-+WKqsK294HMSc2jEbNgpHpd0JfIBhp7rEV4aqXWqFr6AlXov+SlcgB1Fv01y2kGe3Gc8nMW7VA0SrGuSkRfIEg==}
@@ -7630,6 +7638,16 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
+  /react-native-url-polyfill@1.0.0(react-native@0.72.5):
+    resolution: {integrity: sha512-ei4o0kcZNaV2oYtxesmJDm7cuTpMj428cTcAV4UY8eDA4GuG1TivQBzZxurTlIL4kEz+2pa1P/DEfxt1wDIMNA==}
+    peerDependencies:
+      react-native: '*'
+    dependencies:
+      buffer: 5.7.1
+      react-native: 0.72.5(@babel/core@7.23.2)(@babel/preset-env@7.23.2)(react@18.2.0)
+      whatwg-url-without-unicode: 7.1.0
+    dev: false
 
   /react-native-webview@13.6.2(react-native@0.72.5)(react@18.2.0):
     resolution: {integrity: sha512-QzhQ5JCU+Nf2W285DtvCZOVQy/MkJXMwNDYPZvOWQbAOgxJMSSO+BtqXTMA1UPugDsko6PxJ0TxSlUwIwJijDg==}
@@ -9051,10 +9069,16 @@ packages:
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
-    dev: true
 
   /whatwg-fetch@3.6.19:
     resolution: {integrity: sha512-d67JP4dHSbm2TrpFj8AbO8DnL1JXL5J9u0Kq2xW6d0TFDbCA3Muhdt8orXC22utleTVj7Prqt82baN6RBvnEgw==}
+
+  /whatwg-url-without-unicode@7.1.0:
+    resolution: {integrity: sha512-8AHNyrFnj42Vm/QpaXwf+0Uo6NToTL6fk6Yi58e83/UEErHamsokD/zqxE9wXyWW2FwIH83hw3qZ12TIP89a6Q==}
+    dependencies:
+      lodash.sortby: 4.7.0
+      webidl-conversions: 4.0.2
+    dev: false
 
   /whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}

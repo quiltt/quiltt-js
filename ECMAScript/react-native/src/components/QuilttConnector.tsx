@@ -6,6 +6,9 @@ import {
 import { useCallback, useRef } from 'react'
 import { Linking } from 'react-native'
 import { WebView } from 'react-native-webview'
+// React Native's URL implementation is incomplete
+// https://github.com/facebook/react-native/issues/16434
+import { URL } from 'react-native-url-polyfill'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 import { useQuilttSession } from '@quiltt/react'

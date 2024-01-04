@@ -26,8 +26,9 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-native": "^0.72.5",
-    "core-js": "^3.26.0",
-    "react-native-webview": "^13.0.0"
+    "react-native-webview": "^13.0.0",
+    "base-64": "*",
+    "react-native-url-polyfill": "*"
   },
   "dependencies": {
     "@quiltt/core": "workspace:*",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@apollo/client": "3.7.16",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
+    "@types/base-64": "0.1.0",
     "@types/node": "18.16.18",
     "@types/react": "18.2.7",
     "@types/react-native": "0.72.5",

@@ -9,7 +9,8 @@
     "**/*.mjs",
     "**/*.cjs",
     "**/*.json",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "declarations.d.ts"
   ],
   "exclude": [
     "example/**/*",
