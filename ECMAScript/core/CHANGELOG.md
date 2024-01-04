@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.7
+
+### Patch Changes
+
+- 13bdf9f: Fix URL and atob polyfill
+
 ## 3.3.6
 
 ### Patch Changes

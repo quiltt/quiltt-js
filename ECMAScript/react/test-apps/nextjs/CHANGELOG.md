@@ -1,5 +1,13 @@
 # nextjs
 
+## 2.2.7
+
+### Patch Changes
+
+- 13bdf9f: Fix URL and atob polyfill
+- Updated dependencies [13bdf9f]
+  - @quiltt/react@3.3.7
+
 ## 2.2.6
 
 ### Patch Changes
