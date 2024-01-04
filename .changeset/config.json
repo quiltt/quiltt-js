@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
   "changelog": "@changesets/changelog-git",
   "commit": false,
-  "fixed": [],
+  "fixed": [["@quiltt/core", "@quiltt/react", "@quiltt/react-native"]],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
