@@ -1,5 +1,11 @@
 # nextjs
 
+## 3.0.0
+
+### Major Changes
+
+- [#180](https://github.com/quiltt/quiltt-public/pull/180) [`1ea994b`](https://github.com/quiltt/quiltt-public/commit/1ea994b7484edad336183cec6af0657ad301e336) Thanks [@dependabot](https://github.com/apps/dependabot)! - Bump follow-redirects
+
 ## 2.2.7
 
 ### Patch Changes
