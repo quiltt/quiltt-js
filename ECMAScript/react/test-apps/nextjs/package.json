@@ -10,8 +10,11 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "cypress": "cypress open",
-    "test": "cypress run --component --browser chrome"
+    "cypress:install": "cypress install",
+    "cypress:open": "cypress open",
+    "cypress": "pnpm run cypress:install && pnpm run cypress:open",
+    "cypress:component": "pnpm run cypress:install && cypress run --component --browser chrome",
+    "test": "pnpm run cypress:component"
   },
   "dependencies": {
     "@quiltt/react": "workspace:*",
@@ -20,7 +23,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "20.3.3",
+    "@types/node": "20.11.4",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",

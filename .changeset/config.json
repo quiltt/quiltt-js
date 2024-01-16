@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
-  "changelog": "@changesets/changelog-git",
+  "changelog": "@changesets/changelog-github",
   "commit": false,
   "fixed": [["@quiltt/core", "@quiltt/react", "@quiltt/react-native"]],
   "linked": [],
