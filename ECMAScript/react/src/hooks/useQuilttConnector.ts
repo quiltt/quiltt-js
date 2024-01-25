@@ -3,15 +3,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useQuilttSession } from './useQuilttSession'
 import { useScript } from './useScript'
-import { ConnectorSDK, ConnectorSDKConnector, ConnectorSDKConnectorOptions } from '@quiltt/core'
-
-const QUILTT_CDN_BASE = (() => {
-  try {
-    return process.env.QUILTT_CDN_BASE || 'https://cdn.quiltt.io'
-  } catch {
-    return 'https://cdn.quiltt.io'
-  }
-})()
+import {
+  cdnBase,
+  ConnectorSDK,
+  ConnectorSDKConnector,
+  ConnectorSDKConnectorOptions,
+} from '@quiltt/core'
 
 declare const Quiltt: ConnectorSDK
 
@@ -19,7 +16,7 @@ export const useQuilttConnector = (
   connectorId?: string,
   options?: ConnectorSDKConnectorOptions
 ) => {
-  const status = useScript(`${QUILTT_CDN_BASE}/v1/connector.js`)
+  const status = useScript(`${cdnBase}/v1/connector.js`)
   const { session } = useQuilttSession()
   const [connector, setConnector] = useState<ConnectorSDKConnector>()
   const [isOpening, setIsOpening] = useState<boolean>(false)
