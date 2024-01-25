@@ -29,17 +29,9 @@ const protocolHttp = `http${QUILTT_API_INSECURE ? '' : 's'}`
 const protocolWebsockets = `ws${QUILTT_API_DOMAIN ? '' : 's'}`
 
 export const debugging = QUILTT_DEBUG
+export const version = `${packageName}: v${packageVersion}`
+
+export const cdnBase = `${protocolHttp}://cdn.${domain}`
 export const endpointAuth = `${protocolHttp}://auth.${domain}/v1/users/session`
 export const endpointGraphQL = `${protocolHttp}://api.${domain}/v1/graphql`
 export const endpointWebsockets = `${protocolWebsockets}://api.${domain}/websockets`
-export const version = `${packageName}: v${packageVersion}`
-
-const Config = {
-  debugging,
-  endpointAuth,
-  endpointGraphQL,
-  endpointWebsockets,
-  version,
-}
-
-export default Config
