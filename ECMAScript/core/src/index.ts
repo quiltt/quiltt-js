@@ -1,3 +1,4 @@
+export * from './configuration'
 export * from './JsonWebToken'
 export * from './Observable'
 export * from './Storage'
