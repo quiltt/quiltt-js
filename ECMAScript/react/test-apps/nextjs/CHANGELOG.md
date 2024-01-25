@@ -1,5 +1,14 @@
 # nextjs
 
+## 3.0.1
+
+### Patch Changes
+
+- [#185](https://github.com/quiltt/quiltt-public/pull/185) [`a3452da`](https://github.com/quiltt/quiltt-public/commit/a3452da3c7604902b5917e1f838e2dced42b708c) Thanks [@rubendinho](https://github.com/rubendinho)! - Fix Vite build error
+
+- Updated dependencies [[`a3452da`](https://github.com/quiltt/quiltt-public/commit/a3452da3c7604902b5917e1f838e2dced42b708c)]:
+  - @quiltt/react@3.3.8
+
 ## 3.0.0
 
 ### Major Changes
