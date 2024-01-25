@@ -5,7 +5,13 @@ import { useQuilttSession } from './useQuilttSession'
 import { useScript } from './useScript'
 import { ConnectorSDK, ConnectorSDKConnector, ConnectorSDKConnectorOptions } from '@quiltt/core'
 
-const QUILTT_CDN_BASE = process.env.QUILTT_CDN_BASE || 'https://cdn.quiltt.io'
+const QUILTT_CDN_BASE = (() => {
+  try {
+    return process.env.QUILTT_CDN_BASE || 'https://cdn.quiltt.io'
+  } catch {
+    return 'https://cdn.quiltt.io'
+  }
+})()
 
 declare const Quiltt: ConnectorSDK
 
