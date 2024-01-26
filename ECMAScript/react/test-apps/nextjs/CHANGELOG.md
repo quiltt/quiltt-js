@@ -1,5 +1,14 @@
 # nextjs
 
+## 3.0.2
+
+### Patch Changes
+
+- [#187](https://github.com/quiltt/quiltt-public/pull/187) [`02f37cd`](https://github.com/quiltt/quiltt-public/commit/02f37cda97f501f2d77601d0fd6b7fbbd1c71431) Thanks [@rubendinho](https://github.com/rubendinho)! - Export Quiltt config
+
+- Updated dependencies [[`02f37cd`](https://github.com/quiltt/quiltt-public/commit/02f37cda97f501f2d77601d0fd6b7fbbd1c71431)]:
+  - @quiltt/react@3.3.9
+
 ## 3.0.1
 
 ### Patch Changes
