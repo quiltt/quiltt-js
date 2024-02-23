@@ -136,9 +136,7 @@ export const QuilttConnector = ({
       console.log(`handleOAuthUrl - Skipping non https url - ${oauthUrl.href}`)
       return
     }
-    if (await Linking.canOpenURL(oauthUrl.href)) {
-      Linking.openURL(oauthUrl.href)
-    }
+    Linking.openURL(oauthUrl.href)
   }
 
   return (
