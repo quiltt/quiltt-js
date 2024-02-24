@@ -131,7 +131,7 @@ export const QuilttConnector = ({
     }
   }
 
-  const handleOAuthUrl = async (oauthUrl: URL) => {
+  const handleOAuthUrl = (oauthUrl: URL) => {
     if (oauthUrl.protocol !== 'https:') {
       console.log(`handleOAuthUrl - Skipping non https url - ${oauthUrl.href}`)
       return
