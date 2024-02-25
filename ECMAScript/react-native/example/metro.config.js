@@ -24,7 +24,7 @@ module.exports = {
     extraNodeModules: new Proxy(
       {},
       {
-        get: (target, name) =>
+        get: (_target, name) =>
           name in siblings ? siblings[name] : resolve(process.cwd(), 'node_modules', name),
       }
     ),
