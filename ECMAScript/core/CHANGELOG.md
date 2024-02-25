@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.3.10
+
+### Patch Changes
+
+- [#190](https://github.com/quiltt/quiltt-public/pull/190) [`21ead66`](https://github.com/quiltt/quiltt-public/commit/21ead662e7626f906562f952c9d1c0bc2c859985) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Fix Android App with Chase app installed not able to launch Chase app
+
 ## 3.3.9
 
 ### Patch Changes
