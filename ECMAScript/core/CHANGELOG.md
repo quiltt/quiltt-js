@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.4.0
+
+### Minor Changes
+
+- [#191](https://github.com/quiltt/quiltt-public/pull/191) [`58c8f0c`](https://github.com/quiltt/quiltt-public/commit/58c8f0c5265dfa379263225baafb4552067514c6) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Add agent QSP for analytic
+
 ## 3.3.10
 
 ### Patch Changes
