@@ -38,9 +38,10 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "pnpm run addVersion && tsup",
     "clean": "rimraf .turbo dist",
     "dev": "tsup --watch",
+    "addVersion": "genversion --esm -f src/version.ts",
     "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },

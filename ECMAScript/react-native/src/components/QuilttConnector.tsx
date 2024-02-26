@@ -12,6 +12,7 @@ import { URL } from 'react-native-url-polyfill'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 import { useQuilttSession } from '@quiltt/react'
+import { version } from '../version'
 
 type QuilttConnectorProps = {
   connectorId: string
@@ -33,7 +34,7 @@ export const QuilttConnector = ({
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
   oauthRedirectUrl = encodeURIComponent(oauthRedirectUrl)
-  const connectorUrl = `https://${connectorId}.quiltt.app/?mode=webview&oauth_redirect_url=${oauthRedirectUrl}&sdk=react-native` // @todo append version from package.json
+  const connectorUrl = `https://${connectorId}.quiltt.app/?mode=webview&oauth_redirect_url=${oauthRedirectUrl}&agent=react-native-${version}`
 
   const initInjectedJavaScript = useCallback(() => {
     const script = `\

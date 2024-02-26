@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "[[ $CI = true ]] && npx pnpm@8 install --store=node_modules/.pnpm-store || echo skiping pnpm install; turbo run prebuild",
     "build": "turbo run build",
-    "changeset": "npx changeset",
+    "changeset": "pnpm -r exec pnpm run --if-present addVersion && npx changeset",
     "clean": "turbo run clean",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
@@ -22,6 +22,7 @@
     "@changesets/cli": "2.27.1",
     "@changesets/changelog-github": "0.5.0",
     "@types/node": "20.11.4",
+    "genversion": "3.2.0",
     "pnpm": "8.10.0",
     "turbo": "1.10.16"
   },
