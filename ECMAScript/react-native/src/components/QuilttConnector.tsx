@@ -34,7 +34,7 @@ export const QuilttConnector = ({
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
   oauthRedirectUrl = encodeURIComponent(oauthRedirectUrl)
-  const connectorUrl = `https://${connectorId}.quiltt.app/?mode=webview&oauth_redirect_url=${oauthRedirectUrl}&sdk=react-native&version=${version}`
+  const connectorUrl = `https://${connectorId}.quiltt.app/?mode=webview&oauth_redirect_url=${oauthRedirectUrl}&agent=react-native-${version}`
 
   const initInjectedJavaScript = useCallback(() => {
     const script = `\
