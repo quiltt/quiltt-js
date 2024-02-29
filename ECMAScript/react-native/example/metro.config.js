@@ -8,7 +8,7 @@ const { resolve } = require('path')
 
 const siblings = {
   // Enable this to import local package
-  // '@quiltt/react-native': resolve(__dirname, '..', 'src'),
+  '@quiltt/react-native': resolve(__dirname, '..', 'src'),
 }
 
 module.exports = {

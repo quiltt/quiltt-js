@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@quiltt/react": "3.3.3",
-    "@quiltt/react-native": "3.3.3",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.16",
+    "@honeybadger-io/core": "6.5.1",
     "base-64": "^1.0.0",
     "expo": "~49.0.15",
     "expo-linking": "~5.0.2",

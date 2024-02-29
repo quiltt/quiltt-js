@@ -3,8 +3,8 @@ import {
   ConnectorSDKCallbacks,
   ConnectorSDKEventType,
 } from '@quiltt/core'
-import { useCallback, useRef } from 'react'
-import { Linking } from 'react-native'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Linking, View, Text, ActivityIndicator, Platform } from 'react-native'
 import { WebView } from 'react-native-webview'
 // React Native's URL implementation is incomplete
 // https://github.com/facebook/react-native/issues/16434
@@ -12,13 +12,24 @@ import { URL } from 'react-native-url-polyfill'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 import { useQuilttSession } from '@quiltt/react'
+import { ErrorReporter } from '../utils/ErrorReporter'
+
 import { version } from '../version'
+
+const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 
 type QuilttConnectorProps = {
   connectorId: string
   connectionId?: string
   oauthRedirectUrl: string
 } & ConnectorSDKCallbacks
+
+type PreFlightCheck = {
+  checked: boolean
+  error?: string
+}
+
+const PREFLIGHT_RETRY_COUNT = 3
 
 export const QuilttConnector = ({
   connectorId,
@@ -35,6 +46,55 @@ export const QuilttConnector = ({
   const { session } = useQuilttSession()
   oauthRedirectUrl = encodeURIComponent(oauthRedirectUrl)
   const connectorUrl = `https://${connectorId}.quiltt.app/?mode=webview&oauth_redirect_url=${oauthRedirectUrl}&agent=react-native-${version}`
+  console.log('connectorUrl', connectorUrl)
+  const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
+
+  const checkConnectorUrl = useCallback(
+    async (retryCount = 0): Promise<PreFlightCheck> => {
+      try {
+        const response = await fetch(connectorUrl)
+        if (!response.ok) {
+          console.error(`The URL ${connectorUrl} is not routable.`)
+          // Make retryCount a constant
+          // backoff by delay
+          if (retryCount < PREFLIGHT_RETRY_COUNT) {
+            await new Promise((resolve) => setTimeout(resolve, 50 * retryCount)) // delay for 50ms for each retry
+            console.log(`Retrying... Attempt number ${retryCount + 1}`)
+            return checkConnectorUrl(retryCount + 1)
+          }
+          errorReporter.send(
+            new Error(
+              `Retry exhausted, failed to fetch connectorUrl: ${connectorUrl}, status: ${response.status}`
+            )
+          )
+          return { checked: true, error: 'Failed to reach connector url.' }
+        }
+        console.log(`The URL ${connectorUrl} is routable.`)
+        return { checked: true }
+      } catch (error) {
+        console.error(`An error occurred while checking the connector URL: ${error}`)
+        // Retry logic in case of error
+        if (retryCount < PREFLIGHT_RETRY_COUNT) {
+          await new Promise((resolve) => setTimeout(resolve, 50 * retryCount)) // delay for 50ms for each retry
+          console.log(`Retrying... Attempt number ${retryCount + 1}`)
+          return checkConnectorUrl(retryCount + 1)
+        }
+        const context = { connectorUrl }
+        errorReporter.send(error as Error, context)
+        return { checked: true, error: 'An error occurred while checking the connector URL.' }
+      }
+    },
+    [connectorUrl]
+  )
+
+  useEffect(() => {
+    if (preFlightCheck.checked) return
+    const fetchDataAndSetState = async () => {
+      const connectorUrlStatus = await checkConnectorUrl()
+      setPreFlightCheck(connectorUrlStatus)
+    }
+    fetchDataAndSetState()
+  }, [checkConnectorUrl, preFlightCheck])
 
   const initInjectedJavaScript = useCallback(() => {
     const script = `\
@@ -72,13 +132,14 @@ export const QuilttConnector = ({
 
   const requestHandler = (request: ShouldStartLoadRequest) => {
     const url = new URL(request.url)
+
     if (isQuilttEvent(url)) {
       handleQuilttEvent(url)
       return false
     }
     if (shouldRender(url)) return true
     // Plaid set oauth url by doing window.location.href = url
-    // This is the only way I know to handle this.
+    // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
     handleOAuthUrl(url)
     return false
   }
@@ -140,19 +201,49 @@ export const QuilttConnector = ({
     Linking.openURL(oauthUrl.href)
   }
 
-  return (
-    <AndroidSafeAreaView>
-      <WebView
-        ref={webViewRef}
-        originWhitelist={['https://*', 'quilttconnector://*']} // Maybe relax this to *?
-        source={{ uri: connectorUrl }}
-        onShouldStartLoadWithRequest={requestHandler}
-        javaScriptEnabled
-        domStorageEnabled // To enable localStorage in Android webview
-        webviewDebuggingEnabled // Not sure if this works
-      />
-    </AndroidSafeAreaView>
-  )
+  if (!preFlightCheck.checked) {
+    return (
+      <AndroidSafeAreaView>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      </AndroidSafeAreaView>
+    )
+  }
+
+  if (preFlightCheck.error) {
+    return (
+      <AndroidSafeAreaView>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+            borderRadius: 10,
+            backgroundColor: '#fff',
+          }}
+        >
+          <Text style={{ fontSize: 24, marginBottom: 10 }}>Error</Text>
+          <Text style={{ fontSize: 18 }}>{preFlightCheck.error}</Text>
+        </View>
+      </AndroidSafeAreaView>
+    )
+  } else {
+    return (
+      <AndroidSafeAreaView>
+        <WebView
+          ref={webViewRef}
+          originWhitelist={['https://*', 'quilttconnector://*']} // Maybe relax this to *?
+          source={{ uri: connectorUrl }}
+          onShouldStartLoadWithRequest={requestHandler}
+          javaScriptEnabled
+          domStorageEnabled // To enable localStorage in Android webview
+          webviewDebuggingEnabled // Not sure if this works
+        />
+      </AndroidSafeAreaView>
+    )
+  }
 }
 
 export default QuilttConnector

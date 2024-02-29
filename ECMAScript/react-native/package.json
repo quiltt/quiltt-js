@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "@quiltt/core": "workspace:*",
-    "@quiltt/react": "workspace:*"
+    "@quiltt/react": "workspace:*",
+    "@honeybadger-io/core": "6.5.1"
   },
   "devDependencies": {
     "@apollo/client": "3.7.16",
