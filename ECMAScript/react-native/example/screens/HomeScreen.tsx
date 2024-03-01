@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { NavigationProp } from '@react-navigation/native'
 
 type HomeScreenProps = {

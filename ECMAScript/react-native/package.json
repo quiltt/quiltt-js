@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/quiltt/quiltt-public/tree/main/ECMAScript/react-native#readme",
   "scripts": {
-    "build": "pnpm run addVersion && tsup",
+    "build": "pnpm run addApiKey && pnpm run addVersion && tsup",
     "clean": "rimraf .turbo dist",
     "dev": "tsup --watch",
     "addVersion": "genversion --esm -f src/version.ts",
+    "addApiKey": "node scripts/addApiKey.js",
     "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },

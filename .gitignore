@@ -35,3 +35,6 @@ tsconfig.tsbuildinfo
 npm-debug.log*
 npm-debug.log
 .npmrc
+
+# RN SDK
+ECMAScript/react-native/src/utils/ErrorReporterConfig.ts
