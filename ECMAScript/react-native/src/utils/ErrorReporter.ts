@@ -39,7 +39,7 @@ export class ErrorReporter {
     this.userAgent = `${this.clientName} ${this.clientVersion}; ${this.platform}`
   }
 
-  async send(notice: Noticeable, context?: any): Promise<void> {
+  async send(error: Error, context?: any): Promise<void> {
     const headers = {
       'X-API-Key': this.apiKey,
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export class ErrorReporter {
       'User-Agent': `${this.clientName} ${this.clientVersion}; ${this.platform}`,
     }
 
-    const payload = await this.buildPayload(notice, context)
+    const payload = await this.buildPayload(error, context)
     const method = 'POST'
     const body = JSON.stringify(payload)
     const mode = 'cors'
@@ -69,13 +69,9 @@ export class ErrorReporter {
       })
   }
 
-  async buildPayload(
-    notice: Partial<Notice>,
-    localContext = {}
-  ): Promise<Partial<NoticeTransportPayload>> {
-    if (typeof notice.stack !== 'string' || !notice.stack.trim()) {
-      notice.stack = generateStackTrace()
-    }
+  async buildPayload(error: Error, localContext = {}): Promise<Partial<NoticeTransportPayload>> {
+    const notice: Notice = error as Notice
+    notice.stack = generateStackTrace()
 
     notice.backtrace = makeBacktrace(notice.stack)
 

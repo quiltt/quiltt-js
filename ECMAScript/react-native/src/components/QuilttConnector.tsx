@@ -78,7 +78,7 @@ export const QuilttConnector = ({
       }
 
       const errorMessage = 'An error occurred while checking the connector URL.'
-      const errorToSend = error || new Error(errorMessage)
+      const errorToSend = (error as Error) || new Error(errorMessage)
       const context = { connectorUrl, responseStatus }
       errorReporter.send(errorToSend, context)
       return { checked: true, error: errorMessage }
