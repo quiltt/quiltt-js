@@ -12,7 +12,7 @@ import { URL } from 'react-native-url-polyfill'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 import { useQuilttSession } from '@quiltt/react'
-import { ErrorReporter } from '../utils/ErrorReporter'
+import { ErrorReporter, getErrorMessage } from '../utils/'
 
 import { version } from '../version'
 
@@ -77,9 +77,10 @@ export const QuilttConnector = ({
         return checkConnectorUrl(retryCount + 1)
       }
 
-      const errorMessage = 'An error occurred while checking the connector URL.'
+      const errorMessage = getErrorMessage(responseStatus)
       const errorToSend = (error as Error) || new Error(errorMessage)
       const context = { connectorUrl, responseStatus }
+       // TODO: Don't send when it's 404, but we want all errors for now.
       errorReporter.send(errorToSend, context)
       return { checked: true, error: errorMessage }
     },
