@@ -1,10 +1,6 @@
 // Quick hack to send error to Honeybadger to debug why the connector is not routable
 
-import type {
-  Notice,
-  Noticeable,
-  NoticeTransportPayload,
-} from '@honeybadger-io/core/build/src/types'
+import type { Notice, NoticeTransportPayload } from '@honeybadger-io/core/build/src/types'
 import { generateStackTrace, getCauses, makeBacktrace } from '@honeybadger-io/core/build/src/util'
 
 import { ErrorReporterConfig } from './ErrorReporterConfig'
@@ -20,7 +16,7 @@ type HoneybadgerResponseData = {
   id: string
 }
 
-export class ErrorReporter {
+class ErrorReporter {
   private noticeUrl: string
   private apiKey: string
   private clientName: string
@@ -105,3 +101,5 @@ export class ErrorReporter {
     }
   }
 }
+
+export { ErrorReporter }

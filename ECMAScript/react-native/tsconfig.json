@@ -13,6 +13,6 @@
     "declarations.d.ts"
   ],
   "exclude": [
-    "example/**/*",
+    "example/**/*"
   ]
 }
