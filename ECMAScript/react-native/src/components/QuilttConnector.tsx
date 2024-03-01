@@ -128,6 +128,11 @@ export const QuilttConnector = ({
   ]
   const shouldRender = (url: URL) => {
     if (isQuilttEvent(url)) return false
+    if (url.protocol !== 'https:') {
+      const err = new Error(`Invalid url leaked ${url.href}`)
+      errorReporter.send(err)
+      return false
+    }
     return allowedListUrl.some((href) => url.href.includes(href))
   }
 
@@ -203,7 +208,7 @@ export const QuilttConnector = ({
   }
 
   if (!preFlightCheck.checked) return <LoadingScreen />
-  console.log('preFlightCheck.error', preFlightCheck.error)
+
   if (preFlightCheck.error)
     return <ErrorScreen error={preFlightCheck.error} cta={() => onExitError?.({ connectorId })} />
 
@@ -211,7 +216,7 @@ export const QuilttConnector = ({
     <AndroidSafeAreaView>
       <WebView
         ref={webViewRef}
-        originWhitelist={['https://*', 'quilttconnector://*']} // Maybe relax this to *?
+        originWhitelist={['https://*', 'quilttconnector://*']} // Guard against other non SDK needed url
         source={{ uri: connectorUrl }}
         onShouldStartLoadWithRequest={requestHandler}
         javaScriptEnabled
