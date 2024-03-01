@@ -4,7 +4,7 @@ import {
   ConnectorSDKEventType,
 } from '@quiltt/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Linking, View, Text, ActivityIndicator, Platform, Pressable } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { WebView } from 'react-native-webview'
 // React Native's URL implementation is incomplete
 // https://github.com/facebook/react-native/issues/16434
@@ -15,6 +15,8 @@ import { useQuilttSession } from '@quiltt/react'
 import { ErrorReporter, getErrorMessage } from '../utils/'
 
 import { version } from '../version'
+import { LoadingScreen } from './LoadingScreen'
+import { ErrorScreen } from './ErrorScreen'
 
 const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 
@@ -77,11 +79,10 @@ export const QuilttConnector = ({
         return checkConnectorUrl(retryCount + 1)
       }
 
-      const errorMessage = getErrorMessage(responseStatus)
+      const errorMessage = getErrorMessage(responseStatus, error)
       const errorToSend = (error as Error) || new Error(errorMessage)
       const context = { connectorUrl, responseStatus }
-       // TODO: Don't send when it's 404, but we want all errors for now.
-      errorReporter.send(errorToSend, context)
+      if (responseStatus !== 404) errorReporter.send(errorToSend, context)
       return { checked: true, error: errorMessage }
     },
     [connectorUrl]
@@ -201,61 +202,24 @@ export const QuilttConnector = ({
     Linking.openURL(oauthUrl.href)
   }
 
-  if (!preFlightCheck.checked) {
-    return (
-      <AndroidSafeAreaView>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      </AndroidSafeAreaView>
-    )
-  }
+  if (!preFlightCheck.checked) return <LoadingScreen />
+  console.log('preFlightCheck.error', preFlightCheck.error)
+  if (preFlightCheck.error)
+    return <ErrorScreen error={preFlightCheck.error} cta={() => onExitError?.({ connectorId })} />
 
-  if (preFlightCheck.error) {
-    return (
-      <AndroidSafeAreaView>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 20,
-            borderRadius: 10,
-            backgroundColor: '#fff',
-          }}
-        >
-          <Text style={{ fontSize: 24, marginBottom: 10 }}>Error</Text>
-          <Text style={{ fontSize: 18 }}>{preFlightCheck.error}</Text>
-          <Pressable
-            style={{
-              marginTop: 20,
-              backgroundColor: '#800082',
-              padding: 10,
-              paddingHorizontal: 25,
-              borderRadius: 5,
-            }}
-            onPress={() => onExitError?.({ connectorId })}
-          >
-            <Text style={{ color: '#fff', textAlign: 'center' }}>Exit</Text>
-          </Pressable>
-        </View>
-      </AndroidSafeAreaView>
-    )
-  } else {
-    return (
-      <AndroidSafeAreaView>
-        <WebView
-          ref={webViewRef}
-          originWhitelist={['https://*', 'quilttconnector://*']} // Maybe relax this to *?
-          source={{ uri: connectorUrl }}
-          onShouldStartLoadWithRequest={requestHandler}
-          javaScriptEnabled
-          domStorageEnabled // To enable localStorage in Android webview
-          webviewDebuggingEnabled // Not sure if this works
-        />
-      </AndroidSafeAreaView>
-    )
-  }
+  return (
+    <AndroidSafeAreaView>
+      <WebView
+        ref={webViewRef}
+        originWhitelist={['https://*', 'quilttconnector://*']} // Maybe relax this to *?
+        source={{ uri: connectorUrl }}
+        onShouldStartLoadWithRequest={requestHandler}
+        javaScriptEnabled
+        domStorageEnabled // To enable localStorage in Android webview
+        webviewDebuggingEnabled
+      />
+    </AndroidSafeAreaView>
+  )
 }
 
 export default QuilttConnector
