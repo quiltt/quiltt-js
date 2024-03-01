@@ -79,7 +79,7 @@ export const QuilttConnector = ({
         return checkConnectorUrl(retryCount + 1)
       }
 
-      const errorMessage = getErrorMessage(responseStatus, error)
+      const errorMessage = getErrorMessage(responseStatus, error as Error)
       const errorToSend = (error as Error) || new Error(errorMessage)
       const context = { connectorUrl, responseStatus }
       if (responseStatus !== 404) errorReporter.send(errorToSend, context)
