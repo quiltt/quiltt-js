@@ -17,6 +17,10 @@ export const ConnectorScreen = ({ navigation }: ConnectorScreenProps) => {
         navigation.navigate('Home')
       }}
       onExitAbort={() => navigation.navigate('Home')}
+      onExitError={(metadata: ConnectorSDKCallbackMetadata) => {
+        console.log(metadata.connectorId)
+        navigation.navigate('Home')
+      }}
     />
   )
 }

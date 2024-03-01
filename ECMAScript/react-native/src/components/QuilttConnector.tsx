@@ -4,7 +4,7 @@ import {
   ConnectorSDKEventType,
 } from '@quiltt/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Linking, View, Text, ActivityIndicator, Platform } from 'react-native'
+import { Linking, View, Text, ActivityIndicator, Platform, Pressable } from 'react-native'
 import { WebView } from 'react-native-webview'
 // React Native's URL implementation is incomplete
 // https://github.com/facebook/react-native/issues/16434
@@ -51,17 +51,21 @@ export const QuilttConnector = ({
 
   const checkConnectorUrl = useCallback(
     async (retryCount = 0): Promise<PreFlightCheck> => {
+      let responseStatus
+      let error
       let errorOccurred = false
       try {
         const response = await fetch(connectorUrl)
         if (!response.ok) {
           console.error(`The URL ${connectorUrl} is not routable.`)
+          responseStatus = response.status
           errorOccurred = true
         } else {
           console.log(`The URL ${connectorUrl} is routable.`)
           return { checked: true }
         }
-      } catch (error) {
+      } catch (e) {
+        error = e
         console.error(`An error occurred while checking the connector URL: ${error}`)
         errorOccurred = true
       }
@@ -73,11 +77,10 @@ export const QuilttConnector = ({
         return checkConnectorUrl(retryCount + 1)
       }
 
-      const errorMessage = errorOccurred
-        ? 'An error occurred while checking the connector URL.'
-        : 'Failed to reach connector url.'
-      const context = { connectorUrl }
-      errorReporter.send(new Error(errorMessage), context)
+      const errorMessage = 'An error occurred while checking the connector URL.'
+      const errorToSend = error || new Error(errorMessage)
+      const context = { connectorUrl, responseStatus }
+      errorReporter.send(errorToSend, context)
       return { checked: true, error: errorMessage }
     },
     [connectorUrl]
@@ -222,6 +225,18 @@ export const QuilttConnector = ({
         >
           <Text style={{ fontSize: 24, marginBottom: 10 }}>Error</Text>
           <Text style={{ fontSize: 18 }}>{preFlightCheck.error}</Text>
+          <Pressable
+            style={{
+              marginTop: 20,
+              backgroundColor: '#800082',
+              padding: 10,
+              paddingHorizontal: 25,
+              borderRadius: 5,
+            }}
+            onPress={() => onExitError?.({ connectorId })}
+          >
+            <Text style={{ color: '#fff', textAlign: 'center' }}>Exit</Text>
+          </Pressable>
         </View>
       </AndroidSafeAreaView>
     )
