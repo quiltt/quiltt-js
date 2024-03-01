@@ -208,7 +208,6 @@ export const QuilttConnector = ({
   }
 
   if (!preFlightCheck.checked) return <LoadingScreen />
-
   if (preFlightCheck.error)
     return <ErrorScreen error={preFlightCheck.error} cta={() => onExitError?.({ connectorId })} />
 

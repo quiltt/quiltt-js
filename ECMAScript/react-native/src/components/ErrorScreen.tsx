@@ -22,11 +22,9 @@ export const ErrorScreen = ({ error, cta }: ErrorScreenProp) => (
         </View>
         <Text style={[styles.subtitle]}>{error}</Text>
       </View>
-      {cta && (
-        <Pressable style={[styles.pressable]} onPress={cta}>
-          <Text style={[styles.pressableText]}>Exit</Text>
-        </Pressable>
-      )}
+      <Pressable style={[styles.pressable]} onPress={cta}>
+        <Text style={[styles.pressableText]}>Exit</Text>
+      </Pressable>
     </View>
   </AndroidSafeAreaView>
 )
