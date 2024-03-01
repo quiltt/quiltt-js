@@ -1,5 +1,14 @@
 # nextjs
 
+## 3.1.1
+
+### Patch Changes
+
+- [#195](https://github.com/quiltt/quiltt-public/pull/195) [`6c36908`](https://github.com/quiltt/quiltt-public/commit/6c36908678cb46d5f6a0c7438e0ed48889cabf79) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Report preflight error before sending connectorUrl to webview
+
+- Updated dependencies [[`6c36908`](https://github.com/quiltt/quiltt-public/commit/6c36908678cb46d5f6a0c7438e0ed48889cabf79)]:
+  - @quiltt/react@3.4.1
+
 ## 3.1.0
 
 ### Minor Changes
