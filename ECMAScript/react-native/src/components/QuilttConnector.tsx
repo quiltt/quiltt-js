@@ -3,7 +3,7 @@ import {
   ConnectorSDKCallbacks,
   ConnectorSDKEventType,
 } from '@quiltt/core'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { WebView } from 'react-native-webview'
 // React Native's URL implementation is incomplete
@@ -120,92 +120,115 @@ export const QuilttConnector = ({
   // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
   // For other urls, we assume those are bank urls, which needs to be handle in external browser.
   // @todo Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
-  const allowedListUrl = [
-    'quiltt.app',
-    'quiltt.dev',
-    'moneydesktop.com',
-    'cdn.plaid.com/link/v2/stable/link.html',
-  ]
-  const shouldRender = (url: URL) => {
-    if (isQuilttEvent(url)) return false
-    if (url.protocol !== 'https:') {
-      const err = new Error(`Invalid url leaked ${url.href}`)
-      errorReporter.send(err)
-      return false
-    }
-    return allowedListUrl.some((href) => url.href.includes(href))
-  }
+  const allowedListUrl = useMemo(
+    () => [
+      'quiltt.app',
+      'quiltt.dev',
+      'moneydesktop.com',
+      'cdn.plaid.com/link/v2/stable/link.html',
+    ],
+    []
+  )
 
-  const requestHandler = (request: ShouldStartLoadRequest) => {
-    const url = new URL(request.url)
+  const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 
-    if (isQuilttEvent(url)) {
-      handleQuilttEvent(url)
-      return false
-    }
-    if (shouldRender(url)) return true
-    // Plaid set oauth url by doing window.location.href = url
-    // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
-    handleOAuthUrl(url)
-    return false
-  }
+  const shouldRender = useCallback(
+    (url: URL) => {
+      if (isQuilttEvent(url)) return false
+      if (url.protocol !== 'https:') {
+        const err = new Error(`Invalid url leaked ${url.href}`)
+        errorReporter.send(err)
+        return false
+      }
+      return allowedListUrl.some((href) => url.href.includes(href))
+    },
+    [allowedListUrl, isQuilttEvent]
+  )
 
   const clearLocalStorage = () => {
     const script = 'localStorage.clear();'
     webViewRef.current?.injectJavaScript(script)
   }
 
-  const isQuilttEvent = (url: URL) => url.protocol === 'quilttconnector:'
-
-  const handleQuilttEvent = (url: URL) => {
-    url.searchParams.delete('source')
-    url.searchParams.append('connectorId', connectorId)
-    const metadata = Object.fromEntries(url.searchParams) as ConnectorSDKCallbackMetadata
-
-    const eventType = url.host
-    switch (eventType) {
-      case 'Load':
-        initInjectedJavaScript()
-        onEvent?.(ConnectorSDKEventType.Load, metadata)
-        onLoad?.(metadata)
-        break
-      case 'ExitAbort':
-        clearLocalStorage()
-        onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
-        onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
-        onExitAbort?.(metadata)
-        break
-      case 'ExitError':
-        clearLocalStorage()
-        onEvent?.(ConnectorSDKEventType.ExitError, metadata)
-        onExit?.(ConnectorSDKEventType.ExitError, metadata)
-        onExitError?.(metadata)
-        break
-      case 'ExitSuccess':
-        clearLocalStorage()
-        onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
-        onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
-        onExitSuccess?.(metadata)
-        break
-      case 'Authenticate':
-        // @todo handle Authenticate
-        break
-      case 'OauthRequested':
-        handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
-        break
-      default:
-        console.log('unhandled event', url)
-        break
-    }
-  }
-
-  const handleOAuthUrl = (oauthUrl: URL) => {
+  const handleOAuthUrl = useCallback((oauthUrl: URL) => {
     if (oauthUrl.protocol !== 'https:') {
       console.log(`handleOAuthUrl - Skipping non https url - ${oauthUrl.href}`)
       return
     }
     Linking.openURL(oauthUrl.href)
-  }
+  }, [])
+
+  const handleQuilttEvent = useCallback(
+    (url: URL) => {
+      url.searchParams.delete('source')
+      url.searchParams.append('connectorId', connectorId)
+      const metadata = Object.fromEntries(url.searchParams) as ConnectorSDKCallbackMetadata
+
+      const eventType = url.host
+      switch (eventType) {
+        case 'Load':
+          initInjectedJavaScript()
+          onEvent?.(ConnectorSDKEventType.Load, metadata)
+          onLoad?.(metadata)
+          break
+        case 'ExitAbort':
+          clearLocalStorage()
+          onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
+          onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
+          onExitAbort?.(metadata)
+          break
+        case 'ExitError':
+          clearLocalStorage()
+          onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+          onExit?.(ConnectorSDKEventType.ExitError, metadata)
+          onExitError?.(metadata)
+          break
+        case 'ExitSuccess':
+          clearLocalStorage()
+          onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
+          onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
+          onExitSuccess?.(metadata)
+          break
+        case 'Authenticate':
+          // @todo handle Authenticate
+          break
+        case 'OauthRequested':
+          handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
+          break
+        default:
+          console.log('unhandled event', url)
+          break
+      }
+    },
+    [
+      connectorId,
+      handleOAuthUrl,
+      initInjectedJavaScript,
+      onEvent,
+      onExit,
+      onExitAbort,
+      onExitError,
+      onExitSuccess,
+      onLoad,
+    ]
+  )
+
+  const requestHandler = useCallback(
+    (request: ShouldStartLoadRequest) => {
+      const url = new URL(request.url)
+
+      if (isQuilttEvent(url)) {
+        handleQuilttEvent(url)
+        return false
+      }
+      if (shouldRender(url)) return true
+      // Plaid set oauth url by doing window.location.href = url
+      // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
+      handleOAuthUrl(url)
+      return false
+    },
+    [handleOAuthUrl, handleQuilttEvent, isQuilttEvent, shouldRender]
+  )
 
   if (!preFlightCheck.checked) return <LoadingScreen />
   if (preFlightCheck.error)
