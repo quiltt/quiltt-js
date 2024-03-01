@@ -9,10 +9,12 @@ export const ErrorReporterConfig = {
 
 const filePath = path.join(__dirname, '..', 'src', 'utils', 'ErrorReporterConfig.ts')
 
+console.log('Writing file:', filePath)
+
 fs.writeFile(filePath, content, (err) => {
   if (err) {
     console.error('Error writing file:', err)
   } else {
-    console.log('File written successfully')
+    console.log('File written successfully', filePath)
   }
 })
