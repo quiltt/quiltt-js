@@ -51,38 +51,34 @@ export const QuilttConnector = ({
 
   const checkConnectorUrl = useCallback(
     async (retryCount = 0): Promise<PreFlightCheck> => {
+      let errorOccurred = false
       try {
         const response = await fetch(connectorUrl)
         if (!response.ok) {
           console.error(`The URL ${connectorUrl} is not routable.`)
-          // Make retryCount a constant
-          // backoff by delay
-          if (retryCount < PREFLIGHT_RETRY_COUNT) {
-            await new Promise((resolve) => setTimeout(resolve, 50 * retryCount)) // delay for 50ms for each retry
-            console.log(`Retrying... Attempt number ${retryCount + 1}`)
-            return checkConnectorUrl(retryCount + 1)
-          }
-          errorReporter.send(
-            new Error(
-              `Retry exhausted, failed to fetch connectorUrl: ${connectorUrl}, status: ${response.status}`
-            )
-          )
-          return { checked: true, error: 'Failed to reach connector url.' }
+          errorOccurred = true
+        } else {
+          console.log(`The URL ${connectorUrl} is routable.`)
+          return { checked: true }
         }
-        console.log(`The URL ${connectorUrl} is routable.`)
-        return { checked: true }
       } catch (error) {
         console.error(`An error occurred while checking the connector URL: ${error}`)
-        // Retry logic in case of error
-        if (retryCount < PREFLIGHT_RETRY_COUNT) {
-          await new Promise((resolve) => setTimeout(resolve, 50 * retryCount)) // delay for 50ms for each retry
-          console.log(`Retrying... Attempt number ${retryCount + 1}`)
-          return checkConnectorUrl(retryCount + 1)
-        }
-        const context = { connectorUrl }
-        errorReporter.send(error as Error, context)
-        return { checked: true, error: 'An error occurred while checking the connector URL.' }
+        errorOccurred = true
       }
+
+      // Retry logic in case of error or response not OK
+      if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
+        await new Promise((resolve) => setTimeout(resolve, 50 * retryCount)) // delay for 50ms for each retry
+        console.log(`Retrying... Attempt number ${retryCount + 1}`)
+        return checkConnectorUrl(retryCount + 1)
+      }
+
+      const errorMessage = errorOccurred
+        ? 'An error occurred while checking the connector URL.'
+        : 'Failed to reach connector url.'
+      const context = { connectorUrl }
+      errorReporter.send(new Error(errorMessage), context)
+      return { checked: true, error: errorMessage }
     },
     [connectorUrl]
   )
