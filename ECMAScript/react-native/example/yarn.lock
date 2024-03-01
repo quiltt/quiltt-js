@@ -1525,6 +1525,14 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+"@honeybadger-io/core@6.5.1":
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/core/-/core-6.5.1.tgz#4a54ff253aacae676a6bc9dd1606cd807ce93a61"
+  integrity sha512-E/cNkReUDH6dNvhskZ/U2yCwemQcwvMlxa5BwuuGuLOCtErEaI2AxsQg07ZJ6Z8fwTDiX6Iw995tDOz4UqE4Rw==
+  dependencies:
+    json-nd "^1.0.0"
+    stacktrace-parser "^0.1.10"
+
 "@jest/create-cache-key-function@^29.2.1":
   version "29.7.0"
   resolved "https://registry.yarnpkg.com/@jest/create-cache-key-function/-/create-cache-key-function-29.7.0.tgz#793be38148fab78e65f40ae30c36785f4ad859f0"
@@ -1682,16 +1690,6 @@
     cross-fetch "^3.1.8"
     graphql "^16.8.1"
     graphql-ruby-client "^1.11.8"
-
-"@quiltt/react-native@3.3.3":
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/@quiltt/react-native/-/react-native-3.3.3.tgz#c3f3533542df29cdfc44c8d51a6ea425bdf95bd3"
-  integrity sha512-GBCXDYZ3NAsk7g4LTU1jPnBFeXygDcHqd616S+1wzd4VVMFyRzB6Q8H0utACheAdSXojtpd+1JQpB/JThrP5zg==
-  dependencies:
-    "@quiltt/core" "3.3.3"
-    "@quiltt/react" "3.3.3"
-    core-js "3.33.2"
-    react-native-webview "13.6.2"
 
 "@quiltt/react@3.3.3":
   version "3.3.3"
@@ -2876,11 +2874,6 @@ core-js-compat@^3.31.0, core-js-compat@^3.33.1:
   integrity sha512-axfo+wxFVxnqf8RvxTzoAlzW4gRoacrHeoFlc9n0x50+7BEyZL/Rt3hicaED1/CEd7I6tPCPVUYcJwCMO5XUYw==
   dependencies:
     browserslist "^4.22.1"
-
-core-js@3.33.2:
-  version "3.33.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.33.2.tgz#312bbf6996a3a517c04c99b9909cdd27138d1ceb"
-  integrity sha512-XeBzWI6QL3nJQiHmdzbAOiMYqjrb7hwU7A39Qhvd/POSa/t9E1AeZyEZx3fNvp/vtM8zXwhoL0FsiS0hD0pruQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -4237,6 +4230,11 @@ jsesc@~0.5.0:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==
 
+json-nd@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/json-nd/-/json-nd-1.0.0.tgz#e52283b7ee3f5e6f9920f668c94044bda912120c"
+  integrity sha512-8TIp0HZAY0VVrwRQJJPb4+nOTSPoOWZeEKBTLizUfQO4oym5Fc/MKqN8vEbLCxcyxDf2vwNxOQ1q84O49GWPyQ==
+
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
@@ -5544,14 +5542,6 @@ react-native-webview@13.2.2:
   version "13.2.2"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.2.2.tgz#06b04db8e1f4ed57a9dc92f4094aa0e41271b89b"
   integrity sha512-uT70y2GUqQzaj2RwRb/QuKRdXeDjXM6oN3DdPqYQlOOMFTCT8r62fybyjVVRoik8io+KLa5KnmuSoS5B2O1BmA==
-  dependencies:
-    escape-string-regexp "2.0.0"
-    invariant "2.2.4"
-
-react-native-webview@13.6.2:
-  version "13.6.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.6.2.tgz#0a9b18793e915add5b5dbdbf32509d7751b49167"
-  integrity sha512-QzhQ5JCU+Nf2W285DtvCZOVQy/MkJXMwNDYPZvOWQbAOgxJMSSO+BtqXTMA1UPugDsko6PxJ0TxSlUwIwJijDg==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
