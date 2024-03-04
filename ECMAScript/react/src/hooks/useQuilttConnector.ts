@@ -36,9 +36,9 @@ export const useQuilttConnector = (
     if (options?.connectionId) {
       setConnector(Quiltt.reconnect(connectorId, { connectionId: options.connectionId }))
     } else {
-      setConnector(Quiltt.connect(connectorId))
+      setConnector(Quiltt.connect(connectorId, { institution: options?.institution }))
     }
-  }, [status, connectorId, options?.connectionId])
+  }, [status, connectorId, options?.connectionId, options?.institution])
 
   // onEvent
   useEffect(() => {
