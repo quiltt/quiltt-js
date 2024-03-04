@@ -71,11 +71,12 @@ export type ConnectorSDKCallbackMetadata = {
   connectionId?: string
 }
 
-export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks
+export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
+  institution?: string
+}
+
 export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   connectionId: string
 }
 
-export type ConnectorSDKConnectorOptions = ConnectorSDKConnectOptions & {
-  connectionId?: string
-}
+export type ConnectorSDKConnectorOptions = ConnectorSDKConnectOptions & ConnectorSDKReconnectOptions
