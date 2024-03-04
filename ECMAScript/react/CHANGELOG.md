@@ -1,5 +1,16 @@
 # @quiltt/react
 
+## 3.5.0
+
+### Minor Changes
+
+- [#198](https://github.com/quiltt/quiltt-public/pull/198) [`c65d87a`](https://github.com/quiltt/quiltt-public/commit/c65d87a8316dbec82635a0c4108714de7bbd082b) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add Institutions to the Connect API
+
+### Patch Changes
+
+- Updated dependencies [[`c65d87a`](https://github.com/quiltt/quiltt-public/commit/c65d87a8316dbec82635a0c4108714de7bbd082b)]:
+  - @quiltt/core@3.5.0
+
 ## 3.4.1
 
 ### Patch Changes
