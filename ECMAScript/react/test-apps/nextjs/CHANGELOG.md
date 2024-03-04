@@ -1,5 +1,14 @@
 # nextjs
 
+## 3.1.3
+
+### Patch Changes
+
+- [#200](https://github.com/quiltt/quiltt-public/pull/200) [`0a07431`](https://github.com/quiltt/quiltt-public/commit/0a07431ff936e6cd4fd3aeee66bba1fec21f6624) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Fix release
+
+- Updated dependencies [[`0a07431`](https://github.com/quiltt/quiltt-public/commit/0a07431ff936e6cd4fd3aeee66bba1fec21f6624)]:
+  - @quiltt/react@3.5.1
+
 ## 3.1.2
 
 ### Patch Changes
