@@ -23,11 +23,11 @@ The `@quiltt/react` library ships with `@quiltt/core`, which provides an Auth AP
 
 All components automatically handle Session token management under the hood, using the `useQuilttSession` hook.
 
-To pre-authenticate the Connector for one of your user profiles, make sure to set your token using the `QuilttProvider` provider or the `useQuilttSession` hook. See the [Authentication guides](https://www.quiltt.dev/guides/authentication) for how to generate a Session.
+To pre-authenticate the Connector for one of your user profiles, make sure to set your token using the `QuilttProvider` provider or the `useQuilttSession` hook. See the [Authentication guides](https://www.quiltt.dev/authentication) for how to generate a Session.
 
 ### QuilttButton
 
-Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) as a pop-out modal.
+Launch the [Quiltt Connector](https://www.quiltt.dev/connector) as a pop-out modal.
 
 By default, the rendered component will be a `<button>` element, but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
@@ -60,7 +60,7 @@ export default App
 
 ### QuilttContainer
 
-Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) inside a container.
+Launch the [Quiltt Connector](https://www.quiltt.dev/connector) inside a container.
 
 By default, the rendered component will be a `<div>` element, but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
@@ -112,7 +112,7 @@ For maximum control over the lifecycle of Quiltt Connector and Quiltt Sessions, 
 
 ### useQuilttConnector
 
-A hook to manage the lifecycle of [Quiltt Connector](https://www.quiltt.dev/guides/connector).
+A hook to manage the lifecycle of [Quiltt Connector](https://www.quiltt.dev/connector).
 
 #### Example
 
@@ -137,7 +137,7 @@ const App = () => {
 
 A hook to manage the lifecycle of Quiltt Sessions.
 
-See the [Authentication guides](https://www.quiltt.dev/guides/authentication) for more information.
+See the [Authentication guides](https://www.quiltt.dev/authentication) for more information.
 
 #### Example
 
