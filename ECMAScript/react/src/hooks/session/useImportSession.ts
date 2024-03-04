@@ -47,7 +47,7 @@ export const useImportSession: UseImportSession = (auth, session, setSession, en
           break
 
         default:
-          throw new Error(`Unexpected auth ping response status: ${response.status}`)
+          throw new Error(`AuthAPI.ping: Unexpected response status ${response.status}`)
       }
     },
     [auth, session, setSession, environmentId]

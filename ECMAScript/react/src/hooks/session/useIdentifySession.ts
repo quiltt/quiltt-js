@@ -26,7 +26,6 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
   const identifySession = useCallback<IdentifySession>(
     async (payload, callbacks) => {
       const response = await auth.identify(payload)
-      const unprocessableResponse = response as UnprocessableResponse
 
       switch (response.status) {
         case 201: // Created
@@ -39,11 +38,11 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
           break
 
         case 422: // Unprocessable Content
-          if (callbacks.onError) return callbacks.onError(unprocessableResponse.data)
+          if (callbacks.onError) return callbacks.onError((response as UnprocessableResponse).data)
           break
 
         default:
-          throw new Error(`Unexpected auth identify response status: ${response.status}`)
+          throw new Error(`AuthAPI.identify: Unexpected response status ${response.status}`)
       }
     },
     [auth, setSession]

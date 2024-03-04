@@ -42,7 +42,7 @@ export const useAuthenticateSession: UseAuthenticateSession = (auth, setSession)
           break
 
         default:
-          throw new Error(`Unexpected auth authenticate response status: ${response.status}`)
+          throw new Error(`AuthAPI.authenticate: Unexpected response status ${response.status}`)
       }
     },
     [auth, setSession]
