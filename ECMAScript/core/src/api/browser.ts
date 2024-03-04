@@ -79,4 +79,7 @@ export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   connectionId: string
 }
 
-export type ConnectorSDKConnectorOptions = ConnectorSDKConnectOptions & ConnectorSDKReconnectOptions
+export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
+  institution?: string
+  connectionId?: string
+}
