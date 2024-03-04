@@ -27,7 +27,7 @@ type UnauthorizedData = { message: string; instruction: string }
 export type UnprocessableData = { [attribute: string]: Array<string> }
 
 type Ping = SessionData | UnauthorizedData
-type Indentify = SessionData | NoContentData | UnprocessableData
+type Identify = SessionData | NoContentData | UnprocessableData
 type Authenticate = SessionData | UnauthorizedData | UnprocessableData
 type Revoke = NoContentData | UnauthorizedData
 
@@ -58,7 +58,7 @@ export class AuthAPI {
    *  - 422: Unprocessable Entity -> Invalid Payload
    */
   identify = (payload: UsernamePayload) => {
-    return axios.post<Indentify>(endpointAuth, this.body(payload), this.config())
+    return axios.post<Identify>(endpointAuth, this.body(payload), this.config())
   }
 
   /**
