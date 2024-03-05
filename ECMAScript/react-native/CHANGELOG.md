@@ -1,5 +1,17 @@
 # @quiltt/react-native
 
+## 3.5.3
+
+### Patch Changes
+
+- [#204](https://github.com/quiltt/quiltt-public/pull/204) [`ee42bf1`](https://github.com/quiltt/quiltt-public/commit/ee42bf137db1029807df49f66ff7e57117e8ace9) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add missing type to QuilttButton
+
+- [#197](https://github.com/quiltt/quiltt-public/pull/197) [`8d9f24c`](https://github.com/quiltt/quiltt-public/commit/8d9f24c59102db5dc665195a6145cfac2c80e2c0) Thanks [@rubendinho](https://github.com/rubendinho)! - Update docs, and fix typo in types
+
+- Updated dependencies [[`ee42bf1`](https://github.com/quiltt/quiltt-public/commit/ee42bf137db1029807df49f66ff7e57117e8ace9), [`8d9f24c`](https://github.com/quiltt/quiltt-public/commit/8d9f24c59102db5dc665195a6145cfac2c80e2c0)]:
+  - @quiltt/react@3.5.3
+  - @quiltt/core@3.5.3
+
 ## 3.5.2
 
 ### Patch Changes
