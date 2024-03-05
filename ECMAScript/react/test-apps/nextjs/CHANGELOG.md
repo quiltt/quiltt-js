@@ -1,5 +1,12 @@
 # nextjs
 
+## 3.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`42705f0`](https://github.com/quiltt/quiltt-public/commit/42705f0e01b0adb35ab627697169433e1065a8f0)]:
+  - @quiltt/react@3.5.2
+
 ## 3.1.3
 
 ### Patch Changes

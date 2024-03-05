@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.5.2
+
+### Patch Changes
+
+- [#202](https://github.com/quiltt/quiltt-public/pull/202) [`42705f0`](https://github.com/quiltt/quiltt-public/commit/42705f0e01b0adb35ab627697169433e1065a8f0) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Expose Institutions to React API
+
 ## 3.5.1
 
 ### Patch Changes
