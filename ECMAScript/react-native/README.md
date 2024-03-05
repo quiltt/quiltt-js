@@ -23,11 +23,11 @@ $ pnpm add @quiltt/react-native
 
 ### QuilttConnector
 
-Launch the [Quiltt Connector](https://www.quiltt.dev/guides/connector) in a webview.
+Launch the [Quiltt Connector](https://www.quiltt.dev/connector) in a webview.
 
 `@quiltt/react-native` does not include any navigation library, you might want to navigate to a new "page" when using QuilttConnector to get the best result.
 
-For simple usage of `react-navigation`, please see [App.tsx](ECMAScript/react-native/example/App.tsx) and [ConnectorScreen.tsx](ECMAScript/react-native/example/screens/ConnectorScreen.tsx).
+For simple usage of `react-navigation`, please see [App.tsx](example/App.tsx) and [ConnectorScreen.tsx](example/screens/ConnectorScreen.tsx).
 
 #### Example
 
@@ -37,10 +37,10 @@ import { QuilttProvider } from '@quiltt/react'
 import { QuilttConnector } from '@quiltt/react-native'
 
 export const App = () => {
-  // See: https://www.quiltt.dev/api-reference/rest/auth#/paths/~1v1~1users~1sessions/post
+  // See: https://www.quiltt.dev/authentication/issuing-session-tokens
   const token = 'GET_THIS_TOKEN_FROM_YOUR_SERVER'
   const [connectionId, setConnectionId] = useState<string>()
-  const oAuthRedirectUrl = "quilttexample://open.reactnative.app"
+  const oAuthRedirectUrl = 'quilttexample://open.reactnative.app'
   const handleExitSuccess = (metadata) => {
     setConnectionId(metadata?.connectionId)
   }

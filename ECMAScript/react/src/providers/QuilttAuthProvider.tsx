@@ -11,7 +11,7 @@ type QuilttAuthProviderProps = PropsWithChildren & {
   token?: string
 }
 
-const Client = new QuilttClient({
+const GraphQLClient = new QuilttClient({
   cache: new InMemoryCache(),
 })
 
@@ -25,7 +25,7 @@ const Client = new QuilttClient({
 export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, children }) => {
   const { session, importSession } = useQuilttSession()
 
-  // Import Passed in Tokens
+  // Import passed in token
   useEffect(() => {
     if (token) importSession(token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,11 +33,11 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
 
   // Reset Client Store when logging in or out
   useEffect(() => {
-    Client.resetStore()
+    GraphQLClient.resetStore()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
-  return <ApolloProvider client={Client}>{children}</ApolloProvider>
+  return <ApolloProvider client={GraphQLClient}>{children}</ApolloProvider>
 }
 
 export default QuilttAuthProvider

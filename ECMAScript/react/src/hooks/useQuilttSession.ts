@@ -35,7 +35,10 @@ export const useQuilttSession: UseQuilttSession = (environmentId) => {
   const authenticateSession = useAuthenticateSession(auth, setSession)
   const revokeSession = useRevokeSession(auth, session, setSession)
 
-  // Optionally takes a token, to help guard against async processes clearing the wrong session
+  /**
+   * Forget current session.
+   * @param token specific token to forget, to help guard against async processes clearing the wrong session
+   */
   const forgetSession = useCallback(
     async (token?: string) => {
       if (!token || (session && token && token == session.token)) {

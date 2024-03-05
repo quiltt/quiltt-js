@@ -37,7 +37,7 @@ class ActionCableLink extends ApolloLink {
     const token = GlobalStorage.get('session')
 
     if (!token) {
-      console.warn(`QuilttLink attempted to send an unauthenticated Subscription`)
+      console.warn(`QuilttClient attempted to send an unauthenticated Subscription`)
       return null
     }
 
