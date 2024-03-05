@@ -16,6 +16,7 @@ export const QuilttButton = <T extends AnyTag = 'button'>({
   as,
   connectorId,
   connectionId,
+  institution,
   onEvent,
   onLoad,
   onExit,
@@ -27,6 +28,7 @@ export const QuilttButton = <T extends AnyTag = 'button'>({
 }: QuilttButtonProps<T> & PropsOf<T>) => {
   const { open } = useQuilttConnector(connectorId, {
     connectionId,
+    institution,
     onEvent,
     onLoad,
     onExit,
