@@ -9,6 +9,7 @@ type QuilttButtonProps<T extends AnyTag> = PropsWithChildren<
     as?: T
     connectorId: string
     connectionId?: string // For Reconnect Mode
+    institution?: string // For Connect Mode
   } & ConnectorSDKCallbacks
 >
 
