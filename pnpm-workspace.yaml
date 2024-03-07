@@ -1,4 +1,4 @@
 packages:
-  - 'ECMAScript/*'
-  - 'ECMAScript/**/test-apps/*'
-  - 'ECMAScript/**/example/*'
+  - 'packages/*'
+  - 'packages/**/test-apps/*'
+  - 'packages/**/example/*'

@@ -8,7 +8,7 @@ import type {
   UnprocessableResponse,
 } from '@quiltt/core'
 
-import type { SetSession } from '../'
+import type { SetSession } from '..'
 
 type AuthenticateSessionCallbacks = {
   onSuccess?: () => unknown

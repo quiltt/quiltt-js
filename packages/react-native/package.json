@@ -13,9 +13,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/quiltt/quiltt-public.git",
-    "directory": "ECMAScript/react-native"
+    "directory": "packages/react-native"
   },
-  "homepage": "https://github.com/quiltt/quiltt-public/tree/main/ECMAScript/react-native#readme",
+  "homepage": "https://github.com/quiltt/quiltt-public/tree/main/packages/react-native#readme",
   "scripts": {
     "build": "pnpm run addApiKey && pnpm run addVersion && tsup",
     "clean": "rimraf .turbo dist",

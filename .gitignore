@@ -39,4 +39,4 @@ npm-debug.log
 # RN SDK
 
 # API key stored here
-ECMAScript/react-native/src/utils/ErrorReporterConfig.ts
+packages/react-native/src/utils/ErrorReporterConfig.ts
