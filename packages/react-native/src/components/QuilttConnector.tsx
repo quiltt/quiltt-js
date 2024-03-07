@@ -23,6 +23,7 @@ const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 type QuilttConnectorProps = {
   connectorId: string
   connectionId?: string
+  institution?: string
   oauthRedirectUrl: string
 } & ConnectorSDKCallbacks
 
@@ -36,6 +37,7 @@ const PREFLIGHT_RETRY_COUNT = 3
 export const QuilttConnector = ({
   connectorId,
   connectionId,
+  institution,
   oauthRedirectUrl,
   onEvent,
   onLoad,
@@ -105,6 +107,7 @@ export const QuilttConnector = ({
         token: '${session?.token}',\
         connectorId: '${connectorId}',\
         connectionId: '${connectionId}',\
+        institution: '${institution}', \
       };\
       const compactedOptions = Object.keys(options).reduce((acc, key) => {\
         if (options[key] !== 'undefined') {\
@@ -115,7 +118,7 @@ export const QuilttConnector = ({
       window.postMessage(compactedOptions);\
     `
     webViewRef.current?.injectJavaScript(script)
-  }, [connectionId, connectorId, session?.token])
+  }, [connectionId, connectorId, institution, session?.token])
 
   // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
   // For other urls, we assume those are bank urls, which needs to be handle in external browser.
