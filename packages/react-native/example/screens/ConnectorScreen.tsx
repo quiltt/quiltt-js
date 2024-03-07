@@ -10,8 +10,9 @@ type ConnectorScreenProps = {
 export const ConnectorScreen = ({ navigation }: ConnectorScreenProps) => {
   return (
     <QuilttConnector
-      connectorId="mobile-sdk-test"
-      oauthRedirectUrl="YOUR_HTTPS_APP_LINK"
+      connectorId="<CONNECTOR_ID>"
+      oauthRedirectUrl="<YOUR_HTTPS_APP_LINK>"
+      institution="<OPTIONAL_INSTITUION_SEARCH_TERM>"
       onExitSuccess={(metadata: ConnectorSDKCallbackMetadata) => {
         console.log(metadata.connectionId)
         navigation.navigate('Home')
