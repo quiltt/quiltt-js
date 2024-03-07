@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.5.4
+
+### Patch Changes
+
+- [#209](https://github.com/quiltt/quiltt-js/pull/209) [`6c5aa5f`](https://github.com/quiltt/quiltt-js/commit/6c5aa5fb0212f9dce84e71fe91e2182f463f7318) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Expose Institutions to React Native API
+
 ## 3.5.3
 
 ### Patch Changes
