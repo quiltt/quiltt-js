@@ -15,7 +15,7 @@
     "cypress": "turbo run cypress",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "version": "npx changeset version",
+    "version": "npx changeset version && pnpm -r exec pnpm run --if-present addVersion",
     "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'"
   },
   "devDependencies": {
