@@ -11,7 +11,7 @@
     "clean": "turbo run clean",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./ECMAScript/**",
+    "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "cypress": "turbo run cypress",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
