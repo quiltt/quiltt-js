@@ -10,7 +10,7 @@ type ConnectorScreenProps = {
 export const ConnectorScreen = ({ navigation }: ConnectorScreenProps) => {
   return (
     <QuilttConnector
-      connectorId="<CONNECTOR_ID>>"
+      connectorId="<CONNECTOR_ID>"
       oauthRedirectUrl="<YOUR_HTTPS_APP_LINK>"
       institution="<OPTIONAL_INSTITUION_SEARCH_TERM>"
       onExitSuccess={(metadata: ConnectorSDKCallbackMetadata) => {
