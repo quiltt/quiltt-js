@@ -6,7 +6,6 @@ export const TestHTMLLauncher = () => {
   // Load the script
   useQuilttConnector()
 
-  // Render a custom <a> launcher
   return (
     <a
       quiltt-button="connector"

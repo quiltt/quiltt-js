@@ -27,7 +27,7 @@ Launch the [Quiltt Connector](https://www.quiltt.dev/connector) in a webview.
 
 `@quiltt/react-native` does not include any navigation library, you might want to navigate to a new "page" when using QuilttConnector to get the best result.
 
-For simple usage of `react-navigation`, please see [App.tsx](example/App.tsx) and [ConnectorScreen.tsx](example/screens/ConnectorScreen.tsx).
+For simple usage of `react-navigation`, please see [App.tsx](examples/expo/App.tsx) and [ConnectorScreen.tsx](examples/expo/screens/ConnectorScreen.tsx).
 
 #### Example
 
