@@ -15,5 +15,5 @@
     "target": "esnext",
     "useUnknownInCatchVariables": true
   },
-  "exclude": ["**/node_modules", ".next", ".out", "dist", "build", "public"]
+  "exclude": ["**/node_modules", "**/dist", ".next", ".out", "dist", "build", "public"]
 }

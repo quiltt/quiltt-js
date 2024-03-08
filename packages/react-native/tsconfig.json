@@ -12,7 +12,5 @@
     ".eslintrc.cjs",
     "declarations.d.ts"
   ],
-  "exclude": [
-    "example/**/*"
-  ]
+  "exclude": ["example/**/*"]
 }

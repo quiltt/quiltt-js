@@ -1,8 +1,9 @@
 import { PropsWithChildren } from 'react'
-import { useQuilttConnector } from '..'
-import { AnyTag, PropsOf } from '../types'
 
 import { ConnectorSDKCallbacks } from '@quiltt/core'
+
+import { useQuilttConnector } from '../hooks/useQuilttConnector'
+import { AnyTag, PropsOf } from '../types'
 
 type QuilttButtonProps<T extends AnyTag> = PropsWithChildren<
   {

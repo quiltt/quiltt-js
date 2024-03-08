@@ -25,11 +25,10 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     }
   },
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -38,9 +37,9 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "pnpm run addVersion && tsup",
+    "build": "pnpm run addVersion && bunchee",
     "clean": "rimraf .turbo dist",
-    "dev": "tsup --watch",
+    "dev": "bunchee --watch",
     "addVersion": "genversion --esm -f src/version.ts",
     "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
@@ -55,11 +54,12 @@
   "devDependencies": {
     "@apollo/client": "3.7.16",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
-    "@types/node": "20.11.4",
-    "@types/react": "18.2.7",
+    "@types/node": "20.11.25",
+    "@types/react": "18.2.64",
     "@types/react-dom": "18.2.6",
     "@typescript-eslint/eslint-plugin": "5.60.1",
     "@typescript-eslint/parser": "5.60.1",
+    "bunchee": "4.4.8",
     "eslint": "8.43.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-jsx-a11y": "6.7.1",
@@ -69,8 +69,8 @@
     "prettier": "2.8.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tsup": "6.7.0",
-    "typescript": "5.1.3"
+    "rimraf": "5.0.5",
+    "typescript": "5.4.2"
   },
   "publishConfig": {
     "access": "public"

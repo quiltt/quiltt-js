@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "@quiltt/examples-expo",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -8,10 +8,10 @@
     "ios": "expo start --ios"
   },
   "dependencies": {
+    "@honeybadger-io/core": "6.5.1",
     "@quiltt/react": "3.3.3",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.16",
-    "@honeybadger-io/core": "6.5.1",
     "base-64": "^1.0.0",
     "expo": "~49.0.15",
     "expo-linking": "~5.0.2",

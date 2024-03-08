@@ -5,10 +5,9 @@ import { useQuilttConnector } from '@quiltt/react'
 export const TestJSLauncher = () => {
   // Load the script
   const { open } = useQuilttConnector('connector', {
-    onEvent: (type) => console.log(`Event: ${type}`)
+    onEvent: (type) => console.log(`Event: ${type}`),
   })
 
-  // Render a custom <a> launcher
   return (
     <button
       onClick={open}

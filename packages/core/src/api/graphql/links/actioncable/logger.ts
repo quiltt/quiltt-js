@@ -2,7 +2,9 @@ import { debugging } from '../../../../configuration'
 import adapters from './adapters'
 
 class Logger {
-  enabled = debugging
+  get enabled() {
+    return debugging
+  }
 
   log(...messages: Array<string>) {
     if (adapters.logger && this.enabled) {
