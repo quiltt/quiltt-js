@@ -6,7 +6,7 @@ if (!global.atob) {
   global.atob = decode
 }
 
-export type {
+/* export type {
   ConnectorSDK,
   ConnectorSDKCallbacks,
   ConnectorSDKOnEventCallback,
@@ -17,7 +17,9 @@ export type {
   ConnectorSDKEventType,
   ConnectorSDKCallbackMetadata,
   ConnectorSDKConnectOptions,
-} from '@quiltt/react'
+} */
+
+export * from '@quiltt/core'
 
 export {
   QuilttAuthProvider,

@@ -151,6 +151,9 @@ importers:
       '@honeybadger-io/core':
         specifier: 6.5.1
         version: 6.5.1
+      '@quiltt/core':
+        specifier: workspace:*
+        version: link:../core
       '@quiltt/react':
         specifier: workspace:*
         version: link:../react

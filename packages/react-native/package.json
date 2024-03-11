@@ -33,6 +33,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@quiltt/core": "workspace:*",
     "@quiltt/react": "workspace:*",
     "@honeybadger-io/core": "6.5.1"
   },
