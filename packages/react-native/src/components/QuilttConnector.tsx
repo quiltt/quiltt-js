@@ -1,22 +1,24 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+import { Linking, Platform } from 'react-native'
+// React Native's URL implementation is incomplete
+// https://github.com/facebook/react-native/issues/16434
+import { URL } from 'react-native-url-polyfill'
+import { WebView } from 'react-native-webview'
+import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
+
 import {
   ConnectorSDKCallbackMetadata,
   ConnectorSDKCallbacks,
   ConnectorSDKEventType,
-} from '@quiltt/core'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Linking, Platform } from 'react-native'
-import { WebView } from 'react-native-webview'
-// React Native's URL implementation is incomplete
-// https://github.com/facebook/react-native/issues/16434
-import { URL } from 'react-native-url-polyfill'
-import { AndroidSafeAreaView } from './AndroidSafeAreaView'
-import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
-import { useQuilttSession } from '@quiltt/react'
-import { ErrorReporter, getErrorMessage } from '../utils/'
+  useQuilttSession,
+} from '@quiltt/react'
 
+import { ErrorReporter, getErrorMessage } from '../utils'
 import { version } from '../version'
-import { LoadingScreen } from './LoadingScreen'
+import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
+import { LoadingScreen } from './LoadingScreen'
 
 const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 
@@ -34,7 +36,7 @@ type PreFlightCheck = {
 
 const PREFLIGHT_RETRY_COUNT = 3
 
-export const QuilttConnector = ({
+const QuilttConnector = ({
   connectorId,
   connectionId,
   institution,
@@ -48,9 +50,17 @@ export const QuilttConnector = ({
 }: QuilttConnectorProps) => {
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
-  oauthRedirectUrl = encodeURIComponent(oauthRedirectUrl)
-  const connectorUrl = `https://${connectorId}.quiltt.app/?mode=webview&oauth_redirect_url=${oauthRedirectUrl}&agent=react-native-${version}`
-  console.log('connectorUrl', connectorUrl)
+  const encodedOAuthRedirectUrl = useMemo(
+    () => encodeURIComponent(oauthRedirectUrl),
+    [oauthRedirectUrl]
+  )
+  const connectorUrl = useMemo(() => {
+    const url: URL = new URL(`https://${connectorId}.quiltt.app`)
+    url.searchParams.append('mode', 'webview')
+    url.searchParams.append('oauth_redirect_url', encodedOAuthRedirectUrl)
+    url.searchParams.append('agent', `react-native-${version}`)
+    return url.toString()
+  }, [connectorId, encodedOAuthRedirectUrl])
   const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
   const checkConnectorUrl = useCallback(
@@ -76,7 +86,8 @@ export const QuilttConnector = ({
 
       // Retry logic in case of error or response not OK
       if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
-        await new Promise((resolve) => setTimeout(resolve, 50 * retryCount)) // delay for 50ms for each retry
+        const delay = 50 * Math.pow(2, retryCount) // Exponential back-off
+        await new Promise((resolve) => setTimeout(resolve, delay)) // delay with exponential back-off for each retry
         console.log(`Retrying... Attempt number ${retryCount + 1}`)
         return checkConnectorUrl(retryCount + 1)
       }
@@ -252,4 +263,6 @@ export const QuilttConnector = ({
   )
 }
 
-export default QuilttConnector
+QuilttConnector.displayName = 'QuilttConnector'
+
+export { QuilttConnector }

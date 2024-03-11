@@ -1,4 +1,5 @@
 import { ActivityIndicator, View } from 'react-native'
+
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 
 export const LoadingScreen = () => (

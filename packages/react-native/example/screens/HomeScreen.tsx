@@ -1,8 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
 import { NavigationProp } from '@react-navigation/native'
 
 type HomeScreenProps = {
-  navigation: NavigationProp<any, any>
+  navigation: NavigationProp<Record<string, unknown>, string>
 }
 
 export const HomeScreen = ({ navigation }: HomeScreenProps) => (

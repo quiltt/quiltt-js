@@ -43,7 +43,7 @@ export const useQuilttSession: UseQuilttSession = (environmentId) => {
    */
   const forgetSession = useCallback(
     async (token?: string) => {
-      if (!token || (session && token && token == session.token)) {
+      if (!token || (session && token && token === session.token)) {
         setSession(null)
       }
     },
