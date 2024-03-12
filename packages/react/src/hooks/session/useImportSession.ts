@@ -24,7 +24,7 @@ export const useImportSession: UseImportSession = (auth, session, setSession, en
       if (!token) return !!session
 
       // Is this token already imported?
-      if (session && session.token == token) return true
+      if (session && session.token === token) return true
 
       const jwt = JsonWebTokenParse<PrivateClaims>(token)
 

@@ -1,11 +1,14 @@
 import { useEffect } from 'react'
+
+import { QuilttProvider } from '@quiltt/react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { StatusBar } from 'expo-status-bar'
+
 import * as Linking from 'expo-linking'
-import { HomeScreen } from './screens/HomeScreen'
+import { StatusBar } from 'expo-status-bar'
+
 import { ConnectorScreen } from './screens/ConnectorScreen'
-import { QuilttProvider } from '@quiltt/react'
+import { HomeScreen } from './screens/HomeScreen'
 
 const Stack = createNativeStackNavigator()
 

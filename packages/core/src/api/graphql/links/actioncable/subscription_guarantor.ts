@@ -16,7 +16,7 @@ class SubscriptionGuarantor {
   }
 
   guarantee(subscription: Subscription) {
-    if (this.pendingSubscriptions.indexOf(subscription) == -1) {
+    if (this.pendingSubscriptions.indexOf(subscription) === -1) {
       logger.log(`SubscriptionGuarantor guaranteeing ${subscription.identifier}`)
       this.pendingSubscriptions.push(subscription)
     } else {

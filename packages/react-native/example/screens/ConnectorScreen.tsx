@@ -1,10 +1,9 @@
-import { NavigationProp } from '@react-navigation/native'
-
-import type { ConnectorSDKCallbackMetadata } from '@quiltt/core'
+import type { ConnectorSDKCallbackMetadata } from '@quiltt/react-native'
 import { QuilttConnector } from '@quiltt/react-native'
+import type { NavigationProp } from '@react-navigation/native'
 
 type ConnectorScreenProps = {
-  navigation: NavigationProp<any, any>
+  navigation: NavigationProp<Record<string, unknown>, string>
 }
 
 export const ConnectorScreen = ({ navigation }: ConnectorScreenProps) => {

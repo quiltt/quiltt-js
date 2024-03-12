@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
+
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 
 type ErrorScreenProp = {
