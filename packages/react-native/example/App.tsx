@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { QuilttProvider } from '@quiltt/react'
+import { QuilttProvider } from '@quiltt/react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
