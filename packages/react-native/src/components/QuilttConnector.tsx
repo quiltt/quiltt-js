@@ -167,7 +167,6 @@ const QuilttConnector = ({
       console.log(`handleOAuthUrl - Skipping non https url - ${oauthUrl.href}`)
       return
     }
-    console.log('handleOAuthUrl', oauthUrl)
     Linking.openURL(oauthUrl.href)
   }, [])
 
@@ -229,7 +228,6 @@ const QuilttConnector = ({
   const requestHandler = useCallback(
     (request: ShouldStartLoadRequest) => {
       const url = new URL(request.url)
-      console.log('requestHandler', url)
 
       if (isQuilttEvent(url)) {
         handleQuilttEvent(url)
