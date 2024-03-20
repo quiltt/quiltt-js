@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/react",
-  "version": "3.5.4",
+  "version": "3.5.5",
   "description": "React components and hooks for Quiltt Connector",
   "repository": {
     "type": "git",
