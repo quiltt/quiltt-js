@@ -150,8 +150,6 @@ const QuilttConnector = ({
     (url: URL) => {
       if (isQuilttEvent(url)) return false
       if (url.protocol !== 'https:') {
-        const err = new Error(`Invalid url leaked ${url.href}`)
-        errorReporter.send(err)
         return false
       }
       return allowedListUrl.some((href) => url.href.includes(href))
@@ -252,7 +250,9 @@ const QuilttConnector = ({
     <AndroidSafeAreaView>
       <WebView
         ref={webViewRef}
-        originWhitelist={['https://*', 'quilttconnector://*']} // Guard against other non SDK needed url
+        // Plaid keep sending window.location = 'about:srcdoc' and causes some noise in RN
+        // All whitelists are now handled in requestHandler, handleQuilttEvent and handleOAuthUrl
+        originWhitelist={['*']}
         source={{ uri: connectorUrl }}
         onShouldStartLoadWithRequest={requestHandler}
         javaScriptEnabled
