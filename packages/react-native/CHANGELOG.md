@@ -1,5 +1,23 @@
 # @quiltt/react-native
 
+## 3.5.5
+
+### Patch Changes
+
+- [#218](https://github.com/quiltt/quiltt-js/pull/218) [`7dd42db`](https://github.com/quiltt/quiltt-js/commit/7dd42dbc744805d68fbff8fbed73a4bd68022b44) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Fix changeset md to release packages
+
+- [#213](https://github.com/quiltt/quiltt-js/pull/213) [`5648e3c`](https://github.com/quiltt/quiltt-js/commit/5648e3c91d572d97ad88115710ab840b98e1d469) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add exported files to '@quiltt/react-native'"
+
+- [#210](https://github.com/quiltt/quiltt-js/pull/210) [`e57fdb8`](https://github.com/quiltt/quiltt-js/commit/e57fdb8c21e90b6a3492bc7a0c858031384caebf) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Migrate bundler to 'bunchee'
+
+- [#215](https://github.com/quiltt/quiltt-js/pull/215) [`c36abb4`](https://github.com/quiltt/quiltt-js/commit/c36abb47cffea3d754fd243b321f2ae50518c297) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Remove React Native SDK about:srcdoc warning
+
+- [#216](https://github.com/quiltt/quiltt-js/pull/216) [`2895899`](https://github.com/quiltt/quiltt-js/commit/289589913c55f8dad2e818d71c4be39c93e5a52a) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Fix release changeset command
+
+- Updated dependencies [[`7dd42db`](https://github.com/quiltt/quiltt-js/commit/7dd42dbc744805d68fbff8fbed73a4bd68022b44), [`5648e3c`](https://github.com/quiltt/quiltt-js/commit/5648e3c91d572d97ad88115710ab840b98e1d469), [`e57fdb8`](https://github.com/quiltt/quiltt-js/commit/e57fdb8c21e90b6a3492bc7a0c858031384caebf), [`c36abb4`](https://github.com/quiltt/quiltt-js/commit/c36abb47cffea3d754fd243b321f2ae50518c297), [`2895899`](https://github.com/quiltt/quiltt-js/commit/289589913c55f8dad2e818d71c4be39c93e5a52a)]:
+  - @quiltt/core@3.5.5
+  - @quiltt/react@3.5.5
+
 ## 3.5.4
 
 ### Patch Changes
