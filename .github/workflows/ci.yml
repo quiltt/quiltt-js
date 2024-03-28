@@ -4,22 +4,22 @@ on: push
 
 jobs:
   build:
-    name: "Validate with Node ${{ matrix.node-version }}"
+    name: 'Validate with Node ${{ matrix.node-version }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node-version: ["current", "18"]
+        node-version: ['current', '18']
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
 
       # @note caching is disabled to avoid cypress binary from being restored from the wrong version's cache
       - name: Setup Node with ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
