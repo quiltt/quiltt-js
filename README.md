@@ -1,5 +1,7 @@
 # Quiltt-JS
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/b816cde7504cfe33e9a0/maintainability)](https://codeclimate.com/github/quiltt/quiltt-js/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b816cde7504cfe33e9a0/test_coverage)](https://codeclimate.com/github/quiltt/quiltt-js/test_coverage)
+
 Welcome to Quiltt-JS, the dedicated open-source repository for Quiltt's JavaScript initiatives. This repository is the home for our JavaScript-based projects, focusing on streamlining the development of fintech applications through a unified API and standardized access to diverse financial data sets. Our goal is to empower developers with tools and libraries that make building financial technology solutions more intuitive, efficient, and scalable.
 
 ## Getting Started
