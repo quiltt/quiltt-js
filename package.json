@@ -13,7 +13,7 @@
     "lint": "turbo run lint",
     "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "cypress": "turbo run cypress",
-    "test": "vitest run",
+    "test": "turbo run test",
     "coverage": "vitest run --coverage",
     "typecheck": "turbo run typecheck",
     "version": "npx changeset version && pnpm -r exec pnpm run --if-present addVersion",
