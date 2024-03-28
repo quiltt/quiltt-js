@@ -3,21 +3,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - packages/core/src/*
-      - packages/core/tests/*
-      - packages/react/src/*
-      - packages/react/tests/*
-      - packages/react-native/src/*
-      - packages/react-native/tests/*
   pull_request:
-    paths:
-      - packages/core/src/*
-      - packages/core/tests/*
-      - packages/react/src/*
-      - packages/react/tests/*
-      - packages/react-native/src/*
-      - packages/react-native/tests/*
+
 jobs:
   test:
     runs-on: ubuntu-latest
