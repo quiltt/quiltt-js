@@ -1,0 +1,31 @@
+version: '2'
+plugins:
+  duplication:
+    enabled: true
+    exclude_patterns:
+      - '**/tests/'
+
+  fixme:
+    enabled: true
+    config:
+      strings:
+        - FIXME
+        - '@fixme'
+
+  shellcheck:
+    enabled: true
+
+exclude_patterns:
+  - '**/generated/'
+  - '**/config/'
+  - '**/tests/'
+  - '**/node_modules/'
+  - '**/dist/'
+  - '**/build/'
+  - '**/.turbo/'
+  - '**/.next/'
+  - '**/*.config.js'
+  - '**/*.config.cjs'
+  - '**/*.config.ts'
+  - '**/*.d.ts'
+  - 'pnpm-lock.yaml'

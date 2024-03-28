@@ -40,3 +40,6 @@ npm-debug.log
 
 # API key stored here
 packages/react-native/src/utils/ErrorReporterConfig.ts
+
+# Tests
+coverage/**/*
