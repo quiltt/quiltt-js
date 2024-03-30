@@ -24,57 +24,57 @@
 
 ### Patch Changes
 
-- [#204](https://github.com/quiltt/quiltt-public/pull/204) [`ee42bf1`](https://github.com/quiltt/quiltt-public/commit/ee42bf137db1029807df49f66ff7e57117e8ace9) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add missing type to QuilttButton
+- [#204](https://github.com/quiltt/quiltt-js/pull/204) [`ee42bf1`](https://github.com/quiltt/quiltt-js/commit/ee42bf137db1029807df49f66ff7e57117e8ace9) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add missing type to QuilttButton
 
-- [#197](https://github.com/quiltt/quiltt-public/pull/197) [`8d9f24c`](https://github.com/quiltt/quiltt-public/commit/8d9f24c59102db5dc665195a6145cfac2c80e2c0) Thanks [@rubendinho](https://github.com/rubendinho)! - Update docs, and fix typo in types
+- [#197](https://github.com/quiltt/quiltt-js/pull/197) [`8d9f24c`](https://github.com/quiltt/quiltt-js/commit/8d9f24c59102db5dc665195a6145cfac2c80e2c0) Thanks [@rubendinho](https://github.com/rubendinho)! - Update docs, and fix typo in types
 
 ## 3.5.2
 
 ### Patch Changes
 
-- [#202](https://github.com/quiltt/quiltt-public/pull/202) [`42705f0`](https://github.com/quiltt/quiltt-public/commit/42705f0e01b0adb35ab627697169433e1065a8f0) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Expose Institutions to React API
+- [#202](https://github.com/quiltt/quiltt-js/pull/202) [`42705f0`](https://github.com/quiltt/quiltt-js/commit/42705f0e01b0adb35ab627697169433e1065a8f0) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Expose Institutions to React API
 
 ## 3.5.1
 
 ### Patch Changes
 
-- [#200](https://github.com/quiltt/quiltt-public/pull/200) [`0a07431`](https://github.com/quiltt/quiltt-public/commit/0a07431ff936e6cd4fd3aeee66bba1fec21f6624) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Fix release
+- [#200](https://github.com/quiltt/quiltt-js/pull/200) [`0a07431`](https://github.com/quiltt/quiltt-js/commit/0a07431ff936e6cd4fd3aeee66bba1fec21f6624) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Fix release
 
 ## 3.5.0
 
 ### Minor Changes
 
-- [#198](https://github.com/quiltt/quiltt-public/pull/198) [`c65d87a`](https://github.com/quiltt/quiltt-public/commit/c65d87a8316dbec82635a0c4108714de7bbd082b) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add Institutions to the Connect API
+- [#198](https://github.com/quiltt/quiltt-js/pull/198) [`c65d87a`](https://github.com/quiltt/quiltt-js/commit/c65d87a8316dbec82635a0c4108714de7bbd082b) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add Institutions to the Connect API
 
 ## 3.4.1
 
 ### Patch Changes
 
-- [#195](https://github.com/quiltt/quiltt-public/pull/195) [`6c36908`](https://github.com/quiltt/quiltt-public/commit/6c36908678cb46d5f6a0c7438e0ed48889cabf79) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Report preflight error before sending connectorUrl to webview
+- [#195](https://github.com/quiltt/quiltt-js/pull/195) [`6c36908`](https://github.com/quiltt/quiltt-js/commit/6c36908678cb46d5f6a0c7438e0ed48889cabf79) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Report preflight error before sending connectorUrl to webview
 
 ## 3.4.0
 
 ### Minor Changes
 
-- [#191](https://github.com/quiltt/quiltt-public/pull/191) [`58c8f0c`](https://github.com/quiltt/quiltt-public/commit/58c8f0c5265dfa379263225baafb4552067514c6) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Add agent QSP for analytic
+- [#191](https://github.com/quiltt/quiltt-js/pull/191) [`58c8f0c`](https://github.com/quiltt/quiltt-js/commit/58c8f0c5265dfa379263225baafb4552067514c6) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Add agent QSP for analytic
 
 ## 3.3.10
 
 ### Patch Changes
 
-- [#190](https://github.com/quiltt/quiltt-public/pull/190) [`21ead66`](https://github.com/quiltt/quiltt-public/commit/21ead662e7626f906562f952c9d1c0bc2c859985) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Fix Android App with Chase app installed not able to launch Chase app
+- [#190](https://github.com/quiltt/quiltt-js/pull/190) [`21ead66`](https://github.com/quiltt/quiltt-js/commit/21ead662e7626f906562f952c9d1c0bc2c859985) Thanks [@tom-quiltt](https://github.com/tom-quiltt)! - Fix Android App with Chase app installed not able to launch Chase app
 
 ## 3.3.9
 
 ### Patch Changes
 
-- [#187](https://github.com/quiltt/quiltt-public/pull/187) [`02f37cd`](https://github.com/quiltt/quiltt-public/commit/02f37cda97f501f2d77601d0fd6b7fbbd1c71431) Thanks [@rubendinho](https://github.com/rubendinho)! - Export Quiltt config
+- [#187](https://github.com/quiltt/quiltt-js/pull/187) [`02f37cd`](https://github.com/quiltt/quiltt-js/commit/02f37cda97f501f2d77601d0fd6b7fbbd1c71431) Thanks [@rubendinho](https://github.com/rubendinho)! - Export Quiltt config
 
 ## 3.3.8
 
 ### Patch Changes
 
-- [#185](https://github.com/quiltt/quiltt-public/pull/185) [`a3452da`](https://github.com/quiltt/quiltt-public/commit/a3452da3c7604902b5917e1f838e2dced42b708c) Thanks [@rubendinho](https://github.com/rubendinho)! - Fix Vite build error
+- [#185](https://github.com/quiltt/quiltt-js/pull/185) [`a3452da`](https://github.com/quiltt/quiltt-js/commit/a3452da3c7604902b5917e1f838e2dced42b708c) Thanks [@rubendinho](https://github.com/rubendinho)! - Fix Vite build error
 
 ## 3.3.7
 

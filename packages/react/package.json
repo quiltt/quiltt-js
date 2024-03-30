@@ -4,10 +4,10 @@
   "description": "React components and hooks for Quiltt Connector",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quiltt/quiltt-public.git",
+    "url": "https://github.com/quiltt/quiltt-js.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/quiltt/quiltt-public/tree/main/packages/react#readme",
+  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react#readme",
   "keywords": [
     "quiltt",
     "quiltt-connector",
@@ -54,8 +54,8 @@
   "devDependencies": {
     "@apollo/client": "3.7.16",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
-    "@types/node": "20.11.25",
-    "@types/react": "18.2.64",
+    "@types/node": "20.12.2",
+    "@types/react": "18.2.73",
     "@types/react-dom": "18.2.6",
     "@typescript-eslint/eslint-plugin": "5.60.1",
     "@typescript-eslint/parser": "5.60.1",

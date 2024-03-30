@@ -4,7 +4,7 @@
 
 If you want to contribute to the development of `@quiltt/react`, follow these steps:
 
-1. Clone the [quiltt-public](https://github.com/quiltt/quiltt-public) repository from GitHub.
+1. Clone the [quiltt-js](https://github.com/quiltt/quiltt-js) repository from GitHub.
 2. Navigate to the root folder of the project.
 3. Install the dependencies by running `pnpm install`.
 4. Start the development environment with `pnpm run dev`.
