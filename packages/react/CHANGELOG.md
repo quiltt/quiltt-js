@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.5.6
+
+### Patch Changes
+
+- [#223](https://github.com/quiltt/quiltt-js/pull/223) [`8c5041c`](https://github.com/quiltt/quiltt-js/commit/8c5041c1670fd7dbfed06355c06888256ce84b08) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Remove axios and replace with native fetch
+
+- Updated dependencies [[`8c5041c`](https://github.com/quiltt/quiltt-js/commit/8c5041c1670fd7dbfed06355c06888256ce84b08)]:
+  - @quiltt/core@3.5.6
+
 ## 3.5.5
 
 ### Patch Changes
