@@ -33,7 +33,7 @@ The React Native package provides React Native Components for integrating Quiltt
 
 ## Contributing
 
-We welcome contributions from developers at all skill levels. Whether you're looking to report a bug, propose a feature, or contribute code, your involvement is invaluable to the growth and improvement of Quiltt-JS. Please refer to the `CONTRIBUTING.md` file for more details on how to get started.
+We welcome contributions from developers at all skill levels. Whether you're looking to report a bug, propose a feature, or contribute code, your involvement is invaluable to the growth and improvement of Quiltt-JS. Please refer to the [CONTRIBUTING](CONTRIBUTING.md) file for more details on how to get started.
 
 ## License
 
