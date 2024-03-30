@@ -2,6 +2,13 @@
   "name": "@quiltt/react-native",
   "version": "3.5.5",
   "description": "React Native components for Quiltt Connector",
+  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react-native#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quiltt/quiltt-js.git",
+    "directory": "packages/react-native"
+  },
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
@@ -17,28 +24,22 @@
     "src/**",
     "CHANGELOG.md"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/quiltt/quiltt-js.git",
-    "directory": "packages/react-native"
-  },
-  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react-native#readme",
   "scripts": {
+    "addApiKey": "node scripts/addApiKey.js",
+    "addVersion": "genversion --esm -f src/version.ts",
     "build": "pnpm run addApiKey && pnpm run addVersion && bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
-    "addVersion": "genversion --esm -f src/version.ts",
-    "addApiKey": "node scripts/addApiKey.js",
     "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@honeybadger-io/core": "6.6.0",
     "@quiltt/core": "workspace:*",
-    "@quiltt/react": "workspace:*",
-    "@honeybadger-io/core": "6.5.1"
+    "@quiltt/react": "workspace:*"
   },
   "devDependencies": {
-    "@apollo/client": "3.7.16",
+    "@apollo/client": "3.9.9",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
     "@types/base-64": "0.1.0",
     "@types/node": "20.12.2",
@@ -56,16 +57,15 @@
     "prettier": "2.8.8",
     "react": "18.2.0",
     "rimraf": "5.0.5",
-    "typescript": "5.4.2"
+    "typescript": "5.4.3"
   },
   "peerDependencies": {
+    "base-64": "*",
     "react": "^18.2.0",
     "react-native": "^0.72.5",
-    "react-native-webview": "^13.0.0",
-    "base-64": "*",
-    "react-native-url-polyfill": "*"
+    "react-native-url-polyfill": "*",
+    "react-native-webview": "^13.0.0"
   },
-  "license": "MIT",
   "publishConfig": {
     "access": "public"
   }

@@ -2,16 +2,16 @@
   "name": "@quiltt/core",
   "version": "3.5.5",
   "description": "Javascript API client and utilities for Quiltt",
+  "keywords": [
+    "quiltt",
+    "typescript"
+  ],
+  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/quiltt/quiltt-js.git",
     "directory": "packages/core"
   },
-  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
-  "keywords": [
-    "quiltt",
-    "typescript"
-  ],
   "license": "MIT",
   "sideEffects": [
     "./src/Storage/Local.ts",
@@ -40,11 +40,11 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.16",
+    "@apollo/client": "^3.9.9",
     "axios": "^1.6.0",
-    "cross-fetch": "^3.1.8",
+    "cross-fetch": "^4.0.0",
     "graphql": "^16.8.1",
-    "graphql-ruby-client": "^1.11.8"
+    "graphql-ruby-client": "^1.13.3"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
@@ -58,7 +58,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "prettier": "2.8.8",
     "rimraf": "5.0.5",
-    "typescript": "5.4.2"
+    "typescript": "5.4.3"
   },
   "publishConfig": {
     "access": "public"
