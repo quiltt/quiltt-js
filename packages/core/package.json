@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.9.9",
-    "axios": "^1.6.0",
     "cross-fetch": "^4.0.0",
     "graphql": "^16.8.1",
     "graphql-ruby-client": "^1.13.3"
