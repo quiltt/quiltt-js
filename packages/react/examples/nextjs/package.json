@@ -1,21 +1,21 @@
 {
   "name": "@quiltt/examples-nextjs",
-  "description": "Quiltt's React SDK integrated into Next.js",
   "version": "3.1.6",
-  "license": "MIT",
   "private": true,
+  "description": "Quiltt's React SDK integrated into Next.js",
+  "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
-    "cypress:install": "cypress install",
-    "cypress:open": "cypress open",
     "cypress": "pnpm run cypress:install && pnpm run cypress:open",
     "cypress:component": "pnpm run cypress:install && cypress run --component --browser chrome",
-    "test": "pnpm run cypress:component"
+    "cypress:install": "cypress install",
+    "cypress:open": "cypress open",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start",
+    "test": "pnpm run cypress:component",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
     "@quiltt/react": "workspace:*",
@@ -34,6 +34,6 @@
     "eslint-config-next": "14.0.4",
     "postcss": "8.4.31",
     "tailwindcss": "3.3.2",
-    "typescript": "5.4.2"
+    "typescript": "5.4.3"
   }
 }

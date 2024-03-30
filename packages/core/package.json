@@ -2,16 +2,16 @@
   "name": "@quiltt/core",
   "version": "3.5.5",
   "description": "Javascript API client and utilities for Quiltt",
+  "keywords": [
+    "quiltt",
+    "typescript"
+  ],
+  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/quiltt/quiltt-js.git",
     "directory": "packages/core"
   },
-  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
-  "keywords": [
-    "quiltt",
-    "typescript"
-  ],
   "license": "MIT",
   "sideEffects": [
     "./src/Storage/Local.ts",
@@ -57,7 +57,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "prettier": "2.8.8",
     "rimraf": "5.0.5",
-    "typescript": "5.4.2"
+    "typescript": "5.4.3"
   },
   "publishConfig": {
     "access": "public"

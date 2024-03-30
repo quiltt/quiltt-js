@@ -1,12 +1,13 @@
 {
   "name": "@quiltt/examples-expo",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
   "type": "module",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios"
+    "ios": "expo start --ios",
+    "start": "expo start"
   },
   "dependencies": {
     "@honeybadger-io/core": "6.5.1",
@@ -27,7 +28,6 @@
   "devDependencies": {
     "@babel/core": "7.24.0",
     "@types/react": "18.2.73",
-    "typescript": "5.4.2"
-  },
-  "private": true
+    "typescript": "5.4.3"
+  }
 }
