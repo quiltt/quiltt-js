@@ -40,11 +40,10 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.16",
-    "axios": "^1.6.0",
-    "cross-fetch": "^3.1.8",
+    "@apollo/client": "^3.9.9",
+    "cross-fetch": "^4.0.0",
     "graphql": "^16.8.1",
-    "graphql-ruby-client": "^1.11.8"
+    "graphql-ruby-client": "^1.13.3"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
