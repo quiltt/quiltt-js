@@ -1,7 +1,7 @@
 import type { FetchResult, NextLink, Observable, Operation } from '@apollo/client/index.js'
 import { ApolloLink } from '@apollo/client/index.js'
 
-import { GlobalStorage } from '@/storage'
+import { GlobalStorage } from '@/storages'
 
 /**
  * unauthorizedCallback only triggers in the event the token is present, and
