@@ -12,6 +12,7 @@
     "**/*.cjs",
     "**/*.json",
     "**/*.config.js",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "vitest.config.js"
   ]
 }

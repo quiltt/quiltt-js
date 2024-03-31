@@ -88,5 +88,3 @@ export class LocalStorage<T> {
     }
   }
 }
-
-export default LocalStorage

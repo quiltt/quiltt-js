@@ -1,7 +1,10 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "**/*.ts",
@@ -9,6 +12,7 @@
     "**/*.mjs",
     "**/*.cjs",
     "**/*.json",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "vitest.config.js"
   ]
 }
