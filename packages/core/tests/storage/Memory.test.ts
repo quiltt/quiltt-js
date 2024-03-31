@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { MemoryStorage } from '@/storages/Memory'
+import { MemoryStorage } from '@/storage/Memory'
 
 describe('MemoryStorage', () => {
   let storage: MemoryStorage<any>

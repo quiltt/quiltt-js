@@ -1,5 +1,5 @@
 export * from './api'
-export * from './storages'
+export * from './storage'
 export * from './configuration'
 export * from './JsonWebToken'
 export * from './Observable'

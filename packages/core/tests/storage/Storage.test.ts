@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { Storage } from '@/storages/Storage'
-import { LocalStorage } from '@/storages/Local'
-import { MemoryStorage } from '@/storages/Memory'
+import { Storage } from '@/storage/Storage'
+import { LocalStorage } from '@/storage/Local'
+import { MemoryStorage } from '@/storage/Memory'
 
 // Mock LocalStorage and MemoryStorage with all necessary methods
 vi.mock('@/storage/Local', () => {
