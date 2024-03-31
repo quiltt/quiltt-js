@@ -1,4 +1,4 @@
-import { GlobalStorage } from '@/Storage'
+import { GlobalStorage } from '@/storage'
 
 import type { ServerError } from '@apollo/client/index.js'
 import { onError } from '@apollo/client/link/error/index.js'

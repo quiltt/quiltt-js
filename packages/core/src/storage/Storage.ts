@@ -83,9 +83,6 @@ export class Storage<T> {
   }
 }
 
-export * from './Local'
-export * from './Memory'
-
 /**
  * This is an singleton to share the memory states across all instances; This
  * basically acts like shared memory when there is no localStorage.

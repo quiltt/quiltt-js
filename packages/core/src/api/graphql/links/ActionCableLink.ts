@@ -1,4 +1,4 @@
-import { GlobalStorage } from '@/Storage'
+import { GlobalStorage } from '@/storage'
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index.js'
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
 import { print } from 'graphql'

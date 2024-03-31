@@ -39,5 +39,3 @@ export class MemoryStorage<T> {
     }
   }
 }
-
-export default MemoryStorage
