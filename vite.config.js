@@ -8,7 +8,7 @@ export default defineConfig({
       reporter: ['json', 'lcov'],
       include: ['**/src/**/*.ts', '**/src/**/*.tsx'],
       exclude: [
-        '**/src/**/index.ts',
+        '**/src/**/index.ts', // Exclude barrel files
         '**/node_modules/**',
         '**/test/**',
         '**/dist/**',

@@ -21,7 +21,6 @@ describe('useQuilttSettings', () => {
     // Render the hook and test the returned value
     const { result } = renderHook(() => useQuilttSettings(), {
       // Wrap the hook with the context provider to provide a value
-      // @ts-expect-error - The QuilttSettings.Provider is not a valid component
       wrapper: ({ children }) => (
         <QuilttSettings.Provider value={{ clientId: expectedClientId }}>
           {children}
