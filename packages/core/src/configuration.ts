@@ -26,7 +26,7 @@ const QUILTT_DEBUG = (() => {
 
 const domain = QUILTT_API_DOMAIN || 'quiltt.io'
 const protocolHttp = `http${QUILTT_API_INSECURE ? '' : 's'}`
-const protocolWebsockets = `ws${QUILTT_API_DOMAIN ? '' : 's'}`
+const protocolWebsockets = `ws${QUILTT_API_INSECURE ? '' : 's'}`
 
 export const debugging = QUILTT_DEBUG
 export const version = `${packageName}: v${packageVersion}`
