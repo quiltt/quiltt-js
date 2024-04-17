@@ -1,28 +1,52 @@
+/// <reference types="vite/client" />
+
 import { name as packageName, version as packageVersion } from '../package.json'
 
-const QUILTT_API_INSECURE = (() => {
-  try {
-    return process.env.QUILTT_API_INSECURE
-  } catch {
-    return undefined
-  }
-})()
+const getImportMetaEnv = (key: string): string | undefined => {
+  return import.meta.env[key]
+}
 
-const QUILTT_API_DOMAIN = (() => {
-  try {
-    return process.env.QUILTT_API_DOMAIN
-  } catch {
-    return undefined
-  }
-})()
+type EnvValue = string | number | boolean | null | undefined
 
-const QUILTT_DEBUG = (() => {
-  try {
-    return !!process.env.QUILTT_DEBUG || process.env.NODE_ENV !== 'production'
-  } catch {
-    return false
+/**
+ * Retrieves the environment variable by key, with fallback and type conversion,
+ * supporting Node.js, Vite, and potentially other runtime environments.
+ */
+export const getEnv = (key: string, fallback: EnvValue = undefined): EnvValue => {
+  let value: string | undefined
+
+  // Check if running under Node.js and use process.env
+  if (typeof process !== 'undefined' && process.env) {
+    value = process.env[key]
   }
-})()
+
+  // If running under Vite, use import.meta.env
+  if (!value) {
+    const viteKey = `VITE_${key}`
+    value = getImportMetaEnv(viteKey)
+  }
+
+  // Return the value after type conversion if necessary or use fallback
+  if (value === undefined || value === null) {
+    return fallback
+  }
+
+  // Convert to boolean if the value is 'true' or 'false'
+  if (value === 'true' || value === 'false') {
+    return value === 'true'
+  }
+
+  // Convert to number if it's numeric
+  if (!isNaN(Number(value))) {
+    return Number(value)
+  }
+
+  return value
+}
+
+const QUILTT_API_INSECURE = getEnv('QUILTT_API_INSECURE', false)
+const QUILTT_API_DOMAIN = getEnv('QUILTT_API_DOMAIN', 'quiltt.io')
+const QUILTT_DEBUG = getEnv('QUILTT_DEBUG', import.meta.env.MODE !== 'production')
 
 const domain = QUILTT_API_DOMAIN || 'quiltt.io'
 const protocolHttp = `http${QUILTT_API_INSECURE ? '' : 's'}`
