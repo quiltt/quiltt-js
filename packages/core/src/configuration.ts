@@ -6,13 +6,11 @@ const getImportMetaEnv = (key: string): string | undefined => {
   return import.meta.env[key]
 }
 
-type EnvValue = string | number | boolean | null | undefined
-
 /**
  * Retrieves the environment variable by key, with fallback and type conversion,
  * supporting Node.js, Vite, and potentially other runtime environments.
  */
-export const getEnv = (key: string, fallback: EnvValue = undefined): EnvValue => {
+export const getEnv = (key: string, fallback: any = undefined): any => {
   let value: string | undefined
 
   // Check if running under Node.js and use process.env
