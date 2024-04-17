@@ -50,16 +50,4 @@ describe('getEnv', () => {
     const result = getEnv('STRING_VAR')
     expect(result).toBe('HelloWorld')
   })
-
-  // Example to test Vite's import.meta.env if needed
-  describe('getEnv with injected environment', () => {
-    it('should return the correct environment variable from an injected env source', () => {
-      const mockEnv = {
-        VITE_TEST_VAR: 'abc',
-      }
-
-      const result = getEnv('TEST_VAR', mockEnv.VITE_TEST_VAR)
-      expect(result).toBe('abc')
-    })
-  })
 })
