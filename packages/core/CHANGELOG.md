@@ -1,5 +1,13 @@
 # @quiltt/core
 
+## 3.6.0
+
+### Minor Changes
+
+- [#229](https://github.com/quiltt/quiltt-js/pull/229) [`f688563`](https://github.com/quiltt/quiltt-js/commit/f6885635d989fb75918cb13e449ca0eec60850fc) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Fix Websockets protocol variable
+
+- [#229](https://github.com/quiltt/quiltt-js/pull/229) [`f688563`](https://github.com/quiltt/quiltt-js/commit/f6885635d989fb75918cb13e449ca0eec60850fc) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Fix Websockets protocol variable
+
 ## 3.5.6
 
 ### Patch Changes
