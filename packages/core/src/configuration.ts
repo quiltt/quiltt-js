@@ -1,42 +1,31 @@
 import { name as packageName, version as packageVersion } from '../package.json'
 
-/**
- * Retrieves the environment variable by key, with fallback and type conversion,
- * supporting Node.js, Vite, and potentially other runtime environments.
- */
-export const getEnv = (key: string, fallback: any = undefined): any => {
+const QUILTT_API_INSECURE = (() => {
   try {
-    let value: string | undefined
-
-    // Check if running under Node.js and use process.env
-    if (typeof process !== 'undefined' && process.env) {
-      value = process.env[key]
+    if (process.env.QUILTT_API_INSECURE === 'true' || process.env.QUILTT_API_INSECURE === 'false') {
+      return process.env.QUILTT_API_INSECURE === 'true'
     }
-
-    // Return the value after type conversion if necessary or use fallback
-    if (value === undefined || value === null) {
-      return fallback
-    }
-
-    // Convert to boolean if the value is 'true' or 'false'
-    if (value === 'true' || value === 'false') {
-      return value === 'true'
-    }
-
-    // Convert to number if it's numeric
-    if (!isNaN(Number(value))) {
-      return Number(value)
-    }
-
-    return value
-  } catch (error) {
+    return process.env.QUILTT_API_INSECURE
+  } catch {
     return undefined
   }
-}
+})()
 
-const QUILTT_API_INSECURE = getEnv('QUILTT_API_INSECURE', false)
-const QUILTT_API_DOMAIN = getEnv('QUILTT_API_DOMAIN', 'quiltt.io')
-const QUILTT_DEBUG = getEnv('QUILTT_DEBUG', process?.env?.NODE_ENV !== 'production')
+const QUILTT_API_DOMAIN = (() => {
+  try {
+    return process.env.QUILTT_API_DOMAIN
+  } catch {
+    return undefined
+  }
+})()
+
+const QUILTT_DEBUG = (() => {
+  try {
+    return !!process.env.QUILTT_DEBUG || process.env.NODE_ENV !== 'production'
+  } catch {
+    return false
+  }
+})()
 
 const domain = QUILTT_API_DOMAIN || 'quiltt.io'
 const protocolHttp = `http${QUILTT_API_INSECURE ? '' : 's'}`
