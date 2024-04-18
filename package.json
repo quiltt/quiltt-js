@@ -18,8 +18,8 @@
     "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "version": "npx changeset version && pnpm -r exec pnpm run --if-present addVersion",
-    "postversion": "pnpm recursive exec --if-present --filter ./packages 'pnpm install'"
+    "version": "turbo run addVersion",
+    "postversion": "pnpm exec pnpm install"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
@@ -32,7 +32,7 @@
     "genversion": "3.2.0",
     "happy-dom": "14.3.9",
     "pnpm": "9.0.2",
-    "turbo": "1.13.0",
+    "turbo": "1.13.2",
     "vite": "5.2.7",
     "vite-tsconfig-paths": "4.3.2",
     "vitest": "1.4.0"

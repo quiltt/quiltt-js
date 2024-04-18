@@ -1,5 +1,6 @@
 {
   "name": "@quiltt/examples-nextjs",
+  "version": "1.0.0",
   "private": true,
   "description": "Quiltt's React SDK integrated into Next.js",
   "license": "MIT",
