@@ -8,8 +8,3 @@ export type Nullable<T> = { [K in keyof T]: T[K] | null }
 export type Mutable<Type> = { -readonly [Key in keyof Type]: Type[Key] }
 export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T
 export type DeepReadonly<T> = T extends object ? { [P in keyof T]: DeepReadonly<T[P]> } : T
-declare global {
-  interface Window {
-    expo: any
-  }
-}
