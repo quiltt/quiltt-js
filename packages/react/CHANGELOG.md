@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.6.1
+
+### Patch Changes
+
+- [#232](https://github.com/quiltt/quiltt-js/pull/232) [`7a119af`](https://github.com/quiltt/quiltt-js/commit/7a119af8b0ba826b8df81f5eb242c002379b4e56) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Improve typeof checks for mobile environments
+
+- Updated dependencies [[`7a119af`](https://github.com/quiltt/quiltt-js/commit/7a119af8b0ba826b8df81f5eb242c002379b4e56)]:
+  - @quiltt/core@3.6.1
+
 ## 3.6.0
 
 ### Minor Changes
