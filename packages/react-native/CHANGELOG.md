@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.6.2
+
+### Patch Changes
+
+- [#236](https://github.com/quiltt/quiltt-js/pull/236) [`85c0be1`](https://github.com/quiltt/quiltt-js/commit/85c0be16803381de5dbd89a7295e326228542080) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Fix config loading
+
+- Updated dependencies [[`85c0be1`](https://github.com/quiltt/quiltt-js/commit/85c0be16803381de5dbd89a7295e326228542080)]:
+  - @quiltt/core@3.6.2
+  - @quiltt/react@3.6.2
+
 ## 3.6.1
 
 ### Patch Changes
