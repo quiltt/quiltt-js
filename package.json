@@ -19,7 +19,7 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "version": "npx changeset version && turbo run addVersion",
-    "postversion": "pnpm exec pnpm install"
+    "postversion": "pnpm exec pnpm install --filter=./packages/** "
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
