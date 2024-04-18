@@ -2,7 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/b816cde7504cfe33e9a0/maintainability)](https://codeclimate.com/github/quiltt/quiltt-js/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b816cde7504cfe33e9a0/test_coverage)](https://codeclimate.com/github/quiltt/quiltt-js/test_coverage)
 
-This repository hosts the source code for Quiltt's JavaScript projects. This includes a range of tools and libraries designed for ECMAScript runtimes and languages, with comprehensive support for JavaScript, TypeScript, React, React Native and Node.js environments.
+This repository is the home of Quiltt's JavaScript projects. This includes a range of tools and libraries designed for ECMAScript runtimes and languages, with comprehensive support for TypeScript, React, React Native and Node.js environments.
 
 ## About Quiltt
 
