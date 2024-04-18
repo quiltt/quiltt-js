@@ -1,34 +1,35 @@
-version: '2'
+version: "2"
 plugins:
   duplication:
     enabled: true
     exclude_patterns:
-      - '**/tests/'
+      - "**/tests/"
 
   fixme:
     enabled: true
     config:
       strings:
         - FIXME
-        - '@fixme'
+        - "@fixme"
 
   shellcheck:
     enabled: true
 
 exclude_patterns:
-  - '**/generated/'
-  - '**/config/'
-  - '**/tests/'
-  - '**/node_modules/'
-  - '**/dist/'
-  - '**/build/'
-  - '**/.turbo/'
-  - '**/.next/'
-  - '**/examples/'
-  - '**/example/'
-  - '**/coverage/'
-  - '**/*.config.js'
-  - '**/*.config.cjs'
-  - '**/*.config.ts'
-  - '**/*.d.ts'
-  - 'pnpm-lock.yaml'
+  - "packages/core/src/api/graphql/links/actioncable/**/*" # See README in this directory
+  - "**/generated/"
+  - "**/config/"
+  - "**/tests/"
+  - "**/node_modules/"
+  - "**/dist/"
+  - "**/build/"
+  - "**/.turbo/"
+  - "**/.next/"
+  - "**/examples/"
+  - "**/example/"
+  - "**/coverage/"
+  - "**/*.config.js"
+  - "**/*.config.cjs"
+  - "**/*.config.ts"
+  - "**/*.d.ts"
+  - "pnpm-lock.yaml"
