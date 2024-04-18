@@ -18,7 +18,7 @@
     "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "version": "turbo run addVersion",
+    "version": "npx changeset version && turbo run addVersion",
     "postversion": "pnpm exec pnpm install"
   },
   "devDependencies": {
