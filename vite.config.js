@@ -21,6 +21,7 @@ export default defineConfig({
         '**/*.test.tsx',
         '**/example/**/*',
         '**/examples/**/*',
+        '**/src/api/graphql/links/actioncable/**', // ActionCable files
       ],
     },
   },
