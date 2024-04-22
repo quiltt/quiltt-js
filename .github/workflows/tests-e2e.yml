@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  setup:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,15 +28,11 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Install Package Manager
-        run: |
-          if [ "${{ matrix.package_manager }}" = "pnpm" ]; then
-            echo "Installing pnpm..."
-            npm install -g pnpm
-          elif [ "${{ matrix.package_manager }}" = "yarn" ]; then
-            echo "Installing Yarn..."
-            npm install -g yarn
-          fi
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Package Manager Version
+        run: corepack prepare ${{ matrix.package_manager }} --activate
 
       - name: Install dependencies
         working-directory: ${{ matrix.directory }}
