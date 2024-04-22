@@ -36,11 +36,7 @@ jobs:
         working-directory: ${{ matrix.directory }}
 
       - name: Install dependencies
-        run: |
-          echo "Installing dependencies in $(pwd)"
-          ls -la
-          echo "Using package manager: ${{ matrix.package_manager }}"
-          ${{ matrix.package_manager }} install
+        run: ${{ matrix.package_manager }} install --frozen-lockfile
         working-directory: ${{ matrix.directory }}
 
       - name: Build packages
@@ -49,7 +45,6 @@ jobs:
 
       - name: Run tests
         run: |
-          echo "Running tests in $(pwd)"
           if [ "${{ matrix.name }}" = "Test Next App" ]; then
             ${{ matrix.package_manager }} run test
           elif [ "${{ matrix.name }}" = "Test Expo App" ]; then
