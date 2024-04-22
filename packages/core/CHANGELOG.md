@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.6.3
+
+### Patch Changes
+
+- [#240](https://github.com/quiltt/quiltt-js/pull/240) [`96556d4`](https://github.com/quiltt/quiltt-js/commit/96556d4e4d29b1a5623b78f60d97c49a974e44e8) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Pre-transpile '@quiltt/react-native' code before publish
+
 ## 3.6.2
 
 ### Patch Changes

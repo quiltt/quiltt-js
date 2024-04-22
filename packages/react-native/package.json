@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/react-native",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "description": "React Native components for Quiltt Connector",
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react-native#readme",
   "repository": {
