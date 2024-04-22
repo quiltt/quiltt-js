@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@honeybadger-io/core": "6.5.1",
-    "@quiltt/react": "3.6.2",
+    "@quiltt/react": "3.6.3",
     "@react-navigation/native": "6.1.9",
     "@react-navigation/native-stack": "6.9.16",
     "base-64": "1.0.0",
