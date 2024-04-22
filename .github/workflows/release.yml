@@ -38,6 +38,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Delete existing git tags for @quiltt/examples-
+        run: |
+          # Fetch all tags from the remote to ensure the local git is up-to-date
+          git fetch --tags
+          # Find tags starting with @quiltt/examples- and delete them locally and remotely
+          git tag -l "@quiltt/examples-*" | xargs -n 1 -I % sh -c 'git tag -d %; git push origin --delete %'
+
       - name: Create release pull request or release to npm
         id: changesets
         uses: changesets/action@v1
