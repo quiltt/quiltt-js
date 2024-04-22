@@ -1751,22 +1751,22 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@quiltt/core@3.6.2":
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/@quiltt/core/-/core-3.6.2.tgz#fbc5a342b8e87213cd5cfa8bf1ea96d40c2bf865"
-  integrity sha512-dqapLcVjNqy5JlIIGxX7vCaa2jEbPza3vOODO8VwSnnrarnFPmNtmv/USwneEiTnPMbuZXZ98wP2kOHhN8J7kw==
+"@quiltt/core@3.6.3":
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/@quiltt/core/-/core-3.6.3.tgz#6e21fd37b0b3374c294adfbea9d9389a7180492d"
+  integrity sha512-vJ9iPjy2J1fvl8SMNsHpfdX6SyGMmu4IjNgs3Oy/mAEFwGjgykJZPU5a3zpRCB9b62c5wddeClkLjDWBsmakBg==
   dependencies:
     "@apollo/client" "^3.9.9"
     cross-fetch "^4.0.0"
     graphql "^16.8.1"
     graphql-ruby-client "^1.13.3"
 
-"@quiltt/react@3.6.2":
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/@quiltt/react/-/react-3.6.2.tgz#ffab7a5a20daab0b536fde81084a79d558d661ba"
-  integrity sha512-hSU2gtA2zJRl9IemWuxqNs8uv/Qtg0NlfZggtcgq51JsUOCg89/wMClQbjP18D3QMxYNO/xslDF/bRzDFkEpgg==
+"@quiltt/react@3.6.3":
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/@quiltt/react/-/react-3.6.3.tgz#6a7115e9e772f041a786a1b2e93ecb3ba8ae5b5f"
+  integrity sha512-5cFFvA1w2tw0hfuaKGaO9YO9Nw9Iw9Y6lb4TLhyjlvM4sKVx8Nca1H4bnciwbVeV2w7jxOnRNWGjA2NlB6JToA==
   dependencies:
-    "@quiltt/core" "3.6.2"
+    "@quiltt/core" "3.6.3"
 
 "@react-native-community/cli-clean@11.3.7":
   version "11.3.7"
