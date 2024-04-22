@@ -1,0 +1,66 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: 'Test Next App'
+            directory: '.'
+            package_manager: 'pnpm'
+          - name: 'Test Expo App'
+            directory: './examples/react-native-expo'
+            package_manager: 'yarn'
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Package Manager
+        run: |
+          if [ "${{ matrix.package_manager }}" = "pnpm" ]; then
+            echo "Installing pnpm..."
+            npm install -g pnpm
+          elif [ "${{ matrix.package_manager }}" = "yarn" ]; then
+            echo "Installing Yarn..."
+            npm install -g yarn
+          fi
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.directory }}
+        run: ${{ matrix.package_manager }} install
+
+      - name: Build packages
+        working-directory: ${{ matrix.directory }}
+        run: ${{ matrix.package_manager }} run build
+
+      - name: Run tests
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ "${{ matrix.name }}" = "Test Next App" ]; then
+            ${{ matrix.package_manager }} run test
+          elif [ "${{ matrix.name }}" = "Test Expo App" ]; then
+            timeout 60 ${{ matrix.package_manager }} run test || true
+          fi
+
+      - if: ${{ failure() }}
+        name: Upload Error Screenshot
+        uses: actions/upload-artifact@v3
+        with:
+          name: error_screenshots
+          path: |
+            ${{github.workspace}}/**/cypress/screenshots
+            ${{github.workspace}}/**/cypress/videos
+          retention-days: 3

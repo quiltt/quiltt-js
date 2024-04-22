@@ -1,4 +1,4 @@
-name: Tests
+name: Unit Tests
 
 on:
   push:
@@ -37,16 +37,3 @@ jobs:
           coverageCommand: pnpm run coverage
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
-
-      - name: Run tests on example apps
-        run: pnpm test
-
-      - if: ${{ failure() }}
-        name: Upload Error Screenshot
-        uses: actions/upload-artifact@v3
-        with:
-          name: error_screenshots
-          path: |
-            ${{github.workspace}}/**/cypress/screenshots
-            ${{github.workspace}}/**/cypress/videos
-          retention-days: 3

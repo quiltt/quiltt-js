@@ -11,12 +11,14 @@
   "license": "MIT",
   "type": "module",
   "exports": {
+    "import": {
+      "default": "./dist/index.js"
+    },
     "require": {
-      "import": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.cjs"
     }
   },
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**",
