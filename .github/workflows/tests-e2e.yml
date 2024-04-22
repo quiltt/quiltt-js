@@ -27,29 +27,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: ${{ matrix.package_manager }}
 
       - name: Enable Corepack
         run: corepack enable
 
       - name: Install Package Manager Version
         run: corepack prepare ${{ matrix.package_manager }} --activate
+        working-directory: ${{ matrix.directory }}
 
       - name: Install dependencies
+        run: |
+          echo "Installing dependencies in $(pwd)"
+          ls -la
+          echo "Using package manager: ${{ matrix.package_manager }}"
+          ${{ matrix.package_manager }} install
         working-directory: ${{ matrix.directory }}
-        run: ${{ matrix.package_manager }} install
 
       - name: Build packages
-        working-directory: ${{ matrix.directory }}
         run: ${{ matrix.package_manager }} run build
+        working-directory: ${{ matrix.directory }}
 
       - name: Run tests
-        working-directory: ${{ matrix.directory }}
         run: |
+          echo "Running tests in $(pwd)"
           if [ "${{ matrix.name }}" = "Test Next App" ]; then
             ${{ matrix.package_manager }} run test
           elif [ "${{ matrix.name }}" = "Test Expo App" ]; then
             timeout 60 ${{ matrix.package_manager }} run test || true
           fi
+        working-directory: ${{ matrix.directory }}
 
       - if: ${{ failure() }}
         name: Upload Error Screenshot
