@@ -27,7 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: ${{ matrix.package_manager }}
 
       - name: Enable Corepack
         run: corepack enable
