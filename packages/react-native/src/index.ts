@@ -6,19 +6,6 @@ if (!global.atob) {
   global.atob = decode
 }
 
-/* export type {
-  ConnectorSDK,
-  ConnectorSDKCallbacks,
-  ConnectorSDKOnEventCallback,
-  ConnectorSDKOnLoadCallback,
-  ConnectorSDKOnExitSuccessCallback,
-  ConnectorSDKOnExitAbortCallback,
-  ConnectorSDKOnExitErrorCallback,
-  ConnectorSDKEventType,
-  ConnectorSDKCallbackMetadata,
-  ConnectorSDKConnectOptions,
-} */
-
 export * from '@quiltt/core'
 
 export {
