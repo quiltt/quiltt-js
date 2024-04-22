@@ -32,9 +32,7 @@ jobs:
         run: corepack enable
 
       - name: Install Package Manager Version
-        run: |
-          npm install -g ${{ matrix.package_manager }}
-          corepack prepare ${{ matrix.package_manager }} --activate
+        run: corepack prepare ${{ matrix.package_manager }} --activate
         working-directory: ${{ matrix.directory }}
 
       - name: Install dependencies
