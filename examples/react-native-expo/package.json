@@ -33,6 +33,7 @@
     "@types/react": "18.2.73",
     "typescript": "5.4.3"
   },
+  "packageManager": "yarn@1.22.22",
   "publishConfig": {
     "access": "restricted"
   }
