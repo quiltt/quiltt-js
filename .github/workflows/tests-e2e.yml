@@ -13,7 +13,7 @@ jobs:
       matrix:
         include:
           - name: 'Test Next App'
-            directory: '.'
+            directory: './examples/react-nextjs'
             package_manager: 'pnpm'
           - name: 'Test Expo App'
             directory: './examples/react-native-expo'
@@ -31,6 +31,15 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Install Package Manager Version for Root
+        run: corepack prepare pnpm --activate
+
+      - name: Install Root Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build:packages
+
       - name: Install Package Manager Version
         run: corepack prepare ${{ matrix.package_manager }} --activate
         working-directory: ${{ matrix.directory }}
@@ -39,7 +48,7 @@ jobs:
         run: ${{ matrix.package_manager }} install --frozen-lockfile
         working-directory: ${{ matrix.directory }}
 
-      - name: Build packages
+      - name: Build app
         run: ${{ matrix.package_manager }} run build
         working-directory: ${{ matrix.directory }}
 

@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "[[ $CI = true ]] && npx pnpm@9 install --store=node_modules/.pnpm-store || echo skiping pnpm install; turbo run prebuild",
     "build": "turbo run build",
+    "build:packages": "turbo run build --filter='./packages/*'",
     "changeset": "pnpm -r exec pnpm run --if-present addVersion && npx changeset",
     "check:packages": "pnpm check-dependency-version-consistency .",
     "clean": "turbo run clean",
