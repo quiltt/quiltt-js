@@ -28,6 +28,9 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Install Sharp CLI
+        run: npm install -g sharp-cli
+
       - name: Enable Corepack
         run: corepack enable
 
