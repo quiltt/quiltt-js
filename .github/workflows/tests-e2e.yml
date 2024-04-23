@@ -1,0 +1,70 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: 'Test Next App'
+            directory: './examples/react-nextjs'
+            package_manager: 'pnpm'
+          - name: 'Test Expo App'
+            directory: './examples/react-native-expo'
+            package_manager: 'yarn'
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Sharp CLI
+        run: npm install -g sharp-cli
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Package Manager Version for Root
+        run: corepack prepare pnpm --activate
+
+      - name: Install Root Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build:packages
+
+      - name: Install Package Manager Version
+        run: corepack prepare ${{ matrix.package_manager }} --activate
+        working-directory: ${{ matrix.directory }}
+
+      - name: Install dependencies
+        run: ${{ matrix.package_manager }} install --frozen-lockfile
+        working-directory: ${{ matrix.directory }}
+
+      - name: Build app
+        run: ${{ matrix.package_manager }} run build
+        working-directory: ${{ matrix.directory }}
+
+      - name: Run tests
+        run: ${{ matrix.package_manager }} run test
+        working-directory: ${{ matrix.directory }}
+
+      - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}
+        name: Upload Error Screenshot
+        uses: actions/upload-artifact@v3
+        with:
+          name: error_screenshots
+          path: |
+            ${{github.workspace}}/**/cypress/screenshots
+            ${{github.workspace}}/**/cypress/videos
+          retention-days: 3

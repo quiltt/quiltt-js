@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "[[ $CI = true ]] && npx pnpm@9 install --store=node_modules/.pnpm-store || echo skiping pnpm install; turbo run prebuild",
     "build": "turbo run build",
+    "build:packages": "turbo run build --filter='./packages/*'",
     "changeset": "pnpm -r exec pnpm run --if-present addVersion && npx changeset",
     "check:packages": "pnpm check-dependency-version-consistency .",
     "clean": "turbo run clean",
@@ -26,17 +27,17 @@
     "@changesets/cli": "2.27.1",
     "@testing-library/react": "15.0.2",
     "@testing-library/react-native": "12.4.5",
-    "@types/node": "20.12.2",
+    "@types/node": "20.12.7",
     "@vitejs/plugin-react": "4.2.1",
     "@vitest/coverage-v8": "1.5.0",
     "check-dependency-version-consistency": "4.1.0",
     "genversion": "3.2.0",
     "happy-dom": "14.7.1",
-    "pnpm": "9.0.2",
+    "pnpm": "9.0.5",
     "turbo": "1.13.2",
     "vite": "5.2.10",
     "vite-tsconfig-paths": "4.3.2",
     "vitest": "1.5.0"
   },
-  "packageManager": "pnpm@9.0.2"
+  "packageManager": "pnpm@9.0.5"
 }

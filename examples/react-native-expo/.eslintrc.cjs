@@ -1,4 +1,4 @@
-const prettierConfig = require('../prettier.config.cjs')
+const prettierConfig = require('../../packages/react-native/prettier.config.cjs')
 
 const reactPatterns = {
   files: ['*.{jsx,tsx}'],
