@@ -9,7 +9,7 @@ export const ErrorReporterConfig = {
 }
 `
 
-const filePath = path.join(__dirname, '..', 'src', 'utils', 'ErrorReporterConfig.ts')
+const filePath = path.join(__dirname, '..', 'src', 'utils', 'error', 'ErrorReporterConfig.ts')
 
 console.log('Writing file:', filePath)
 
