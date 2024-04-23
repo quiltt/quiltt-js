@@ -2,8 +2,14 @@ import { PropsWithChildren } from 'react'
 
 import { SafeAreaView, StyleSheet, Platform, StatusBar } from 'react-native'
 
-export const AndroidSafeAreaView = ({ children }: PropsWithChildren) => (
-  <SafeAreaView style={styles.AndroidSafeArea}>{children}</SafeAreaView>
+type AndroidSafeAreaViewProps = PropsWithChildren & {
+  testId?: string
+}
+
+export const AndroidSafeAreaView = ({ testId, children }: AndroidSafeAreaViewProps) => (
+  <SafeAreaView testID={testId} style={styles.AndroidSafeArea}>
+    {children}
+  </SafeAreaView>
 )
 
 const styles = StyleSheet.create({

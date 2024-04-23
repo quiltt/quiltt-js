@@ -23,6 +23,7 @@ import { LoadingScreen } from './LoadingScreen'
 const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 
 type QuilttConnectorProps = {
+  testId?: string
   connectorId: string
   connectionId?: string
   institution?: string
@@ -36,7 +37,46 @@ type PreFlightCheck = {
 
 const PREFLIGHT_RETRY_COUNT = 3
 
+export const checkConnectorUrl = async (
+  connectorUrl: string,
+  retryCount = 0
+): Promise<PreFlightCheck> => {
+  let responseStatus
+  let error
+  let errorOccurred = false
+  try {
+    const response = await fetch(connectorUrl)
+    if (!response.ok) {
+      console.error(`The URL ${connectorUrl} is not routable.`)
+      responseStatus = response.status
+      errorOccurred = true
+    } else {
+      console.log(`The URL ${connectorUrl} is routable.`)
+      return { checked: true }
+    }
+  } catch (e) {
+    error = e
+    console.error(`An error occurred while checking the connector URL: ${error}`)
+    errorOccurred = true
+  }
+
+  // Retry logic in case of error or response not OK
+  if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
+    const delay = 50 * Math.pow(2, retryCount) // Exponential back-off
+    await new Promise((resolve) => setTimeout(resolve, delay)) // delay with exponential back-off for each retry
+    console.log(`Retrying... Attempt number ${retryCount + 1}`)
+    return checkConnectorUrl(connectorUrl, retryCount + 1)
+  }
+
+  const errorMessage = getErrorMessage(responseStatus, error as Error)
+  const errorToSend = (error as Error) || new Error(errorMessage)
+  const context = { connectorUrl, responseStatus }
+  if (responseStatus !== 404) errorReporter.send(errorToSend, context)
+  return { checked: true, error: errorMessage }
+}
+
 const QuilttConnector = ({
+  testId,
   connectorId,
   connectionId,
   institution,
@@ -63,52 +103,14 @@ const QuilttConnector = ({
   }, [connectorId, encodedOAuthRedirectUrl])
   const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
-  const checkConnectorUrl = useCallback(
-    async (retryCount = 0): Promise<PreFlightCheck> => {
-      let responseStatus
-      let error
-      let errorOccurred = false
-      try {
-        const response = await fetch(connectorUrl)
-        if (!response.ok) {
-          console.error(`The URL ${connectorUrl} is not routable.`)
-          responseStatus = response.status
-          errorOccurred = true
-        } else {
-          console.log(`The URL ${connectorUrl} is routable.`)
-          return { checked: true }
-        }
-      } catch (e) {
-        error = e
-        console.error(`An error occurred while checking the connector URL: ${error}`)
-        errorOccurred = true
-      }
-
-      // Retry logic in case of error or response not OK
-      if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
-        const delay = 50 * Math.pow(2, retryCount) // Exponential back-off
-        await new Promise((resolve) => setTimeout(resolve, delay)) // delay with exponential back-off for each retry
-        console.log(`Retrying... Attempt number ${retryCount + 1}`)
-        return checkConnectorUrl(retryCount + 1)
-      }
-
-      const errorMessage = getErrorMessage(responseStatus, error as Error)
-      const errorToSend = (error as Error) || new Error(errorMessage)
-      const context = { connectorUrl, responseStatus }
-      if (responseStatus !== 404) errorReporter.send(errorToSend, context)
-      return { checked: true, error: errorMessage }
-    },
-    [connectorUrl]
-  )
-
   useEffect(() => {
     if (preFlightCheck.checked) return
     const fetchDataAndSetState = async () => {
-      const connectorUrlStatus = await checkConnectorUrl()
+      const connectorUrlStatus = await checkConnectorUrl(connectorUrl)
       setPreFlightCheck(connectorUrlStatus)
     }
     fetchDataAndSetState()
-  }, [checkConnectorUrl, preFlightCheck])
+  }, [connectorUrl, preFlightCheck])
 
   const initInjectedJavaScript = useCallback(() => {
     const script = `\
@@ -242,15 +244,21 @@ const QuilttConnector = ({
     [handleOAuthUrl, handleQuilttEvent, isQuilttEvent, shouldRender]
   )
 
-  if (!preFlightCheck.checked) return <LoadingScreen />
+  if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
   if (preFlightCheck.error)
-    return <ErrorScreen error={preFlightCheck.error} cta={() => onExitError?.({ connectorId })} />
+    return (
+      <ErrorScreen
+        testId="error-screen"
+        error={preFlightCheck.error}
+        cta={() => onExitError?.({ connectorId })}
+      />
+    )
 
   return (
-    <AndroidSafeAreaView>
+    <AndroidSafeAreaView testId={testId}>
       <WebView
         ref={webViewRef}
-        // Plaid keep sending window.location = 'about:srcdoc' and causes some noise in RN
+        // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
         // All whitelists are now handled in requestHandler, handleQuilttEvent and handleOAuthUrl
         originWhitelist={['*']}
         source={{ uri: connectorUrl }}

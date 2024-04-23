@@ -9,11 +9,13 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
     "**/*.mjs",
     "**/*.cjs",
     "**/*.json",
     ".eslintrc.cjs",
-    "declarations.d.ts"
+    "declarations.d.ts",
+    "vitest.config.js"
   ],
   "exclude": ["example/**/*"]
 }
