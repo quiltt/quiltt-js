@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vitest/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import reactNative from 'vitest-react-native'
 
 export default defineConfig({
   test: {
@@ -8,9 +9,9 @@ export default defineConfig({
     environment: 'node',
     server: {
       deps: {
-        inline: ['react-native', '@quiltt/react-native'],
+        inline: ['react-native-url-polyfill'],
       },
     },
   },
-  plugins: [tsconfigPaths()],
+  plugins: [reactNative(), tsconfigPaths()],
 })

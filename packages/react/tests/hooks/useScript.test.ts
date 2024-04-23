@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 import { useScript } from '@/hooks/useScript'
 
 describe('useScript', () => {
@@ -46,12 +46,12 @@ describe('useScript', () => {
 
     expect(result.current).toBe('loading')
 
-    // Wait for a short period to allow the script to load
-    await new Promise((resolve) => setTimeout(resolve, 200))
-
     // Re-render the hook to ensure the state transition
-    rerender()
-
+    await act(async () => {
+      // Wait for a short period to allow the script to load
+      await new Promise((resolve) => setTimeout(resolve, 200))
+      rerender()
+    })
     expect(result.current).toBe('ready')
   })
 

@@ -3,13 +3,12 @@ import path from 'node:path'
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname)
 
-const content = `
-export const ErrorReporterConfig = {
+const content = `export const ErrorReporterConfig = {
   honeybadger_api_key: '${process.env.HONEYBADGER_API_KEY_REACT_NATIVE_SDK}',
 }
 `
 
-const filePath = path.join(__dirname, '..', 'src', 'utils', 'ErrorReporterConfig.ts')
+const filePath = path.join(__dirname, '..', 'src', 'utils', 'error', 'ErrorReporterConfig.ts')
 
 console.log('Writing file:', filePath)
 

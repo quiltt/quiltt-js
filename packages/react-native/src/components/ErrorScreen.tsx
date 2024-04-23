@@ -2,13 +2,14 @@ import { View, Text, Pressable, StyleSheet } from 'react-native'
 
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 
-type ErrorScreenProp = {
+type ErrorScreenProps = {
+  testId?: string
   error: string
   cta: () => void
 }
 
-export const ErrorScreen = ({ error, cta }: ErrorScreenProp) => (
-  <AndroidSafeAreaView>
+export const ErrorScreen = ({ testId, error, cta }: ErrorScreenProps) => (
+  <AndroidSafeAreaView testId={testId}>
     <View style={[styles.container, styles.padding]}>
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View

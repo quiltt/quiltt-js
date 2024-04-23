@@ -1,10 +1,9 @@
 // Quick hack to send error to Honeybadger to debug why the connector is not routable
-
 import type { Notice, NoticeTransportPayload } from '@honeybadger-io/core/build/src/types'
 import { generateStackTrace, getCauses, makeBacktrace } from '@honeybadger-io/core/build/src/util'
 
 import { ErrorReporterConfig } from './ErrorReporterConfig'
-import { version } from '../version'
+import { version } from '../../version'
 
 const notifier = {
   name: 'Quiltt React Native SDK Reporter',
