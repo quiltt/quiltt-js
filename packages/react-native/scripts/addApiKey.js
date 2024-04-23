@@ -3,8 +3,7 @@ import path from 'node:path'
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname)
 
-const content = `
-export const ErrorReporterConfig = {
+const content = `export const ErrorReporterConfig = {
   honeybadger_api_key: '${process.env.HONEYBADGER_API_KEY_REACT_NATIVE_SDK}',
 }
 `

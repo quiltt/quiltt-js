@@ -21,6 +21,7 @@ export default defineConfig({
         '**/*.test.tsx',
         '**/example/**/*',
         '**/examples/**/*',
+        '**/browser.ts', // Ignored as we are only exporting types and interfaces for the browser
         '**/src/api/graphql/links/actioncable/**', // ActionCable files
       ],
     },
