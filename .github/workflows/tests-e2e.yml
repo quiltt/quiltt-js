@@ -57,7 +57,7 @@ jobs:
           if [ "${{ matrix.name }}" = "Test Next App" ]; then
             ${{ matrix.package_manager }} run test
           elif [ "${{ matrix.name }}" = "Test Expo App" ]; then
-            timeout 60 ${{ matrix.package_manager }} run test || true
+            timeout 60 ${{ matrix.package_manager }} run test
           fi
         working-directory: ${{ matrix.directory }}
 
