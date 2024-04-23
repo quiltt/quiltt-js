@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Linking, Platform } from 'react-native'
 // React Native's URL implementation is incomplete
 // https://github.com/facebook/react-native/issues/16434
 import { URL } from 'react-native-url-polyfill'
@@ -14,13 +13,12 @@ import {
   useQuilttSession,
 } from '@quiltt/react'
 
-import { ErrorReporter, getErrorMessage } from '../utils'
-import { version } from '../version'
+import { version } from '@/version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
-
-const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
+import { checkConnectorUrl, handleOAuthUrl } from '@/utils'
+import type { PreFlightCheck } from '@/utils'
 
 type QuilttConnectorProps = {
   testId?: string
@@ -29,51 +27,6 @@ type QuilttConnectorProps = {
   institution?: string
   oauthRedirectUrl: string
 } & ConnectorSDKCallbacks
-
-type PreFlightCheck = {
-  checked: boolean
-  error?: string
-}
-
-const PREFLIGHT_RETRY_COUNT = 3
-
-export const checkConnectorUrl = async (
-  connectorUrl: string,
-  retryCount = 0
-): Promise<PreFlightCheck> => {
-  let responseStatus
-  let error
-  let errorOccurred = false
-  try {
-    const response = await fetch(connectorUrl)
-    if (!response.ok) {
-      console.error(`The URL ${connectorUrl} is not routable.`)
-      responseStatus = response.status
-      errorOccurred = true
-    } else {
-      console.log(`The URL ${connectorUrl} is routable.`)
-      return { checked: true }
-    }
-  } catch (e) {
-    error = e
-    console.error(`An error occurred while checking the connector URL: ${error}`)
-    errorOccurred = true
-  }
-
-  // Retry logic in case of error or response not OK
-  if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
-    const delay = 50 * Math.pow(2, retryCount) // Exponential back-off
-    await new Promise((resolve) => setTimeout(resolve, delay)) // delay with exponential back-off for each retry
-    console.log(`Retrying... Attempt number ${retryCount + 1}`)
-    return checkConnectorUrl(connectorUrl, retryCount + 1)
-  }
-
-  const errorMessage = getErrorMessage(responseStatus, error as Error)
-  const errorToSend = (error as Error) || new Error(errorMessage)
-  const context = { connectorUrl, responseStatus }
-  if (responseStatus !== 404) errorReporter.send(errorToSend, context)
-  return { checked: true, error: errorMessage }
-}
 
 const QuilttConnector = ({
   testId,
@@ -135,7 +88,7 @@ const QuilttConnector = ({
 
   // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
   // For other urls, we assume those are bank urls, which needs to be handle in external browser.
-  // @todo Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
+  // TODO: Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
   const allowedListUrl = useMemo(
     () => [
       'quiltt.app',
@@ -163,14 +116,6 @@ const QuilttConnector = ({
     const script = 'localStorage.clear();'
     webViewRef.current?.injectJavaScript(script)
   }
-
-  const handleOAuthUrl = useCallback((oauthUrl: URL) => {
-    if (oauthUrl.protocol !== 'https:') {
-      console.log(`handleOAuthUrl - Skipping non https url - ${oauthUrl.href}`)
-      return
-    }
-    Linking.openURL(oauthUrl.href)
-  }, [])
 
   const handleQuilttEvent = useCallback(
     (url: URL) => {
@@ -204,7 +149,7 @@ const QuilttConnector = ({
           onExitSuccess?.(metadata)
           break
         case 'Authenticate':
-          // @todo handle Authenticate
+          // TODO: handle Authenticate
           break
         case 'OauthRequested':
           handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
@@ -216,7 +161,6 @@ const QuilttConnector = ({
     },
     [
       connectorId,
-      handleOAuthUrl,
       initInjectedJavaScript,
       onEvent,
       onExit,
@@ -241,7 +185,7 @@ const QuilttConnector = ({
       handleOAuthUrl(url)
       return false
     },
-    [handleOAuthUrl, handleQuilttEvent, isQuilttEvent, shouldRender]
+    [handleQuilttEvent, isQuilttEvent, shouldRender]
   )
 
   if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
@@ -257,6 +201,7 @@ const QuilttConnector = ({
   return (
     <AndroidSafeAreaView testId={testId}>
       <WebView
+        testID="webview"
         ref={webViewRef}
         // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
         // All whitelists are now handled in requestHandler, handleQuilttEvent and handleOAuthUrl
