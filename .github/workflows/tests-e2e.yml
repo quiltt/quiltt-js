@@ -56,28 +56,7 @@ jobs:
         working-directory: ${{ matrix.directory }}
 
       - name: Run tests
-        run: |
-          if [ "${{ matrix.name }}" == "Test Next App" ]; then
-            ${{ matrix.package_manager }} run test
-          elif [ "${{ matrix.name }}" == "Test Expo App" ]; then
-            # Start the server in the background and capture its PID
-            ${{ matrix.package_manager }} run test &
-            PID=$!
-            # Wait for the server to be ready on port 8081 or timeout after 60 seconds
-            timeout 60 bash -c '
-              while ! echo > /dev/tcp/localhost/8081; do
-                echo "Waiting for server on port 8081..."
-                sleep 1
-              done
-              echo "Server on port 8081 is ready!"
-              kill -9 $PID  # Forcefully stop the server if it's ready
-              exit 0  # Exit successfully if the server was ready before timeout
-            '
-            if [ $? -ne 0 ]; then
-              echo "Failed to connect within 60s."
-              exit 1  # Exit with failure if the server wasn't ready in time
-            fi
-          fi
+        run: ${{ matrix.package_manager }} run test
         working-directory: ${{ matrix.directory }}
 
       - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}

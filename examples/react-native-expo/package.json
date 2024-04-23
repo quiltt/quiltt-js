@@ -9,7 +9,7 @@
     "ios": "expo run:ios",
     "start": "expo start",
     "build": "CI=1 expo prebuild --no-install",
-    "test": "CI=1 expo start --no-dev --max-workers 1"
+    "test": "node ./scripts/test.js"
   },
   "dependencies": {
     "@honeybadger-io/core": "6.5.1",
