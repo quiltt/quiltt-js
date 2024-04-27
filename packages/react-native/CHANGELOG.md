@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.6.4
+
+### Patch Changes
+
+- [#246](https://github.com/quiltt/quiltt-js/pull/246) [`38f7904`](https://github.com/quiltt/quiltt-js/commit/38f79048e99dc617d700b62fd285623f9f2ae2fa) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update exports for react-native
+
+- Updated dependencies [[`38f7904`](https://github.com/quiltt/quiltt-js/commit/38f79048e99dc617d700b62fd285623f9f2ae2fa)]:
+  - @quiltt/react@3.6.4
+  - @quiltt/core@3.6.4
+
 ## 3.6.3
 
 ### Patch Changes
