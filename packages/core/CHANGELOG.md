@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.6.5
+
+### Patch Changes
+
+- [#248](https://github.com/quiltt/quiltt-js/pull/248) [`d15297e`](https://github.com/quiltt/quiltt-js/commit/d15297e4dea40c90dab97d1f8e8797b5cfe8395c) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Fix issue with loading Plaid's new Link
+
 ## 3.6.4
 
 ### Patch Changes
