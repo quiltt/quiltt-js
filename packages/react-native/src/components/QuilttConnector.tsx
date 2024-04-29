@@ -90,12 +90,7 @@ const QuilttConnector = ({
   // For other urls, we assume those are bank urls, which needs to be handle in external browser.
   // TODO: Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
   const allowedListUrl = useMemo(
-    () => [
-      'quiltt.app',
-      'quiltt.dev',
-      'moneydesktop.com',
-      'cdn.plaid.com/link/v2/stable/link.html',
-    ],
+    () => ['quiltt.app', 'quiltt.dev', 'moneydesktop.com', 'cdn.plaid.com'],
     []
   )
 
