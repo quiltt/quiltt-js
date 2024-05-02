@@ -13,12 +13,12 @@ import {
   useQuilttSession,
 } from '@quiltt/react'
 
-import { version } from '@/version'
+import { version } from '../version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
-import { checkConnectorUrl, handleOAuthUrl } from '@/utils'
-import type { PreFlightCheck } from '@/utils'
+import { checkConnectorUrl, handleOAuthUrl } from '../utils'
+import type { PreFlightCheck } from '../utils'
 
 type QuilttConnectorProps = {
   testId?: string
