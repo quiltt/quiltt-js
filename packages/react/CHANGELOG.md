@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.6.6
+
+### Patch Changes
+
+- [#251](https://github.com/quiltt/quiltt-js/pull/251) [`07a3eb1`](https://github.com/quiltt/quiltt-js/commit/07a3eb1b2b719ae1073287079d6a0e61e432cc96) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update @quiltt/react-native OAuthURL handling
+
+- Updated dependencies [[`07a3eb1`](https://github.com/quiltt/quiltt-js/commit/07a3eb1b2b719ae1073287079d6a0e61e432cc96)]:
+  - @quiltt/core@3.6.6
+
 ## 3.6.5
 
 ### Patch Changes
