@@ -1,5 +1,5 @@
-import { getErrorMessage, ErrorReporter } from '../error'
 import { Platform } from 'react-native'
+import { getErrorMessage, ErrorReporter } from '../error'
 
 const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 const PREFLIGHT_RETRY_COUNT = 3
