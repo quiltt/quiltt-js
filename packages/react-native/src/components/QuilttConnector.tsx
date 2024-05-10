@@ -1,22 +1,24 @@
-import {
-  type ConnectorSDKCallbackMetadata,
-  type ConnectorSDKCallbacks,
-  ConnectorSDKEventType,
-  useQuilttSession,
-} from '@quiltt/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 // React Native's URL implementation is incomplete
 // https://github.com/facebook/react-native/issues/16434
 import { URL } from 'react-native-url-polyfill'
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 
-import { checkConnectorUrl, handleOAuthUrl } from '../utils'
-import type { PreFlightCheck } from '../utils'
+import {
+  ConnectorSDKCallbackMetadata,
+  ConnectorSDKCallbacks,
+  ConnectorSDKEventType,
+  useQuilttSession,
+} from '@quiltt/react'
+
 import { version } from '../version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
+import { checkConnectorUrl, handleOAuthUrl } from '../utils'
+import type { PreFlightCheck } from '../utils'
 
 type QuilttConnectorProps = {
   testId?: string
@@ -46,7 +48,7 @@ const QuilttConnector = ({
     [oauthRedirectUrl]
   )
   const connectorUrl = useMemo(() => {
-    const url = new URL(`https://${connectorId}.quiltt.app`)
+    const url: URL = new URL(`https://${connectorId}.quiltt.app`)
     url.searchParams.append('mode', 'webview')
     url.searchParams.append('oauth_redirect_url', encodedOAuthRedirectUrl)
     url.searchParams.append('agent', `react-native-${version}`)
@@ -105,10 +107,10 @@ const QuilttConnector = ({
     [allowedListUrl, isQuilttEvent]
   )
 
-  const clearLocalStorage = useCallback(() => {
+  const clearLocalStorage = () => {
     const script = 'localStorage.clear();'
     webViewRef.current?.injectJavaScript(script)
-  }, [])
+  }
 
   const handleQuilttEvent = useCallback(
     (url: URL) => {
@@ -145,12 +147,7 @@ const QuilttConnector = ({
           // TODO: handle Authenticate
           break
         case 'OauthRequested':
-          handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string), {
-            connectorId,
-            connectionId,
-            institution,
-            oauthRedirectUrl,
-          })
+          handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
           break
         default:
           console.log('unhandled event', url)
@@ -161,15 +158,11 @@ const QuilttConnector = ({
       connectorId,
       initInjectedJavaScript,
       onEvent,
-      onLoad,
-      clearLocalStorage,
       onExit,
       onExitAbort,
       onExitError,
       onExitSuccess,
-      connectionId,
-      institution,
-      oauthRedirectUrl,
+      onLoad,
     ]
   )
 
@@ -184,23 +177,10 @@ const QuilttConnector = ({
       if (shouldRender(url)) return true
       // Plaid set oauth url by doing window.location.href = url
       // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
-      handleOAuthUrl(url, {
-        connectorId,
-        connectionId,
-        institution,
-        oauthRedirectUrl,
-      })
+      handleOAuthUrl(url)
       return false
     },
-    [
-      connectionId,
-      connectorId,
-      handleQuilttEvent,
-      institution,
-      isQuilttEvent,
-      oauthRedirectUrl,
-      shouldRender,
-    ]
+    [handleQuilttEvent, isQuilttEvent, shouldRender]
   )
 
   if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
