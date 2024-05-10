@@ -33,12 +33,12 @@
     "check-dependency-version-consistency": "4.1.0",
     "genversion": "3.2.0",
     "happy-dom": "14.7.1",
-    "pnpm": "9.0.6",
+    "pnpm": "9.1.0",
     "turbo": "1.13.3",
     "vite": "5.2.10",
     "vite-tsconfig-paths": "4.3.2",
     "vitest": "1.5.2",
     "vitest-react-native": "0.1.5"
   },
-  "packageManager": "pnpm@9.0.6"
+  "packageManager": "pnpm@9.1.0"
 }
