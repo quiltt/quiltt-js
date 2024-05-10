@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.6.7
+
+### Patch Changes
+
+- [#256](https://github.com/quiltt/quiltt-js/pull/256) [`824e21e`](https://github.com/quiltt/quiltt-js/commit/824e21e14b4731e5ebb0d8bd3ba141ca7d9418e2) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add Google recaptcha to allowed URLs
+
+- Updated dependencies [[`824e21e`](https://github.com/quiltt/quiltt-js/commit/824e21e14b4731e5ebb0d8bd3ba141ca7d9418e2)]:
+  - @quiltt/react@3.6.7
+  - @quiltt/core@3.6.7
+
 ## 3.6.5
 
 ### Patch Changes
