@@ -91,12 +91,16 @@ const QuilttConnector = ({
   // TODO: Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
   const allowedListUrl = useMemo(
     () => [
+      'quiltt.io',
       'quiltt.app',
       'quiltt.dev',
       'moneydesktop.com',
       'https://cdn.plaid.com/link',
       'https://www.google.com/recaptcha',
-      'https://challenges.cloudflare.com
+      'https://challenges.cloudflare.com',
+      'https://api.stripe.com',
+      'https://cdn.jsdelivr.net',
+      'https://auth0.com',
     ],
     []
   )
