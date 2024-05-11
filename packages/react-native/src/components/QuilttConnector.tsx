@@ -87,10 +87,17 @@ const QuilttConnector = ({
   }, [connectionId, connectorId, institution, session?.token])
 
   // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
-  // For other urls, we assume those are bank urls, which needs to be handle in external browser.
+  // For other urls, we assume those are bank urls, which need to be handled in external browser.
   // TODO: Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
   const allowedListUrl = useMemo(
-    () => ['quiltt.app', 'quiltt.dev', 'moneydesktop.com', 'cdn.plaid.com', 'www.google.com'],
+    () => [
+      'quiltt.app',
+      'quiltt.dev',
+      'moneydesktop.com',
+      'https://cdn.plaid.com/link',
+      'https://www.google.com/recaptcha',
+      'https://challenges.cloudflare.com
+    ],
     []
   )
 
