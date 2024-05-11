@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.6.8
+
+### Patch Changes
+
+- [#258](https://github.com/quiltt/quiltt-js/pull/258) [`dc97e95`](https://github.com/quiltt/quiltt-js/commit/dc97e95dfa73bc1ccf09add6af70e4f95a458fab) Thanks [@rubendinho](https://github.com/rubendinho)! - Add URLs to WebView allowList
+
+- Updated dependencies [[`dc97e95`](https://github.com/quiltt/quiltt-js/commit/dc97e95dfa73bc1ccf09add6af70e4f95a458fab)]:
+  - @quiltt/core@3.6.8
+
 ## 3.6.7
 
 ### Patch Changes
