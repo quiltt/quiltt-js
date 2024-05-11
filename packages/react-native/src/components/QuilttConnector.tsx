@@ -95,6 +95,7 @@ const QuilttConnector = ({
       'quiltt.app',
       'quiltt.dev',
       'moneydesktop.com',
+      'plaid.com',
       'https://cdn.plaid.com/link',
       'https://www.google.com/recaptcha',
       'https://challenges.cloudflare.com',
