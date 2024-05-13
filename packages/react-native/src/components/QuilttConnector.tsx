@@ -86,37 +86,34 @@ const QuilttConnector = ({
     webViewRef.current?.injectJavaScript(script)
   }, [connectionId, connectorId, institution, session?.token])
 
-  // allowedListUrl & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
+  // urlAllowList & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
   // For other urls, we assume those are bank urls, which need to be handled in external browser.
-  // TODO: Convert it to a list from Quiltt Server to prevent MX/ Plaid changes.
-  const allowedListUrl = useMemo(
-    () => [
-      'quiltt.io',
-      'quiltt.app',
-      'quiltt.dev',
-      'moneydesktop.com',
-      'plaid.com',
-      'https://cdn.plaid.com/link',
-      'https://www.google.com/recaptcha',
-      'https://challenges.cloudflare.com',
-      'https://api.stripe.com',
-      'https://cdn.jsdelivr.net',
-      'https://auth0.com',
-    ],
-    []
-  )
+  // TODO: Need to regroup on this and figure out a better way to handle a URL allow list
+  // const urlAllowList = useMemo(
+  //   () => [
+  //     'quiltt.io',
+  //     'quiltt.app',
+  //     'quiltt.dev',
+  //     'moneydesktop.com',
+  //     'plaid.com',
+  //     'https://cdn.plaid.com/link',
+  //     'https://www.google.com/recaptcha',
+  //     'https://challenges.cloudflare.com',
+  //     'https://api.stripe.com',
+  //     'https://cdn.jsdelivr.net',
+  //     'https://auth0.com',
+  //   ],
+  //   []
+  // )
 
   const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 
   const shouldRender = useCallback(
     (url: URL) => {
       if (isQuilttEvent(url)) return false
-      if (url.protocol !== 'https:') {
-        return false
-      }
-      return allowedListUrl.some((href) => url.href.includes(href))
+      return url.protocol === 'https:'
     },
-    [allowedListUrl, isQuilttEvent]
+    [isQuilttEvent]
   )
 
   const clearLocalStorage = () => {
