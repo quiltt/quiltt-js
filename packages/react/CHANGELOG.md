@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.6.9
+
+### Patch Changes
+
+- [#260](https://github.com/quiltt/quiltt-js/pull/260) [`6e80930`](https://github.com/quiltt/quiltt-js/commit/6e80930f84013f483e2c75fcb37a28dc4996dadc) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Refactor QuilttConnector to remove URL allow list
+
+- Updated dependencies [[`6e80930`](https://github.com/quiltt/quiltt-js/commit/6e80930f84013f483e2c75fcb37a28dc4996dadc)]:
+  - @quiltt/core@3.6.9
+
 ## 3.6.8
 
 ### Patch Changes
