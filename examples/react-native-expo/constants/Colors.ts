@@ -4,11 +4,14 @@
  */
 
 const tintColorLight = '#5928A3'
-const tintColorDark = '#5928A3'
+const tintColorDark = '#7C3AED'
+const mutedColorLight = '#f9f7fd'
+const mutedColorDark = '#2A134D'
 
 export const Colors = {
   light: {
     text: '#11181C',
+    muted: mutedColorLight,
     background: '#fff',
     tint: tintColorLight,
     icon: '#687076',
@@ -17,6 +20,7 @@ export const Colors = {
   },
   dark: {
     text: '#ECEDEE',
+    muted: mutedColorDark,
     background: '#1A0C30',
     tint: tintColorDark,
     icon: '#9BA1A6',

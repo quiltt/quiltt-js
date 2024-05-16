@@ -2,11 +2,14 @@ import { Link } from 'expo-router'
 import type { ComponentProps } from 'react'
 import { StyleSheet, Text } from 'react-native'
 import { Colors } from '@/constants/Colors'
+import { useThemeColor } from '@/hooks/useThemeColor'
 
 type ButtonLinkProps = ComponentProps<typeof Link>
 
 export function ButtonLink({ href, style, children, ...props }: ButtonLinkProps) {
-  const mergedStyle = [styles.button, style]
+  const tintColor = useThemeColor({}, 'tint')
+
+  const mergedStyle = [{ ...styles.button, backgroundColor: tintColor }, style]
   return (
     <Link {...props} href={href} style={mergedStyle}>
       <Text style={styles.text}>{children}</Text>

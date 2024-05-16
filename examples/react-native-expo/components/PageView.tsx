@@ -1,8 +1,8 @@
 import { Image, StyleSheet } from 'react-native'
-
 import { ParallaxScrollView } from '@/components/ParallaxScrollView'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
+import { useThemeColor } from '@/hooks/useThemeColor'
 
 type PageViewProps = {
   children: React.ReactNode
@@ -10,9 +10,10 @@ type PageViewProps = {
 }
 
 export const PageView = ({ children, title }: PageViewProps) => {
+  const muted = useThemeColor({}, 'muted')
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D3C1F0', dark: '#D3C1F0' }}
+      headerBackgroundColor={{ light: '#D3C1F0', dark: muted }}
       headerImage={
         <Image source={require('@/assets/images/quiltt-logo-partial.png')} style={styles.logo} />
       }
@@ -39,10 +40,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   logo: {
-    height: 178,
-    width: 290,
+    height: 128,
+    width: 360,
     bottom: 0,
     left: 0,
+    top: 0,
+    right: 0,
     position: 'absolute',
   },
 })
