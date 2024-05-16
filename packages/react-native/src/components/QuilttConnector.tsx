@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Platform } from 'react-native'
+import { WebView } from 'react-native-webview'
+import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
+import SafariWebAuth from 'react-native-safari-web-auth'
 // React Native's URL implementation is incomplete
 // https://github.com/facebook/react-native/issues/16434
 import { URL } from 'react-native-url-polyfill'
-import { WebView } from 'react-native-webview'
-import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
+import * as Linking from 'expo-linking'
 
 import {
   ConnectorSDKCallbackMetadata,
@@ -13,12 +16,66 @@ import {
   useQuilttSession,
 } from '@quiltt/react'
 
+import { ErrorReporter, getErrorMessage } from '../utils/error'
 import { version } from '../version'
+
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
-import { checkConnectorUrl, handleOAuthUrl } from '../utils'
-import type { PreFlightCheck } from '../utils'
+
+const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
+const PREFLIGHT_RETRY_COUNT = 3
+
+type PreFlightCheck = {
+  checked: boolean
+  error?: string
+}
+
+// Ensure the OAuth URL opens in the external browser
+const handleOAuthUrl = (oauthUrl: string) => {
+  if (!oauthUrl.startsWith('https://')) {
+    console.log(`handleOAuthUrl - Skipping non-https URL - ${oauthUrl}`)
+    return
+  }
+  if (Platform.OS === 'ios' && parseInt(Platform.Version.toString(), 10) >= 12) {
+    SafariWebAuth.requestAuth(oauthUrl)
+  }
+  Linking.openURL(oauthUrl)
+}
+
+const checkConnectorUrl = async (connectorUrl: string, retryCount = 0): Promise<PreFlightCheck> => {
+  let responseStatus
+  let error
+  let errorOccurred = false
+  try {
+    const response = await fetch(connectorUrl)
+    if (!response.ok) {
+      console.error(`The URL ${connectorUrl} is not routable.`)
+      responseStatus = response.status
+      errorOccurred = true
+    } else {
+      console.log(`The URL ${connectorUrl} is routable.`)
+      return { checked: true }
+    }
+  } catch (e) {
+    error = e
+    console.error(`An error occurred while checking the connector URL: ${error}`)
+    errorOccurred = true
+  }
+
+  if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
+    const delay = 50 * Math.pow(2, retryCount)
+    await new Promise((resolve) => setTimeout(resolve, delay))
+    console.log(`Retrying... Attempt number ${retryCount + 1}`)
+    return checkConnectorUrl(connectorUrl, retryCount + 1)
+  }
+
+  const errorMessage = getErrorMessage(responseStatus, error as Error)
+  const errorToSend = (error as Error) || new Error(errorMessage)
+  const context = { connectorUrl, responseStatus }
+  if (responseStatus !== 404) await errorReporter.send(errorToSend, context)
+  return { checked: true, error: errorMessage }
+}
 
 type QuilttConnectorProps = {
   testId?: string
@@ -86,26 +143,6 @@ const QuilttConnector = ({
     webViewRef.current?.injectJavaScript(script)
   }, [connectionId, connectorId, institution, session?.token])
 
-  // urlAllowList & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
-  // For other urls, we assume those are bank urls, which need to be handled in external browser.
-  // TODO: Need to regroup on this and figure out a better way to handle a URL allow list
-  // const urlAllowList = useMemo(
-  //   () => [
-  //     'quiltt.io',
-  //     'quiltt.app',
-  //     'quiltt.dev',
-  //     'moneydesktop.com',
-  //     'plaid.com',
-  //     'https://cdn.plaid.com/link',
-  //     'https://www.google.com/recaptcha',
-  //     'https://challenges.cloudflare.com',
-  //     'https://api.stripe.com',
-  //     'https://cdn.jsdelivr.net',
-  //     'https://auth0.com',
-  //   ],
-  //   []
-  // )
-
   const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 
   const shouldRender = useCallback(
@@ -156,7 +193,7 @@ const QuilttConnector = ({
           // TODO: handle Authenticate
           break
         case 'OauthRequested':
-          handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
+          handleOAuthUrl(url.searchParams.get('oauthUrl') as string)
           break
         default:
           console.log('unhandled event', url)
@@ -186,7 +223,7 @@ const QuilttConnector = ({
       if (shouldRender(url)) return true
       // Plaid set oauth url by doing window.location.href = url
       // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
-      handleOAuthUrl(url)
+      handleOAuthUrl(url.href)
       return false
     },
     [handleQuilttEvent, isQuilttEvent, shouldRender]

@@ -1,1 +1,1 @@
-declare module 'react-native-url-polyfill'
+declare module 'react-native-safari-web-auth'

@@ -55,16 +55,22 @@
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
+    "expo-linking": "6.3.1",
     "prettier": "2.8.8",
     "react": "18.2.0",
+    "react-native": "0.72.5",
+    "react-native-safari-web-auth": "1.0.4",
+    "react-native-url-polyfill": "2.0.0",
     "rimraf": "5.0.5",
     "typescript": "5.4.3"
   },
   "peerDependencies": {
     "base-64": "*",
+    "expo-linking": "^6.0.0",
     "react": "^18.2.0",
     "react-native": "^0.72.5",
     "react-native-url-polyfill": "*",
+    "react-native-safari-web-auth": "^1.0.0",
     "react-native-webview": "^13.0.0"
   },
   "publishConfig": {

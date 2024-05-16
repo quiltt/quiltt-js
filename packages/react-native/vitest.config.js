@@ -9,7 +9,7 @@ export default defineConfig({
     environment: 'node',
     server: {
       deps: {
-        inline: ['react-native-url-polyfill'],
+        inline: ['react-native-url-polyfill', 'react-native-safari-web-auth'],
       },
     },
   },
