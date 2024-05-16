@@ -1,4 +1,4 @@
 packages:
   - 'packages/*'
   - 'examples/*'
-  - '!examples/react-native-expo'
+  - '!examples/react-native-*'

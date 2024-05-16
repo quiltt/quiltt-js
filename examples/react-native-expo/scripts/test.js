@@ -1,5 +1,5 @@
-import { spawn } from 'node:child_process'
-import http from 'node:http'
+const { spawn } = require('node:child_process')
+const http = require('node:http')
 
 function checkServerReady() {
   return new Promise((resolve, reject) => {
