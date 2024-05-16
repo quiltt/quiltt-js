@@ -8,6 +8,7 @@ import { QuilttProvider } from '@quiltt/react-native'
 import { useColorScheme } from '@/hooks/useColorScheme'
 import * as Linking from 'expo-linking'
 
+const QUILTT_CLIENT_ID = process.env.EXPO_PUBLIC_QUILTT_CLIENT_ID
 const QUILTT_AUTH_TOKEN = process.env.EXPO_PUBLIC_QUILTT_AUTH_TOKEN
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -44,7 +45,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <QuilttProvider token={QUILTT_AUTH_TOKEN}>
+      <QuilttProvider clientId={QUILTT_CLIENT_ID!} token={QUILTT_AUTH_TOKEN!}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />

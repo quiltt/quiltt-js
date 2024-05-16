@@ -1,15 +1,16 @@
-import { StyleSheet } from 'react-native'
-import { ThemedView } from '@/components/ThemedView'
 import { QuilttConnector } from '@quiltt/react-native'
 import type { ConnectorSDKCallbackMetadata } from '@quiltt/react-native'
 import { router } from 'expo-router'
-import { PageView } from '@/components/PageView'
 
 const CONNECTOR_ID = process.env.EXPO_PUBLIC_CONNECTOR_ID
 const HTTPS_APP_LINK = process.env.EXPO_PUBLIC_HTTPS_APP_LINK
 const INSTITUION_SEARCH_TERM = process.env.EXPO_PUBLIC_INSTITUION_SEARCH_TERM
 
 export default function ExplorerScreen() {
+  const navigateBack = () => {
+    router.canGoBack() ? router.back() : router.push('(tabs)')
+  }
+
   return (
     <QuilttConnector
       connectorId={CONNECTOR_ID!}
@@ -17,22 +18,15 @@ export default function ExplorerScreen() {
       institution={INSTITUION_SEARCH_TERM}
       onExitSuccess={(metadata: ConnectorSDKCallbackMetadata) => {
         console.log(metadata.connectionId)
-        router.navigate('/index')
+        navigateBack()
       }}
-      onExitAbort={() => router.navigate('/index')}
+      onExitAbort={() => {
+        navigateBack()
+      }}
       onExitError={(metadata: ConnectorSDKCallbackMetadata) => {
         console.log(metadata.connectorId)
-        router.navigate('/index')
+        navigateBack()
       }}
     />
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    gap: 8,
-    marginBottom: 8,
-    minHeight: '100%',
-    width: '100%',
-  },
-})
