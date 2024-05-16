@@ -37,6 +37,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="data"
+        options={{
+          title: 'Data',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'server' : 'server-outline'} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   )
 }
