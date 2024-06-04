@@ -32,35 +32,30 @@ export const checkConnectorUrl = async (
 ): Promise<PreFlightCheck> => {
   let responseStatus
   let error
-  let errorOccurred = false
   try {
     const response = await fetch(connectorUrl)
     if (!response.ok) {
-      console.error(`The URL ${connectorUrl} is not routable.`)
       responseStatus = response.status
-      errorOccurred = true
-    } else {
-      console.log(`The URL ${connectorUrl} is routable.`)
-      return { checked: true }
+      throw new Error(`The URL ${connectorUrl} is not routable.`)
     }
+    console.log(`The URL ${connectorUrl} is routable.`)
+    return { checked: true }
   } catch (e) {
     error = e
     console.error(`An error occurred while checking the connector URL: ${error}`)
-    errorOccurred = true
-  }
 
-  if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
-    const delay = 50 * Math.pow(2, retryCount)
-    await new Promise((resolve) => setTimeout(resolve, delay))
-    console.log(`Retrying... Attempt number ${retryCount + 1}`)
-    return checkConnectorUrl(connectorUrl, retryCount + 1)
+    if (retryCount < PREFLIGHT_RETRY_COUNT) {
+      const delay = 50 * Math.pow(2, retryCount)
+      await new Promise((resolve) => setTimeout(resolve, delay))
+      console.log(`Retrying... Attempt number ${retryCount + 1}`)
+      return checkConnectorUrl(connectorUrl, retryCount + 1)
+    }
+    const errorMessage = getErrorMessage(responseStatus, error as Error)
+    const errorToSend = (error as Error) || new Error(errorMessage)
+    const context = { connectorUrl, responseStatus }
+    if (responseStatus !== 404) await errorReporter.send(errorToSend, context)
+    return { checked: true, error: errorMessage }
   }
-
-  const errorMessage = getErrorMessage(responseStatus, error as Error)
-  const errorToSend = (error as Error) || new Error(errorMessage)
-  const context = { connectorUrl, responseStatus }
-  if (responseStatus !== 404) await errorReporter.send(errorToSend, context)
-  return { checked: true, error: errorMessage }
 }
 
 export const handleOAuthUrl = (oauthUrl: URL | string) => {
@@ -91,10 +86,12 @@ const QuilttConnector = ({
 }: QuilttConnectorProps) => {
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
+
   const encodedOAuthRedirectUrl = useMemo(
     () => encodeURIComponent(oauthRedirectUrl),
     [oauthRedirectUrl]
   )
+
   const connectorUrl = useMemo(() => {
     const url = new URL(`https://${connectorId}.quiltt.app`)
     url.searchParams.append('mode', 'webview')
@@ -102,6 +99,7 @@ const QuilttConnector = ({
     url.searchParams.append('agent', `react-native-${version}`)
     return url.toString()
   }, [connectorId, encodedOAuthRedirectUrl])
+
   const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
   useEffect(() => {
@@ -136,13 +134,7 @@ const QuilttConnector = ({
 
   const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 
-  const shouldRender = useCallback(
-    (url: URL) => {
-      if (isQuilttEvent(url)) return false
-      return url.protocol === 'https:'
-    },
-    [isQuilttEvent]
-  )
+  const shouldRender = useCallback((url: URL) => !isQuilttEvent(url), [isQuilttEvent])
 
   const clearLocalStorage = () => {
     const script = 'localStorage.clear();'
@@ -221,7 +213,7 @@ const QuilttConnector = ({
   )
 
   if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
-  if (preFlightCheck.error)
+  if (preFlightCheck.error) {
     return (
       <ErrorScreen
         testId="error-screen"
@@ -229,6 +221,7 @@ const QuilttConnector = ({
         cta={() => onExitError?.({ connectorId })}
       />
     )
+  }
 
   return (
     <AndroidSafeAreaView testId={testId}>
