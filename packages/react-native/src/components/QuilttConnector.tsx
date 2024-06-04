@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
-// React Native's URL implementation is incomplete
-// https://github.com/facebook/react-native/issues/16434
-import { URL } from 'react-native-url-polyfill'
+import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/react-native/issues/16434
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
+import { Platform } from 'react-native'
+import * as Linking from 'expo-linking'
 
 import {
   ConnectorSDKCallbackMetadata,
@@ -13,12 +12,61 @@ import {
   useQuilttSession,
 } from '@quiltt/react'
 
+import { getErrorMessage, ErrorReporter } from '../utils'
 import { version } from '../version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
-import { checkConnectorUrl, handleOAuthUrl } from '../utils'
-import type { PreFlightCheck } from '../utils'
+
+const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
+const PREFLIGHT_RETRY_COUNT = 3
+
+export type PreFlightCheck = {
+  checked: boolean
+  error?: string
+}
+
+export const checkConnectorUrl = async (
+  connectorUrl: string,
+  retryCount = 0
+): Promise<PreFlightCheck> => {
+  let responseStatus
+  let error
+  let errorOccurred = false
+  try {
+    const response = await fetch(connectorUrl)
+    if (!response.ok) {
+      console.error(`The URL ${connectorUrl} is not routable.`)
+      responseStatus = response.status
+      errorOccurred = true
+    } else {
+      console.log(`The URL ${connectorUrl} is routable.`)
+      return { checked: true }
+    }
+  } catch (e) {
+    error = e
+    console.error(`An error occurred while checking the connector URL: ${error}`)
+    errorOccurred = true
+  }
+
+  if (errorOccurred && retryCount < PREFLIGHT_RETRY_COUNT) {
+    const delay = 50 * Math.pow(2, retryCount)
+    await new Promise((resolve) => setTimeout(resolve, delay))
+    console.log(`Retrying... Attempt number ${retryCount + 1}`)
+    return checkConnectorUrl(connectorUrl, retryCount + 1)
+  }
+
+  const errorMessage = getErrorMessage(responseStatus, error as Error)
+  const errorToSend = (error as Error) || new Error(errorMessage)
+  const context = { connectorUrl, responseStatus }
+  if (responseStatus !== 404) await errorReporter.send(errorToSend, context)
+  return { checked: true, error: errorMessage }
+}
+
+export const handleOAuthUrl = (oauthUrl: URL | string) => {
+  console.log(`handleOAuthUrl - Opening URL - ${oauthUrl.toString()}`)
+  Linking.openURL(oauthUrl.toString())
+}
 
 type QuilttConnectorProps = {
   testId?: string
@@ -48,7 +96,7 @@ const QuilttConnector = ({
     [oauthRedirectUrl]
   )
   const connectorUrl = useMemo(() => {
-    const url: URL = new URL(`https://${connectorId}.quiltt.app`)
+    const url = new URL(`https://${connectorId}.quiltt.app`)
     url.searchParams.append('mode', 'webview')
     url.searchParams.append('oauth_redirect_url', encodedOAuthRedirectUrl)
     url.searchParams.append('agent', `react-native-${version}`)
@@ -85,26 +133,6 @@ const QuilttConnector = ({
     `
     webViewRef.current?.injectJavaScript(script)
   }, [connectionId, connectorId, institution, session?.token])
-
-  // urlAllowList & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
-  // For other urls, we assume those are bank urls, which need to be handled in external browser.
-  // TODO: Need to regroup on this and figure out a better way to handle a URL allow list
-  // const urlAllowList = useMemo(
-  //   () => [
-  //     'quiltt.io',
-  //     'quiltt.app',
-  //     'quiltt.dev',
-  //     'moneydesktop.com',
-  //     'plaid.com',
-  //     'https://cdn.plaid.com/link',
-  //     'https://www.google.com/recaptcha',
-  //     'https://challenges.cloudflare.com',
-  //     'https://api.stripe.com',
-  //     'https://cdn.jsdelivr.net',
-  //     'https://auth0.com',
-  //   ],
-  //   []
-  // )
 
   const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 

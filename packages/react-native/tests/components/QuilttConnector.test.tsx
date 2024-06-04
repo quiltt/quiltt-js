@@ -1,36 +1,36 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { MockInstance } from 'vitest'
 import { render } from '@testing-library/react-native'
-import { QuilttConnector } from '@/components/QuilttConnector'
-import { handleOAuthUrl } from '@/utils/connector/handleOAuthUrl'
-import { Linking } from 'react-native'
+import * as Linking from 'expo-linking'
 
+import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
+import { ErrorReporter } from '@/utils/error/ErrorReporter'
+
+// Mock react-native components and modules
 vi.mock('react-native', async (importOriginal) => {
   const module = await importOriginal<typeof import('react-native')>()
   return {
     ...module,
-    Linking: {
-      ...module.Linking, // Preserve other methods of Linking if there are any
-      openURL: vi.fn(),
-    },
-    Platform: {
-      ...module.Platform,
-      OS: vi.fn(() => 'ios'), // Mock the OS as necessary
-      Version: vi.fn(() => '14.0'), // Mock the Version as necessary
-    },
+    ActivityIndicator: module.ActivityIndicator,
+    Button: module.Button,
+    Image: module.Image,
     NativeModules: {
-      ...module.NativeModules, // Preserve other native modules
+      ...module.NativeModules,
       BlobModule: {
-        // Add or mock specific properties expected by your dependencies
         BLOB_URI_SCHEME: 'content',
         BLOB_URI_HOST: 'localhost',
       },
     },
-    StyleSheet: module.StyleSheet,
-    View: module.View,
-    ActivityIndicator: module.ActivityIndicator,
-    SafeAreaView: module.SafeAreaView,
-    Text: module.Text,
+    Platform: {
+      ...module.Platform,
+      OS: 'ios',
+      Version: '14.0',
+    },
     Pressable: module.Pressable,
+    SafeAreaView: module.SafeAreaView,
+    StyleSheet: module.StyleSheet,
+    Text: module.Text,
+    View: module.View,
   }
 })
 
@@ -38,18 +38,69 @@ vi.mock('react-native-webview', () => ({
   WebView: 'WebView',
 }))
 
-// Mocking the checkConnectorUrl function directly
-vi.mock('@/utils/connector/checkConnectorUrl', () => ({
-  checkConnectorUrl: vi.fn(() => ({
-    checked: false,
-    error: 'Error occurred',
-  })),
+vi.mock('expo-linking', () => ({
+  openURL: vi.fn(),
 }))
+
+// Helper to create a mock Response
+const createMockResponse = (status: number, body: any): Response => {
+  return new Response(JSON.stringify(body), {
+    status: status,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+describe('checkConnectorUrl', () => {
+  let fetchSpy: MockInstance
+  let errorReporterSpy: MockInstance
+  let consoleErrorSpy: MockInstance
+  let consoleLogSpy: MockInstance
+
+  beforeEach(() => {
+    fetchSpy = vi.spyOn(global, 'fetch')
+    errorReporterSpy = vi.spyOn(ErrorReporter.prototype, 'send')
+    consoleErrorSpy = vi.spyOn(console, 'error')
+    consoleLogSpy = vi.spyOn(console, 'log')
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    fetchSpy.mockReset()
+    errorReporterSpy.mockReset()
+    consoleErrorSpy.mockReset()
+    consoleLogSpy.mockReset()
+    vi.useRealTimers()
+  })
+
+  it('should handle routable URL successfully', async () => {
+    fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+    const result = await checkConnectorUrl('http://test.com')
+    expect(result).toEqual({ checked: true })
+    expect(consoleLogSpy).toHaveBeenCalledWith('The URL http://test.com is routable.')
+  })
+
+  it('handles fetch errors and retries', async () => {
+    try {
+      fetchSpy
+        .mockRejectedValue(new Error('Network failure'))
+        .mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const result = await checkConnectorUrl('http://test.com', 1)
+      expect(result).toEqual({ checked: true })
+    } catch (error) {
+      expect(consoleLogSpy).toHaveBeenCalledWith('Retrying... Attempt number 1')
+      expect(fetchSpy).toHaveBeenCalledTimes(2)
+    }
+  }, 10000) // Increase timeout to 10 seconds
+})
 
 describe('QuilttConnector', () => {
   const props = {
     connectorId: 'test-connector',
-    oauthRedirectUrl: 'https://oauth.test.com',
+    oauthRedirectUrl: 'https://oauth.test.com/',
     onEvent: vi.fn(),
     onLoad: vi.fn(),
     onExit: vi.fn(),
@@ -67,39 +118,9 @@ describe('QuilttConnector', () => {
     expect(getByTestId('loading-screen')).toBeTruthy()
   })
 
-  // it('should render error screen when pre-flight check fails', async () => {
-  //   vi.mock('@/utils/connector/checkConnectorUrl', () => ({
-  //     checkConnectorUrl: vi.fn(() => Promise.resolve({ checked: true, error: 'Network Error' })),
-  //   }))
-  //   const { getByTestId } = render(<QuilttConnector testId="quiltt-connector" {...props} />)
-  //   expect(getByTestId('error-screen')).toBeTruthy()
-  // })
-
-  // it('should render WebView when pre-flight check succeeds', async () => {
-  //   vi.mock('@/utils/connector/checkConnectorUrl', () => ({
-  //     checkConnectorUrl: vi.fn(() => Promise.resolve({ checked: true })),
-  //   }))
-  //   const { getByTestId } = render(<QuilttConnector testId="quiltt-connector" {...props} />)
-  //   expect(getByTestId('webview')).toBeTruthy() // You might need to adjust this if your WebView does not use testId
-  // })
-
   it('should handle OAuth redirection', async () => {
-    // Assuming `handleOAuthUrl` is correctly wired and exposed for testing
-    const url = new URL('https://oauth.test.com/')
+    const url = new URL(props.oauthRedirectUrl)
     handleOAuthUrl(url)
-    expect(Linking.openURL).toHaveBeenCalledWith('https://oauth.test.com/')
+    expect(Linking.openURL).toHaveBeenCalledWith(props.oauthRedirectUrl)
   })
-
-  // it('should call onLoad when the WebView loads', () => {
-  //   // Simulate the WebView onLoad event
-  //   handleQuilttEvent(new URL('quilttconnector://Load'))
-  //   expect(props.onLoad).toHaveBeenCalled()
-  // })
-
-  // it('should configure WebView with the correct origin whitelist and source', () => {
-  //   const { getByTestId } = render(<QuilttConnector testId="quiltt-connector" {...props} />)
-  //   const webView = getByTestId('webview') // Assuming you have set testId on your WebView
-  //   expect(webView.props.originWhitelist).toEqual(['*'])
-  //   expect(webView.props.source).toEqual({ uri: expect.stringContaining('https://') })
-  // })
 })
