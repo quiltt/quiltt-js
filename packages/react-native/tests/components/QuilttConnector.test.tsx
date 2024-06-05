@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 import { render, waitFor } from '@testing-library/react-native'
-import * as Linking from 'expo-linking'
+import { Linking } from 'react-native'
 
 import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
 import { ErrorReporter } from '@/utils/error/ErrorReporter'
@@ -14,6 +14,9 @@ vi.mock('react-native', async (importOriginal) => {
     ActivityIndicator: module.ActivityIndicator,
     Button: module.Button,
     Image: module.Image,
+    Linking: {
+      openURL: vi.fn(),
+    },
     NativeModules: {
       ...module.NativeModules,
       BlobModule: {
@@ -36,10 +39,6 @@ vi.mock('react-native', async (importOriginal) => {
 
 vi.mock('react-native-webview', () => ({
   WebView: 'WebView',
-}))
-
-vi.mock('expo-linking', () => ({
-  openURL: vi.fn(),
 }))
 
 // Helper to create a mock Response

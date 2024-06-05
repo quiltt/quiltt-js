@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/react-native/issues/16434
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
-import { Platform } from 'react-native'
-import * as Linking from 'expo-linking'
+import { Linking, Platform } from 'react-native'
 
 import {
   ConnectorSDKCallbackMetadata,
