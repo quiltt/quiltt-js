@@ -12,7 +12,6 @@
     "**/*.cjs",
     "**/*.json",
     "**/*.config.js",
-    ".eslintrc.cjs",
     "vitest.config.js"
   ]
 }

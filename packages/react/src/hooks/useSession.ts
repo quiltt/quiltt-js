@@ -1,7 +1,7 @@
 'use client'
 
-import { Dispatch, SetStateAction, useMemo } from 'react'
-import { useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
 import { JsonWebTokenParse, Timeoutable } from '@quiltt/core'

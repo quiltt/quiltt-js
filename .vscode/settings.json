@@ -1,1 +1,40 @@
-{}
+{
+  "search.exclude": {
+    ".licenses/**/*": true,
+    "**/node_modules/**/*": true,
+    "**/.turbo/**/*": true,
+    "**/.next/**/*": true,
+    "**/dist/**/*": true,
+    "**/*.tsbuildinfo": true
+  },
+  // Default Quiltt JavaScript/TypeScript formatting settings.
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  // Default Quiltt Ruby formatting settings.
+  "[ruby]": {
+    "editor.defaultFormatter": "misogi.ruby-rubocop"
+  },
+  // This enables Typescript validation in VSCode. For example, it will mark deprecated methods/fields in the code editor.
+  "typescript.validate.enable": true,
+  "javascript.validate.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

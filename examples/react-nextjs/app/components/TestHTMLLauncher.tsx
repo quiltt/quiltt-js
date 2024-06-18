@@ -8,8 +8,10 @@ export const TestHTMLLauncher = () => {
 
   return (
     <a
+      // biome-ignore lint/a11y/useValidAnchor: <explanation>
+      href="#"
       quiltt-button="connector"
-      className="border-2 border-purple-500 hover:bg-purple-500 text-white py-2 px-4 rounded-full cursor-pointer"
+      className="cursor-pointer rounded-full border-2 border-purple-500 px-4 py-2 text-white hover:bg-purple-500"
     >
       Launch with HTML
     </a>

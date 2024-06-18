@@ -5,7 +5,7 @@ import type { Observer } from '../Observable'
 
 /**
  * This is designed to support effectively an in memory key value store singleton,
- * similar to localstorage, but allows you to subscribe to changes within the current
+ * similar to localStorage, but allows you to subscribe to changes within the current
  * window.
  */
 export class MemoryStorage<T> {
@@ -14,9 +14,8 @@ export class MemoryStorage<T> {
   get = (key: string) => {
     if (this.observables[key]) {
       return this.observables[key].get()
-    } else {
-      return undefined
     }
+    return undefined
   }
 
   set = (key: string, state: Maybe<T> | undefined): void => {

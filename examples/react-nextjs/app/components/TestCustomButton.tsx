@@ -1,11 +1,15 @@
 'use client'
 
+import type { ButtonHTMLAttributes } from 'react'
+
 import { QuilttButton } from '@quiltt/react'
 
-const CustomButton = ({ children, ...props }: any) => {
+type CustomButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+
+const CustomButton = ({ children, ...props }: CustomButtonProps) => {
   return (
     <button
-      className="bg-purple-500 hover:bg-purple-900 text-white py-2 px-4 rounded-md"
+      className="rounded-md bg-purple-500 px-4 py-2 text-white hover:bg-purple-900"
       {...props}
     >
       {children}

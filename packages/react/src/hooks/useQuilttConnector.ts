@@ -1,15 +1,17 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+
+import {
+  type ConnectorSDK,
+  type ConnectorSDKConnector,
+  type ConnectorSDKConnectorOptions,
+  cdnBase,
+} from '@quiltt/core'
+
+import { version } from '../version'
 import { useQuilttSession } from './useQuilttSession'
 import { useScript } from './useScript'
-import {
-  cdnBase,
-  ConnectorSDK,
-  ConnectorSDKConnector,
-  ConnectorSDKConnectorOptions,
-} from '@quiltt/core'
-import { version } from '../version'
 
 declare const Quiltt: ConnectorSDK
 
@@ -23,13 +25,15 @@ export const useQuilttConnector = (
   const [isOpening, setIsOpening] = useState<boolean>(false)
 
   // Set Session
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We also need to update on status change
   useEffect(() => {
     if (typeof Quiltt === 'undefined') return
 
     Quiltt.authenticate(session?.token)
-  }, [status, session])
+  }, [status, session?.token])
 
   // Set Connector
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We also need to update on status change
   useEffect(() => {
     if (typeof Quiltt === 'undefined' || !connectorId) return
 
@@ -103,7 +107,7 @@ export const useQuilttConnector = (
     } else {
       throw new Error('Must provide `connectorId` to `open` Quiltt Connector with Method Call')
     }
-  }, [connectorId, setIsOpening])
+  }, [connectorId])
 
   return { open }
 }

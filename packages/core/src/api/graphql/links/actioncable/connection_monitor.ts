@@ -18,6 +18,7 @@ class ConnectionMonitor {
   start() {
     if (!this.isRunning()) {
       this.startedAt = now()
+      // biome-ignore lint/performance/noDelete: <explanation>
       delete this.stoppedAt
       this.startPolling()
       addEventListener('visibilitychange', this.visibilityDidChange)
@@ -47,6 +48,7 @@ class ConnectionMonitor {
   recordConnect() {
     this.reconnectAttempts = 0
     this.recordPing()
+    // biome-ignore lint/performance/noDelete: <explanation>
     delete this.disconnectedAt
     logger.log('ConnectionMonitor recorded connect')
   }
@@ -76,7 +78,7 @@ class ConnectionMonitor {
 
   getPollInterval() {
     const { staleThreshold, reconnectionBackoffRate } = this.constructor
-    const backoff = Math.pow(1 + reconnectionBackoffRate, Math.min(this.reconnectAttempts, 10))
+    const backoff = (1 + reconnectionBackoffRate) ** Math.min(this.reconnectAttempts, 10)
     const jitterMax = this.reconnectAttempts === 0 ? 1.0 : reconnectionBackoffRate
     const jitter = jitterMax * Math.random()
     return staleThreshold * 1000 * backoff * (1 + jitter)

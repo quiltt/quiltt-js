@@ -6,13 +6,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.mjs",
-    "**/*.cjs",
-    "**/*.json",
-    ".eslintrc.cjs",
-    "vitest.config.js"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mjs", "**/*.cjs", "**/*.json", "vitest.config.js"]
 }

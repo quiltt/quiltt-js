@@ -1,4 +1,3 @@
-import React from 'react'
 import { TestCustomContainer } from './TestCustomContainer'
 
 describe('<TestCustomContainer />', () => {

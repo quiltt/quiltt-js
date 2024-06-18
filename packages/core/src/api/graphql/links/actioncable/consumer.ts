@@ -75,13 +75,12 @@ export function createWebSocketURL(url: string | (() => string)): string {
   if (url && !/^wss?:/i.test(url)) {
     const a = document.createElement('a')
     a.href = url
-    // eslint-disable-next-line no-self-assign
+    // biome-ignore lint/correctness/noSelfAssign: <explanation>
     a.href = a.href
     a.protocol = a.protocol.replace('http', 'ws')
     return a.href
-  } else {
-    return url
   }
+  return url
 }
 
 export default Consumer

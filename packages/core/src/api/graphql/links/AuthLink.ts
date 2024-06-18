@@ -14,7 +14,7 @@ export class AuthLink extends ApolloLink {
     const token = GlobalStorage.get('session')
 
     if (!token) {
-      console.warn(`QuilttLink attempted to send an unauthenticated Query`)
+      console.warn('QuilttLink attempted to send an unauthenticated Query')
       return null
     }
 

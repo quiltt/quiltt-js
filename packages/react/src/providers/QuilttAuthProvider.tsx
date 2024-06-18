@@ -28,13 +28,12 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
   // Import passed in token
   useEffect(() => {
     if (token) importSession(token)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token])
+  }, [token, importSession])
 
   // Reset Client Store when logging in or out
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We should reset the store whenever the session changes
   useEffect(() => {
     GraphQLClient.resetStore()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
   return <ApolloProvider client={GraphQLClient}>{children}</ApolloProvider>

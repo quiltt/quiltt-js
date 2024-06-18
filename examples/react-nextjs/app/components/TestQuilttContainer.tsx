@@ -6,7 +6,7 @@ export const TestQuilttContainer = () => {
   return (
     <QuilttContainer
       connectorId="connector"
-      className="border-4 border-purple-500 hover:border-blue-500 h-full"
+      className="h-full border-4 border-purple-500 hover:border-blue-500"
     />
   )
 }

@@ -2,20 +2,17 @@
 
 import { useCallback } from 'react'
 
+import { AuthAPI } from '@quiltt/core'
+import type { Maybe, QuilttJWT } from '@quiltt/core'
+
 import { useSession } from './useSession'
-
-import { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
-
 import {
-  AuthenticateSession,
-  IdentifySession,
-  ImportSession,
-  RevokeSession,
   useAuthenticateSession,
   useIdentifySession,
   useImportSession,
   useRevokeSession,
 } from './session'
+import type { AuthenticateSession, IdentifySession, ImportSession, RevokeSession } from './session'
 import { useQuilttSettings } from './useQuilttSettings'
 
 export type UseQuilttSession = (environmentId?: string) => {

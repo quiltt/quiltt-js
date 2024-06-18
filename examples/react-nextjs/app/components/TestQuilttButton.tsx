@@ -6,7 +6,7 @@ export const TestQuilttButton = () => {
   return (
     <QuilttButton
       connectorId="connector"
-      className="bg-purple-500 hover:bg-purple-900 text-white py-2 px-4 rounded-md"
+      className="rounded-md bg-purple-500 px-4 py-2 text-white hover:bg-purple-900"
     >
       Launch with Component
     </QuilttButton>
