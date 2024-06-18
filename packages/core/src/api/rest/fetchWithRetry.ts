@@ -55,7 +55,7 @@ export const fetchWithRetry = async <T>(
       throw new Error('Retryable failure')
     }
 
-    throw new Error('HTTP error with status ' + response.status)
+    throw new Error(`HTTP error with status ${response.status}`)
   } catch (error) {
     if (retry) {
       const currentRetriesRemaining = retriesRemaining !== undefined ? retriesRemaining : RETRIES

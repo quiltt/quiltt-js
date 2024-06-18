@@ -79,7 +79,7 @@ export class Subscriptions {
   }
 
   notify(subscription: Subscription, callbackName: string, ...args: any[]) {
-    let subscriptions
+    let subscriptions: Array<Subscription>
     if (typeof subscription === 'string') {
       subscriptions = this.findAll(subscription)
     } else {

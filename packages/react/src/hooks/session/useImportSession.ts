@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 
 import type { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
-import { JsonWebTokenParse, PrivateClaims } from '@quiltt/core'
+import { JsonWebTokenParse } from '@quiltt/core'
+import type { PrivateClaims } from '@quiltt/core'
 
 import type { SetSession } from '../useSession'
 
@@ -40,11 +41,9 @@ export const useImportSession: UseImportSession = (auth, session, setSession, en
         case 200:
           setSession(token)
           return true
-          break
 
         case 401:
           return false
-          break
 
         default:
           throw new Error(`AuthAPI.ping: Unexpected response status ${response.status}`)

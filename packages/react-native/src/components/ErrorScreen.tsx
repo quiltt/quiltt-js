@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 

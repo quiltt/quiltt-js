@@ -29,8 +29,9 @@ export const useStorage = <T>(
   initialState?: Maybe<T>
 ): [Maybe<T> | undefined, Dispatch<SetStateAction<Maybe<T> | undefined>>] => {
   const getStorage = useCallback(() => {
-    let state
+    let state: Maybe<T>
 
+    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
     if ((state = GlobalStorage.get(key)) !== undefined) {
       return state
     }
@@ -58,13 +59,13 @@ export const useStorage = <T>(
    *
    * Use an empty dependency array to avoid unnecessary re-renders.
    */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     GlobalStorage.subscribe(key, setHookState)
 
     setHookState(getStorage())
 
     return () => GlobalStorage.unsubscribe(key, setHookState)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return [hookState, setStorage]

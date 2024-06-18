@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Linking, Platform } from 'react-native'
 import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/react-native/issues/16434
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
-import { Linking, Platform } from 'react-native'
 
 import {
-  ConnectorSDKCallbackMetadata,
-  ConnectorSDKCallbacks,
+  type ConnectorSDKCallbackMetadata,
+  type ConnectorSDKCallbacks,
   ConnectorSDKEventType,
   useQuilttSession,
 } from '@quiltt/react'
 
-import { getErrorMessage, ErrorReporter } from '../utils'
+import { ErrorReporter, getErrorMessage } from '../utils'
 import { version } from '../version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
@@ -29,8 +29,8 @@ export const checkConnectorUrl = async (
   connectorUrl: string,
   retryCount = 0
 ): Promise<PreFlightCheck> => {
-  let responseStatus
-  let error
+  let responseStatus: number | undefined
+  let error: Error | undefined
   try {
     const response = await fetch(connectorUrl)
     if (!response.ok) {
@@ -40,11 +40,11 @@ export const checkConnectorUrl = async (
     console.log(`The URL ${connectorUrl} is routable.`)
     return { checked: true }
   } catch (e) {
-    error = e
+    error = e as Error
     console.error(`An error occurred while checking the connector URL: ${error}`)
 
     if (retryCount < PREFLIGHT_RETRY_COUNT) {
-      const delay = 50 * Math.pow(2, retryCount)
+      const delay = 50 * 2 ** retryCount
       await new Promise((resolve) => setTimeout(resolve, delay))
       console.log(`Retrying... Attempt number ${retryCount + 1}`)
       return checkConnectorUrl(connectorUrl, retryCount + 1)
@@ -135,10 +135,10 @@ const QuilttConnector = ({
 
   const shouldRender = useCallback((url: URL) => !isQuilttEvent(url), [isQuilttEvent])
 
-  const clearLocalStorage = () => {
+  const clearLocalStorage = useCallback(() => {
     const script = 'localStorage.clear();'
     webViewRef.current?.injectJavaScript(script)
-  }
+  }, [])
 
   const handleQuilttEvent = useCallback(
     (url: URL) => {
@@ -183,6 +183,7 @@ const QuilttConnector = ({
       }
     },
     [
+      clearLocalStorage,
       connectorId,
       initInjectedJavaScript,
       onEvent,

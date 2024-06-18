@@ -2,7 +2,7 @@ import type { Consumer } from './consumer'
 
 export type Data = { [id: string]: string | object | null | undefined }
 
-const extend = function (object: Data, properties: Data) {
+const extend = (object: Data, properties: Data) => {
   if (properties !== null) {
     for (const key in properties) {
       const value = properties[key]
@@ -16,6 +16,7 @@ export class Subscription {
   consumer: Consumer
   identifier: string
 
+  // biome-ignore lint/style/useDefaultParameterLast: <explanation>
   constructor(consumer: Consumer, params: Data = {}, mixin: Data) {
     this.consumer = consumer
     this.identifier = JSON.stringify(params)

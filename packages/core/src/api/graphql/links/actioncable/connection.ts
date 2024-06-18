@@ -24,28 +24,26 @@ class Connection {
     if (this.isOpen()) {
       this.webSocket.send(JSON.stringify(data))
       return true
-    } else {
-      return false
     }
+    return false
   }
 
   open() {
     if (this.isActive()) {
       logger.log(`Attempted to open WebSocket, but existing socket is ${this.getState()}`)
       return false
-    } else {
-      const socketProtocols = [...protocols, ...(this.consumer.subprotocols || [])]
-      logger.log(
-        `Opening WebSocket, current state is ${this.getState()}, subprotocols: ${socketProtocols}`
-      )
-      if (this.webSocket) {
-        this.uninstallEventHandlers()
-      }
-      this.webSocket = new adapters.WebSocket(this.consumer.url, socketProtocols)
-      this.installEventHandlers()
-      this.monitor.start()
-      return true
     }
+    const socketProtocols = [...protocols, ...(this.consumer.subprotocols || [])]
+    logger.log(
+      `Opening WebSocket, current state is ${this.getState()}, subprotocols: ${socketProtocols}`
+    )
+    if (this.webSocket) {
+      this.uninstallEventHandlers()
+    }
+    this.webSocket = new adapters.WebSocket(this.consumer.url, socketProtocols)
+    this.installEventHandlers()
+    this.monitor.start()
+    return true
   }
 
   close({ allowReconnect } = { allowReconnect: true }) {
@@ -122,7 +120,7 @@ class Connection {
 
   uninstallEventHandlers() {
     for (const eventName in this.events) {
-      this.webSocket[`on${eventName}`] = function () {}
+      this.webSocket[`on${eventName}`] = () => {}
     }
   }
 }
@@ -152,9 +150,8 @@ Connection.prototype.events = {
         if (this.reconnectAttempted) {
           this.reconnectAttempted = false
           return this.subscriptions.notify(identifier, 'connected', { reconnected: true })
-        } else {
-          return this.subscriptions.notify(identifier, 'connected', { reconnected: false })
         }
+        return this.subscriptions.notify(identifier, 'connected', { reconnected: false })
       case message_types.rejection:
         return this.subscriptions.reject(identifier)
       default:

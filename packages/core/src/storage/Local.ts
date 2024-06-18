@@ -1,5 +1,5 @@
-import type { Maybe } from '../types'
 import type { Observer } from '../Observable'
+import type { Maybe } from '../types'
 
 /**
  * An error and type safe wrapper for localStorage.
@@ -18,8 +18,8 @@ export class LocalStorage<T> {
 
   isEnabled = (): boolean => {
     try {
-      localStorage.setItem(`quiltt.ping`, 'pong')
-      localStorage.removeItem(`quiltt.ping`)
+      localStorage.setItem('quiltt.ping', 'pong')
+      localStorage.removeItem('quiltt.ping')
       return true
     } catch (error) {
       return false
@@ -78,7 +78,7 @@ export class LocalStorage<T> {
   // if there is a key, then trigger the related updates. If there is not key
   // it means that a record has been removed and everything needs to be rechecked.
   private handleStorageEvent = (event: StorageEvent) => {
-    if (event.key && event.key.includes('quiltt.')) {
+    if (event.key?.includes('quiltt.')) {
       const newState = event.newValue ? JSON.parse(event.newValue) : null
 
       if (this.observers[event.key]) {

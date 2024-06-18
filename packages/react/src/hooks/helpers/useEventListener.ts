@@ -1,6 +1,7 @@
 'use client'
 
-import { RefObject, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
 
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect'
 
@@ -23,7 +24,7 @@ export function useEventListener<K extends keyof WindowEventMap>(
 // Element Event based useEventListener interface
 export function useEventListener<
   K extends keyof HTMLElementEventMap,
-  T extends HTMLElement = HTMLDivElement
+  T extends HTMLElement = HTMLDivElement,
 >(
   eventName: K,
   handler: (event: HTMLElementEventMap[K]) => void,
@@ -47,7 +48,8 @@ export function useEventListener<
   KW extends keyof WindowEventMap,
   KH extends keyof HTMLElementEventMap,
   KM extends keyof MediaQueryListEventMap,
-  T extends HTMLElement | MediaQueryList | void = void
+  // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+  T extends HTMLElement | MediaQueryList | void = void,
 >(
   eventName: KW | KH | KM,
   handler: (
@@ -67,7 +69,7 @@ export function useEventListener<
     // Define the listening target
     const targetElement: T | Window = element?.current ?? window
 
-    if (!(targetElement && targetElement.addEventListener)) return
+    if (!targetElement?.addEventListener) return
 
     // Create event listener that calls handler function stored in ref
     const listener: typeof handler = (event) => savedHandler.current(event)
