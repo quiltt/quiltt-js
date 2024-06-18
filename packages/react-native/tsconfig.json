@@ -13,7 +13,6 @@
     "**/*.mjs",
     "**/*.cjs",
     "**/*.json",
-    ".eslintrc.cjs",
     "declarations.d.ts",
     "vitest.config.js"
   ],

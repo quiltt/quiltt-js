@@ -1,26 +1,41 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
-      "dependsOn": ["prebuild", "^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": [
+        "prebuild",
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
     },
     "clean": {
       "cache": false,
       "outputs": []
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": true
     },
     "prebuild": {
-      "dependsOn": ["^prebuild"],
-      "outputs": ["dist/**", ".next/**"],
+      "dependsOn": [
+        "^prebuild"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
       "cache": false
     },
     "start": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false
     },
     "lint": {
@@ -28,21 +43,30 @@
       "outputs": []
     },
     "typecheck": {
-      "outputs": ["tsconfig.tsbuildinfo"]
+      "outputs": [
+        "tsconfig.tsbuildinfo"
+      ]
     },
     "cypress": {
-      "dependsOn": ["^build", "build"],
+      "dependsOn": [
+        "^build",
+        "build"
+      ],
       "cache": false,
       "persistent": true
     },
     "test": {
       "cache": false,
-      "dependsOn": ["^test"],
+      "dependsOn": [
+        "^test"
+      ],
       "outputs": []
     },
     "addVersion": {
       "cache": false,
-      "outputs": ["package.json"]
+      "outputs": [
+        "package.json"
+      ]
     }
   }
 }

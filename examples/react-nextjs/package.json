@@ -12,7 +12,7 @@
     "cypress:install": "cypress install",
     "cypress:open": "cypress open",
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "TIMING=1 biome check src/ --fix",
     "start": "next start",
     "test": "pnpm run cypress:component",
     "typecheck": "tsc --project tsconfig.json --noEmit"
@@ -24,14 +24,13 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "20.12.7",
+    "@biomejs/biome": "1.8.1",
+    "@types/node": "20.14.5",
     "@types/react": "18.2.73",
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
     "cypress": "12.16.0",
     "encoding": "0.1.13",
-    "eslint": "8.43.0",
-    "eslint-config-next": "14.0.4",
     "postcss": "8.4.31",
     "tailwindcss": "3.3.2",
     "typescript": "5.4.3"

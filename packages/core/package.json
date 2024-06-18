@@ -36,7 +36,7 @@
     "build": "bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
-    "lint": "TIMING=1 eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
+    "lint": "TIMING=1 biome check src/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -46,16 +46,10 @@
     "graphql-ruby-client": "^1.13.3"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "4.1.1",
-    "@types/node": "20.12.7",
+    "@biomejs/biome": "1.8.1",
+    "@types/node": "20.14.5",
     "@types/react": "18.2.73",
-    "@typescript-eslint/eslint-plugin": "5.60.1",
-    "@typescript-eslint/parser": "5.60.1",
     "bunchee": "4.4.8",
-    "eslint": "8.43.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "prettier": "2.8.8",
     "rimraf": "5.0.5",
     "typescript": "5.4.3"
   },
