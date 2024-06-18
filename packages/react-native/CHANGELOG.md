@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.6.10
+
+### Patch Changes
+
+- [#268](https://github.com/quiltt/quiltt-js/pull/268) [`8a82094`](https://github.com/quiltt/quiltt-js/commit/8a82094a709d0d7e1478ec32142be33825323708) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Migrate linter to Biome
+
+- Updated dependencies [[`8a82094`](https://github.com/quiltt/quiltt-js/commit/8a82094a709d0d7e1478ec32142be33825323708)]:
+  - @quiltt/react@3.6.10
+  - @quiltt/core@3.6.10
+
 ## 3.6.9
 
 ### Patch Changes
