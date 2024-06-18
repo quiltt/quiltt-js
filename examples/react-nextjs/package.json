@@ -12,7 +12,7 @@
     "cypress:install": "cypress install",
     "cypress:open": "cypress open",
     "dev": "next dev",
-    "lint": "TIMING=1 biome check src/ --fix",
+    "lint": "TIMING=1 biome check app/ --fix",
     "start": "next start",
     "test": "pnpm run cypress:component",
     "typecheck": "tsc --project tsconfig.json --noEmit"

@@ -10,8 +10,9 @@ export const TestJSLauncher = () => {
 
   return (
     <button
+      type="button"
       onClick={open}
-      className="border-2 border-purple-500 hover:bg-purple-500 text-white py-2 px-4 rounded-full cursor-pointer"
+      className="cursor-pointer rounded-full border-2 border-purple-500 px-4 py-2 text-white hover:bg-purple-500"
     >
       Launch with Javascript
     </button>
