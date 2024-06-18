@@ -40,5 +40,5 @@
     "vitest": "1.5.2",
     "vitest-react-native": "0.1.5"
   },
-  "packageManager": "pnpm@9.3.0"
+  "packageManager": "pnpm@9.4.0"
 }
