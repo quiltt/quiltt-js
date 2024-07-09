@@ -29,6 +29,7 @@ describe('useSession', () => {
       exp: Math.floor(Date.now() / 1000) + 3600,
       iss: 'issuer',
       sub: 'subject',
+      rol: 'admin',
       aud: '',
       nbf: 1,
       iat: Date.now(),

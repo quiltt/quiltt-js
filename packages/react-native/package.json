@@ -20,11 +20,7 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
     "addVersion": "genversion --esm -f src/version.ts",
@@ -44,15 +40,15 @@
   },
   "devDependencies": {
     "@apollo/client": "3.9.9",
-    "@biomejs/biome": "1.8.1",
+    "@biomejs/biome": "1.8.3",
     "@types/base-64": "1.0.2",
-    "@types/node": "20.14.5",
-    "@types/react": "18.2.73",
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.3",
     "@types/react-native": "0.72.5",
-    "bunchee": "4.4.8",
+    "bunchee": "5.2.2",
     "react": "18.2.0",
-    "rimraf": "5.0.5",
-    "typescript": "5.4.3"
+    "rimraf": "6.0.0",
+    "typescript": "5.5.3"
   },
   "peerDependencies": {
     "base-64": "*",

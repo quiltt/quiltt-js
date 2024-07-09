@@ -23,6 +23,7 @@ export type PrivateClaims = {
   cid: string // Client ID
   aid: string // Administrator ID
   ver: number // Session Token Version
+  rol: string // Administrator Role
 }
 
 export type QuilttJWT = JsonWebToken<PrivateClaims>
