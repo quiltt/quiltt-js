@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.6.11
+
+### Patch Changes
+
+- [#271](https://github.com/quiltt/quiltt-js/pull/271) [`a9ea2a7`](https://github.com/quiltt/quiltt-js/commit/a9ea2a7c6592dd5245183996ce0d26ffb53f2ed9) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add 'rol' to private claims
+
+- Updated dependencies [[`a9ea2a7`](https://github.com/quiltt/quiltt-js/commit/a9ea2a7c6592dd5245183996ce0d26ffb53f2ed9)]:
+  - @quiltt/core@3.6.11
+
 ## 3.6.10
 
 ### Patch Changes
