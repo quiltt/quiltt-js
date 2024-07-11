@@ -1,11 +1,6 @@
 import type { Maybe } from './types'
 
-export type JsonWebToken<T> = {
-  token: string // Raw JWT Token
-  claims: Claims<T>
-}
-
-export type Claims<T> = RegisteredClaims & T
+type AdminRole = 'manager' | 'core' | 'basic'
 
 export type RegisteredClaims = {
   iss: string // (issuer): Issuer of the JWT
@@ -23,6 +18,14 @@ export type PrivateClaims = {
   cid: string // Client ID
   aid: string // Administrator ID
   ver: number // Session Token Version
+  rol: AdminRole // Administrator Role
+}
+
+export type Claims<T> = RegisteredClaims & T
+
+export type JsonWebToken<T> = {
+  token: string // Raw JWT Token
+  claims: Claims<T>
 }
 
 export type QuilttJWT = JsonWebToken<PrivateClaims>
@@ -42,7 +45,7 @@ export const JsonWebTokenParse = <T>(
   const [_header, payload, _signature] = token.split('.')
 
   try {
-    return { token: token, claims: JSON.parse(atob(payload)) }
+    return { token, claims: JSON.parse(atob(payload)) }
   } catch (error) {
     console.error(`Invalid Session Token: ${error}`)
   }

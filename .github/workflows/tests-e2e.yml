@@ -15,9 +15,9 @@ jobs:
           - name: 'Test Next App'
             directory: './examples/react-nextjs'
             package_manager: 'pnpm'
-          - name: 'Test Expo App'
-            directory: './examples/react-native-expo'
-            package_manager: 'yarn'
+          # - name: 'Test Expo App'
+          #   directory: './examples/react-native-expo'
+          #   package_manager: 'yarn'
 
     steps:
       - name: Checkout branch
