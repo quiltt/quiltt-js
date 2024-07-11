@@ -1,4 +1,5 @@
 import type { Maybe } from './types'
+
 type AdminRole = 'manager' | 'core' | 'basic'
 
 export type RegisteredClaims = {
