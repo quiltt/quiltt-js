@@ -1,7 +1,5 @@
 import type { Maybe } from './types'
 
-type AdminRole = 'manager' | 'core' | 'basic'
-
 export type RegisteredClaims = {
   iss: string // (issuer): Issuer of the JWT
   sub: string // (subject): Subject of the JWT (Person ID)
@@ -18,7 +16,7 @@ export type PrivateClaims = {
   cid: string // Client ID
   aid: string // Administrator ID
   ver: number // Session Token Version
-  rol: AdminRole // Administrator Role
+  rol: 'basic' | 'core' | 'manager' | 'super-admin' // Administrator Role
 }
 
 export type Claims<T> = RegisteredClaims & T
