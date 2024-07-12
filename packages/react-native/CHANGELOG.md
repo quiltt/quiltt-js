@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.6.12
+
+### Patch Changes
+
+- [#274](https://github.com/quiltt/quiltt-js/pull/274) [`d684ade`](https://github.com/quiltt/quiltt-js/commit/d684ade520689d6207c699cea0681a9331f06069) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update 'rol' types in PrivateClaims
+
+- Updated dependencies [[`d684ade`](https://github.com/quiltt/quiltt-js/commit/d684ade520689d6207c699cea0681a9331f06069)]:
+  - @quiltt/core@3.6.12
+  - @quiltt/react@3.6.12
+
 ## 3.6.11
 
 ### Patch Changes
