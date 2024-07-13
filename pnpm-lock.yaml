@@ -108,6 +108,9 @@ importers:
       '@apollo/client':
         specifier: ^3.9.9
         version: 3.9.9(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@rails/actioncable':
+        specifier: ^7.1.3-4
+        version: 7.1.3-4
       cross-fetch:
         specifier: ^4.0.0
         version: 4.0.0(encoding@0.1.13)
@@ -124,6 +127,9 @@ importers:
       '@types/node':
         specifier: 20.14.10
         version: 20.14.10
+      '@types/rails__actioncable':
+        specifier: 6.1.11
+        version: 6.1.11
       '@types/react':
         specifier: 18.3.3
         version: 18.3.3
@@ -1609,6 +1615,9 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
+  '@rails/actioncable@7.1.3-4':
+    resolution: {integrity: sha512-54K+dO4wvL1FVnw8XFRkY8VZXTU9HdjB5QCd2dNDAkE9cJRD8bBrQZAi8zm5npL2sKGKwOSGmfZrXFE12LMYGA==}
+
   '@react-native-community/cli-clean@11.4.1':
     resolution: {integrity: sha512-cwUbY3c70oBGv3FvQJWe2Qkq6m1+/dcEBonMDTYyH6i+6OrkzI4RkIGpWmbG1IS5JfE9ISUZkNL3946sxyWNkw==}
 
@@ -2051,6 +2060,9 @@ packages:
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
+
+  '@types/rails__actioncable@6.1.11':
+    resolution: {integrity: sha512-L6A3Rg6sGsv2cqalOgdOmyFvL1Pw69Mg0WuG6NtY9chzabhtkiSFY5fczo72mqRGezrMvl0Jy80v+N719CW+Tg==}
 
   '@types/react-dom@18.2.6':
     resolution: {integrity: sha512-2et4PDvg6PVCyS7fuTc4gPoksV58bW0RwSxWKcPRcHZf0PRUGq03TKcD/rUHe3azfV6/5/biUBJw+HhCQjaP0A==}
@@ -6736,6 +6748,8 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@rails/actioncable@7.1.3-4': {}
+
   '@react-native-community/cli-clean@11.4.1(encoding@0.1.13)':
     dependencies:
       '@react-native-community/cli-tools': 11.4.1(encoding@0.1.13)
@@ -7224,6 +7238,8 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/prop-types@15.7.12': {}
+
+  '@types/rails__actioncable@6.1.11': {}
 
   '@types/react-dom@18.2.6':
     dependencies:

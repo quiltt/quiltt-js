@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Observable, Operation, gql, FetchResult } from '@apollo/client/core'
+import type { Operation, FetchResult } from '@apollo/client/core'
+import { Observable, gql } from '@apollo/client/core'
 import ActionCableLink from '@/api/graphql/links/ActionCableLink'
 import { GlobalStorage } from '@/storage'
-import { createConsumer } from '@/api/graphql/links/actioncable'
+import { createConsumer } from '@rails/actioncable'
 
 vi.mock('@/storage', () => ({
   GlobalStorage: {
