@@ -1,10 +1,11 @@
-import { GlobalStorage } from '@/storage'
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core/index.js'
 import { ApolloLink, Observable } from '@apollo/client/core/index.js'
+import { createConsumer } from '@rails/actioncable'
+import type { Consumer } from '@rails/actioncable'
 import { print } from 'graphql'
-import { endpointWebsockets } from '../../../configuration'
-import type { Consumer } from './actioncable'
-import { createConsumer } from './actioncable'
+
+import { endpointWebsockets } from '@/configuration'
+import { GlobalStorage } from '@/storage'
 
 type RequestResult = FetchResult<
   { [key: string]: unknown },

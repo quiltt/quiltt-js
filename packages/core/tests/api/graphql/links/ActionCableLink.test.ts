@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Observable, Operation, gql, FetchResult } from '@apollo/client/core'
+import type { Operation, FetchResult } from '@apollo/client/core'
+import { Observable, gql } from '@apollo/client/core'
+import { createConsumer } from '@rails/actioncable'
+
 import ActionCableLink from '@/api/graphql/links/ActionCableLink'
 import { GlobalStorage } from '@/storage'
-import { createConsumer } from '@/api/graphql/links/actioncable'
 
 vi.mock('@/storage', () => ({
   GlobalStorage: {
@@ -10,29 +12,25 @@ vi.mock('@/storage', () => ({
   },
 }))
 
-vi.mock('@/api/graphql/links/actioncable', () => ({
-  createConsumer: vi.fn(() => {
-    const send = vi.fn() // Keep this to validate send actions if needed
-    return {
-      send,
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      ensureActiveConnection: vi.fn(),
-      subscriptions: {
-        create: vi.fn(() => ({
-          perform: (actionName: string, data: object = {}) => {
-            send({
-              command: 'message',
-              identifier: JSON.stringify({}),
-              data: JSON.stringify({ action: actionName, ...data }),
-            })
-          },
-          unsubscribe: vi.fn(), // Ensure this is setup to track calls
-        })),
-      },
-    }
-  }),
-}))
+vi.mock('@rails/actioncable', () => {
+  const mockSubscription = {
+    perform: vi.fn(),
+    unsubscribe: vi.fn(),
+  }
+
+  const mockConsumer = {
+    subscriptions: {
+      create: vi.fn(() => mockSubscription),
+      subscriptions: [],
+    },
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+  }
+
+  return {
+    createConsumer: vi.fn(() => mockConsumer),
+  }
+})
 
 vi.mock('graphql', () => ({
   print: vi.fn().mockReturnValue('printed query'),
@@ -85,24 +83,24 @@ describe('ActionCableLink', () => {
 
   it('should manage subscriptions correctly', async () => {
     const consumer = createConsumer('ws://example.com')
+
     const subscription = consumer.subscriptions.create('TestChannel', {})
 
     // Perform action to trigger send
     subscription.perform('action', { data: 'test' })
 
-    // Check if send was called correctly
-    expect(consumer.send).toHaveBeenCalledWith({
-      command: 'message',
-      identifier: JSON.stringify({}),
-      data: JSON.stringify({ action: 'action', data: 'test' }),
-    })
+    // Check if the subscription was created successfully
+    expect(consumer.subscriptions.create).toHaveBeenCalledWith('TestChannel', {})
+    expect(subscription.perform).toHaveBeenCalledWith('action', { data: 'test' })
 
-    // Manually call unsubscribe to test if it's tracked correctly
+    // Manually call unsubscribe
     subscription.unsubscribe()
 
-    // Check if unsubscribe method was called
+    // Check if unsubscribe was called
     expect(subscription.unsubscribe).toHaveBeenCalled()
 
+    // Disconnect consumer
     consumer.disconnect()
+    expect(consumer.disconnect).toHaveBeenCalled()
   })
 })
