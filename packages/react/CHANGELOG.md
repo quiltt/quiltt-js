@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.6.13
+
+### Patch Changes
+
+- [#276](https://github.com/quiltt/quiltt-js/pull/276) [`be1f9be`](https://github.com/quiltt/quiltt-js/commit/be1f9be957ef1a7686e6a25807275186c8dd51b4) Thanks [@rubendinho](https://github.com/rubendinho)! - Replace manually imported ActionCable code with official npm package
+
+- Updated dependencies [[`be1f9be`](https://github.com/quiltt/quiltt-js/commit/be1f9be957ef1a7686e6a25807275186c8dd51b4)]:
+  - @quiltt/core@3.6.13
+
 ## 3.6.12
 
 ### Patch Changes
