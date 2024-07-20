@@ -33,7 +33,7 @@ type Revoke = NoContentData | UnauthorizedData
 export type SessionResponse = FetchResponse<SessionData>
 export type UnprocessableResponse = FetchResponse<UnprocessableData>
 
-// https://www.quiltt.dev/api-reference/rest/auth#
+// https://www.quiltt.dev/api-reference/auth
 export class AuthAPI {
   clientId: string | undefined
 

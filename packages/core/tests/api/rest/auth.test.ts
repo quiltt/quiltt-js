@@ -1,7 +1,9 @@
-import { AuthAPI, PasscodePayload, UsernamePayload } from '@/api/rest/auth'
+import { AuthAPI } from '@/api/rest/auth'
 import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
 import { endpointAuth } from '@/configuration'
 import { describe, it, beforeEach, expect, vi } from 'vitest'
+
+import type { PasscodePayload, UsernamePayload } from '@/api/rest/auth'
 import type { Mock, MockInstance } from 'vitest'
 
 vi.mock('@/api/rest/fetchWithRetry', () => ({
