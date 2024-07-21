@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.6.14
+
+### Patch Changes
+
+- [#278](https://github.com/quiltt/quiltt-js/pull/278) [`0d9e43d`](https://github.com/quiltt/quiltt-js/commit/0d9e43d580d73279d7c078219749b000ebb59b02) Thanks [@rubendinho](https://github.com/rubendinho)! - Fix debug config during CI
+
 ## 3.6.13
 
 ### Patch Changes
