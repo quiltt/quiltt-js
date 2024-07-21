@@ -1,12 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": [
-      "**/*.gen.ts",
-      "**/generated/**",
-      "**/spectaql.css",
-      "**/src/components/HomeImage.tsx"
-    ]
+    "ignore": ["**/*.gen.ts", "**/generated/**"]
   },
   "organizeImports": {
     "enabled": true

@@ -2,12 +2,9 @@ import { name as packageName, version as packageVersion } from '../package.json'
 
 const QUILTT_API_INSECURE = (() => {
   try {
-    if (process.env.QUILTT_API_INSECURE === 'true' || process.env.QUILTT_API_INSECURE === 'false') {
-      return process.env.QUILTT_API_INSECURE === 'true'
-    }
-    return process.env.QUILTT_API_INSECURE
+    return process.env.QUILTT_API_INSECURE === 'true'
   } catch {
-    return undefined
+    return false
   }
 })()
 
@@ -21,7 +18,7 @@ const QUILTT_API_DOMAIN = (() => {
 
 const QUILTT_DEBUG = (() => {
   try {
-    return !!process.env.QUILTT_DEBUG || process.env.NODE_ENV !== 'production'
+    return process.env.NODE_ENV !== 'production' && process.env.QUILTT_DEBUG === 'true'
   } catch {
     return false
   }
