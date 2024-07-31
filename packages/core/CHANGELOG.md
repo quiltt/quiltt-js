@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.7.0
+
+### Minor Changes
+
+- [#281](https://github.com/quiltt/quiltt-js/pull/281) [`0c5fd75`](https://github.com/quiltt/quiltt-js/commit/0c5fd757fa1f688f205431c21c98bb54ea6ea72a) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add bindings for a new onOpen callback event for Connector Modals
+
 ## 3.6.14
 
 ### Patch Changes
