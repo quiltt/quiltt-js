@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.7.1
+
+### Patch Changes
+
+- [`524a0d7`](https://github.com/quiltt/quiltt-js/commit/524a0d7f83c92648522c7712b82619fcd72e56c8) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add missing opened Enum type
+
+- Updated dependencies [[`524a0d7`](https://github.com/quiltt/quiltt-js/commit/524a0d7f83c92648522c7712b82619fcd72e56c8)]:
+  - @quiltt/core@3.7.1
+
 ## 3.7.0
 
 ### Minor Changes
