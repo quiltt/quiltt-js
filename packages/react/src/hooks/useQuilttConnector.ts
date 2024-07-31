@@ -52,6 +52,15 @@ export const useQuilttConnector = (
     return () => connector.offEvent(options.onEvent as any)
   }, [connector, options?.onEvent])
 
+  // onOpen
+  useEffect(() => {
+    if (!connector || !options?.onOpen) return
+
+    connector.onOpen(options.onOpen)
+    return () => connector.offOpen(options.onOpen as any)
+  }, [connector, options?.onOpen])
+
+
   // onLoad
   useEffect(() => {
     if (!connector || !options?.onLoad) return
