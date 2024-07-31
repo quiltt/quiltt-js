@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/core",
-  "version": "3.6.14",
+  "version": "3.7.0",
   "description": "Javascript API client and utilities for Quiltt",
   "keywords": [
     "quiltt",
