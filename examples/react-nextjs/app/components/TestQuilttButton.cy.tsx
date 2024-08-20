@@ -6,7 +6,7 @@ describe('<TestQuilttButton />', () => {
 
     cy.get('button').should('have.text', 'Launch with Component')
 
-    // Wait for script to become interactive. This is almost instananeous locally but takes time in CI.
+    // Wait for script to become interactive. This is almost instantaneous locally but takes time in CI.
     cy.wait(1250)
 
     // Launch the Connector
