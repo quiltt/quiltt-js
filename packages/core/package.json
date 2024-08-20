@@ -30,7 +30,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^3.11.4",
+    "@apollo/client": "^3.9.11",
     "@rails/actioncable": "^7.2.0",
     "cross-fetch": "^4.0.0",
     "graphql": "^16.9.0",
