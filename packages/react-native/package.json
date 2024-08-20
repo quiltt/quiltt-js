@@ -20,11 +20,7 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
     "addVersion": "genversion --esm -f src/version.ts",
@@ -40,19 +36,19 @@
     "@quiltt/react": "workspace:*",
     "base-64": "1.0.0",
     "react-native-url-polyfill": "2.0.0",
-    "react-native-webview": "13.10.2"
+    "react-native-webview": "13.10.7"
   },
   "devDependencies": {
-    "@apollo/client": "3.9.9",
+    "@apollo/client": "3.11.4",
     "@biomejs/biome": "1.8.3",
     "@types/base-64": "1.0.2",
-    "@types/node": "20.14.10",
+    "@types/node": "22.4.1",
     "@types/react": "18.3.3",
-    "@types/react-native": "0.72.5",
-    "bunchee": "5.2.2",
-    "react": "18.2.0",
-    "rimraf": "6.0.0",
-    "typescript": "5.5.3"
+    "@types/react-native": "0.73.0",
+    "bunchee": "5.3.2",
+    "react": "18.3.1",
+    "rimraf": "6.0.1",
+    "typescript": "5.5.4"
   },
   "peerDependencies": {
     "base-64": "*",
