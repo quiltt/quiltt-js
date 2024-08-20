@@ -20,13 +20,11 @@
   "dependencies": {
     "@quiltt/react": "workspace:*",
     "next": "14.2.5",
-    "node-polyfill-webpack-plugin": "4.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@esbuild-plugins/node-modules-polyfill": "0.2.2",
     "@types/node": "22.4.1",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
