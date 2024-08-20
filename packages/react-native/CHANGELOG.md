@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.7.2
+
+### Patch Changes
+
+- [#284](https://github.com/quiltt/quiltt-js/pull/284) [`ccfc6a3`](https://github.com/quiltt/quiltt-js/commit/ccfc6a36ad465e73723d2286b37a377256c31b11) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Update Dependencies
+
+- Updated dependencies [[`ccfc6a3`](https://github.com/quiltt/quiltt-js/commit/ccfc6a36ad465e73723d2286b37a377256c31b11)]:
+  - @quiltt/core@3.7.2
+  - @quiltt/react@3.7.2
+
 ## 3.7.1
 
 ### Patch Changes
