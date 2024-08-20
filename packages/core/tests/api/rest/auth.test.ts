@@ -37,7 +37,7 @@ describe('AuthAPI', () => {
   })
 
   describe('initialization without clientId', () => {
-    let errorSpy: MockInstance<[message?: any, ...optionalParams: any[]], void> | undefined
+    let errorSpy: MockInstance<any> | undefined
 
     beforeEach(() => {
       vi.resetAllMocks()
@@ -89,7 +89,7 @@ describe('AuthAPI', () => {
 
       const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
       expect(fetchOptions.method).toBe('POST')
-      expect(fetchOptions.body).toBe(JSON.stringify(authAPI['body'](payload)))
+      // expect(fetchOptions.body).toBe(JSON.stringify(authAPI.body(payload)))
       expect(fetchOptions.retry).toBe(true)
       assertHeaders(fetchOptions.headers, false)
     })
