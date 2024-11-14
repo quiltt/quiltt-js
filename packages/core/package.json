@@ -1,8 +1,11 @@
 {
   "name": "@quiltt/core",
-  "version": "3.7.4",
+  "version": "3.8.0",
   "description": "Javascript API client and utilities for Quiltt",
-  "keywords": ["quiltt", "typescript"],
+  "keywords": [
+    "quiltt",
+    "typescript"
+  ],
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
@@ -10,7 +13,10 @@
     "directory": "packages/core"
   },
   "license": "MIT",
-  "sideEffects": ["./src/Storage/Local.ts", "./src/api/graphql/links/SubscriptionLink.ts"],
+  "sideEffects": [
+    "./src/Storage/Local.ts",
+    "./src/api/graphql/links/SubscriptionLink.ts"
+  ],
   "type": "module",
   "exports": {
     ".": {
@@ -19,7 +25,11 @@
     }
   },
   "types": "./dist/index.d.ts",
-  "files": ["dist/**", "src/**", "CHANGELOG.md"],
+  "files": [
+    "dist/**",
+    "src/**",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "bunchee",
     "clean": "rimraf .turbo dist",
