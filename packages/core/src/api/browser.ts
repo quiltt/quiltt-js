@@ -95,6 +95,7 @@ export enum ConnectorSDKEventType {
   ExitAbort = 'exited.aborted',
 
   /** The end-user experienced an error during the flow */
+  ExitError = 'exited.errored',
 }
 
 /**
@@ -119,6 +120,8 @@ export type ConnectorSDKCallbackMetadata = {
 export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
   /** The Institution search term or ID to preload */
   institution?: string
+  /** The ID of the Connection to reconnect */
+  connectionId?: string
 }
 
 /**
