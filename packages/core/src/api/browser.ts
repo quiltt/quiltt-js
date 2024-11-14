@@ -115,13 +115,11 @@ export type ConnectorSDKCallbackMetadata = {
 
 /**
   Options for the standard Connect flow
-  @param institution The Institution search term or ID to preload
+  @param institution The Institution ID or search term to connect
 */
 export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
-  /** The Institution search term or ID to preload */
+  /** The Institution ID or search term to connect */
   institution?: string
-  /** The ID of the Connection to reconnect */
-  connectionId?: string
 }
 
 /**
@@ -134,4 +132,11 @@ export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
 }
 
 /** Options to initialize Connector */
-export type ConnectorSDKConnectorOptions = ConnectorSDKConnectOptions | ConnectorSDKConnectOptions
+// @todo: refactor into a union type - it's either or.
+export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
+  /** The Institution ID or search term to connect */
+  institution?: string
+
+  /** The ID of the Connection to reconnect */
+  connectionId?: string
+}
