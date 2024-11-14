@@ -1,6 +1,13 @@
 name: CI
 
-on: push
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
 
 jobs:
   build:

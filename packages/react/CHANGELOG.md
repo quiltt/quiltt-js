@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.7.3
+
+### Patch Changes
+
+- [#293](https://github.com/quiltt/quiltt-js/pull/293) [`f4b48e6`](https://github.com/quiltt/quiltt-js/commit/f4b48e6db199cae4e880202c28974b481890b7c6) Thanks [@rubendinho](https://github.com/rubendinho)! - Improve documentation
+
+- Updated dependencies [[`f4b48e6`](https://github.com/quiltt/quiltt-js/commit/f4b48e6db199cae4e880202c28974b481890b7c6)]:
+  - @quiltt/core@3.7.3
+
 ## 3.7.2
 
 ### Patch Changes
