@@ -2,7 +2,6 @@ name: E2E Tests
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -20,10 +19,8 @@ jobs:
         include:
           - name: 'Test Next App'
             directory: './examples/react-nextjs'
-            package_manager: 'pnpm'
-          # - name: 'Test Expo App'
+          # - name: 'Test Expo App' # Weird issue with dependencies in CI. Test locally to validate.
           #   directory: './examples/react-native-expo'
-          #   package_manager: 'yarn'
 
     steps:
       - name: Checkout branch
@@ -50,19 +47,19 @@ jobs:
         run: pnpm run build:packages
 
       - name: Install Package Manager Version
-        run: corepack prepare ${{ matrix.package_manager }} --activate
+        run: corepack prepare pnpm --activate
         working-directory: ${{ matrix.directory }}
 
       - name: Install dependencies
-        run: ${{ matrix.package_manager }} install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
         working-directory: ${{ matrix.directory }}
 
       - name: Build app
-        run: ${{ matrix.package_manager }} run build
+        run: pnpm run build
         working-directory: ${{ matrix.directory }}
 
       - name: Run tests
-        run: ${{ matrix.package_manager }} run test
+        run: pnpm run test
         working-directory: ${{ matrix.directory }}
 
       - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}
