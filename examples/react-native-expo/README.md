@@ -1,33 +1,19 @@
 # Welcome to Quiltt's example Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.pnpmjs.com/package/create-expo-app).
 
-## Development
-
-### Prerequisites
-
-Make sure you have [Yarn](https://yarnpkg.com/) installed. If you don't have it installed, you can follow the instructions [here](https://yarnpkg.com/getting-started/install).
-
-### Get started
+## Get started
 
 1. Install dependencies
 
    ```bash
-   yarn install
+   pnpm install
    ```
 
-2. Set up environment variables
-
-   Create a new `.env` file at the root of the project, then copy the contents of `.env.example` into it. Replace the placeholder values with the proper values you can get from the Quiltt Dashboard.
+2. Start the app
 
    ```bash
-   cp .env.example .env
-   ```
-
-3. Start the app
-
-   ```bash
-    yarn start
+    npx expo start
    ```
 
 In the output, you'll find options to open the app in a

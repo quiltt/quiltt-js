@@ -1,10 +1,10 @@
+import { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 
-import { PageView } from '@/components/PageView'
+import { gql, useQuery } from '@quiltt/react-native'
+
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
-import { useQuery, gql } from '@quiltt/react-native'
-import { useEffect } from 'react'
 import { Colors } from '@/constants/Colors'
 
 const SAMPLE_QUERY = gql`
@@ -24,11 +24,11 @@ const SAMPLE_QUERY = gql`
   }
 `
 
-export default function HomeScreen() {
+export default function DataScreen() {
   const { data, error, loading } = useQuery<{
     profile: { id: string; name: string; email: string }
     connections: { id: string; institution: { id: string; name: string } }[]
-  }>(SAMPLE_QUERY as any) // TODO: Fix type error
+  }>(SAMPLE_QUERY)
 
   useEffect(() => {
     if (error) {
@@ -37,7 +37,7 @@ export default function HomeScreen() {
   }, [error])
 
   return (
-    <PageView title={<ThemedText type="title">Your Data</ThemedText>}>
+    <ThemedView style={styles.container}>
       {loading ? (
         <ThemedText>Loading...</ThemedText>
       ) : (
@@ -66,7 +66,7 @@ export default function HomeScreen() {
           ) : null}
         </ThemedView>
       )}
-    </PageView>
+    </ThemedView>
   )
 }
 
@@ -82,13 +82,13 @@ const styles = StyleSheet.create({
   },
   listItem: {
     gap: 2,
-    borderBottomColor: Colors.light.muted,
+    borderBottomColor: Colors.light.tint,
     borderBottomWidth: 1,
     paddingVertical: 8,
   },
   listItemLast: {
     gap: 2,
-    borderBottomColor: Colors.light.muted,
+    borderBottomColor: Colors.light.tint,
     borderBottomWidth: 0,
     paddingVertical: 8,
   },
