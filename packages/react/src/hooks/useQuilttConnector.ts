@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import {
-  type ConnectorSDK,
-  type ConnectorSDKConnector,
-  type ConnectorSDKConnectorOptions,
-  cdnBase,
+import { cdnBase } from '@quiltt/core'
+
+import type {
+  ConnectorSDK,
+  ConnectorSDKConnector,
+  ConnectorSDKConnectorOptions,
 } from '@quiltt/core'
 
 import { version } from '../version'
