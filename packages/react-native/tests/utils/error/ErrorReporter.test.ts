@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
+
 import { ErrorReporter } from '@/utils/error/ErrorReporter'
 import { ErrorReporterConfig } from '@/utils/error/ErrorReporterConfig'
 import { version } from '../../../package.json'
@@ -39,12 +40,39 @@ describe('ErrorReporter', () => {
     consoleErrorSpy.mockRestore()
   })
 
-  it('initializes with correct properties', () => {
-    expect(errorReporter['noticeUrl']).toBe('https://api.honeybadger.io/v1/notices')
-    expect(errorReporter['apiKey']).toBe(ErrorReporterConfig.honeybadger_api_key)
-    expect(errorReporter['clientName']).toBe('react-native-sdk')
-    expect(errorReporter['clientVersion']).toBe(version.toString())
-    expect(errorReporter['platform']).toBe('test-platform')
+  it('initializes with correct properties', async () => {
+    const error = new Error('Test')
+    const payload = await errorReporter.buildPayload(error)
+
+    expect(payload).toMatchObject({
+      notifier: {
+        name: 'Quiltt React Native SDK Reporter',
+        version: version.toString(),
+        url: 'https://www.quiltt.dev/guides/connector/react-native',
+      },
+      server: {
+        environment_name: `react-native-sdk ${version.toString()}; test-platform`,
+      },
+    })
+
+    const testError = new Error('Test')
+    const mockResponse = createMockResponse(201, { id: '12345' })
+    vi.mocked(global.fetch).mockResolvedValue(mockResponse)
+
+    await errorReporter.send(testError)
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.honeybadger.io/v1/notices',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'User-Agent': `react-native-sdk ${version.toString()}; test-platform`,
+          'X-API-Key': ErrorReporterConfig.honeybadger_api_key,
+        }),
+      })
+    )
   })
 
   it('builds the correct payload for an error', async () => {

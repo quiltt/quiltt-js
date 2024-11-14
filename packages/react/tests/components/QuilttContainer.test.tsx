@@ -1,7 +1,8 @@
 import { fireEvent, render } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { QuilttContainer } from '@/components'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mocking the useQuilttConnector hook
 vi.mock('@/hooks/useQuilttConnector', () => ({

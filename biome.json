@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["**/*.gen.ts", "**/generated/**"]
+    "ignore": ["**/*.gen.ts", "**/generated/**", "**/dist/**", "**/node_modules/**", "**/.next/**"]
   },
   "organizeImports": {
     "enabled": true
@@ -18,19 +18,23 @@
       "recommended": true,
       "a11y": {
         "noSvgWithoutTitle": "off",
-        "useAriaPropsForRole": "off"
+        "useAriaPropsForRole": "off",
+        "useSemanticElements": "off",
+        "useGenericFontNames": "off"
       },
       "complexity": {
         "noForEach": "off"
       },
       "correctness": {
-        "noUnusedImports": "warn"
+        "noUnusedImports": "warn",
+        "noUnknownFunction": "off"
       },
       "nursery": {
         "useSortedClasses": "warn"
       },
       "performance": {
-        "noAccumulatingSpread": "warn"
+        "noAccumulatingSpread": "warn",
+        "noDelete": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
@@ -41,6 +45,7 @@
         "noParameterAssign": "warn"
       },
       "suspicious": {
+        "noArrayIndexKey": "off",
         "noExplicitAny": "off",
         "noImplicitAnyLet": "warn"
       }

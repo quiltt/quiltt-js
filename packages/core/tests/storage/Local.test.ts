@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { LocalStorage } from '@/storage/Local'
 
 // Mocking localStorage
-const localStorageMock = (function () {
+const localStorageMock = (() => {
   let store: Record<string, string> = {}
   return {
     getItem(key: string) {

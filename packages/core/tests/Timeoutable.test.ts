@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { Timeoutable } from '@/Timeoutable' // Adjust the import path according to your project structure
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { Timeoutable } from '@/Timeoutable'
 
 describe('Timeoutable', () => {
   let timeoutable: Timeoutable

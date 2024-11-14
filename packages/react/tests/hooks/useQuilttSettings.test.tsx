@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useQuilttSettings, QuilttSettings } from '@/hooks'
 import { useContext } from 'react'
+import { describe, expect, it, vi } from 'vitest'
+
+import { QuilttSettings, useQuilttSettings } from '@/hooks'
 
 // Mock React's useContext to control the returned context value
 vi.mock('react', async () => {

@@ -1,12 +1,16 @@
+import { useEffect } from 'react'
+
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
-import { useEffect } from 'react'
+import { StatusBar } from 'expo-status-bar'
 import 'react-native-reanimated'
-import { QuilttProvider } from '@quiltt/react-native'
-import { useColorScheme } from '@/hooks/useColorScheme'
 import * as Linking from 'expo-linking'
+
+import { QuilttProvider } from '@quiltt/react-native'
+
+import { useColorScheme } from '@/hooks/useColorScheme'
 
 const QUILTT_CLIENT_ID = process.env.EXPO_PUBLIC_QUILTT_CLIENT_ID
 const QUILTT_AUTH_TOKEN = process.env.EXPO_PUBLIC_QUILTT_AUTH_TOKEN
@@ -50,6 +54,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
+        <StatusBar style="auto" />
       </QuilttProvider>
     </ThemeProvider>
   )

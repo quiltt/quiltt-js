@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useStorage } from '@/hooks/useStorage'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { GlobalStorage } from '@quiltt/core'
+
+import { useStorage } from '@/hooks/useStorage'
 
 vi.mock('@quiltt/core', () => ({
   GlobalStorage: {

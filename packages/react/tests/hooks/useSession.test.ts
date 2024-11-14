@@ -1,9 +1,11 @@
-import { describe, it, vi, expect, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useSession } from '@/hooks'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import * as QuilttCoreModule from '@quiltt/core'
+import type { JsonWebToken, PrivateClaims } from '@quiltt/core'
+
+import { useSession } from '@/hooks'
 import * as useStorageModule from '@/hooks/useStorage'
-import type { PrivateClaims, JsonWebToken } from '@quiltt/core'
 
 type Session = JsonWebToken<PrivateClaims> | null
 

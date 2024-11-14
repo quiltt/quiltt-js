@@ -1,5 +1,6 @@
-import { ApolloClient, InMemoryCache, gql, HttpLink } from '@apollo/client'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import ErrorLink from '@/api/graphql/links/ErrorLink'
 
 vi.mock('@/storage', () => ({
