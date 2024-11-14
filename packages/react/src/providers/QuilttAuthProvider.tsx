@@ -8,10 +8,11 @@ import { InMemoryCache, QuilttClient } from '@quiltt/core'
 import { useQuilttSession } from '../hooks'
 
 type QuilttAuthProviderProps = PropsWithChildren & {
+  /** The Session token obtained from the server */
   token?: string
 }
 
-const GraphQLClient = new QuilttClient({
+export const GraphQLClient = new QuilttClient({
   cache: new InMemoryCache(),
 })
 

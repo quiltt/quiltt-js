@@ -45,46 +45,93 @@ export type ConnectorSDKCallbacks = {
   onExitError?: ConnectorSDKOnExitErrorCallback
 }
 
+/**
+ * Callback function to handle all events from the Connector.
+ * @param type The type of event that was emitted
+ * @param metadata Metadata about the event that was emitted
+ */
 export type ConnectorSDKOnEventCallback = (
+  /** The type of event that was emitted */
   type: ConnectorSDKEventType,
+  /** The metadata from the event */
   metadata: ConnectorSDKCallbackMetadata
 ) => void
 
+/** Callback function to handle the Open event */
 export type ConnectorSDKOnOpenCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+
+/** Callback function to handle the Load event */
 export type ConnectorSDKOnLoadCallback = (metadata: ConnectorSDKCallbackMetadata) => void
 
+/** Callback function to handle all Exit events */
 export type ConnectorSDKOnEventExitCallback = (
   type: ConnectorSDKEventType,
   metadata: ConnectorSDKCallbackMetadata
 ) => void
 
+/** Callback function to handle the ExitSuccess event */
 export type ConnectorSDKOnExitSuccessCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+
+/** Callback function to handle the ExitAbort event */
 export type ConnectorSDKOnExitAbortCallback = (metadata: ConnectorSDKCallbackMetadata) => void
+
+/** Callback function to handle the ExitError event */
 export type ConnectorSDKOnExitErrorCallback = (metadata: ConnectorSDKCallbackMetadata) => void
 
+/**
+ * Enum representing the different types of events emitted by the Connector.
+ */
 export enum ConnectorSDKEventType {
+  /** The Connector modal has been opened */
   Open = 'opened',
+
+  /** The Connector has loaded successfully */
   Load = 'loaded',
+
+  /** The end-user successfully completed the flow */
   ExitSuccess = 'exited.successful',
+
+  /** The end-user exited the Connector before completing the flow */
   ExitAbort = 'exited.aborted',
+
+  /** The end-user experienced an error during the flow */
   ExitError = 'exited.errored',
 }
 
+/**
+ * Metadata about a Connector event
+ * @param connectorId The ID of the Connector that emitted the event
+ * @param profileId The ID of the authenticated Profile
+ * @param connectionId The ID of the Connection that was created or reconnected
+ */
 export type ConnectorSDKCallbackMetadata = {
+  /** The ID of the Connector that emitted the event */
   connectorId: string
+  /** The ID of the authenticated Profile */
   profileId?: string
+  /** The ID of the Connection that was created or reconnected */
   connectionId?: string
 }
 
+/**
+  Options for the standard Connect flow
+  @param institution The Institution search term or ID to preload
+*/
 export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
+  /** The Institution search term or ID to preload */
   institution?: string
+  /** The ID of the Connection to reconnect */
+  connectionId?: string
 }
 
+/**
+ * Options for the Reconnect flow
+ * @param connectionId The ID of the Connection to reconnect
+ */
 export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
+  /** The ID of the Connection to reconnect */
   connectionId: string
 }
 
-export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
-  institution?: string
-  connectionId?: string
-}
+/** Options to initialize Connector */
+export type ConnectorSDKConnectorOptions = ConnectorSDKConnectOptions | ConnectorSDKConnectOptions
