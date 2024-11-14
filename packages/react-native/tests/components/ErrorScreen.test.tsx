@@ -1,5 +1,6 @@
+import { fireEvent, render } from '@testing-library/react-native'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, fireEvent } from '@testing-library/react-native'
+
 import { ErrorScreen } from '@/components/ErrorScreen'
 
 describe('ErrorScreen', () => {

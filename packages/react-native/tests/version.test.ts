@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { version } from '@/version'
 import { version as packageVersion } from '../package.json'
 

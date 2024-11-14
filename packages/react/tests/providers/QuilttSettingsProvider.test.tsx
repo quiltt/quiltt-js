@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react'
-import { QuilttSettingsProvider } from '@/providers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { QuilttSettingsProvider } from '@/providers'
 
 describe('QuilttSettingsProvider', async () => {
   beforeEach(() => {

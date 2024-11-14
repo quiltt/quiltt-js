@@ -2,12 +2,7 @@
   "name": "@quiltt/react",
   "version": "3.7.4",
   "description": "React components and hooks for Quiltt Connector",
-  "keywords": [
-    "quiltt",
-    "quiltt-connector",
-    "react",
-    "typescript"
-  ],
+  "keywords": ["quiltt", "quiltt-connector", "react", "typescript"],
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react#readme",
   "repository": {
     "type": "git",
@@ -28,20 +23,14 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addVersion": "genversion --esm -f src/version.ts",
     "build": "pnpm run addVersion && bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
-    "lint": "TIMING=1 biome check src/ --fix",
+    "lint": "TIMING=1 biome check src/ tests/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -49,19 +38,19 @@
   },
   "devDependencies": {
     "@apollo/client": "3.9.11",
-    "@biomejs/biome": "1.8.3",
-    "@types/node": "22.4.1",
-    "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0",
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "22.9.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
     "bunchee": "5.3.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "rimraf": "6.0.1",
-    "typescript": "5.5.4"
+    "typescript": "5.6.3"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "publishConfig": {
     "access": "public"

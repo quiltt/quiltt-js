@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Operation, FetchResult } from '@apollo/client/core'
+import type { FetchResult, Operation } from '@apollo/client/core'
 import { Observable, gql } from '@apollo/client/core'
 import { createConsumer } from '@rails/actioncable'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import ActionCableLink from '@/api/graphql/links/ActionCableLink'
 import { GlobalStorage } from '@/storage'

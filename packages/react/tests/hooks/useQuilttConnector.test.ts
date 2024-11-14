@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, Mock } from 'vitest'
 import { renderHook } from '@testing-library/react'
+import { type Mock, describe, expect, it, vi } from 'vitest'
+
 import { useQuilttConnector } from '@/hooks'
 
 // Mock the entire @quiltt/core module

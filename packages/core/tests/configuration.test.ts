@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { name as packageName, version as packageVersion } from '../package.json'
 
 // Save the original environment variables
@@ -40,7 +40,6 @@ describe('Configuration Constants', () => {
   describe('when process.env is not available', () => {
     beforeEach(async () => {
       // @ts-ignore
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete process.env
     })
 
