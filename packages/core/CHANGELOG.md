@@ -4,7 +4,8 @@
 
 ### Minor Changes
 
-- [#298](https://github.com/quiltt/quiltt-js/pull/298) [`134b294`](https://github.com/quiltt/quiltt-js/commit/134b294019c3bdbccc1f4b5cf9af38d43ea5b3ac) Thanks [@zubairaziz](https://github.com/zubairaziz)! - - Update dependencies
+- [#298](https://github.com/quiltt/quiltt-js/pull/298) [`134b294`](https://github.com/quiltt/quiltt-js/commit/134b294019c3bdbccc1f4b5cf9af38d43ea5b3ac) Thanks [@zubairaziz](https://github.com/zubairaziz)! -
+  - Update dependencies
   - Update expo-react-native implementation
   - Reorganize test files
   - Fix security vulnerabilities
