@@ -1,5 +1,20 @@
 # @quiltt/react-native
 
+## 3.8.0
+
+### Minor Changes
+
+- [#298](https://github.com/quiltt/quiltt-js/pull/298) [`134b294`](https://github.com/quiltt/quiltt-js/commit/134b294019c3bdbccc1f4b5cf9af38d43ea5b3ac) Thanks [@zubairaziz](https://github.com/zubairaziz)! - - Update dependencies
+  - Update expo-react-native implementation
+  - Reorganize test files
+  - Fix security vulnerabilities
+
+### Patch Changes
+
+- Updated dependencies [[`134b294`](https://github.com/quiltt/quiltt-js/commit/134b294019c3bdbccc1f4b5cf9af38d43ea5b3ac)]:
+  - @quiltt/react@3.8.0
+  - @quiltt/core@3.8.0
+
 ## 3.7.4
 
 ### Patch Changes
