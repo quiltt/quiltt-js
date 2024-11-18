@@ -13,32 +13,30 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest # Run on MacOS so that iPhone simulator works
     strategy:
       matrix:
         include:
           - name: 'Test Next App'
             directory: './examples/react-nextjs'
-          # - name: 'Test Expo App' # Weird issue with dependencies in CI. Test locally to validate.
+          # - name: 'Test Expo App' # Figure out how to run Detox tests on Expo
           #   directory: './examples/react-native-expo'
 
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
       - name: Install Sharp CLI
         run: npm install -g sharp-cli
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install Package Manager Version for Root
-        run: corepack prepare pnpm --activate
 
       - name: Install Root Dependencies
         run: pnpm install --frozen-lockfile
@@ -46,17 +44,38 @@ jobs:
       - name: Build packages
         run: pnpm run build:packages
 
-      - name: Install Package Manager Version
-        run: corepack prepare pnpm --activate
-        working-directory: ${{ matrix.directory }}
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: ${{ matrix.directory }}
 
+      # - name: Cache Pods # Enable this when running Detox tests on Expo
+      #   if: ${{ matrix.name == 'Test Expo App' }}
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ matrix.directory }}/ios/Pods
+      #     key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+
+      # - name: Cache Derived Data # Enable this when running Detox tests on Expo
+      #   if: ${{ matrix.name == 'Test Expo App' }}
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ matrix.directory }}/ios/build
+      #     key: ${{ runner.os }}-derived-data-${{ github.sha }}
+
+      # - name: Install Detox dependencies # Enable this when running Detox tests on Expo
+      #   if: ${{ matrix.name == 'Test Expo App' }}
+      #   run: |
+      #     brew tap wix/brew
+      #     brew install applesimutils
+
       - name: Build app
         run: pnpm run build
         working-directory: ${{ matrix.directory }}
+
+      # - name: Build for testing # Enable this when running Detox tests on Expo
+      #   if: ${{ matrix.name == 'Test Expo App' }}
+      #   run: pnpm run test:ios:build
+      #   working-directory: ${{ matrix.directory }}
 
       - name: Run tests
         run: pnpm run test
@@ -71,3 +90,13 @@ jobs:
             ${{github.workspace}}/**/cypress/screenshots
             ${{github.workspace}}/**/cypress/videos
           retention-days: 3
+
+      # - if: ${{ failure() }} && ${{ matrix.name == 'Test Expo App' }}
+      #   name: Upload iOS Test Artifacts # Enable this when running Detox tests on Expo
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ios_test_artifacts
+      #     path: |
+      #       ${{ matrix.directory }}/artifacts
+      #       ${{ matrix.directory }}/ios/build/logs
+      #     retention-days: 3
