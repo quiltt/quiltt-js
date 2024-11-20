@@ -43,7 +43,9 @@ export default function DataScreen() {
       ) : (
         <ThemedView style={styles.container}>
           <ThemedView style={styles.container}>
-            <ThemedText style={styles.title}>Profile</ThemedText>
+            <ThemedText style={styles.title} testID="profile-section">
+              Profile
+            </ThemedText>
             <ThemedText>ID: {data?.profile?.id}</ThemedText>
             <ThemedText>Name: {data?.profile?.name}</ThemedText>
             <ThemedText>Email: {data?.profile?.email}</ThemedText>

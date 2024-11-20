@@ -41,3 +41,6 @@ app-example
 # App builds
 android/
 ios/
+
+# Test artifacts
+artifacts/
