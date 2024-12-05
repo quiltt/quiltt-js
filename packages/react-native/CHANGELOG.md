@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.8.1
+
+### Patch Changes
+
+- [#300](https://github.com/quiltt/quiltt-js/pull/300) [`a359810`](https://github.com/quiltt/quiltt-js/commit/a3598104565b4428beef9de37f85211e9caf465b) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Make @quiltt/react-native ESM only
+
+- Updated dependencies [[`a359810`](https://github.com/quiltt/quiltt-js/commit/a3598104565b4428beef9de37f85211e9caf465b)]:
+  - @quiltt/react@3.8.1
+  - @quiltt/core@3.8.1
+
 ## 3.8.0
 
 ### Minor Changes
