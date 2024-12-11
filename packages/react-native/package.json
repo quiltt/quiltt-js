@@ -44,14 +44,14 @@
   },
   "devDependencies": {
     "@apollo/client": "3.9.9",
-    "@biomejs/biome": "1.8.3",
+    "@biomejs/biome": "1.9.4",
     "@types/base-64": "1.0.2",
-    "@types/node": "20.14.10",
+    "@types/node": "22.10.2",
     "@types/react": "18.3.3",
-    "@types/react-native": "0.72.5",
-    "bunchee": "5.2.2",
+    "@types/react-native": "0.73.0",
+    "bunchee": "6.0.3",
     "react": "18.2.0",
-    "rimraf": "6.0.0",
+    "rimraf": "6.0.1",
     "typescript": "5.5.3"
   },
   "peerDependencies": {
