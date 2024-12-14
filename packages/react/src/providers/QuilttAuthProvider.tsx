@@ -1,7 +1,7 @@
 'use client'
 
 import type { FC, PropsWithChildren } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { ApolloProvider } from '@apollo/client'
 import { InMemoryCache, QuilttClient } from '@quiltt/core'
@@ -12,10 +12,6 @@ type QuilttAuthProviderProps = PropsWithChildren & {
   token?: string
 }
 
-export const GraphQLClient = new QuilttClient({
-  cache: new InMemoryCache(),
-})
-
 /**
  * If a token is provided, will validate the token against the api and then import
  * it into trusted storage. While this process is happening, the component is put
@@ -25,6 +21,15 @@ export const GraphQLClient = new QuilttClient({
  */
 export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, children }) => {
   const { session, importSession } = useQuilttSession()
+
+  // @todo: extract into a provider so it can accessed by child components
+  const GraphQLClient = useMemo(
+    () =>
+      new QuilttClient({
+        cache: new InMemoryCache(),
+      }),
+    []
+  )
 
   // Import passed in token
   useEffect(() => {
