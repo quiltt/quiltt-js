@@ -5,6 +5,8 @@
 
 `@quiltt/react` provides React Components and Hooks for integrating Quiltt into React-based applications.
 
+See the guides [here](https://www.quiltt.dev/connector/sdks/react).
+
 ## Installation
 
 ```shell
@@ -100,7 +102,9 @@ A provider component for passing Session and settings down to the rest of your a
 import { QuilttProvider } from '@quiltt/react'
 
 const Layout = ({ children }) => {
-  return <QuilttProvider token="{SESSION_TOKEN}">{children}</QuilttProvider>
+  const sessionToken = "<SESSION_TOKEN_FROM_SERVER>"
+
+  return <QuilttProvider token={sessionToken}>{children}</QuilttProvider>
 }
 
 export default Layout
