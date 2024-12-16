@@ -23,7 +23,7 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
   const { session, importSession } = useQuilttSession()
 
   // @todo: extract into a provider so it can accessed by child components
-  const GraphQLClient = useMemo(
+  const graphQLClient = useMemo(
     () =>
       new QuilttClient({
         cache: new InMemoryCache(),
@@ -39,10 +39,10 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
   // Reset Client Store when logging in or out
   // biome-ignore lint/correctness/useExhaustiveDependencies: We should reset the store whenever the session changes
   useEffect(() => {
-    GraphQLClient.resetStore()
+    graphQLClient.resetStore()
   }, [session])
 
-  return <ApolloProvider client={GraphQLClient}>{children}</ApolloProvider>
+  return <ApolloProvider client={graphQLClient}>{children}</ApolloProvider>
 }
 
 export default QuilttAuthProvider
