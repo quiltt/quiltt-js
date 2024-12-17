@@ -4,7 +4,9 @@ import type { FC, PropsWithChildren } from 'react'
 import { useEffect, useMemo } from 'react'
 
 import { ApolloProvider } from '@apollo/client'
+
 import { InMemoryCache, QuilttClient } from '@quiltt/core'
+
 import { useQuilttSession } from '../hooks'
 
 type QuilttAuthProviderProps = PropsWithChildren & {
