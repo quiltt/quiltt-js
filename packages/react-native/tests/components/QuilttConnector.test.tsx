@@ -1,10 +1,9 @@
 import { render, waitFor } from '@testing-library/react-native'
-import { Linking } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
-import { ErrorReporter } from '@/utils/error/ErrorReporter'
 
 // Helper to create a mock Response
 const createMockResponse = (status: number, body: any): Response => {
@@ -18,25 +17,15 @@ const createMockResponse = (status: number, body: any): Response => {
 
 describe('checkConnectorUrl', () => {
   let fetchSpy: MockInstance
-  let errorReporterSpy: MockInstance
-  let consoleErrorSpy: MockInstance
   let consoleLogSpy: MockInstance
 
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, 'fetch')
-    errorReporterSpy = vi.spyOn(ErrorReporter.prototype, 'send')
-    consoleErrorSpy = vi.spyOn(console, 'error')
     consoleLogSpy = vi.spyOn(console, 'log')
-    vi.useFakeTimers()
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
-    fetchSpy.mockReset()
-    errorReporterSpy.mockReset()
-    consoleErrorSpy.mockReset()
-    consoleLogSpy.mockReset()
-    vi.useRealTimers()
   })
 
   it('should handle routable URL successfully', async () => {
@@ -47,17 +36,16 @@ describe('checkConnectorUrl', () => {
   })
 
   it('handles fetch errors and retries', async () => {
-    try {
-      fetchSpy
-        .mockRejectedValue(new Error('Network failure'))
-        .mockResolvedValue(createMockResponse(200, { ok: true }))
+    fetchSpy
+      .mockRejectedValueOnce(new Error('Network failure'))
+      .mockResolvedValueOnce(createMockResponse(200, { ok: true }))
 
-      const result = await checkConnectorUrl('http://test.com', 1)
-      expect(result).toEqual({ checked: true })
-    } catch (error) {
-      expect(consoleLogSpy).toHaveBeenCalledWith('Retrying... Attempt number 1')
-      expect(fetchSpy).toHaveBeenCalledTimes(2)
-    }
+    const result = await checkConnectorUrl('http://test.com', 0) // Start with retryCount = 0
+
+    expect(consoleLogSpy).toHaveBeenNthCalledWith(1, 'Retrying... Attempt number 1') // Check first call specifically
+    expect(consoleLogSpy).toHaveBeenNthCalledWith(2, 'The URL http://test.com is routable.') // Check second call
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    expect(result).toEqual({ checked: true })
   })
 })
 
@@ -75,9 +63,19 @@ describe('QuilttConnector', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    Platform.OS = 'ios'
+    vi.mock('@quiltt/react', () => ({
+      useQuilttSession: () => ({ session: { token: 'test-token' } }),
+      ConnectorSDKEventType: {
+        Load: 'Load',
+        ExitAbort: 'ExitAbort',
+        ExitError: 'ExitError',
+        ExitSuccess: 'ExitSuccess',
+      },
+    }))
   })
 
-  it('should initiate pre-flight check and render loading screen if not checked', async () => {
+  it('should initiate pre-flight check and render loading screen if not checked', () => {
     const { getByTestId } = render(<QuilttConnector testId="quiltt-connector" {...props} />)
     expect(getByTestId('loading-screen')).toBeTruthy()
   })
@@ -117,9 +115,9 @@ describe('QuilttConnector', () => {
     })
   })
 
-  it('should handle OAuth redirection', async () => {
-    const url = new URL(props.oauthRedirectUrl)
+  it('should handle OAuth redirection', () => {
+    const url = new URL('https://oauth.test.com/callback')
     handleOAuthUrl(url)
-    expect(Linking.openURL).toHaveBeenCalledWith(props.oauthRedirectUrl)
+    expect(Linking.openURL).toHaveBeenCalledWith(url.toString())
   })
 })
