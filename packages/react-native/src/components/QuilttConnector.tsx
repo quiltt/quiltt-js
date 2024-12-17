@@ -4,12 +4,8 @@ import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/r
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 
-import {
-  type ConnectorSDKCallbackMetadata,
-  type ConnectorSDKCallbacks,
-  ConnectorSDKEventType,
-  useQuilttSession,
-} from '@quiltt/react'
+import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
+import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 
 import { ErrorReporter, getErrorMessage } from '../utils'
 import { version } from '../version'
@@ -85,6 +81,7 @@ const QuilttConnector = ({
 }: QuilttConnectorProps) => {
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
+  const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
   const encodedOAuthRedirectUrl = useMemo(
     () => encodeURIComponent(oauthRedirectUrl),
@@ -98,8 +95,6 @@ const QuilttConnector = ({
     url.searchParams.append('agent', `react-native-${version}`)
     return url.toString()
   }, [connectorId, encodedOAuthRedirectUrl])
-
-  const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
   useEffect(() => {
     if (preFlightCheck.checked) return
@@ -146,41 +141,43 @@ const QuilttConnector = ({
       url.searchParams.append('connectorId', connectorId)
       const metadata = Object.fromEntries(url.searchParams) as ConnectorSDKCallbackMetadata
 
-      const eventType = url.host
-      switch (eventType) {
-        case 'Load':
-          initInjectedJavaScript()
-          onEvent?.(ConnectorSDKEventType.Load, metadata)
-          onLoad?.(metadata)
-          break
-        case 'ExitAbort':
-          clearLocalStorage()
-          onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
-          onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
-          onExitAbort?.(metadata)
-          break
-        case 'ExitError':
-          clearLocalStorage()
-          onEvent?.(ConnectorSDKEventType.ExitError, metadata)
-          onExit?.(ConnectorSDKEventType.ExitError, metadata)
-          onExitError?.(metadata)
-          break
-        case 'ExitSuccess':
-          clearLocalStorage()
-          onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
-          onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
-          onExitSuccess?.(metadata)
-          break
-        case 'Authenticate':
-          // TODO: handle Authenticate
-          break
-        case 'OauthRequested':
-          handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
-          break
-        default:
-          console.log('unhandled event', url)
-          break
-      }
+      requestAnimationFrame(() => {
+        const eventType = url.host
+        switch (eventType) {
+          case 'Load':
+            initInjectedJavaScript()
+            onEvent?.(ConnectorSDKEventType.Load, metadata)
+            onLoad?.(metadata)
+            break
+          case 'ExitAbort':
+            clearLocalStorage()
+            onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
+            onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
+            onExitAbort?.(metadata)
+            break
+          case 'ExitError':
+            clearLocalStorage()
+            onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+            onExit?.(ConnectorSDKEventType.ExitError, metadata)
+            onExitError?.(metadata)
+            break
+          case 'ExitSuccess':
+            clearLocalStorage()
+            onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
+            onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
+            onExitSuccess?.(metadata)
+            break
+          case 'Authenticate':
+            // TODO: handle Authenticate
+            break
+          case 'OauthRequested':
+            handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
+            break
+          default:
+            console.log('unhandled event', url)
+            break
+        }
+      })
     },
     [
       clearLocalStorage,
@@ -236,6 +233,24 @@ const QuilttConnector = ({
         javaScriptEnabled
         domStorageEnabled // To enable localStorage in Android webview
         webviewDebuggingEnabled
+        bounces={false} // Controls the bouncing effect when scrolling past content boundaries (iOS only)
+        scrollEnabled={true} // Enables scrolling within the WebView
+        automaticallyAdjustContentInsets={false} // Disables automatic padding adjustments based on navigation bars/safe areas
+        contentInsetAdjustmentBehavior="never" // Controls how the WebView adjusts its content layout relative to safe areas and system UI
+        {...(Platform.OS === 'ios'
+          ? {
+              decelerationRate: 'normal',
+              keyboardDisplayRequiresUserAction: false,
+              dataDetectorTypes: 'none',
+              allowsInlineMediaPlayback: true,
+              allowsBackForwardNavigationGestures: false,
+              startInLoadingState: true,
+            }
+          : {
+              androidLayerType: 'hardware',
+              cacheEnabled: true,
+              cacheMode: 'LOAD_CACHE_ELSE_NETWORK',
+            })}
       />
     </AndroidSafeAreaView>
   )

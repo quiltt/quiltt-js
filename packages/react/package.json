@@ -2,12 +2,7 @@
   "name": "@quiltt/react",
   "version": "3.8.2",
   "description": "React components and hooks for Quiltt Connector",
-  "keywords": [
-    "quiltt",
-    "quiltt-connector",
-    "react",
-    "typescript"
-  ],
+  "keywords": ["quiltt", "quiltt-connector", "react", "typescript"],
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react#readme",
   "repository": {
     "type": "git",
@@ -29,11 +24,7 @@
     }
   },
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addVersion": "genversion --esm -f src/version.ts",
     "build": "pnpm run addVersion && bunchee",
@@ -48,7 +39,7 @@
   "devDependencies": {
     "@apollo/client": "3.9.11",
     "@biomejs/biome": "1.9.4",
-    "@types/node": "22.9.0",
+    "@types/node": "22.10.2",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "bunchee": "5.6.1",
