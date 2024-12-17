@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.8.2
+
+### Patch Changes
+
+- [#303](https://github.com/quiltt/quiltt-js/pull/303) [`d1ceb66`](https://github.com/quiltt/quiltt-js/commit/d1ceb6648f4c2747988f8d6cacbee9946beaea0c) Thanks [@rubendinho](https://github.com/rubendinho)! - Reduce bundle size
+
+- Updated dependencies [[`d1ceb66`](https://github.com/quiltt/quiltt-js/commit/d1ceb6648f4c2747988f8d6cacbee9946beaea0c)]:
+  - @quiltt/react@3.8.2
+  - @quiltt/core@3.8.2
+
 ## 3.8.1
 
 ### Patch Changes
