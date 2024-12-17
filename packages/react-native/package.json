@@ -18,11 +18,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
     "addVersion": "genversion --esm -f src/version.ts",
@@ -35,19 +31,21 @@
   "dependencies": {
     "@honeybadger-io/core": "6.6.0",
     "@quiltt/core": "workspace:*",
-    "@quiltt/react": "workspace:*"
+    "@quiltt/react": "workspace:*",
+    "lodash.debounce": "4.0.8"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/base-64": "1.0.2",
-    "@types/node": "22.9.0",
+    "@types/lodash.debounce": "4.0.9",
+    "@types/node": "22.10.2",
     "@types/react": "18.3.12",
     "base-64": "1.0.0",
     "bunchee": "5.6.1",
     "react": "18.3.1",
-    "react-native": "0.76.2",
+    "react-native": "0.76.5",
     "react-native-url-polyfill": "2.0.0",
-    "react-native-webview": "13.12.3",
+    "react-native-webview": "13.12.5",
     "rimraf": "6.0.1",
     "typescript": "5.6.3"
   },
