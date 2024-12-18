@@ -28,7 +28,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^3.9.11",
+    "@apollo/client": "^3.11.8",
     "@rails/actioncable": "^7.2.200",
     "braces": "^3.0.3",
     "cross-fetch": "^4.0.0",
