@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/react-native",
-  "version": "3.8.2",
+  "version": "3.9.0",
   "description": "React Native components for Quiltt Connector",
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react-native#readme",
   "repository": {
@@ -18,7 +18,11 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist/**", "src/**", "CHANGELOG.md"],
+  "files": [
+    "dist/**",
+    "src/**",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
     "build": "pnpm run addApiKey && bunchee",
