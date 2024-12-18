@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 3.9.1
+
+### Patch Changes
+
+- [#310](https://github.com/quiltt/quiltt-js/pull/310) [`86b39ac`](https://github.com/quiltt/quiltt-js/commit/86b39ac7015fcf21d1c1962df1a76f84c2af9801) Thanks [@rubendinho](https://github.com/rubendinho)! - Added explicit file extensions to import statements to comply with strict ESM module resolution.
+
+- Updated dependencies [[`86b39ac`](https://github.com/quiltt/quiltt-js/commit/86b39ac7015fcf21d1c1962df1a76f84c2af9801)]:
+  - @quiltt/react@3.9.1
+  - @quiltt/core@3.9.1
+
 ## 3.9.0
 
 ### Minor Changes
