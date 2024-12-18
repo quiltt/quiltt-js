@@ -1,4 +1,4 @@
-import { ApolloLink } from '@apollo/client/core'
+import { ApolloLink } from '@apollo/client/core/index.js'
 
 export const TerminatingLink = new ApolloLink(() => null)
 
