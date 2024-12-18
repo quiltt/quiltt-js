@@ -1,5 +1,20 @@
 # @quiltt/react-native
 
+## 3.9.0
+
+### Minor Changes
+
+- [#307](https://github.com/quiltt/quiltt-js/pull/307) [`d0033cd`](https://github.com/quiltt/quiltt-js/commit/d0033cdbdaf33f9227afa55c9a6078156809a563) Thanks [@rubendinho](https://github.com/rubendinho)! - - Significantly reduce bundle size by migrating @apollo/client to "deep entrypoint import style"
+  - Bump @apollo/client to v3.11.8
+
+### Patch Changes
+
+- [#305](https://github.com/quiltt/quiltt-js/pull/305) [`803a4d0`](https://github.com/quiltt/quiltt-js/commit/803a4d09e458ed2e72781fcd475ad5f9639f2bf2) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Optimize connector WebView implementation
+
+- Updated dependencies [[`803a4d0`](https://github.com/quiltt/quiltt-js/commit/803a4d09e458ed2e72781fcd475ad5f9639f2bf2), [`d0033cd`](https://github.com/quiltt/quiltt-js/commit/d0033cdbdaf33f9227afa55c9a6078156809a563)]:
+  - @quiltt/react@3.9.0
+  - @quiltt/core@3.9.0
+
 ## 3.8.2
 
 ### Patch Changes
