@@ -39,10 +39,6 @@
       "cache": false,
       "dependsOn": ["^test"],
       "outputs": []
-    },
-    "addVersion": {
-      "cache": false,
-      "outputs": ["package.json"]
     }
   }
 }

@@ -21,8 +21,7 @@
   "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
-    "addVersion": "genversion --esm -f src/version.ts",
-    "build": "pnpm run addApiKey && pnpm run addVersion && bunchee",
+    "build": "pnpm run addApiKey && bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
     "lint": "TIMING=1 biome check src/ tests/ --fix",
