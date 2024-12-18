@@ -55,6 +55,5 @@ export { InMemoryCache } from '@apollo/client/cache'
 export type { ApolloError, OperationVariables } from '@apollo/client/core'
 export type { NormalizedCacheObject } from '@apollo/client/cache'
 
-/** React Hooks */
-// @todo: consider exporting these from @quiltt/react instead
+/** React hooks used by @quiltt/react-native and @quiltt/react */
 export { useMutation, useQuery, useSubscription } from '@apollo/client/react/hooks'
