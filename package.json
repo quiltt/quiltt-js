@@ -9,7 +9,7 @@
     "prebuild": "[[ $CI = true ]] && npx pnpm@9 install --store=node_modules/.pnpm-store || echo skipping pnpm install; turbo run prebuild",
     "build": "turbo run build",
     "build:packages": "turbo run build --filter='./packages/*'",
-    "changeset": "pnpm -r exec pnpm run --if-present addVersion && npx changeset",
+    "changeset": "npx changeset",
     "check:packages": "pnpm check-dependency-version-consistency .",
     "clean": "turbo run clean",
     "coverage": "vitest run --coverage",
@@ -19,7 +19,7 @@
     "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "version": "npx changeset version && turbo run addVersion",
+    "version": "npx changeset version",
     "postversion": "pnpm exec pnpm install --filter=./packages/** "
   },
   "devDependencies": {
@@ -32,7 +32,6 @@
     "@vitejs/plugin-react": "4.3.3",
     "@vitest/coverage-v8": "2.0.5",
     "check-dependency-version-consistency": "5.0.0",
-    "genversion": "3.2.0",
     "happy-dom": "15.10.2",
     "turbo": "2.3.3",
     "vite": "5.4.6",
