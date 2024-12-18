@@ -26,18 +26,17 @@
   "types": "./dist/index.d.ts",
   "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
-    "addVersion": "genversion --esm -f src/version.ts",
-    "build": "pnpm run addVersion && bunchee",
+    "build": "bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
     "lint": "TIMING=1 biome check src/ tests/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.8",
     "@quiltt/core": "workspace:*"
   },
   "devDependencies": {
-    "@apollo/client": "3.9.11",
     "@biomejs/biome": "1.9.4",
     "@types/node": "22.10.2",
     "@types/react": "18.3.12",

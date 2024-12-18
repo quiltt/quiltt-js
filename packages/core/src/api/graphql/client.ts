@@ -1,5 +1,5 @@
-import type { ApolloClientOptions, Operation } from '@apollo/client/index.js'
-import { ApolloClient, ApolloLink } from '@apollo/client/index.js'
+import type { ApolloClientOptions, Operation } from '@apollo/client/core'
+import { ApolloClient, ApolloLink } from '@apollo/client/core'
 
 import { debugging } from '../../configuration'
 import {
@@ -44,9 +44,16 @@ export class QuilttClient<T> extends ApolloClient<T> {
   }
 }
 
-export { InMemoryCache, gql, useMutation, useQuery, useSubscription } from '@apollo/client/index.js'
-export type {
-  NormalizedCacheObject,
-  OperationVariables,
-  ApolloError,
-} from '@apollo/client/index.js'
+/**
+/* Export Apollo GraphQL assets using deep-imports to prevent unnecessary imports
+/* and make tree-shaking more effective
+*/
+
+/** Client and Tooling */
+export { gql } from '@apollo/client/core'
+export { InMemoryCache } from '@apollo/client/cache'
+export type { ApolloError, OperationVariables } from '@apollo/client/core'
+export type { NormalizedCacheObject } from '@apollo/client/cache'
+
+/** React hooks used by @quiltt/react-native and @quiltt/react */
+export { useMutation, useQuery, useSubscription } from '@apollo/client/react/hooks'

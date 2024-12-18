@@ -1,4 +1,4 @@
-import { BatchHttpLink as ApolloHttpLink } from '@apollo/client/link/batch-http/index.js'
+import { BatchHttpLink as ApolloHttpLink } from '@apollo/client/link/batch-http'
 import crossfetch from 'cross-fetch'
 
 import { endpointGraphQL } from '@/configuration'

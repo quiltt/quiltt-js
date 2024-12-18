@@ -1,4 +1,4 @@
-import { RetryLink as ApolloRetryLink } from '@apollo/client/link/retry/index.js'
+import { RetryLink as ApolloRetryLink } from '@apollo/client/link/retry'
 
 export const RetryLink = new ApolloRetryLink({
   attempts: {

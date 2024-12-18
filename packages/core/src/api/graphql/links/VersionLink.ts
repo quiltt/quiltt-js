@@ -1,4 +1,4 @@
-import { ApolloLink } from '@apollo/client/index.js'
+import { ApolloLink } from '@apollo/client/core'
 
 import { version } from '@/configuration'
 
