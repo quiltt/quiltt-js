@@ -10,12 +10,7 @@
     "directory": "packages/react"
   },
   "license": "MIT",
-  "sideEffects": [
-    "./src/hooks/useQuilttConnector.ts",
-    "./src/hooks/useQuilttSettings.ts",
-    "./src/hooks/useSession.ts",
-    "./src/hooks/useStorage.ts"
-  ],
+  "sideEffects": [],
   "type": "module",
   "exports": {
     ".": {
