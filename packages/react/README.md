@@ -9,17 +9,27 @@ See the guides [here](https://www.quiltt.dev/connector/sdks/react).
 
 ## Installation
 
+With `npm`:
+
 ```shell
 $ npm install @quiltt/react
-# or
+```
+
+With `yarn`:
+
+```shell
 $ yarn add @quiltt/react
-# or
+```
+
+With `pnpm`:
+
+```shell
 $ pnpm add @quiltt/react
 ```
 
 ## Core Modules and Types
 
-The `@quiltt/react` library ships with `@quiltt/core`, which provides an Auth API and essential functionality for building Javascript-based applications with Quiltt. See the [Core README](../core/README.md) for more information.
+The `@quiltt/react` library ships with `@quiltt/core`, which provides an API clients and essential functionality for building Javascript-based applications with Quiltt. See the [Core README](../core/README.md) for more information.
 
 ## React Components
 
@@ -38,10 +48,11 @@ By default, the rendered component will be a `<button>` element, but you can sup
 ```tsx
 import { useState } from 'react'
 import { QuilttButton } from '@quiltt/react'
+import type { ConnectorSDKCallbackMetadata } from '@quiltt/react'
 
 export const App = () => {
   const [connectionId, setConnectionId] = useState<string>()
-  const handleExitSuccess = (metadata) => {
+  const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
     setConnectionId(metadata?.connectionId)
   }
 
@@ -71,10 +82,11 @@ By default, the rendered component will be a `<div>` element, but you can supply
 ```tsx
 import { useState } from 'react'
 import { QuilttContainer } from '@quiltt/react'
+import type { ConnectorSDKCallbackMetadata } from '@quiltt/react'
 
 export const App = () => {
   const [connectionId, setConnectionId] = useState<string>()
-  const handleExitSuccess = (metadata) => {
+  const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
     setConnectionId(metadata?.connectionId)
   }
 
@@ -184,7 +196,7 @@ export default App
 
 ## Typescript support
 
-`@quiltt/react` is written in Typescript and ships with its own type definitions. It also ships with the type definitions from `@quiltt/core`.
+`@quiltt/react` is written in Typescript and ships with its own type definitions, as well as the type definitions from `@quiltt/core`.
 
 ## License
 

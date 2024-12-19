@@ -7,11 +7,21 @@
 
 ## Install
 
+With `npm`:
+
 ```shell
 $ npm install @quiltt/core
-# or
+```
+
+With `yarn`:
+
+```shell
 $ yarn add @quiltt/core
-# or
+```
+
+With `pnpm`:
+
+```shell
 $ pnpm add @quiltt/core
 ```
 

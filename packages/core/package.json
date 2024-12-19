@@ -10,6 +10,9 @@
     "directory": "packages/core"
   },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quiltt/quiltt-js/issues"
+  },
   "sideEffects": [],
   "type": "module",
   "exports": {
@@ -44,6 +47,9 @@
     "rimraf": "6.0.1",
     "typescript": "5.7.2"
   },
+  "tags": [
+    "quiltt"
+  ],
   "publishConfig": {
     "access": "public"
   }

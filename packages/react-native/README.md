@@ -9,20 +9,31 @@
 
 `@quiltt/react-native` expects `react`, `react-native`,`react-native-webview`, `base-64` and `react-native-url-polyfill` as peer dependencies.
 
+With `npm`:
+
 ```shell
 $ npm install base-64 react-native-webview react-native-url-polyfill
 $ npm install @quiltt/react-native
-# or
+```
+
+With `yarn`:
+
+```shell
 $ yarn add base-64 react-native-webview react-native-url-polyfill
 $ yarn add @quiltt/react-native
-# or
-# Please note that you will need to add `node-linker=hoisted` in `.npmrc` if you are using pnpm in expo app.`
+```
+
+With `pnpm`:
+
+```shell
+# Make sure to add `node-linker=hoisted` to your `.npmrc` when using pnpm in an Expo app.
 $ pnpm add base-64 react-native-webview react-native-url-polyfill
 $ pnpm add @quiltt/react-native
 ```
 
 ## Documentation
-For SDK documentation and more code examples, see the [React Native guide](https://www.quiltt.dev/connector/sdk/react-native).
+
+For full SDK documentation and more code examples, see the Connector [React Native guide](https://www.quiltt.dev/connector/sdk/react-native).
 
 ### QuilttConnector
 
@@ -35,23 +46,28 @@ Launch the [Quiltt Connector](https://www.quiltt.dev/connector) in a webview.
 ```tsx
 import { QuilttProvider } from '@quiltt/react'
 import { QuilttConnector } from '@quiltt/react-native'
+import type { ConnectorSDKCallbackMetadata } from '@quiltt/react'
 
 export const App = () => {
   // See: https://www.quiltt.dev/authentication/issuing-session-tokens
   const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
-  const oAuthRedirectUrl = 'quilttexample://open.reactnative.app'
 
-  const handleExitSuccess = (metadata) => {
-    console.log('Successfully created connection!', metadata)
+  // Use a universal link or deep link to redirect back to your app
+  const oauthRedirectUrl = 'https://myapp.com/my_universal_link'
+
+  const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
+    console.log('Successfully created connection!', {
+      connectionId: metadata.connectionId,
+    })
   }
 
   return (
     <QuilttProvider token={sessionToken}>
       <QuilttConnector
         connectorId="<CONNECTOR_ID>"
-        oAuthRedirectUrl={oAuthRedirectUrl}
+        oauthRedirectUrl={oauthRedirectUrl}
 
-        // See the JavaScript API docs for the full list of available callbacks
+        // See the JavaScript API docs for the full list of available callbacks...
         onExitSuccess={handleExitSuccess}
       />
     </QuilttProvider>
