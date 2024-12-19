@@ -2,10 +2,7 @@
   "name": "@quiltt/core",
   "version": "3.9.1",
   "description": "Javascript API client and utilities for Quiltt",
-  "keywords": [
-    "quiltt",
-    "typescript"
-  ],
+  "keywords": ["quiltt", "typescript"],
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
@@ -13,10 +10,7 @@
     "directory": "packages/core"
   },
   "license": "MIT",
-  "sideEffects": [
-    "./src/Storage/Local.ts",
-    "./src/api/graphql/links/SubscriptionLink.ts"
-  ],
+  "sideEffects": [],
   "type": "module",
   "exports": {
     ".": {
@@ -25,11 +19,7 @@
     }
   },
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "build": "bunchee",
     "clean": "rimraf .turbo dist",
@@ -39,10 +29,10 @@
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",
-    "@rails/actioncable": "^7.2.200",
+    "@rails/actioncable": "^7.2.201",
     "braces": "^3.0.3",
     "cross-fetch": "^4.0.0",
-    "graphql": "^16.9.0",
+    "graphql": "^16.10.0",
     "graphql-ruby-client": "^1.14.5"
   },
   "devDependencies": {
@@ -52,7 +42,7 @@
     "@types/react": "18.3.12",
     "bunchee": "5.6.1",
     "rimraf": "6.0.1",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   },
   "publishConfig": {
     "access": "public"

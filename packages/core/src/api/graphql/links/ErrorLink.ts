@@ -1,7 +1,7 @@
-import { GlobalStorage } from '@/storage'
-
-import { onError } from '@apollo/client/link/error/index.js'
 import type { ServerError } from '@apollo/client/core'
+import { onError } from '@apollo/client/link/error/index.js'
+
+import { GlobalStorage } from '@/storage'
 
 export const ErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {

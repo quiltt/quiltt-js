@@ -1,6 +1,6 @@
+import type { FetchResult, NextLink, Operation } from '@apollo/client/core'
 import { ApolloLink } from '@apollo/client/core/index.js'
 import { Observable } from '@apollo/client/utilities/index.js'
-import type { FetchResult, NextLink, Operation } from '@apollo/client/core'
 
 import { createConsumer } from '@rails/actioncable'
 import type { Consumer } from '@rails/actioncable'

@@ -18,11 +18,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
     "build": "pnpm run addApiKey && bunchee",
@@ -50,7 +46,7 @@
     "react-native-url-polyfill": "2.0.0",
     "react-native-webview": "13.12.5",
     "rimraf": "6.0.1",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   },
   "peerDependencies": {
     "base-64": "^1.0.0",

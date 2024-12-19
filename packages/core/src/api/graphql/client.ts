@@ -1,5 +1,5 @@
-import { ApolloClient, ApolloLink } from '@apollo/client/core/index.js'
 import type { ApolloClientOptions, Operation } from '@apollo/client/core'
+import { ApolloClient, ApolloLink } from '@apollo/client/core/index.js'
 
 import { debugging } from '../../configuration'
 import {
