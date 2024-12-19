@@ -9,6 +9,9 @@
     "directory": "packages/react-native"
   },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quiltt/quiltt-js/issues"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -55,6 +58,10 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-webview": ">=13.0.0"
   },
+  "tags": [
+    "quiltt",
+    "react-native"
+  ],
   "publishConfig": {
     "access": "public"
   }

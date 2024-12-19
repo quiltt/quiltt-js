@@ -10,6 +10,9 @@
     "directory": "packages/react"
   },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quiltt/quiltt-js/issues"
+  },
   "sideEffects": [],
   "type": "module",
   "exports": {
@@ -46,6 +49,10 @@
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
+  "tags": [
+    "quiltt",
+    "react"
+  ],
   "publishConfig": {
     "access": "public"
   }
