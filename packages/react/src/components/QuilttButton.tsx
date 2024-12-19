@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react'
+import type { MouseEvent, PropsWithChildren } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
@@ -11,7 +11,13 @@ type QuilttButtonProps<T extends AnyTag> = PropsWithChildren<
     connectorId: string
     connectionId?: string // For Reconnect Mode
     institution?: string // For Connect Mode
-  } & ConnectorSDKCallbacks
+    // Override the native onClick handler
+    onClick?: (event: MouseEvent<HTMLElement>) => void
+  } & Omit<ConnectorSDKCallbacks, 'onLoad'> & {
+      // Separate the SDK onLoad from the HTML onLoad
+      onLoad?: ConnectorSDKCallbacks['onLoad']
+      onHtmlLoad?: React.ReactEventHandler<HTMLElement>
+    }
 >
 
 export const QuilttButton = <T extends AnyTag = 'button'>({
@@ -26,6 +32,8 @@ export const QuilttButton = <T extends AnyTag = 'button'>({
   onExitSuccess,
   onExitAbort,
   onExitError,
+  onClick,
+  onHtmlLoad,
   children,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
@@ -43,8 +51,15 @@ export const QuilttButton = <T extends AnyTag = 'button'>({
 
   const Button = as || 'button'
 
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    // Call the user's onClick handler if provided
+    onClick?.(event)
+    // Then open the Quiltt connector
+    open()
+  }
+
   return (
-    <Button onClick={open} quiltt-connection={connectionId} {...props}>
+    <Button onClick={handleClick} onLoad={onHtmlLoad} quiltt-connection={connectionId} {...props}>
       {children}
     </Button>
   )
