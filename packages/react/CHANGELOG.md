@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.9.2
+
+### Patch Changes
+
+- [#312](https://github.com/quiltt/quiltt-js/pull/312) [`11ba6a3`](https://github.com/quiltt/quiltt-js/commit/11ba6a3af1975349a63640bb99ed0e34ffee3f1c) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update session handling in QuilttAuthProvider
+
+- Updated dependencies [[`11ba6a3`](https://github.com/quiltt/quiltt-js/commit/11ba6a3af1975349a63640bb99ed0e34ffee3f1c)]:
+  - @quiltt/core@3.9.2
+
 ## 3.9.1
 
 ### Patch Changes
