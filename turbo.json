@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["prebuild", "^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "ios/**", "android/**"]
     },
     "clean": {
       "cache": false,
