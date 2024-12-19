@@ -1,7 +1,7 @@
 {
   "name": "@quiltt/react",
   "version": "3.9.1",
-  "description": "React components and hooks for Quiltt Connector",
+  "description": "React Components and Hooks for Quiltt Connector",
   "keywords": ["quiltt", "quiltt-connector", "react", "typescript"],
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react#readme",
   "repository": {
