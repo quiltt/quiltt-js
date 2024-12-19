@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
 import { isDeepEqual } from '@/utils'
+import { describe, expect, it } from 'vitest'
 
 describe('isDeepEqual', () => {
   // Primitive types
