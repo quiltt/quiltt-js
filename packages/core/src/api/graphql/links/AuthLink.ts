@@ -1,5 +1,5 @@
-import { ApolloLink } from '@apollo/client/core/index.js'
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core'
+import { ApolloLink } from '@apollo/client/core/index.js'
 import type { Observable } from '@apollo/client/utilities'
 
 import { GlobalStorage } from '@/storage'
