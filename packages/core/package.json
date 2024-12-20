@@ -23,6 +23,7 @@
   },
   "types": "./dist/index.d.ts",
   "files": ["dist/**", "src/**", "CHANGELOG.md"],
+  "main": "dist/index.js",
   "scripts": {
     "build": "bunchee",
     "clean": "rimraf .turbo dist",
