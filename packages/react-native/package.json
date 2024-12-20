@@ -22,6 +22,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": ["dist/**", "src/**", "CHANGELOG.md"],
+  "main": "dist/index.js",
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
     "build": "pnpm run addApiKey && bunchee",
