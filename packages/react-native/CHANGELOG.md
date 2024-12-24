@@ -1,5 +1,19 @@
 # @quiltt/react-native
 
+## 3.9.2
+
+### Patch Changes
+
+- [#316](https://github.com/quiltt/quiltt-js/pull/316) [`de5d43e`](https://github.com/quiltt/quiltt-js/commit/de5d43e664a8bbb04595816718f5c645a9c3df27) Thanks [@rubendinho](https://github.com/rubendinho)! - Updated `main` param to `package.json` to improve analyzing the package.
+
+- [#313](https://github.com/quiltt/quiltt-js/pull/313) [`3b789c9`](https://github.com/quiltt/quiltt-js/commit/3b789c9413ab2f9bdda965248ed7a8ccaf270172) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update typings for QuilttButton onLoad handler
+
+- [#312](https://github.com/quiltt/quiltt-js/pull/312) [`11ba6a3`](https://github.com/quiltt/quiltt-js/commit/11ba6a3af1975349a63640bb99ed0e34ffee3f1c) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update session handling in QuilttAuthProvider
+
+- Updated dependencies [[`de5d43e`](https://github.com/quiltt/quiltt-js/commit/de5d43e664a8bbb04595816718f5c645a9c3df27), [`3b789c9`](https://github.com/quiltt/quiltt-js/commit/3b789c9413ab2f9bdda965248ed7a8ccaf270172), [`11ba6a3`](https://github.com/quiltt/quiltt-js/commit/11ba6a3af1975349a63640bb99ed0e34ffee3f1c)]:
+  - @quiltt/react@3.9.2
+  - @quiltt/core@3.9.2
+
 ## 3.9.1
 
 ### Patch Changes
