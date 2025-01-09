@@ -28,7 +28,7 @@
     "@changesets/cli": "2.27.10",
     "@testing-library/react": "16.1.0",
     "@testing-library/react-native": "12.9.0",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.5",
     "@vitejs/plugin-react": "4.3.3",
     "@vitest/coverage-v8": "2.0.5",
     "check-dependency-version-consistency": "5.0.0",
@@ -39,5 +39,5 @@
     "vitest": "2.0.5",
     "vitest-react-native": "0.1.5"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.3"
 }

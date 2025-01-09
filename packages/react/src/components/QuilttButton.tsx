@@ -1,12 +1,12 @@
-import type { MouseEvent, PropsWithChildren } from 'react'
+import type { ElementType, MouseEvent, PropsWithChildren } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
 import { useQuilttConnector } from '../hooks/useQuilttConnector'
-import type { AnyTag, PropsOf } from '../types'
+import type { PropsOf } from '../types'
 
 // Base button props without callback-specific properties
-type BaseQuilttButtonProps<T extends AnyTag> = {
+type BaseQuilttButtonProps<T extends ElementType> = {
   as?: T
   connectorId: string
   connectionId?: string // For Reconnect Mode
@@ -23,11 +23,11 @@ type QuilttCallbackProps = Omit<ConnectorSDKCallbacks, 'onLoad'> & {
 }
 
 // Combined type for the full component
-type QuilttButtonProps<T extends AnyTag> = PropsWithChildren<
+type QuilttButtonProps<T extends ElementType> = PropsWithChildren<
   BaseQuilttButtonProps<T> & QuilttCallbackProps
 >
 
-export const QuilttButton = <T extends AnyTag = 'button'>({
+export const QuilttButton = <T extends ElementType = 'button'>({
   as,
   connectorId,
   connectionId,

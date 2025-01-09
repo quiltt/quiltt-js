@@ -1,6 +1,4 @@
-import type { Component, ComponentType, FC } from 'react'
-
-export type AnyTag = string | FC<any> | (new (props: any) => Component)
+import type { ComponentType, JSX } from 'react'
 
 export type PropsOf<Tag> = Tag extends keyof JSX.IntrinsicElements
   ? JSX.IntrinsicElements[Tag]
