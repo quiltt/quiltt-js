@@ -1,5 +1,6 @@
-import type { ApolloClientOptions, Operation } from '@apollo/client/core'
+import type { ApolloClientOptions, NormalizedCacheObject, Operation } from '@apollo/client/core'
 import { ApolloClient, ApolloLink } from '@apollo/client/core/index.js'
+import type { DefinitionNode, OperationDefinitionNode } from 'graphql'
 
 import { debugging } from '../../configuration'
 import {
@@ -15,14 +16,21 @@ import {
 
 export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'>
 
-export class QuilttClient<T> extends ApolloClient<T> {
-  constructor(options: QuilttClientOptions<T>) {
-    if (!options.connectToDevTools) options.connectToDevTools = debugging
+export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
+  constructor(options: QuilttClientOptions<NormalizedCacheObject>) {
+    const finalOptions = {
+      ...options,
+      devtools: {
+        enabled: options.devtools?.enabled ?? debugging,
+      },
+    }
+
+    const isOperationDefinition = (def: DefinitionNode): def is OperationDefinitionNode =>
+      def.kind === 'OperationDefinition'
 
     const isSubscriptionOperation = (operation: Operation) => {
       return operation.query.definitions.some(
-        // @ts-ignore
-        ({ kind, operation }) => kind === 'OperationDefinition' && operation === 'subscription'
+        (definition) => isOperationDefinition(definition) && definition.operation === 'subscription'
       )
     }
 
@@ -38,8 +46,8 @@ export class QuilttClient<T> extends ApolloClient<T> {
       .split(isBatchable, BatchHttpLink, HttpLink)
 
     super({
-      link: quilttLink,
-      ...options,
+      link: quilttLink as ApolloLink,
+      ...finalOptions,
     })
   }
 }

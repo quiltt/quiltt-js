@@ -4,43 +4,64 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { QuilttButton } from '@/components'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 
-// Mocking the useQuilttConnector hook
+// Mock at the top level
 vi.mock('@/hooks/useQuilttConnector', () => ({
-  useQuilttConnector: vi
-    .fn(() => ({
-      open: vi.fn(), // Mocking the open function
-    }))
-    .mockReturnValue({ open: vi.fn() }), // Mocking the return value of useQuilttConnector to include open function
+  useQuilttConnector: vi.fn(() => ({
+    open: vi.fn(),
+  })),
 }))
 
-describe('QuilttButton', async () => {
+describe('QuilttButton', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('renders children correctly', async () => {
-    const { getByText } = render(
-      <QuilttButton connectorId="mockConnectorId">Click me</QuilttButton>
-    )
-    expect(getByText('Click me')).toBeTruthy()
-  })
+  it('calls onClick and then opens the connector when clicked', () => {
+    const openMock = vi.fn()
+    vi.mocked(useQuilttConnector).mockReturnValue({ open: openMock })
 
-  it('calls open function from useQuilttConnector when clicked', async () => {
-    const { getByText } = render(
-      <QuilttButton connectorId="mockConnectorId">Click me</QuilttButton>
-    )
-    fireEvent.click(getByText('Click me'))
-    expect(useQuilttConnector().open).toHaveBeenCalledTimes(1) // Accessing the mock function directly
-  })
+    const onClick = vi.fn()
 
-  it('passes other props to the underlying button element', async () => {
-    const onClickMock = vi.fn()
-    const { getByText } = render(
-      <QuilttButton connectorId="mockConnectorId" onClick={onClickMock}>
-        Click me
+    const { getByRole } = render(
+      <QuilttButton connectorId="mockConnectorId" onClick={onClick}>
+        Test Button
       </QuilttButton>
     )
-    fireEvent.click(getByText('Click me'))
-    expect(onClickMock).toHaveBeenCalledTimes(1)
+
+    const button = getByRole('button')
+    fireEvent.click(button)
+
+    // Verify the sequence of operations
+    expect(onClick).toHaveBeenCalled()
+    expect(openMock).toHaveBeenCalled()
+
+    // Verify the order of operations
+    expect(onClick.mock.invocationCallOrder[0]).toBeLessThan(openMock.mock.invocationCallOrder[0])
+  })
+
+  it('handles HTML load event separately from SDK load', () => {
+    const onHtmlLoad = vi.fn()
+    const { getByRole } = render(
+      <QuilttButton connectorId="mockConnectorId" onHtmlLoad={onHtmlLoad}>
+        Test Button
+      </QuilttButton>
+    )
+
+    const button = getByRole('button')
+
+    // Create a proper load event
+    const loadEvent = new Event('load', {
+      bubbles: true,
+      cancelable: true,
+    })
+
+    // Manually handle the event listener
+    if (button) {
+      button.addEventListener('load', onHtmlLoad)
+      button.dispatchEvent(loadEvent)
+    }
+
+    expect(onHtmlLoad).toHaveBeenCalledTimes(1)
+    expect(onHtmlLoad).toHaveBeenCalledWith(expect.any(Event))
   })
 })

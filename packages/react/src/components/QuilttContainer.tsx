@@ -1,11 +1,11 @@
-import type { PropsWithChildren } from 'react'
+import type { ElementType, PropsWithChildren } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
 import { useQuilttConnector } from '../hooks/useQuilttConnector'
-import type { AnyTag, PropsOf } from '../types'
+import type { PropsOf } from '../types'
 
-type QuilttContainerProps<T extends AnyTag> = PropsWithChildren<
+type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
   {
     as?: T
     connectorId: string
@@ -17,7 +17,7 @@ type QuilttContainerProps<T extends AnyTag> = PropsWithChildren<
  * QuilttContainer uses globally shared callbacks. It's recommended you only use
  * one Container at a time.
  */
-export const QuilttContainer = <T extends AnyTag = 'div'>({
+export const QuilttContainer = <T extends ElementType = 'div'>({
   as,
   connectorId,
   connectionId,
