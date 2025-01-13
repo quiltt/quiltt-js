@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.9.3
+
+### Patch Changes
+
+- [#319](https://github.com/quiltt/quiltt-js/pull/319) [`b97a814`](https://github.com/quiltt/quiltt-js/commit/b97a814b87b8bfec9f8b4bb155e1140724e441eb) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Improve typings for query client and react components
+
+- Updated dependencies [[`b97a814`](https://github.com/quiltt/quiltt-js/commit/b97a814b87b8bfec9f8b4bb155e1140724e441eb)]:
+  - @quiltt/core@3.9.3
+
 ## 3.9.2
 
 ### Patch Changes

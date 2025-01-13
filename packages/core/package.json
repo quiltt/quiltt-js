@@ -1,8 +1,11 @@
 {
   "name": "@quiltt/core",
-  "version": "3.9.2",
+  "version": "3.9.3",
   "description": "Javascript API client and utilities for Quiltt",
-  "keywords": ["quiltt", "typescript"],
+  "keywords": [
+    "quiltt",
+    "typescript"
+  ],
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
@@ -22,7 +25,11 @@
     }
   },
   "types": "./dist/index.d.ts",
-  "files": ["dist/**", "src/**", "CHANGELOG.md"],
+  "files": [
+    "dist/**",
+    "src/**",
+    "CHANGELOG.md"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "build": "bunchee",
@@ -48,7 +55,9 @@
     "rimraf": "6.0.1",
     "typescript": "5.7.3"
   },
-  "tags": ["quiltt"],
+  "tags": [
+    "quiltt"
+  ],
   "publishConfig": {
     "access": "public"
   }
