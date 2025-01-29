@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.9.4
+
+### Patch Changes
+
+- [#321](https://github.com/quiltt/quiltt-js/pull/321) [`642ec0f`](https://github.com/quiltt/quiltt-js/commit/642ec0f34f2506672993b82785b5b5ddb5c69069) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Bugfix: iOS WebView header drag behavior and scrolling
+
 ## 3.9.3
 
 ### Patch Changes
