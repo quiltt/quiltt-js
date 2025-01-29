@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/react-native/issues/16434
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
@@ -82,6 +83,26 @@ const QuilttConnector = ({
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
   const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
+
+  // Script to disable scrolling on header
+  const disableHeaderScrollScript = `
+    (function() {
+      const header = document.querySelector('header');
+      if (header) {
+        header.style.position = 'fixed';
+        header.style.top = '0';
+        header.style.left = '0';
+        header.style.right = '0';
+        header.style.zIndex = '1000';
+      }
+    })();
+  `
+
+  const onLoadEnd = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      webViewRef.current?.injectJavaScript(disableHeaderScrollScript)
+    }
+  }, [])
 
   const encodedOAuthRedirectUrl = useMemo(
     () => encodeURIComponent(oauthRedirectUrl),
@@ -227,9 +248,11 @@ const QuilttConnector = ({
         ref={webViewRef}
         // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
         // All whitelists are now handled in requestHandler, handleQuilttEvent and handleOAuthUrl
+        style={styles.webview}
         originWhitelist={['*']}
         source={{ uri: connectorUrl }}
         onShouldStartLoadWithRequest={requestHandler}
+        onLoadEnd={onLoadEnd}
         javaScriptEnabled
         domStorageEnabled // To enable localStorage in Android webview
         webviewDebuggingEnabled
@@ -237,6 +260,8 @@ const QuilttConnector = ({
         scrollEnabled={true} // Enables scrolling within the WebView
         automaticallyAdjustContentInsets={false} // Disables automatic padding adjustments based on navigation bars/safe areas
         contentInsetAdjustmentBehavior="never" // Controls how the WebView adjusts its content layout relative to safe areas and system UI
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         {...(Platform.OS === 'ios'
           ? {
               decelerationRate: 'normal',
@@ -245,6 +270,8 @@ const QuilttConnector = ({
               allowsInlineMediaPlayback: true,
               allowsBackForwardNavigationGestures: false,
               startInLoadingState: true,
+              scrollEventThrottle: 16, // Optimize scroll performance
+              overScrollMode: 'never', // Prevent overscroll effect
             }
           : {
               androidLayerType: 'hardware',
@@ -255,6 +282,18 @@ const QuilttConnector = ({
     </AndroidSafeAreaView>
   )
 }
+
+// Add styles for the WebView container
+const styles = StyleSheet.create({
+  webviewContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  webview: {
+    flex: 1,
+    overflow: 'hidden', // Prevent content from overflowing
+  },
+})
 
 QuilttConnector.displayName = 'QuilttConnector'
 
