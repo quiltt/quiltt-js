@@ -4,7 +4,7 @@ import type { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
 import { JsonWebTokenParse } from '@quiltt/core'
 import type { PrivateClaims } from '@quiltt/core'
 
-import type { SetSession } from '../useSession'
+import type { SetSession } from '@/hooks/useSession'
 
 export type ImportSession = (token: string) => Promise<boolean>
 

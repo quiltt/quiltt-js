@@ -2,7 +2,7 @@
 import type { Notice, NoticeTransportPayload } from '@honeybadger-io/core/build/src/types'
 import { generateStackTrace, getCauses, makeBacktrace } from '@honeybadger-io/core/build/src/util'
 
-import { version } from '../../version'
+import { version } from '@/version'
 import { ErrorReporterConfig } from './ErrorReporterConfig'
 
 const notifier = {

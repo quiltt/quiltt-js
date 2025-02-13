@@ -1,8 +1,7 @@
-import type { Maybe } from '../types'
-
-import type { Observer } from '../Observable'
-import { LocalStorage } from './Local'
-import { MemoryStorage } from './Memory'
+import type { Observer } from '@/Observable'
+import { LocalStorage } from '@/storage/Local'
+import { MemoryStorage } from '@/storage/Memory'
+import type { Maybe } from '@/types'
 
 /**
  * This is wraps both local and memory storage to create a unified interface, that

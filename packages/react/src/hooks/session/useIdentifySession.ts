@@ -8,7 +8,7 @@ import type {
   UsernamePayload,
 } from '@quiltt/core'
 
-import type { SetSession } from '../useSession'
+import type { SetSession } from '@/hooks/useSession'
 
 type IdentifySessionCallbacks = {
   onSuccess?: () => unknown

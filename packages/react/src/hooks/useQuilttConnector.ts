@@ -3,16 +3,15 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { cdnBase } from '@quiltt/core'
-
 import type {
   ConnectorSDK,
   ConnectorSDKConnector,
   ConnectorSDKConnectorOptions,
 } from '@quiltt/core'
 
-import { version } from '../version'
-import { useQuilttSession } from './useQuilttSession'
-import { useScript } from './useScript'
+import { useQuilttSession } from '@/hooks/useQuilttSession'
+import { useScript } from '@/hooks/useScript'
+import { version } from '@/version'
 
 declare const Quiltt: ConnectorSDK
 
