@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.9.5
+
+### Patch Changes
+
+- [#325](https://github.com/quiltt/quiltt-js/pull/325) [`62b7323`](https://github.com/quiltt/quiltt-js/commit/62b732371a8d57242170e0ae838baa4ca8e78059) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Improve useSession and useStorage hooks
+
+- Updated dependencies [[`62b7323`](https://github.com/quiltt/quiltt-js/commit/62b732371a8d57242170e0ae838baa4ca8e78059)]:
+  - @quiltt/core@3.9.5
+
 ## 3.9.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@quiltt/react-native",
-  "version": "3.9.4",
+  "version": "3.9.5",
   "description": "React Native Components for Quiltt Connector",
   "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/react-native#readme",
   "repository": {
@@ -21,7 +21,11 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist/**", "src/**", "CHANGELOG.md"],
+  "files": [
+    "dist/**",
+    "src/**",
+    "CHANGELOG.md"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
@@ -59,7 +63,10 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-webview": ">=13.0.0"
   },
-  "tags": ["quiltt", "react-native"],
+  "tags": [
+    "quiltt",
+    "react-native"
+  ],
   "publishConfig": {
     "access": "public"
   }
