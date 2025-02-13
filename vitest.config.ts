@@ -1,10 +1,27 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  plugins: [react()],
   test: {
+    workspace: ['packages/*'],
+
+    // Default configurations that packages can inherit
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        singleThread: true,
+      },
+    },
+    environment: 'node',
+    isolate: false,
+    includeTaskLocation: true,
+    globals: true,
+    chaiConfig: {
+      truncateThreshold: 80,
+    },
+
+    // Coverage configuration (only available at root level)
     coverage: {
+      provider: 'istanbul',
       reporter: ['json', 'lcov'],
       include: ['**/src/**/*.ts', '**/src/**/*.tsx'],
       exclude: [
@@ -21,7 +38,7 @@ export default defineConfig({
         '**/*.test.tsx',
         '**/example/**/*',
         '**/examples/**/*',
-        '**/browser.ts', // Ignored as we are only exporting types and interfaces for the browser
+        '**/browser.ts', // Only exporting types and interfaces for the browser
         '**/src/api/graphql/links/actioncable/**', // ActionCable files
       ],
     },

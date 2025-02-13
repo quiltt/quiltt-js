@@ -34,7 +34,7 @@ export class LocalStorage<T> {
 
     try {
       const state = window.localStorage.getItem(`quiltt.${key}`)
-      return state ? JSON.parse(state) : state
+      return state ? (JSON.parse(state) as T) : null
     } catch (error) {
       console.warn(`localStorage Error: "quiltt.${key}"`, error)
       return undefined

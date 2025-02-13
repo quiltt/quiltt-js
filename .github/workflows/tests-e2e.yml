@@ -83,20 +83,24 @@ jobs:
 
       - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}
         name: Upload Error Screenshot
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: error_screenshots
+          name: error_screenshots_${{ github.sha }} # Make name unique per commit
           path: |
             ${{github.workspace}}/**/cypress/screenshots
             ${{github.workspace}}/**/cypress/videos
           retention-days: 3
+          if-no-files-found: warn  # Add warning if no files found
+          compression-level: 6  # Balance between size and speed
 
       # - if: ${{ failure() }} && ${{ matrix.name == 'Test Expo App' }}
       #   name: Upload iOS Test Artifacts # Enable this when running Detox tests on Expo
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: ios_test_artifacts
+      #     name: ios_test_artifacts_${{ github.sha }} # Make name unique per commit
       #     path: |
       #       ${{ matrix.directory }}/artifacts
       #       ${{ matrix.directory }}/ios/build/logs
       #     retention-days: 3
+      #     if-no-files-found: warn  # Add warning if no files found
+      #     compression-level: 6  # Balance between size and speed

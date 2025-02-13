@@ -1,7 +1,9 @@
 import { act, renderHook } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useQuilttSession } from '@/hooks'
+import type { QuilttJWT } from '@quiltt/core'
+
+import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useSession } from '@/hooks/useSession'
 
 // Mock dependencies
@@ -9,9 +11,8 @@ vi.mock('@/hooks/useQuilttSettings', () => ({
   useQuilttSettings: vi.fn().mockReturnValue({ clientId: 'test-client-id' }),
 }))
 
-// Correcting useSession mock to align with the test expectations
 vi.mock('@/hooks/useSession', () => ({
-  useSession: vi.fn().mockReturnValue([null, vi.fn()]), // Assume session is null initially
+  useSession: vi.fn(),
 }))
 
 vi.mock('@/hooks/session', () => ({
@@ -28,25 +29,54 @@ vi.mock('@quiltt/core', () => ({
 }))
 
 describe('useQuilttSession', () => {
-  it('initializes correctly', async () => {
-    const { result } = renderHook(() => useQuilttSession())
-    expect(result.current.session).toBeNull() // Assuming the initial state is null based on the mock
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('forgets session correctly when token matches', async () => {
-    // Setup a specific session state for this test
+  it('initializes with undefined session if no token is stored', () => {
     const mockSetSession = vi.fn()
-    // @ts-expect-error
-    vi.mocked(useSession).mockReturnValue([{ token: 'test-token', claims: {} }, mockSetSession])
+    const mockSession: QuilttJWT | undefined = undefined
+    vi.mocked(useSession).mockReturnValue([mockSession, mockSetSession])
+
+    const { result } = renderHook(() => useQuilttSession())
+    expect(result.current.session).toBeUndefined()
+  })
+
+  it('clears the session upon expiration', async () => {
+    const mockSetSession = vi.fn()
+    const expiredSession: QuilttJWT = {
+      token: 'mock.token.value',
+      claims: {
+        exp: Math.floor(Date.now() / 1000) - 3600, // Expired 1 hour ago
+        iat: Date.now(),
+        nbf: 1,
+        iss: 'issuer',
+        sub: 'subject',
+        aud: '',
+        jti: '',
+        rol: 'manager',
+        cid: '',
+        oid: '',
+        eid: '',
+        aid: '',
+        ver: 1,
+      },
+    }
+
+    // First return the expired session, then undefined after clearing
+    vi.mocked(useSession).mockReturnValue([expiredSession, mockSetSession])
 
     const { result } = renderHook(() => useQuilttSession())
 
+    // Initially the expired session is returned
+    expect(result.current.session).toEqual(expiredSession)
+
+    // When trying to forget the session
     await act(async () => {
-      await result.current.forgetSession('test-token')
+      await result.current.forgetSession(expiredSession.token)
     })
 
+    // Verify setSession was called with null
     expect(mockSetSession).toHaveBeenCalledWith(null)
   })
-
-  // Additional test cases can be implemented here
 })

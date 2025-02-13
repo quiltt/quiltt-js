@@ -1,36 +1,22 @@
 import { renderHook } from '@testing-library/react'
-import { useContext } from 'react'
-import { describe, expect, it, vi } from 'vitest'
+import type { PropsWithChildren } from 'react'
+import { describe, expect, it } from 'vitest'
 
-import { QuilttSettings, useQuilttSettings } from '@/hooks'
-
-// Mock React's useContext to control the returned context value
-vi.mock('react', async () => {
-  const originalReact = await vi.importActual('react') // Import the actual React module
-  return {
-    ...originalReact, // Spread all of React's exports to avoid overwriting non-mocked functions
-    useContext: vi.fn(), // Mock useContext specifically
-  }
-})
+import { useQuilttSettings } from '@/hooks/useQuilttSettings'
+import { QuilttSettingsProvider } from '@/providers/QuilttSettingsProvider'
 
 describe('useQuilttSettings', () => {
-  it('returns the context value', async () => {
+  it('returns the context value', () => {
     const expectedClientId = 'test-client-id'
-    // Setup useContext to return a specific value for this test
-    vi.mocked(useContext).mockReturnValue({ clientId: expectedClientId })
 
-    // Render the hook and test the returned value
+    const Wrapper = ({ children }: PropsWithChildren) => (
+      <QuilttSettingsProvider clientId={expectedClientId}>{children}</QuilttSettingsProvider>
+    )
+
     const { result } = renderHook(() => useQuilttSettings(), {
-      // Wrap the hook with the context provider to provide a value
-      wrapper: ({ children }) => (
-        <QuilttSettings.Provider value={{ clientId: expectedClientId }}>
-          {children}
-        </QuilttSettings.Provider>
-      ),
+      wrapper: Wrapper,
     })
 
     expect(result.current.clientId).toBe(expectedClientId)
   })
-
-  // Add more tests as necessary
 })

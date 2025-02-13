@@ -1,7 +1,10 @@
 import { renderHook } from '@testing-library/react'
-import { type Mock, describe, expect, it, vi } from 'vitest'
+import type { PropsWithChildren } from 'react'
+import { describe, expect, it, vi } from 'vitest'
+import type { Mock } from 'vitest'
 
-import { useQuilttConnector } from '@/hooks'
+import { useQuilttConnector } from '@/hooks/useQuilttConnector'
+import { QuilttSettingsProvider } from '@/providers/QuilttSettingsProvider'
 
 // Mock the entire @quiltt/core module
 vi.mock('@quiltt/core', async () => {
@@ -38,18 +41,24 @@ vi.mock('@quiltt/core', async () => {
 })
 
 describe('useQuilttConnector', () => {
+  // Create a wrapper component that provides the necessary context
+  const Wrapper = ({ children }: PropsWithChildren) => (
+    <QuilttSettingsProvider clientId="test-client-id">{children}</QuilttSettingsProvider>
+  )
+
   it('should handle authentication and connection when Quiltt is available', async () => {
-    const { result } = renderHook(() => useQuilttConnector('mockConnectorId'))
-    // Assertions or logic to test the hook
+    const { result } = renderHook(() => useQuilttConnector('mockConnectorId'), {
+      wrapper: Wrapper,
+    })
     expect(result.current.open).toBeDefined()
   })
 
   it('should throw an error when attempting to open without a connector ID', async () => {
-    const { result } = renderHook(() => useQuilttConnector())
+    const { result } = renderHook(() => useQuilttConnector(), {
+      wrapper: Wrapper,
+    })
     expect(() => result.current.open()).toThrowError(
       'Must provide `connectorId` to `open` Quiltt Connector with Method Call'
     )
   })
-
-  // TODO: Add more test cases as needed
 })

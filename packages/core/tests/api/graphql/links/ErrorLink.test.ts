@@ -1,5 +1,6 @@
-import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client'
 
 import ErrorLink from '@/api/graphql/links/ErrorLink'
 

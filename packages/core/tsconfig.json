@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]
@@ -12,6 +12,6 @@
     "**/*.cjs",
     "**/*.json",
     "**/*.config.js",
-    "vitest.config.js"
+    "vitest.config.ts"
   ]
 }

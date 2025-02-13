@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
@@ -14,7 +14,7 @@
     "**/*.cjs",
     "**/*.json",
     "declarations.d.ts",
-    "vitest.config.js"
+    "vitest.config.ts"
   ],
   "exclude": ["example/**/*"]
 }

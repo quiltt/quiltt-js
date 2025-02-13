@@ -1,12 +1,11 @@
-/// <reference types="vitest" />
-import { defineConfig } from 'vitest/config'
+import { defineProject } from 'vitest/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import reactNative from 'vitest-react-native'
 
-export default defineConfig({
+export default defineProject({
+  plugins: [reactNative(), tsconfigPaths()],
   test: {
-    setupFiles: ['./setupTests.tsx'],
-    globals: true,
+    setupFiles: ['./vitest.setup.tsx'],
     mockReset: true,
     clearMocks: true,
     restoreMocks: true,
@@ -17,5 +16,4 @@ export default defineConfig({
       },
     },
   },
-  plugins: [reactNative(), tsconfigPaths()],
 })

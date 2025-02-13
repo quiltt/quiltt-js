@@ -1,7 +1,8 @@
 import { render, waitFor } from '@testing-library/react-native'
-import { Linking, Platform } from 'react-native'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
+
+import { Linking, Platform } from 'react-native'
 
 import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
 

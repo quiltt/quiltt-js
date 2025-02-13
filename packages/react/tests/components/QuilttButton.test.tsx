@@ -41,13 +41,15 @@ describe('QuilttButton', () => {
 
   it('handles HTML load event separately from SDK load', () => {
     const onHtmlLoad = vi.fn()
-    const { getByRole } = render(
+    const { container } = render(
       <QuilttButton connectorId="mockConnectorId" onHtmlLoad={onHtmlLoad}>
         Test Button
       </QuilttButton>
     )
 
-    const button = getByRole('button')
+    // Get the button directly from the container
+    const button = container.querySelector('button')
+    expect(button).toBeTruthy()
 
     // Create a proper load event
     const loadEvent = new Event('load', {
