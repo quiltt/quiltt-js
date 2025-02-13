@@ -11,7 +11,7 @@ export const QuilttSettings = createContext<QuilttSettingsContext>({})
 export const useQuilttSettings = () => {
   const settings = useContext(QuilttSettings)
 
-  return { ...settings }
+  return settings
 }
 
 export default useQuilttSettings
