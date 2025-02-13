@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import type { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
 
-import type { SetSession } from '../useSession'
+import type { SetSession } from '@/hooks/useSession'
 
 export type RevokeSession = () => Promise<void>
 

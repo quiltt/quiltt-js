@@ -29,10 +29,8 @@ export const useStorage = <T>(
   initialState?: Maybe<T>
 ): [Maybe<T> | undefined, Dispatch<SetStateAction<Maybe<T> | undefined>>] => {
   const getStorage = useCallback(() => {
-    let state: Maybe<T>
-
-    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-    if ((state = GlobalStorage.get(key)) !== undefined) {
+    const state = GlobalStorage.get(key)
+    if (state !== undefined) {
       return state
     }
 
@@ -44,29 +42,33 @@ export const useStorage = <T>(
   const setStorage = useCallback(
     (nextState: Maybe<T> | SetStateAction<Maybe<T> | undefined>) => {
       const newState = nextState instanceof Function ? nextState(hookState) : nextState
-
       if (hookState !== newState) {
         GlobalStorage.set(key, newState)
+        // Immediately update hook state as well
+        setHookState(newState)
       }
     },
     [key, hookState]
   )
 
-  /**
-   * The empty dependency array ensures that the effect runs only once when the component mounts
-   * and doesn't re-run unnecessarily on subsequent renders because it doesn't depend on any
-   * props or state variables that could change during the component's lifetime.
-   *
-   * Use an empty dependency array to avoid unnecessary re-renders.
-   */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    GlobalStorage.subscribe(key, setHookState)
+    // Subscribe to storage changes and ensure state is synchronized
+    // Reruns when key or state changes to maintain consistency
+    GlobalStorage.subscribe(key, (newValue) => {
+      // Only update if the value is different from current state
+      if (newValue !== hookState) {
+        setHookState(newValue)
+      }
+    })
 
-    setHookState(getStorage())
+    // Initial sync
+    const initialValue = getStorage()
+    if (initialValue !== hookState) {
+      setHookState(initialValue)
+    }
 
     return () => GlobalStorage.unsubscribe(key, setHookState)
-  }, [])
+  }, [key, hookState, getStorage])
 
   return [hookState, setStorage]
 }

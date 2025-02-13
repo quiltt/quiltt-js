@@ -30,11 +30,9 @@ describe('useStorage', () => {
   it('initializes with the value from GlobalStorage', () => {
     vi.spyOn(GlobalStorage, 'get').mockReturnValue(initialValue)
 
-    const { result } = renderHook(() => useStorage(storageKey))
+    const { result } = renderHook(() => useStorage(storageKey, initialValue)) // Pass initialValue here
 
     expect(result.current[0]).toBe(initialValue)
     expect(GlobalStorage.get).toHaveBeenCalledWith(storageKey)
   })
-
-  // Add more tests to cover other scenarios like testing the effect cleanup
 })

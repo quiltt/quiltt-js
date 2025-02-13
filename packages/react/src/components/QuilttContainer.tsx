@@ -2,8 +2,8 @@ import type { ElementType, PropsWithChildren } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
-import { useQuilttConnector } from '../hooks/useQuilttConnector'
-import type { PropsOf } from '../types'
+import { useQuilttConnector } from '@/hooks/useQuilttConnector'
+import type { PropsOf } from '@/types'
 
 type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
   {

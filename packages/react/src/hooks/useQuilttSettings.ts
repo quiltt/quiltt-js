@@ -1,17 +1,13 @@
 'use client'
 
-import { createContext, useContext } from 'react'
+import { useContext } from 'react'
 
-type QuilttSettingsContext = {
-  clientId?: string | undefined
-}
-
-export const QuilttSettings = createContext<QuilttSettingsContext>({})
+import { QuilttSettings } from '@/contexts/QuilttSettings'
 
 export const useQuilttSettings = () => {
   const settings = useContext(QuilttSettings)
 
-  return { ...settings }
+  return settings
 }
 
 export default useQuilttSettings

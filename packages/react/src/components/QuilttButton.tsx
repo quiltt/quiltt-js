@@ -2,8 +2,8 @@ import type { ElementType, MouseEvent, PropsWithChildren } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
-import { useQuilttConnector } from '../hooks/useQuilttConnector'
-import type { PropsOf } from '../types'
+import { useQuilttConnector } from '@/hooks/useQuilttConnector'
+import type { PropsOf } from '@/types'
 
 // Base button props without callback-specific properties
 type BaseQuilttButtonProps<T extends ElementType> = {

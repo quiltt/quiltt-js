@@ -8,8 +8,8 @@ import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTyp
 import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 
-import { ErrorReporter, getErrorMessage } from '../utils'
-import { version } from '../version'
+import { ErrorReporter, getErrorMessage } from '@/utils'
+import { version } from '@/version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
