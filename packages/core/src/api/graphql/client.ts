@@ -2,7 +2,7 @@ import type { ApolloClientOptions, NormalizedCacheObject, Operation } from '@apo
 import { ApolloClient, ApolloLink } from '@apollo/client/core/index.js'
 import type { DefinitionNode, OperationDefinitionNode } from 'graphql'
 
-import { debugging } from '../../configuration'
+import { debugging } from '@/configuration'
 import {
   AuthLink,
   BatchHttpLink,

@@ -3,7 +3,7 @@
 import type { FC, PropsWithChildren } from 'react'
 import { useState } from 'react'
 
-import { QuilttSettings } from '@/hooks'
+import { QuilttSettings } from '@/contexts/QuilttSettings'
 
 type QuilttSettingsProviderProps = PropsWithChildren & {
   /** The Client ID to use for the client-side Auth API */

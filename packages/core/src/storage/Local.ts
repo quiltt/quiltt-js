@@ -1,5 +1,5 @@
-import type { Observer } from '../Observable'
-import type { Maybe } from '../types'
+import type { Observer } from '@/Observable'
+import type { Maybe } from '@/types'
 
 /**
  * An error and type safe wrapper for localStorage.

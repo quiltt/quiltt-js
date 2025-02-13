@@ -1,7 +1,6 @@
-import type { Maybe } from '../types'
-
-import { Observable } from '../Observable'
-import type { Observer } from '../Observable'
+import { Observable } from '@/Observable'
+import type { Observer } from '@/Observable'
+import type { Maybe } from '@/types'
 
 /**
  * This is designed to support effectively an in memory key value store singleton,
