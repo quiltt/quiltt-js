@@ -1,7 +1,8 @@
 import { useMemo, useRef } from 'react'
 
-import { StyleSheet } from 'react-native'
+import { Linking, StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
+import type { WebViewMessageEvent } from 'react-native-webview'
 
 import { useQuilttSession } from '@quiltt/react'
 import type { ConnectorSDKCallbacks } from '@quiltt/react'
@@ -47,6 +48,7 @@ const QuilttConnector = ({
 
   const preFlightCheck = usePreFlightCheck(connectorUrl)
 
+  // Get handlers from our hook
   const { onLoadEnd, requestHandler, handleWebViewMessage } = useWebViewHandlers({
     webViewRef,
     connectorId,
@@ -60,6 +62,39 @@ const QuilttConnector = ({
     onExitAbort,
     onExitError,
   })
+
+  const handleMessage = (event: WebViewMessageEvent) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data)
+
+      // Handle Navigate messages with popup action (from Finicity)
+      if (data.type === 'Navigate' && data.action === 'popup' && data.url) {
+        console.log('[Quiltt:OAuth] Received popup navigation request', data.url)
+
+        // Open the URL using the Linking API
+        Linking.canOpenURL(data.url)
+          .then((supported) => {
+            if (supported) {
+              console.log('[Quiltt:OAuth] Opening URL in system browser')
+              Linking.openURL(data.url)
+            } else {
+              console.error('[Quiltt:OAuth] Cannot open URL:', data.url)
+            }
+          })
+          .catch((err) => {
+            console.error('[Quiltt:OAuth] Error opening URL:', err)
+          })
+
+        return
+      }
+
+      // Pass to standard handler for other message types
+      handleWebViewMessage(event)
+    } catch (e) {
+      // If parsing fails, still try the standard handler
+      handleWebViewMessage(event)
+    }
+  }
 
   if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
   if (preFlightCheck.error) {
@@ -82,7 +117,7 @@ const QuilttConnector = ({
         source={{ uri: connectorUrl }}
         onShouldStartLoadWithRequest={requestHandler}
         onLoadEnd={onLoadEnd}
-        onMessage={handleWebViewMessage}
+        onMessage={handleMessage} // Use our enhanced message handler
         javaScriptEnabled
         domStorageEnabled // To enable localStorage in Android webview
         webviewDebuggingEnabled
