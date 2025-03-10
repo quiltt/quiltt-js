@@ -16,11 +16,13 @@ export default function ConnectorScreen() {
     router.canGoBack() ? router.back() : router.push('/(tabs)')
   }
 
+  console.log({ HTTPS_APP_LINK })
+
   return (
     <ThemedView style={styles.container} testID="quiltt-connector">
       <QuilttConnector
         connectorId={CONNECTOR_ID!}
-        oauthRedirectUrl={HTTPS_APP_LINK!}
+        oauthRedirectUrl="https://www.example.com"
         institution={INSTITUTION_SEARCH_TERM}
         onExitSuccess={(metadata: ConnectorSDKCallbackMetadata) => {
           console.log(metadata.connectionId)
