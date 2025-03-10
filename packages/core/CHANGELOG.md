@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 3.9.6
+
+### Patch Changes
+
+- [#328](https://github.com/quiltt/quiltt-js/pull/328) [`6b8751c`](https://github.com/quiltt/quiltt-js/commit/6b8751c981e9e74b347227bc9f427585d21870cd) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Updated QuilttConnector OAuth handler
+
 ## 3.9.5
 
 ### Patch Changes
