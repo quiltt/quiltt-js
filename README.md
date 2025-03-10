@@ -38,4 +38,3 @@ We welcome contributions from developers at all skill levels. Whether you're loo
 ## License
 
 This repository and all published packages are licensed under the terms of the MIT license. See the [LICENSE](LICENSE.md) file for more information.
-
