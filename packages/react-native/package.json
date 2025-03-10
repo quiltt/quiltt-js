@@ -21,11 +21,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "main": "dist/index.js",
   "scripts": {
     "addApiKey": "node scripts/addApiKey.js",
@@ -45,7 +41,7 @@
     "@biomejs/biome": "1.9.4",
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
-    "@types/node": "22.13.2",
+    "@types/node": "22.13.10",
     "@types/react": "18.3.12",
     "base-64": "1.0.0",
     "bunchee": "6.3.4",
@@ -63,10 +59,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-webview": ">=13.0.0"
   },
-  "tags": [
-    "quiltt",
-    "react-native"
-  ],
+  "tags": ["quiltt", "react-native"],
   "publishConfig": {
     "access": "public"
   }

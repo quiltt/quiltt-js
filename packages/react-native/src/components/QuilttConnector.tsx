@@ -8,7 +8,13 @@ import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTyp
 import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 
-import { ErrorReporter, getErrorMessage } from '@/utils'
+import {
+  ErrorReporter,
+  getErrorMessage,
+  isAlreadyEncoded,
+  normalizeUrlEncoding,
+  smartEncodeURIComponent,
+} from '@/utils'
 import { version } from '@/version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
@@ -54,9 +60,48 @@ export const checkConnectorUrl = async (
   }
 }
 
-export const handleOAuthUrl = (oauthUrl: URL | string) => {
-  console.log(`handleOAuthUrl - Opening URL - ${oauthUrl.toString()}`)
-  Linking.openURL(oauthUrl.toString())
+/**
+ * Handle opening OAuth URLs with proper encoding detection and normalization
+ */
+export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
+  try {
+    // Early return if oauthUrl is null or undefined
+    if (oauthUrl == null) {
+      console.error('handleOAuthUrl - Received null or undefined URL')
+      return
+    }
+
+    // Convert to string if it's a URL object
+    const urlString = oauthUrl.toString()
+
+    // Early return if the resulting string is empty
+    if (!urlString || urlString.trim() === '') {
+      console.error('handleOAuthUrl - Received empty URL string')
+      return
+    }
+
+    // Normalize the URL encoding
+    const normalizedUrl = normalizeUrlEncoding(urlString)
+
+    // Log the URL we're about to open
+    console.log(`handleOAuthUrl - Opening URL - ${normalizedUrl}`)
+
+    // Open the normalized URL
+    Linking.openURL(normalizedUrl)
+  } catch (error) {
+    console.error('Error handling OAuth URL:', error)
+
+    // Only try the fallback if oauthUrl is not null
+    if (oauthUrl != null) {
+      try {
+        const fallbackUrl = typeof oauthUrl === 'string' ? oauthUrl : oauthUrl.toString()
+        console.log(`handleOAuthUrl - Fallback opening URL - ${fallbackUrl}`)
+        Linking.openURL(fallbackUrl)
+      } catch (fallbackError) {
+        console.error('Failed even with fallback approach:', fallbackError)
+      }
+    }
+  }
 }
 
 type QuilttConnectorProps = {
@@ -104,18 +149,35 @@ const QuilttConnector = ({
     }
   }, [])
 
-  const encodedOAuthRedirectUrl = useMemo(
-    () => encodeURIComponent(oauthRedirectUrl),
-    [oauthRedirectUrl]
-  )
+  // Ensure oauthRedirectUrl is encoded properly - only once
+  const safeOAuthRedirectUrl = useMemo(() => {
+    console.log('Original oauthRedirectUrl:', oauthRedirectUrl)
+    return smartEncodeURIComponent(oauthRedirectUrl)
+  }, [oauthRedirectUrl])
 
   const connectorUrl = useMemo(() => {
     const url = new URL(`https://${connectorId}.quiltt.app`)
+
+    // For normal parameters, just append them directly
     url.searchParams.append('mode', 'webview')
-    url.searchParams.append('oauth_redirect_url', encodedOAuthRedirectUrl)
     url.searchParams.append('agent', `react-native-${version}`)
-    return url.toString()
-  }, [connectorId, encodedOAuthRedirectUrl])
+
+    // For the oauth_redirect_url, we need to be careful
+    // If it's already encoded, we need to decode it once to prevent
+    // the automatic encoding that happens with searchParams.append
+    if (isAlreadyEncoded(safeOAuthRedirectUrl)) {
+      const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
+      url.searchParams.append('oauth_redirect_url', decodedOnce)
+      console.log('Using decoded oauth_redirect_url:', decodedOnce)
+    } else {
+      url.searchParams.append('oauth_redirect_url', safeOAuthRedirectUrl)
+      console.log('Using original oauth_redirect_url:', safeOAuthRedirectUrl)
+    }
+
+    const finalUrl = url.toString()
+    console.log('Final connectorUrl:', finalUrl)
+    return finalUrl
+  }, [connectorId, safeOAuthRedirectUrl])
 
   useEffect(() => {
     if (preFlightCheck.checked) return
@@ -191,9 +253,25 @@ const QuilttConnector = ({
           case 'Authenticate':
             // TODO: handle Authenticate
             break
-          case 'OauthRequested':
-            handleOAuthUrl(new URL(url.searchParams.get('oauthUrl') as string))
+          case 'OauthRequested': {
+            // Log available search parameters
+            console.log('Available search params:', Array.from(url.searchParams.keys()))
+
+            // Now we should be getting the oauthUrl parameter directly
+            const oauthUrl = url.searchParams.get('oauthUrl')
+            console.log('Received oauthUrl:', oauthUrl)
+
+            // Check if oauthUrl exists before proceeding
+            if (oauthUrl) {
+              // Create a new URL from the normalized oauthUrl
+              handleOAuthUrl(oauthUrl)
+            } else {
+              // Log an error if oauthUrl is missing
+              console.error('OauthRequested event missing oauthUrl parameter')
+              console.log('All available params:', Object.fromEntries(url.searchParams.entries()))
+            }
             break
+          }
           default:
             console.log('unhandled event', url)
             break
