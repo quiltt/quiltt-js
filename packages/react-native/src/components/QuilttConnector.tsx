@@ -65,19 +65,17 @@ export const checkConnectorUrl = async (
  */
 export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
   try {
-    // Early return if oauthUrl is null or undefined
+    // Throw error if oauthUrl is null or undefined
     if (oauthUrl == null) {
-      console.error('handleOAuthUrl - Received null or undefined URL')
-      return
+      throw new Error('handleOAuthUrl - Received null or undefined URL')
     }
 
     // Convert to string if it's a URL object
     const urlString = oauthUrl.toString()
 
-    // Early return if the resulting string is empty
+    // Throw error if the resulting string is empty
     if (!urlString || urlString.trim() === '') {
-      console.error('handleOAuthUrl - Received empty URL string')
-      return
+      throw new Error('handleOAuthUrl - Received empty URL string')
     }
 
     // Normalize the URL encoding
