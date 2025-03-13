@@ -266,10 +266,15 @@ const QuilttConnector = ({
               // Check if the URL is already encoded before decoding
               // This is because different providers might pass the OAuth URL differently
               if (isAlreadyEncoded(oauthUrl)) {
-                // Decode it once to prevent double decoding
-                const decodedUrl = decodeURIComponent(oauthUrl)
-                console.log('Decoded encoded oauthUrl:', decodedUrl)
-                handleOAuthUrl(decodedUrl)
+                try {
+                  // Decode it once to prevent double decoding
+                  const decodedUrl = decodeURIComponent(oauthUrl)
+                  console.log('Decoded encoded oauthUrl:', decodedUrl)
+                  handleOAuthUrl(decodedUrl)
+                } catch (error) {
+                  console.error('Failed to decode oauthUrl:', error)
+                  // Handle the error appropriately, e.g., by not proceeding with the OAuth URL handling
+                }
               } else {
                 // Pass through as is if not encoded
                 console.log('Using non-encoded oauthUrl as is')
