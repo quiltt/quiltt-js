@@ -273,7 +273,9 @@ const QuilttConnector = ({
                   handleOAuthUrl(decodedUrl)
                 } catch (error) {
                   console.error('Failed to decode oauthUrl:', error)
-                  // Handle the error appropriately, e.g., by not proceeding with the OAuth URL handling
+                  // Fallback to using the original URL if decoding fails
+                  console.log('Using original oauthUrl as fallback')
+                  handleOAuthUrl(oauthUrl)
                 }
               } else {
                 // Pass through as is if not encoded
