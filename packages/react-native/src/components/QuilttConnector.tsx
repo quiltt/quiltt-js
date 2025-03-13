@@ -78,6 +78,8 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
       throw new Error('handleOAuthUrl - Received empty URL string')
     }
 
+    console.log(`handleOAuthUrl - Original URL - ${urlString}`)
+
     // Normalize the URL encoding
     const normalizedUrl = normalizeUrlEncoding(urlString)
 
@@ -261,8 +263,18 @@ const QuilttConnector = ({
 
             // Check if oauthUrl exists before proceeding
             if (oauthUrl) {
-              // Create a new URL from the normalized oauthUrl
-              handleOAuthUrl(oauthUrl)
+              // Check if the URL is already encoded before decoding
+              // This is because different providers might pass the OAuth URL differently
+              if (isAlreadyEncoded(oauthUrl)) {
+                // Decode it once to prevent double decoding
+                const decodedUrl = decodeURIComponent(oauthUrl)
+                console.log('Decoded encoded oauthUrl:', decodedUrl)
+                handleOAuthUrl(decodedUrl)
+              } else {
+                // Pass through as is if not encoded
+                console.log('Using non-encoded oauthUrl as is')
+                handleOAuthUrl(oauthUrl)
+              }
             } else {
               // Log an error if oauthUrl is missing
               console.error('OauthRequested event missing oauthUrl parameter')
