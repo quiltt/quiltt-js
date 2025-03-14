@@ -38,18 +38,17 @@ export const checkConnectorUrl = async (
     const response = await fetch(connectorUrl)
     if (!response.ok) {
       responseStatus = response.status
-      throw new Error(`The URL ${connectorUrl} is not routable.`)
+      throw new Error('Connector URL is not routable.')
     }
-    console.log(`The URL ${connectorUrl} is routable.`)
     return { checked: true }
   } catch (e) {
     error = e as Error
-    console.error(`An error occurred while checking the connector URL: ${error}`)
+    console.error('Failed to connect to connector URL')
 
     if (retryCount < PREFLIGHT_RETRY_COUNT) {
       const delay = 50 * 2 ** retryCount
       await new Promise((resolve) => setTimeout(resolve, delay))
-      console.log(`Retrying... Attempt number ${retryCount + 1}`)
+      console.log(`Retrying connection... Attempt ${retryCount + 1}`)
       return checkConnectorUrl(connectorUrl, retryCount + 1)
     }
     const errorMessage = getErrorMessage(responseStatus, error as Error)
@@ -67,7 +66,7 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
   try {
     // Throw error if oauthUrl is null or undefined
     if (oauthUrl == null) {
-      throw new Error('handleOAuthUrl - Received null or undefined URL')
+      throw new Error('OAuth URL missing')
     }
 
     // Convert to string if it's a URL object
@@ -75,30 +74,25 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
 
     // Throw error if the resulting string is empty
     if (!urlString || urlString.trim() === '') {
-      throw new Error('handleOAuthUrl - Received empty URL string')
+      throw new Error('Empty OAuth URL')
     }
-
-    console.log(`handleOAuthUrl - Original URL - ${urlString}`)
 
     // Normalize the URL encoding
     const normalizedUrl = normalizeUrlEncoding(urlString)
 
-    // Log the URL we're about to open
-    console.log(`handleOAuthUrl - Opening URL - ${normalizedUrl}`)
-
     // Open the normalized URL
     Linking.openURL(normalizedUrl)
   } catch (error) {
-    console.error('Error handling OAuth URL:', error)
+    console.error('OAuth URL handling error')
 
     // Only try the fallback if oauthUrl is not null
     if (oauthUrl != null) {
       try {
         const fallbackUrl = typeof oauthUrl === 'string' ? oauthUrl : oauthUrl.toString()
-        console.log(`handleOAuthUrl - Fallback opening URL - ${fallbackUrl}`)
+        console.log('Attempting fallback OAuth opening')
         Linking.openURL(fallbackUrl)
       } catch (fallbackError) {
-        console.error('Failed even with fallback approach:', fallbackError)
+        console.error('Fallback OAuth opening failed')
       }
     }
   }
@@ -151,7 +145,6 @@ const QuilttConnector = ({
 
   // Ensure oauthRedirectUrl is encoded properly - only once
   const safeOAuthRedirectUrl = useMemo(() => {
-    console.log('Original oauthRedirectUrl:', oauthRedirectUrl)
     return smartEncodeURIComponent(oauthRedirectUrl)
   }, [oauthRedirectUrl])
 
@@ -168,15 +161,11 @@ const QuilttConnector = ({
     if (isEncoded(safeOAuthRedirectUrl)) {
       const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
       url.searchParams.append('oauth_redirect_url', decodedOnce)
-      console.log('Using decoded oauth_redirect_url:', decodedOnce)
     } else {
       url.searchParams.append('oauth_redirect_url', safeOAuthRedirectUrl)
-      console.log('Using original oauth_redirect_url:', safeOAuthRedirectUrl)
     }
 
-    const finalUrl = url.toString()
-    console.log('Final connectorUrl:', finalUrl)
-    return finalUrl
+    return url.toString()
   }, [connectorId, safeOAuthRedirectUrl])
 
   useEffect(() => {
@@ -228,69 +217,59 @@ const QuilttConnector = ({
         const eventType = url.host
         switch (eventType) {
           case 'Load':
+            console.log('Event: Load')
             initInjectedJavaScript()
             onEvent?.(ConnectorSDKEventType.Load, metadata)
             onLoad?.(metadata)
             break
           case 'ExitAbort':
+            console.log('Event: ExitAbort')
             clearLocalStorage()
             onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
             onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
             onExitAbort?.(metadata)
             break
           case 'ExitError':
+            console.log('Event: ExitError')
             clearLocalStorage()
             onEvent?.(ConnectorSDKEventType.ExitError, metadata)
             onExit?.(ConnectorSDKEventType.ExitError, metadata)
             onExitError?.(metadata)
             break
           case 'ExitSuccess':
+            console.log('Event: ExitSuccess')
             clearLocalStorage()
             onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
             onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
             onExitSuccess?.(metadata)
             break
           case 'Authenticate':
+            console.log('Event: Authenticate')
             // TODO: handle Authenticate
             break
           case 'OauthRequested': {
-            // Log available search parameters
-            console.log('Available search params:', Array.from(url.searchParams.keys()))
-
-            // Now we should be getting the oauthUrl parameter directly
+            console.log('Event: OauthRequested')
             const oauthUrl = url.searchParams.get('oauthUrl')
-            console.log('Received oauthUrl:', oauthUrl)
 
-            // Check if oauthUrl exists before proceeding
             if (oauthUrl) {
-              // Check if the URL is already encoded before decoding
-              // This is because different providers might pass the OAuth URL differently
               if (isEncoded(oauthUrl)) {
                 try {
-                  // Decode it once to prevent double decoding
                   const decodedUrl = decodeURIComponent(oauthUrl)
-                  console.log('Decoded encoded oauthUrl:', decodedUrl)
                   handleOAuthUrl(decodedUrl)
                 } catch (error) {
-                  console.error('Failed to decode oauthUrl:', error)
-                  // Fallback to using the original URL if decoding fails
-                  console.log('Using original oauthUrl as fallback')
+                  console.error('OAuth URL decoding failed, using original')
                   handleOAuthUrl(oauthUrl)
                 }
               } else {
-                // Pass through as is if not encoded
-                console.log('Using non-encoded oauthUrl as is')
                 handleOAuthUrl(oauthUrl)
               }
             } else {
-              // Log an error if oauthUrl is missing
-              console.error('OauthRequested event missing oauthUrl parameter')
-              console.log('All available params:', Object.fromEntries(url.searchParams.entries()))
+              console.error('OAuth URL missing from request')
             }
             break
           }
           default:
-            console.log('unhandled event', url)
+            console.log(`Unhandled event: ${eventType}`)
             break
         }
       })
