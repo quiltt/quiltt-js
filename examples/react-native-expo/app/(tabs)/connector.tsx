@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 import { router } from 'expo-router'
 
@@ -42,8 +42,9 @@ export default function ConnectorScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     height: '100%',
-    paddingBottom: 80,
+    paddingBottom: Platform.OS === 'ios' ? 80 : 0,
   },
 })
