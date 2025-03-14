@@ -11,7 +11,7 @@ import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quilt
 import {
   ErrorReporter,
   getErrorMessage,
-  isAlreadyEncoded,
+  isEncoded,
   normalizeUrlEncoding,
   smartEncodeURIComponent,
 } from '@/utils'
@@ -165,7 +165,7 @@ const QuilttConnector = ({
     // For the oauth_redirect_url, we need to be careful
     // If it's already encoded, we need to decode it once to prevent
     // the automatic encoding that happens with searchParams.append
-    if (isAlreadyEncoded(safeOAuthRedirectUrl)) {
+    if (isEncoded(safeOAuthRedirectUrl)) {
       const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
       url.searchParams.append('oauth_redirect_url', decodedOnce)
       console.log('Using decoded oauth_redirect_url:', decodedOnce)
@@ -265,7 +265,7 @@ const QuilttConnector = ({
             if (oauthUrl) {
               // Check if the URL is already encoded before decoding
               // This is because different providers might pass the OAuth URL differently
-              if (isAlreadyEncoded(oauthUrl)) {
+              if (isEncoded(oauthUrl)) {
                 try {
                   // Decode it once to prevent double decoding
                   const decodedUrl = decodeURIComponent(oauthUrl)

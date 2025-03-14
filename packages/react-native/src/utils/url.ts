@@ -3,7 +3,7 @@
  * @param str The string to check
  * @returns boolean indicating if the string appears to be URL encoded
  */
-export const isAlreadyEncoded = (str: string): boolean => {
+export const isEncoded = (str: string): boolean => {
   // Check for typical URL encoding patterns like %20, %3A, etc.
   const hasEncodedChars = /%[0-9A-F]{2}/i.test(str)
 
@@ -23,7 +23,7 @@ export const smartEncodeURIComponent = (str: string): string => {
   if (!str) return str
 
   // If it's already encoded, return as is
-  if (isAlreadyEncoded(str)) {
+  if (isEncoded(str)) {
     console.log('URL already encoded, skipping encoding:', str)
     return str
   }
@@ -51,7 +51,7 @@ export const createUrlWithParams = (baseUrl: string, params: Record<string, stri
       if (value == null) return
 
       // For oauth_redirect_url specifically, ensure it's not double encoded
-      if (key === 'oauth_redirect_url' && isAlreadyEncoded(value)) {
+      if (key === 'oauth_redirect_url' && isEncoded(value)) {
         // Decode once to counteract the automatic encoding that will happen
         const decodedOnce = decodeURIComponent(value)
         url.searchParams.append(key, decodedOnce)
