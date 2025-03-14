@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 3.9.7
+
+### Patch Changes
+
+- [#330](https://github.com/quiltt/quiltt-js/pull/330) [`e7b8e74`](https://github.com/quiltt/quiltt-js/commit/e7b8e74613f7725c6f2653be6d8ac0e06cce661d) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Make OAuth Handling Safer
+
+- Updated dependencies [[`e7b8e74`](https://github.com/quiltt/quiltt-js/commit/e7b8e74613f7725c6f2653be6d8ac0e06cce661d)]:
+  - @quiltt/core@3.9.7
+
 ## 3.9.6
 
 ### Patch Changes
