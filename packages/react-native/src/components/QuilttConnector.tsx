@@ -247,27 +247,28 @@ const QuilttConnector = ({
             console.log('Event: Authenticate')
             // TODO: handle Authenticate
             break
-          case 'OauthRequested': {
-            console.log('Event: OauthRequested')
-            const oauthUrl = url.searchParams.get('oauthUrl')
+          case 'Navigate': {
+            console.log('Event: Navigate')
+            const navigateUrl = url.searchParams.get('url')
 
-            if (oauthUrl) {
-              if (isEncoded(oauthUrl)) {
+            if (navigateUrl) {
+              if (isEncoded(navigateUrl)) {
                 try {
-                  const decodedUrl = decodeURIComponent(oauthUrl)
+                  const decodedUrl = decodeURIComponent(navigateUrl)
                   handleOAuthUrl(decodedUrl)
                 } catch (error) {
-                  console.error('OAuth URL decoding failed, using original')
-                  handleOAuthUrl(oauthUrl)
+                  console.error('Navigate URL decoding failed, using original')
+                  handleOAuthUrl(navigateUrl)
                 }
               } else {
-                handleOAuthUrl(oauthUrl)
+                handleOAuthUrl(navigateUrl)
               }
             } else {
-              console.error('OAuth URL missing from request')
+              console.error('Navigate URL missing from request')
             }
             break
           }
+          // NOTE: The `OauthRequested` is deprecated and should not be used
           default:
             console.log(`Unhandled event: ${eventType}`)
             break
