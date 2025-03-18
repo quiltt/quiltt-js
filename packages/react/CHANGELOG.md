@@ -1,5 +1,16 @@
 # @quiltt/react
 
+## 4.0.0
+
+### Major Changes
+
+- [#333](https://github.com/quiltt/quiltt-js/pull/333) [`5afca4a`](https://github.com/quiltt/quiltt-js/commit/5afca4a45f357afbb7f6af02088f86230f351e18) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Migrate to 'Navigate' message for URL handling
+
+### Patch Changes
+
+- Updated dependencies [[`5afca4a`](https://github.com/quiltt/quiltt-js/commit/5afca4a45f357afbb7f6af02088f86230f351e18)]:
+  - @quiltt/core@4.0.0
+
 ## 3.9.7
 
 ### Patch Changes
