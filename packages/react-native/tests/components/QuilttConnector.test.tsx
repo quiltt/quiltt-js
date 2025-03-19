@@ -5,7 +5,6 @@ import type { MockInstance } from 'vitest'
 import { Linking, Platform } from 'react-native'
 
 import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
-import { before } from 'node:test'
 
 // Store WebView props for testing
 let capturedWebViewProps: any = null
