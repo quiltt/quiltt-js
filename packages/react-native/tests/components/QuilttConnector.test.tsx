@@ -5,6 +5,7 @@ import type { MockInstance } from 'vitest'
 import { Linking, Platform } from 'react-native'
 
 import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
+import { before } from 'node:test'
 
 // Store WebView props for testing
 let capturedWebViewProps: any = null
@@ -68,9 +69,6 @@ describe('QuilttConnector', () => {
     fetchSpy = vi.spyOn(global, 'fetch')
     vi.spyOn(Linking, 'openURL').mockImplementation(() => Promise.resolve(true))
     capturedWebViewProps = null
-
-    // Mock successful fetch for all tests by default
-    fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
   })
 
   afterEach(() => {
@@ -80,7 +78,7 @@ describe('QuilttConnector', () => {
   describe('WebView Platform-Specific Props', () => {
     beforeEach(() => {
       // Mock successful fetch for all WebView tests
-      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+      fetchSpy.mockResolvedValueOnce(createMockResponse(200, { ok: true }))
 
       // Reset capturedWebViewProps
       capturedWebViewProps = null
@@ -172,22 +170,6 @@ describe('QuilttConnector', () => {
       expect(getByTestId('loading-screen')).toBeTruthy()
     })
 
-    it('should render ErrorScreen on pre-flight check failure', async () => {
-      // Mock fetch to reject with a specific error after retries
-      fetchSpy.mockRejectedValue(new Error('Network error'))
-
-      const { getByTestId } = render(<QuilttConnector {...defaultProps} />)
-
-      // Wait for error screen to appear and loading screen to disappear
-      await waitFor(
-        () => {
-          expect(() => getByTestId('loading-screen')).toThrow()
-          expect(getByTestId('error-screen')).toBeTruthy()
-        },
-        { timeout: 3000 }
-      ) // Increased timeout to account for retries
-    })
-
     it('should render webview if pre-flight check succeeds', async () => {
       // Mock successful fetch response
       fetchSpy.mockResolvedValueOnce(createMockResponse(200, { ok: true }))
@@ -201,11 +183,68 @@ describe('QuilttConnector', () => {
         { timeout: 1000 }
       )
     })
+
+    describe('when pre-flight check fails due to network error', () => {
+      beforeEach(() => {
+        fetchSpy.mockRejectedValue(new Error('Network error'))
+      })
+
+      it('should render ErrorScreen', async () => {
+        const { getByTestId } = render(<QuilttConnector {...defaultProps} />)
+
+        // Wait for error screen to appear and loading screen to disappear
+        await waitFor(
+          () => {
+            expect(() => getByTestId('loading-screen')).toThrow()
+            expect(getByTestId('error-screen')).toBeTruthy()
+          },
+          { timeout: 3000 }
+        ) // Increased timeout to account for retries
+      })
+    })
+
+    describe('when pre-flight check fails due to 500 server error', () => {
+      beforeEach(() => {
+        fetchSpy.mockResolvedValue(createMockResponse(500, { ok: false }))
+      })
+
+      it('should render ErrorScreen', async () => {
+        const { getByTestId } = render(<QuilttConnector {...defaultProps} />)
+
+        // Wait for error screen to appear and loading screen to disappear
+        await waitFor(
+          () => {
+            expect(() => getByTestId('loading-screen')).toThrow()
+            expect(getByTestId('error-screen')).toBeTruthy()
+          },
+          { timeout: 3000 }
+        ) // Increased timeout to account for retries
+      })
+    })
+
+    describe('when pre-flight check fails due to 404 server error', () => {
+      beforeEach(() => {
+        fetchSpy.mockResolvedValue(createMockResponse(404, { ok: false }))
+      })
+
+      it('should render ErrorScreen', async () => {
+        const { getByTestId } = render(<QuilttConnector {...defaultProps} />)
+
+        // Wait for error screen to appear and loading screen to disappear
+        await waitFor(
+          () => {
+            expect(() => getByTestId('loading-screen')).toThrow()
+            expect(getByTestId('error-screen')).toBeTruthy()
+          },
+          { timeout: 3000 }
+        ) // Increased timeout to account for retries
+      })
+    })
   })
 
   describe('URL Checking', () => {
     it('should handle routable URL successfully', async () => {
-      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+      fetchSpy.mockResolvedValueOnce(createMockResponse(200, { ok: true }))
       const result = await checkConnectorUrl('http://test.com')
       expect(result).toEqual({ checked: true })
     })
