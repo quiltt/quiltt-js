@@ -28,8 +28,7 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "addApiKey": "node scripts/addApiKey.js",
-    "build": "pnpm run addApiKey && bunchee",
+    "build": "bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
     "lint": "TIMING=1 biome check src/ tests/ --fix",

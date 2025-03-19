@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { ErrorReporter } from '@/utils/error/ErrorReporter'
-import { ErrorReporterConfig } from '@/utils/error/ErrorReporterConfig'
 import { version } from '../../../package.json'
 
 // Mock fetch in the global environment
@@ -48,7 +47,7 @@ describe('ErrorReporter', () => {
       notifier: {
         name: 'Quiltt React Native SDK Reporter',
         version: version.toString(),
-        url: 'https://www.quiltt.dev/guides/connector/react-native',
+        url: 'https://www.quiltt.dev/connector/sdk/react-native',
       },
       server: {
         environment_name: `react-native-sdk ${version.toString()}; test-platform`,
@@ -59,7 +58,7 @@ describe('ErrorReporter', () => {
     const mockResponse = createMockResponse(201, { id: '12345' })
     vi.mocked(global.fetch).mockResolvedValue(mockResponse)
 
-    await errorReporter.send(testError)
+    await errorReporter.notify(testError)
 
     expect(fetch).toHaveBeenCalledWith(
       'https://api.honeybadger.io/v1/notices',
@@ -69,7 +68,7 @@ describe('ErrorReporter', () => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'User-Agent': `react-native-sdk ${version.toString()}; test-platform`,
-          'X-API-Key': ErrorReporterConfig.honeybadger_api_key,
+          'X-API-Key': '',
         }),
       })
     )
@@ -92,7 +91,7 @@ describe('ErrorReporter', () => {
     vi.mocked(global.fetch).mockResolvedValue(mockResponse)
 
     const testError = new Error('Test error')
-    await errorReporter.send(testError)
+    await errorReporter.notify(testError)
 
     expect(fetch).toHaveBeenCalledWith(
       'https://api.honeybadger.io/v1/notices',
@@ -110,7 +109,7 @@ describe('ErrorReporter', () => {
       vi.mocked(global.fetch).mockResolvedValue(mockResponse)
 
       const testError = new Error('Test error')
-      await errorReporter.send(testError) // Ensure this await is effectively waiting for completion
+      await errorReporter.notify(testError) // Ensure this await is effectively waiting for completion
     } catch (error) {
       expect(consoleInfoSpy).toHaveBeenCalledWith(
         'Error report sent ⚡ https://app.honeybadger.io/notice/12345'
@@ -124,7 +123,7 @@ describe('ErrorReporter', () => {
       vi.mocked(global.fetch).mockResolvedValue(mockResponse)
 
       const testError = new Error('Test error')
-      await errorReporter.send(testError)
+      await errorReporter.notify(testError)
     } catch (error) {
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Error report failed: unknown response from server. code=500'

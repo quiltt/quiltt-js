@@ -53,7 +53,7 @@ export const checkConnectorUrl = async (
 
     // Report error unless it's a 404
     if (responseStatus !== 404) {
-      await errorReporter.send(error, { connectorUrl, responseStatus })
+      await errorReporter.notify(error, { connectorUrl, responseStatus })
     }
 
     return { checked: true, error: error.message }
