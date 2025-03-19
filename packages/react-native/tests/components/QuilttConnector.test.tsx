@@ -12,7 +12,7 @@ let capturedWebViewProps: any = null
 // Mock ErrorReporter before importing QuilttConnector
 vi.mock('@/utils/error/ErrorReporter', () => ({
   ErrorReporter: class {
-    send() {
+    notify() {
       return Promise.resolve()
     }
   },

@@ -1,13 +1,12 @@
-// Quick hack to send error to Honeybadger to debug why the connector is not routable
+// Custom Error Reporter to avoid hooking into or colliding with a client's Honeybadger singleton
 import type { Notice, NoticeTransportPayload } from '@honeybadger-io/core/build/src/types'
 import { generateStackTrace, getCauses, makeBacktrace } from '@honeybadger-io/core/build/src/util'
 
 import { version } from '@/version'
-import { ErrorReporterConfig } from './ErrorReporterConfig'
 
 const notifier = {
   name: 'Quiltt React Native SDK Reporter',
-  url: 'https://www.quiltt.dev/guides/connector/react-native',
+  url: 'https://www.quiltt.dev/connector/sdk/react-native',
   version: version,
 }
 
@@ -26,7 +25,7 @@ class ErrorReporter {
 
   constructor(platform: string) {
     this.noticeUrl = 'https://api.honeybadger.io/v1/notices'
-    this.apiKey = ErrorReporterConfig.honeybadger_api_key
+    this.apiKey = process.env.HONEYBADGER_API_KEY_REACT_NATIVE || ''
     this.clientName = 'react-native-sdk'
     this.clientVersion = version
     this.platform = platform
@@ -34,7 +33,7 @@ class ErrorReporter {
     this.userAgent = `${this.clientName} ${this.clientVersion}; ${this.platform}`
   }
 
-  async send(error: Error, context?: any): Promise<void> {
+  async notify(error: Error, context?: any): Promise<void> {
     const headers = {
       'X-API-Key': this.apiKey,
       'Content-Type': 'application/json',
