@@ -8,13 +8,7 @@ import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTyp
 import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 
-import {
-  ErrorReporter,
-  getErrorMessage,
-  isEncoded,
-  normalizeUrlEncoding,
-  smartEncodeURIComponent,
-} from '@/utils'
+import { ErrorReporter, isEncoded, normalizeUrlEncoding, smartEncodeURIComponent } from '@/utils'
 import { version } from '@/version'
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
@@ -42,20 +36,30 @@ export const checkConnectorUrl = async (
     }
     return { checked: true }
   } catch (e) {
-    error = e as Error
-    console.error('Failed to connect to connector URL')
+    console.error('Failed to connect to connector URL', error)
 
+    // Retry
     if (retryCount < PREFLIGHT_RETRY_COUNT) {
       const delay = 50 * 2 ** retryCount
       await new Promise((resolve) => setTimeout(resolve, delay))
       console.log(`Retrying connection... Attempt ${retryCount + 1}`)
       return checkConnectorUrl(connectorUrl, retryCount + 1)
     }
-    const errorMessage = getErrorMessage(responseStatus, error as Error)
-    const errorToSend = (error as Error) || new Error(errorMessage)
-    const context = { connectorUrl, responseStatus }
-    if (responseStatus !== 404) await errorReporter.send(errorToSend, context)
-    return { checked: true, error: errorMessage }
+
+    // Construct error
+    if (e instanceof Error) {
+      error = new Error(`Error checking Connector URL: ${error?.name} \n${error?.message}`)
+    } else if (responseStatus) {
+      error = new Error(`The URL is not routable. Response status: ${responseStatus}`)
+    } else {
+      error = new Error('Error Checking the connector URL')
+    }
+
+    if (responseStatus !== 404) {
+      await errorReporter.send(error, { connectorUrl, responseStatus })
+    }
+
+    return { checked: true, error: error.message }
   }
 }
 
