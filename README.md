@@ -12,24 +12,107 @@ Quiltt's unified API lets fintech developers streamline the development of finte
 
 For an in-depth understanding of Quiltt's core concepts, guides, and API reference, visit our documentation at [https://quiltt.dev](https://quiltt.dev).
 
-Please refer to the README of each package for more information and instructions:
+## Repository Structure
+
+This monorepo is organized as follows:
+
+```bash
+.
+├── packages/         # Core packages that are published to npm
+│   ├── core/         # Core functionality and utilities
+│   ├── react/        # React components and hooks
+│   └── react-native/ # React Native specific implementations
+│
+└── examples/              # Example applications showcasing usage
+    ├── react-nextjs/      # Next.js example with TypeScript
+    └── react-native-expo/ # React Native with Expo example
+```
 
 ## Packages
 
 ### [@quiltt/core](packages/core#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Fcore.svg)](https://badge.fury.io/js/%40quiltt%2Fcore)
-The Core package provides essential functionality for building Javascript-based applications with Quiltt. It provides an Auth API client and modules for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
+
+The Core package provides essential functionality for building Javascript-based applications with Quiltt. It includes:
+
+- Auth API client
+- JSON Web Token (JWT) management
+- Observable pattern implementation
+- Storage utilities (Local and Memory)
+- Timeout handling
+- GraphQL client with customizable links
+- REST API utilities
+- TypeScript type definitions
 
 ### [@quiltt/react](packages/react#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Freact.svg)](https://badge.fury.io/js/%40quiltt%2Freact)
-The React package provides React Components and Hooks for integrating Quiltt into React-based applications, as well as a powerful Apollo-based GraphQL client.
+
+The React package provides React Components and Hooks for integrating Quiltt into React-based applications:
+
+- Ready-to-use components: `QuilttButton`, `QuilttContainer`
+- Context providers: `QuilttAuthProvider`, `QuilttSettingsProvider`
+- Custom hooks: `useQuilttClient`, `useQuilttConnector`, `useQuilttSession`
+- Utility hooks: `useEventListener`, `useScript`, `useStorage`
 
 ### [@quiltt/react-native](packages/react-native#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Freact-native.svg)](https://badge.fury.io/js/%40quiltt%2Freact-native)
-The React Native package provides React Native Components for integrating Quiltt Connector into React Native and Expo applications.
+
+The React Native package provides React Native Components for integrating Quiltt Connector into React Native and Expo applications:
+
+- Native-specific components: `QuilttConnector`,
+
+## Development
+
+This project uses [pnpm](https://pnpm.io/) as its package manager and [Turborepo](https://turbo.build/) for build orchestration.
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build all packages
+pnpm build
+
+# Run development servers
+pnpm dev
+```
+
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for testing. Tests can be run from the root folder for all packages or selectively for specific packages or files.
+
+```bash
+# Run all tests with coverage report
+pnpm run test:coverage
+
+# Run all tests without coverage
+pnpm test
+
+# Run tests for a specific package
+pnpm test --filter=@quiltt/core
+
+# Run a specific test file
+pnpm vitest run packages/core/tests/JsonWebToken.test.ts
+
+# Run tests in watch mode during development
+pnpm vitest watch
+
+# Run Cypress tests for Next.js example
+pnpm run test:cypress
+```
+
+Test configuration is defined in the root `vitest.config.ts` file, which sets up common test environments and coverage reporting for all packages. Each package can also have its own specific test configuration.
+
+## Examples
+
+This repository includes several example applications to help you get started:
+
+- **Next.js example**: A web application built with Next.js and TypeScript
+- **React Native example**: A mobile application built with React Native and Expo
+
+Check the [examples](examples) directory for more details.
 
 ## Contributing
 
