@@ -122,7 +122,10 @@ export const handleOAuthUrl = (oauthUrl: string | URL) => {
 		// Open the normalized URL
 		Linking.openURL(normalizedUrl);
 	} catch (error) {
-		// @todo: Report to HB
+		errorReporter.notify(new Error("OAuth URL handling error"), {
+			oauthUrl,
+			error,
+		});
 		console.error("OAuth URL handling error");
 
 		// Bubble up to the caller
