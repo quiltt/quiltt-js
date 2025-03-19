@@ -12,6 +12,22 @@ Quiltt's unified API streamlines fintech application development by providing a 
 
 For comprehensive documentation including core concepts, guides, and API reference, visit [https://quiltt.dev](https://quiltt.dev).
 
+## Repository Structure
+
+This monorepo is organized as follows:
+
+```bash
+.
+├── packages/         # Core packages that are published to npm
+│   ├── core/         # Core functionality and utilities
+│   ├── react/        # React components and hooks
+│   └── react-native/ # React Native specific implementations
+│
+└── examples/              # Example applications showcasing usage
+    ├── react-nextjs/      # Next.js example with TypeScript
+    └── react-native-expo/ # React Native with Expo example
+```
+
 Each package includes detailed setup instructions and examples. See the individual package READMEs below for specific implementation details.
 
 ## Packages
@@ -20,88 +36,85 @@ Each package includes detailed setup instructions and examples. See the individu
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Fcore.svg)](https://badge.fury.io/js/%40quiltt%2Fcore)
 
-The foundational package providing essential functionality for JavaScript-based Quiltt applications. Features include Auth API client, JWT handling, observables, storage management, timeout utilities, and comprehensive TypeScript types.
+The Core package provides essential functionality for building Javascript-based applications with Quiltt. It includes:
+
+- Auth API client
+- JSON Web Token (JWT) management
+- Observable pattern implementation
+- Storage utilities (Local and Memory)
+- Timeout handling
+- GraphQL client with customizable links
+- REST API utilities
+- TypeScript type definitions
 
 ### [@quiltt/react](packages/react#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Freact.svg)](https://badge.fury.io/js/%40quiltt%2Freact)
 
-React components and hooks for seamless Quiltt integration, built on a powerful Apollo-based GraphQL client. Includes providers, authentication hooks, and pre-built UI components.
+The React package provides React Components and Hooks for integrating Quiltt into React-based applications:
+
+- Ready-to-use components: `QuilttButton`, `QuilttContainer`
+- Context providers: `QuilttAuthProvider`, `QuilttSettingsProvider` and a consolidated `QuilttProvider`
+- Custom hooks: `useQuilttClient`, `useQuilttConnector`, `useQuilttSession`
+- Utility hooks: `useEventListener`, `useScript`, `useStorage`
 
 ### [@quiltt/react-native](packages/react-native#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Freact-native.svg)](https://badge.fury.io/js/%40quiltt%2Freact-native)
 
-Native components optimized for React Native and Expo applications, featuring the Quiltt Connector and mobile-specific utilities for financial data integration.
+The React Native package provides React Native Components for integrating Quiltt Connector into React Native and Expo applications:
+
+- Native-specific components: `QuilttConnector`,
 
 ## Development
 
-### Prerequisites
-
-- Node.js
-- pnpm
-
-### Setup
+This project uses [pnpm](https://pnpm.io/) as its package manager and [Turborepo](https://turbo.build/) for build orchestration.
 
 ```bash
 # Install dependencies
 pnpm install
 
 # Build all packages
-pnpm run build
+pnpm build
 
-# Start development mode
-pnpm run dev
+# Run development servers
+pnpm dev
 ```
 
-### Testing
+## Testing
 
-This project uses Vitest for unit testing and Cypress for end-to-end testing, with comprehensive coverage reporting.
-
-#### Running Tests
+This project uses [Vitest](https://vitest.dev/) for testing. Tests can be run from the root folder for all packages or selectively for specific packages or files.
 
 ```bash
-# Run unit tests with coverage
-pnpm run test:unit
+# Run all tests with coverage report
+pnpm run test:coverage
 
-# Run unit tests for specific package
-pnpm run test:unit packages/react
+# Run all tests without coverage
+pnpm test
 
-# Run unit tests for specific file/pattern
-pnpm run test:unit packages/core/src/api
+# Run tests for a specific package
+pnpm test --filter=@quiltt/core
 
-# Run end-to-end tests
-pnpm run test:e2e
+# Run a specific test file
+pnpm vitest run packages/core/tests/JsonWebToken.test.ts
 
-# Run tests in watch mode (development)
-pnpm run test
+# Run tests in watch mode during development
+pnpm vitest watch
+
+# Run Cypress tests for Next.js example
+pnpm run test:cypress
 ```
 
-#### Test Structure
+Test configuration is defined in the root `vitest.config.ts` file, which sets up common test environments and coverage reporting for all packages. Each package can also have its own specific test configuration.
 
-- **Unit Tests**: Located alongside source files with `.test.ts/.tsx` extensions
-- **E2E Tests**: Cypress tests in `examples/react-nextjs/cypress/`
-- **Coverage**: Istanbul coverage reports generated in `coverage/` directory
+## Examples
 
-#### Testing Stack
+This repository includes several example applications to help you get started:
 
-- **Vitest**: Fast unit test runner with native TypeScript support
-- **Cypress**: End-to-end testing for React applications
-- **Testing Library**: React and React Native testing utilities
-- **Happy DOM**: Lightweight DOM implementation for faster tests
+- **Next.js example**: A web application built with Next.js and TypeScript
+- **React Native example**: A mobile application built with React Native and Expo
 
-### Code Quality
-
-```bash
-# Lint all packages
-pnpm run lint
-
-# Type checking
-pnpm run typecheck
-
-# Check dependency versions consistency
-pnpm run check:packages
-```
+Check the [examples](examples) directory for more details.
 
 ## Contributing
 
