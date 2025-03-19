@@ -101,7 +101,7 @@ export const checkConnectorUrl = async (
 /**
  * Handle opening OAuth URLs with proper encoding detection and normalization
  */
-export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
+export const handleOAuthUrl = (oauthUrl: string | URL) => {
 	try {
 		// Throw error if oauthUrl is null or undefined
 		if (oauthUrl == null) {
@@ -125,17 +125,8 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
 		// @todo: Report to HB
 		console.error("OAuth URL handling error");
 
-		// Only try the fallback if oauthUrl is not null
-		if (oauthUrl != null) {
-			try {
-				const fallbackUrl =
-					typeof oauthUrl === "string" ? oauthUrl : oauthUrl.toString();
-				console.log("Attempting fallback OAuth opening");
-				Linking.openURL(fallbackUrl);
-			} catch (_fallbackError) {
-				console.error("Fallback OAuth opening failed");
-			}
-		}
+		// Bubble up to the caller
+		throw error;
 	}
 };
 
@@ -246,11 +237,6 @@ const QuilttConnector = ({
 		[],
 	);
 
-	const shouldRender = useCallback(
-		(url: URL) => !isQuilttEvent(url),
-		[isQuilttEvent],
-	);
-
 	const clearLocalStorage = useCallback(() => {
 		const script = "localStorage.clear();";
 		webViewRef.current?.injectJavaScript(script);
@@ -347,16 +333,9 @@ const QuilttConnector = ({
 				return false;
 			}
 
-			if (shouldRender(url)) {
-				return true;
-			}
-
-			// Plaid set oauth url by doing window.location.href = url
-			// So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
-			handleOAuthUrl(url);
-			return false;
+			return true;
 		},
-		[handleQuilttEvent, isQuilttEvent, shouldRender],
+		[handleQuilttEvent, isQuilttEvent],
 	);
 
 	if (!preFlightCheck.checked) {
