@@ -302,8 +302,13 @@ const QuilttConnector = ({
 								handleOAuthUrl(navigateUrl);
 							}
 						} else {
-							// @todo: Report or throw so it's not failing silently
+							errorReporter.notify(
+								new Error("Navigate URL missing from request"),
+								{ navigateUrl },
+							);
 							console.error("Navigate URL missing from request");
+
+							// TODO: Should we throw an error here?
 						}
 						break;
 					}
