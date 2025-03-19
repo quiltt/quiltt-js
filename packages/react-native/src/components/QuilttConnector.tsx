@@ -121,7 +121,8 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
 
 		// Open the normalized URL
 		Linking.openURL(normalizedUrl);
-	} catch (_error) {
+	} catch (error) {
+		// @todo: Report to HB
 		console.error("OAuth URL handling error");
 
 		// Only try the fallback if oauthUrl is not null
@@ -165,21 +166,21 @@ const QuilttConnector = ({
 		checked: false,
 	});
 
-	// Script to disable scrolling on header
-	const disableHeaderScrollScript = `
-    (function() {
-      const header = document.querySelector('header');
-      if (header) {
-        header.style.position = 'fixed';
-        header.style.top = '0';
-        header.style.left = '0';
-        header.style.right = '0';
-        header.style.zIndex = '1000';
-      }
-    })();
-  `;
-
 	const onLoadEnd = useCallback(() => {
+		// Script to disable scrolling on header
+		const disableHeaderScrollScript = `
+      (function() {
+        const header = document.querySelector('header');
+        if (header) {
+          header.style.position = 'fixed';
+          header.style.top = '0';
+          header.style.left = '0';
+          header.style.right = '0';
+          header.style.zIndex = '1000';
+        }
+      })();
+    `;
+
 		if (Platform.OS === "ios") {
 			webViewRef.current?.injectJavaScript(disableHeaderScrollScript);
 		}
@@ -212,6 +213,7 @@ const QuilttConnector = ({
 
 	useEffect(() => {
 		if (preFlightCheck.checked) return;
+
 		const fetchDataAndSetState = async () => {
 			const connectorUrlStatus = await checkConnectorUrl(connectorUrl);
 			setPreFlightCheck(connectorUrlStatus);
@@ -220,25 +222,24 @@ const QuilttConnector = ({
 	}, [connectorUrl, preFlightCheck]);
 
 	const initInjectedJavaScript = useCallback(() => {
-		const script = `\
-      const options = {\
-        source: 'quiltt',\
-        type: 'Options',\
-        token: '${session?.token}',\
-        connectorId: '${connectorId}',\
-        connectionId: '${connectionId}',\
-        institution: '${institution}', \
-      };\
-      const compactedOptions = Object.keys(options).reduce((acc, key) => {\
-        if (options[key] !== 'undefined') {\
-          acc[key] = options[key];\
-        }\
-        return acc;\
-      }, {});\
-      window.postMessage(compactedOptions);\
-    `;
+		// Construct OptionsMessage
+		const options = {
+			source: "quiltt",
+			type: "Options",
+			token: session?.token,
+			connectionId: connectionId,
+			institution: institution,
+		};
+
+		// Remove undefined values
+		const compactedOptions: Partial<typeof options> = Object.fromEntries(
+			Object.entries(options).filter(([_, value]) => value !== undefined),
+		) as Partial<typeof options>;
+
+		// Send Options
+		const script = `window.postMessage(${JSON.stringify(compactedOptions)});`;
 		webViewRef.current?.injectJavaScript(script);
-	}, [connectionId, connectorId, institution, session?.token]);
+	}, [connectionId, institution, session?.token]);
 
 	const isQuilttEvent = useCallback(
 		(url: URL) => url.protocol === "quilttconnector:",
@@ -304,7 +305,7 @@ const QuilttConnector = ({
 								try {
 									const decodedUrl = decodeURIComponent(navigateUrl);
 									handleOAuthUrl(decodedUrl);
-								} catch (_error) {
+								} catch (error) {
 									console.error("Navigate URL decoding failed, using original");
 									handleOAuthUrl(navigateUrl);
 								}
@@ -312,13 +313,14 @@ const QuilttConnector = ({
 								handleOAuthUrl(navigateUrl);
 							}
 						} else {
+							// @todo: Report or throw so it's not failing silently
 							console.error("Navigate URL missing from request");
 						}
 						break;
 					}
 					// NOTE: The `OauthRequested` is deprecated and should not be used
 					default:
-						console.log(`Unhandled event: ${eventType}`);
+						console.warn(`Unhandled event: ${eventType}`);
 						break;
 				}
 			});
