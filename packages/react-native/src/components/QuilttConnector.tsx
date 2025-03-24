@@ -115,6 +115,7 @@ const QuilttConnector = ({
 }: QuilttConnectorProps) => {
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
+  const sessionToken = session && 'token' in session ? session.token : ''
   const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
   const onLoadEnd = useCallback(() => {
@@ -177,7 +178,7 @@ const QuilttConnector = ({
     const options = {
       source: 'quiltt',
       type: 'Options',
-      token: session?.token,
+      token: sessionToken,
       connectionId: connectionId,
       institution: institution,
     }
@@ -190,7 +191,7 @@ const QuilttConnector = ({
     // Send Options
     const script = `window.postMessage(${JSON.stringify(compactedOptions)});`
     webViewRef.current?.injectJavaScript(script)
-  }, [connectionId, institution, session?.token])
+  }, [connectionId, institution, sessionToken])
 
   const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 
