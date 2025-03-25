@@ -4,10 +4,12 @@ import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
 import type { NoContentData, UnauthorizedData, UnprocessableData } from './types'
 
-export enum AuthStrategies {
-  Email = 'email',
-  Phone = 'phone',
-}
+export const AuthStrategies = {
+  Email: 'email',
+  Phone: 'phone',
+} as const
+
+export type AuthStrategies = (typeof AuthStrategies)[keyof typeof AuthStrategies]
 
 interface EmailInput {
   email: string
@@ -110,6 +112,7 @@ export class AuthAPI {
       retry: true,
     }
   }
+
   private validateStatus = (status: number) => status < 500 && status !== 429
 
   private body = (payload: any) => {
