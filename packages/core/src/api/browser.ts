@@ -45,6 +45,22 @@ export type ConnectorSDKCallbacks = {
   onExitError?: ConnectorSDKOnExitErrorCallback
 }
 
+export const ConnectorSDKEventType = {
+  /** The Connector modal has been opened */
+  Open: 'opened',
+  /** The Connector has loaded successfully */
+  Load: 'loaded',
+  /** The end-user successfully completed the flow */
+  ExitSuccess: 'exited.successful',
+  /** The end-user exited the Connector before completing the flow */
+  ExitAbort: 'exited.aborted',
+  /** The end-user experienced an error during the flow */
+  ExitError: 'exited.errored',
+} as const
+
+export type ConnectorSDKEventType =
+  (typeof ConnectorSDKEventType)[keyof typeof ConnectorSDKEventType]
+
 /**
  * Callback function to handle all events from the Connector.
  * @param type The type of event that was emitted
@@ -79,26 +95,6 @@ export type ConnectorSDKOnExitAbortCallback = (metadata: ConnectorSDKCallbackMet
 export type ConnectorSDKOnExitErrorCallback = (metadata: ConnectorSDKCallbackMetadata) => void
 
 /**
- * Enum representing the different types of events emitted by the Connector.
- */
-export enum ConnectorSDKEventType {
-  /** The Connector modal has been opened */
-  Open = 'opened',
-
-  /** The Connector has loaded successfully */
-  Load = 'loaded',
-
-  /** The end-user successfully completed the flow */
-  ExitSuccess = 'exited.successful',
-
-  /** The end-user exited the Connector before completing the flow */
-  ExitAbort = 'exited.aborted',
-
-  /** The end-user experienced an error during the flow */
-  ExitError = 'exited.errored',
-}
-
-/**
  * Metadata about a Connector event
  * @param connectorId The ID of the Connector that emitted the event
  * @param profileId The ID of the authenticated Profile
@@ -131,12 +127,21 @@ export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   connectionId: string
 }
 
-/** Options to initialize Connector */
-// @todo: refactor into a union type - it's either or.
-export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
-  /** The Institution ID or search term to connect */
-  institution?: string
-
-  /** The ID of the Connection to reconnect */
-  connectionId?: string
-}
+/**
+ * Options to initialize Connector
+ *
+ * Union type - it's either `institution` or `connectionId`
+ */
+export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks &
+  (
+    | {
+        /** The Institution ID or search term to connect */
+        institution: string
+        connectionId?: never
+      }
+    | {
+        /** The ID of the Connection to reconnect */
+        connectionId: string
+        institution?: never
+      }
+  )
