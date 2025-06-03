@@ -1,6 +1,8 @@
 import { endpointAuth } from '@/configuration'
+
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
+import type { NoContentData, UnauthorizedData, UnprocessableData } from './types'
 
 export enum AuthStrategies {
   Email = 'email',
@@ -21,9 +23,6 @@ export type UsernamePayload = EmailInput | PhoneInput
 export type PasscodePayload = UsernamePayload & { passcode: string }
 
 type SessionData = { token: string }
-type NoContentData = null
-type UnauthorizedData = { message: string; instruction: string }
-export type UnprocessableData = { [attribute: string]: Array<string> }
 
 type Ping = SessionData | UnauthorizedData
 type Identify = SessionData | NoContentData | UnprocessableData
@@ -31,7 +30,6 @@ type Authenticate = SessionData | UnauthorizedData | UnprocessableData
 type Revoke = NoContentData | UnauthorizedData
 
 export type SessionResponse = FetchResponse<SessionData>
-export type UnprocessableResponse = FetchResponse<UnprocessableData>
 
 // https://www.quiltt.dev/api-reference/auth
 export class AuthAPI {
