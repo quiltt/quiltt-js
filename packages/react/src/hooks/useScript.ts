@@ -59,7 +59,9 @@ export function useScript(src: string | null, options?: UseScriptOptions): UseSc
       scriptNode = document.createElement('script')
       scriptNode.src = src
       scriptNode.async = true
-      scriptNode.nonce = options?.nonce
+      if (options?.nonce && options.nonce.trim() !== '') {
+        scriptNode.nonce = options.nonce
+      }
       scriptNode.setAttribute('data-status', 'loading')
       document.body.appendChild(scriptNode)
 

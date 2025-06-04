@@ -31,7 +31,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   ...props
 }: QuilttContainerProps<T> & PropsOf<T>) => {
   useQuilttConnector(connectorId, {
-    nonce: props.nonce, // Pass nonce for script loading if needed
+    nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onLoad,
     onExit,
