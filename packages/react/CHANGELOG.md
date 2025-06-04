@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 4.0.1
+
+### Patch Changes
+
+- [#343](https://github.com/quiltt/quiltt-js/pull/343) [`da152b7`](https://github.com/quiltt/quiltt-js/commit/da152b7f42606defde5f55488632bcdc095be592) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add the ability to set nonce for the Quiltt SDK Script
+
+- Updated dependencies [[`da152b7`](https://github.com/quiltt/quiltt-js/commit/da152b7f42606defde5f55488632bcdc095be592)]:
+  - @quiltt/core@4.0.1
+
 ## 4.0.0
 
 ### Major Changes
