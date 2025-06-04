@@ -47,6 +47,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   const { open } = useQuilttConnector(connectorId, {
     connectionId,
     institution,
+    nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onOpen,
     onLoad,
