@@ -139,4 +139,7 @@ export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
 
   /** The ID of the Connection to reconnect */
   connectionId?: string
+
+  /** The nonce to use for the script tag */
+  nonce?: string
 }

@@ -19,7 +19,7 @@ export const useQuilttConnector = (
   connectorId?: string,
   options?: ConnectorSDKConnectorOptions
 ) => {
-  const status = useScript(`${cdnBase}/v1/connector.js?agent=react-${version}`)
+  const status = useScript(`${cdnBase}/v1/connector.js?agent=react-${version}`, { nonce: options?.nonce })
   const { session } = useQuilttSession()
   const [connector, setConnector] = useState<ConnectorSDKConnector>()
   const [isOpening, setIsOpening] = useState<boolean>(false)
