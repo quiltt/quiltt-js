@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@quiltt/react": "workspace:*",
-    "next": "14.2.26",
+    "next": "15.2.4",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
