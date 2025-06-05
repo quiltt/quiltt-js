@@ -16,8 +16,8 @@
     "lint": "turbo run lint",
     "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "test": "turbo run test",
-    "test:coverage": "vitest run --coverage",
-    "test:cypress": "turbo run cypress",
+    "test:unit": "vitest run --coverage",
+    "test:e2e": "turbo run cypress",
     "typecheck": "turbo run typecheck",
     "version": "npx changeset version",
     "postversion": "pnpm exec pnpm install --filter=./packages/** "
@@ -39,7 +39,7 @@
     "vitest": "3.1.2",
     "vitest-react-native": "0.1.5"
   },
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.11.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",

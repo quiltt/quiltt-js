@@ -21,11 +21,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "main": "dist/index.js",
   "scripts": {
     "build": "bunchee",
@@ -62,10 +58,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-webview": ">=13.0.0"
   },
-  "tags": [
-    "quiltt",
-    "react-native"
-  ],
+  "tags": ["quiltt", "react-native"],
   "publishConfig": {
     "access": "public"
   }

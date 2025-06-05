@@ -39,6 +39,15 @@
       "cache": false,
       "dependsOn": ["^test"],
       "outputs": []
+    },
+    "test:unit": {
+      "cache": false,
+      "outputs": ["coverage/**"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build", "build"],
+      "cache": false,
+      "persistent": true
     }
   }
 }

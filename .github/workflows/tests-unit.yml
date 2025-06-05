@@ -39,6 +39,6 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageCommand: pnpm run test:coverage
+          coverageCommand: pnpm run test:unit
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
