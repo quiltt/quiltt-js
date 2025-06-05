@@ -34,4 +34,5 @@ export const version = `${packageName}: v${packageVersion}`
 export const cdnBase = `${protocolHttp}://cdn.${domain}`
 export const endpointAuth = `${protocolHttp}://auth.${domain}/v1/users/session`
 export const endpointGraphQL = `${protocolHttp}://api.${domain}/v1/graphql`
+export const endpointRest = `${protocolHttp}://api.${domain}/v1`
 export const endpointWebsockets = `${protocolWebsockets}://api.${domain}/websockets`

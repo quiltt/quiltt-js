@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.12.4",
-    "@quiltt/core": "workspace:*"
+    "@quiltt/core": "workspace:*",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
