@@ -4,7 +4,7 @@ import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
 import type { ErrorData, UnauthorizedData } from './types'
 
-export type InstitutionData = { name: string, logoUrl: string }
+export type InstitutionData = { name: string; logoUrl: string }
 export type InstitutionsData = Array<InstitutionData>
 
 type Search = InstitutionsData | ErrorData | UnauthorizedData
@@ -15,7 +15,7 @@ export class InstitutionsAPI {
   clientId: string
   agent: string
 
-  constructor(clientId: string, agent: string = 'web') {
+  constructor(clientId: string, agent = 'web') {
     this.clientId = clientId
     this.agent = agent
   }
@@ -26,13 +26,14 @@ export class InstitutionsAPI {
    *  - 401: Unauthorized -> Invalid Token
    *  - 400: Bad Request  -> Invalid Request
    */
-  search = async (token: string, connectorId: string, term: string) => {
+  search = async (token: string, connectorId: string, term: string, signal?: AbortSignal) => {
     const params = new URLSearchParams()
     params.append('connectorId', connectorId)
     params.append('term', term)
 
-    const response = await fetchWithRetry<Search>(`${endpointRest}/sdk/insitutions?${params}`, {
+    const response = await fetchWithRetry<Search>(`${endpointRest}/sdk/institutions?${params}`, {
       method: 'GET',
+      signal,
       ...this.config(token),
     })
     return response
@@ -51,6 +52,7 @@ export class InstitutionsAPI {
       retry: true,
     }
   }
+
   private validateStatus = (status: number) => status < 500 && status !== 429
 
   private body = (payload: any) => {
