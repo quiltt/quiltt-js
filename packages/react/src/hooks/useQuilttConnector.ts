@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { cdnBase } from '@quiltt/core'
 import type {
@@ -30,25 +30,53 @@ export const useQuilttConnector = (
   const [connector, setConnector] = useState<ConnectorSDKConnector>()
   const [isOpening, setIsOpening] = useState<boolean>(false)
 
+  // Keep track of the previous connectionId to detect changes
+  const prevConnectionIdRef = useRef<string | undefined>(options?.connectionId)
+  const prevConnectorIdRef = useRef<string | undefined>(connectorId)
+
   // Set Session
-  // biome-ignore lint/correctness/useExhaustiveDependencies: We also need to update on status change
   useEffect(() => {
     if (typeof Quiltt === 'undefined') return
+    console.debug('[Quiltt] script status: ', status)
 
     Quiltt.authenticate(session?.token)
   }, [status, session?.token])
 
   // Set Connector
-  // biome-ignore lint/correctness/useExhaustiveDependencies: We also need to update on status change
   useEffect(() => {
     if (typeof Quiltt === 'undefined' || !connectorId) return
+    console.debug('[Quiltt] script status: ', status)
 
-    if (options?.connectionId) {
-      setConnector(Quiltt.reconnect(connectorId, { connectionId: options.connectionId }))
-    } else {
-      setConnector(Quiltt.connect(connectorId, { institution: options?.institution }))
+    const currentConnectionId = options?.connectionId
+    const currentInstitution = options?.institution
+
+    // Check if this is a connectionId change on the same connector
+    const connectionIdChanged = prevConnectionIdRef.current !== currentConnectionId
+    const connectorIdChanged = prevConnectorIdRef.current !== connectorId
+
+    // If only connectionId changed (not the connectorId), the core SDK should handle this
+    // via the updated Handler.updateOptions method, so we don't need to recreate the connector
+    if (connectionIdChanged && !connectorIdChanged && connector) {
+      // The SDK will automatically update the existing handler with new connectionId
+      // via the DocumentObserver -> Engine.onChange -> Handler.updateOptions flow
+      console.debug('[Quiltt] connectionId changed, SDK will handle update automatically')
+
+      // Update our refs
+      prevConnectionIdRef.current = currentConnectionId
+      return
     }
-  }, [status, connectorId, options?.connectionId, options?.institution])
+
+    // Create new connector (initial mount or connectorId changed)
+    if (currentConnectionId) {
+      setConnector(Quiltt.reconnect(connectorId, { connectionId: currentConnectionId }))
+    } else {
+      setConnector(Quiltt.connect(connectorId, { institution: currentInstitution }))
+    }
+
+    // Update refs
+    prevConnectionIdRef.current = currentConnectionId
+    prevConnectorIdRef.current = connectorId
+  }, [connector, connectorId, options?.connectionId, options?.institution, status])
 
   // onEvent
   useEffect(() => {

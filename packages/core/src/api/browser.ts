@@ -23,6 +23,7 @@ export interface ConnectorSDK extends CallbackManager {
   reconnect(connectorId: string, options: ConnectorSDKReconnectOptions): ConnectorSDKConnector
 
   reset(): void // For Test and Development Use
+  resetConnector: (connectorId: string) => void // For forcing a reset of a specific connector
 }
 
 export interface ConnectorSDKConnector extends CallbackManager {

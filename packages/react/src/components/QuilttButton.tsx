@@ -1,9 +1,11 @@
+import { useEffect, useRef } from 'react'
 import type { ElementType, MouseEvent, PropsWithChildren } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 import type { PropsOf } from '@/types'
+import { isDeepEqual } from '@/utils/isDeepEqual'
 
 // Base button props without callback-specific properties
 type BaseQuilttButtonProps<T extends ElementType> = {
@@ -11,6 +13,14 @@ type BaseQuilttButtonProps<T extends ElementType> = {
   connectorId: string
   connectionId?: string // For Reconnect Mode
   institution?: string // For Connect Mode
+
+  /**
+   * Forces complete remount when connectionId changes.
+   * Useful as a fallback for ensuring clean state.
+   * @default false
+   */
+  forceRemountOnConnectionChange?: boolean
+
   // Override the native onClick handler
   onClick?: (event: MouseEvent<HTMLElement>) => void
 }
@@ -27,11 +37,19 @@ type QuilttButtonProps<T extends ElementType> = PropsWithChildren<
   BaseQuilttButtonProps<T> & QuilttCallbackProps
 >
 
+/**
+ * QuilttButton provides a clickable interface to open Quiltt connectors.
+ *
+ * When connectionId changes, the button will automatically update the existing
+ * connector instance with the new connection details. If you need to force a
+ * complete remount instead, set forceRemountOnConnectionChange to true.
+ */
 export const QuilttButton = <T extends ElementType = 'button'>({
   as,
   connectorId,
   connectionId,
   institution,
+  forceRemountOnConnectionChange = false,
   onEvent,
   onOpen,
   onLoad,
@@ -44,6 +62,46 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   children,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
+  // Keep track of previous connectionId for change detection
+  const prevConnectionIdRef = useRef<string | undefined>(connectionId)
+  const prevCallbacksRef = useRef({
+    onEvent,
+    onOpen,
+    onLoad,
+    onExit,
+    onExitSuccess,
+    onExitAbort,
+    onExitError,
+  })
+
+  // Track if callbacks have changed to help with debugging
+  const currentCallbacks = {
+    onEvent,
+    onOpen,
+    onLoad,
+    onExit,
+    onExitSuccess,
+    onExitAbort,
+    onExitError,
+  }
+
+  const callbacksChanged = !isDeepEqual(prevCallbacksRef.current, currentCallbacks)
+
+  useEffect(() => {
+    prevCallbacksRef.current = currentCallbacks
+  })
+
+  // Warning for potential callback reference issues
+  useEffect(() => {
+    if (callbacksChanged && prevConnectionIdRef.current !== undefined) {
+      console.warn(
+        '[Quiltt] Callback functions changed after initial render. ' +
+          'This may cause unexpected behavior. Consider memoizing callback functions ' +
+          'with useCallback to maintain stable references.'
+      )
+    }
+  }, [callbacksChanged])
+
   const { open } = useQuilttConnector(connectorId, {
     connectionId,
     institution,
@@ -56,6 +114,11 @@ export const QuilttButton = <T extends ElementType = 'button'>({
     onExitAbort,
     onExitError,
   })
+
+  // Update previous connectionId reference
+  useEffect(() => {
+    prevConnectionIdRef.current = connectionId
+  }, [connectionId])
 
   const Button = as || 'button'
 
@@ -70,8 +133,21 @@ export const QuilttButton = <T extends ElementType = 'button'>({
     open()
   }
 
+  // Generate key for forced remounting if enabled, but respect user-provided key
+  const buttonKey =
+    props.key ??
+    (forceRemountOnConnectionChange
+      ? `${connectorId}-${connectionId || 'no-connection'}`
+      : undefined)
+
   return (
-    <Button onClick={handleClick} onLoad={onHtmlLoad} quiltt-connection={connectionId} {...props}>
+    <Button
+      key={buttonKey}
+      onClick={handleClick}
+      onLoad={onHtmlLoad}
+      quiltt-connection={connectionId}
+      {...props}
+    >
       {children}
     </Button>
   )
