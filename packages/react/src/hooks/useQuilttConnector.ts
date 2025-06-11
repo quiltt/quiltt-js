@@ -33,6 +33,7 @@ export const useQuilttConnector = (
   // Keep track of the previous connectionId to detect changes
   const prevConnectionIdRef = useRef<string | undefined>(options?.connectionId)
   const prevConnectorIdRef = useRef<string | undefined>(connectorId)
+  const connectorCreatedRef = useRef<boolean>(false)
 
   // Set Session
   useEffect(() => {
@@ -56,7 +57,7 @@ export const useQuilttConnector = (
 
     // If only connectionId changed (not the connectorId), the core SDK should handle this
     // via the updated Handler.updateOptions method, so we don't need to recreate the connector
-    if (connectionIdChanged && !connectorIdChanged && connector) {
+    if (connectionIdChanged && !connectorIdChanged && connectorCreatedRef.current) {
       // The SDK will automatically update the existing handler with new connectionId
       // via the DocumentObserver -> Engine.onChange -> Handler.updateOptions flow
       console.debug('[Quiltt] connectionId changed, SDK will handle update automatically')
@@ -66,17 +67,22 @@ export const useQuilttConnector = (
       return
     }
 
-    // Create new connector (initial mount or connectorId changed)
-    if (currentConnectionId) {
-      setConnector(Quiltt.reconnect(connectorId, { connectionId: currentConnectionId }))
-    } else {
-      setConnector(Quiltt.connect(connectorId, { institution: currentInstitution }))
+    // Only create new connector if we haven't created one yet or if connectorId changed
+    if (!connectorCreatedRef.current || connectorIdChanged) {
+      // Create new connector (initial mount or connectorId changed)
+      if (currentConnectionId) {
+        setConnector(Quiltt.reconnect(connectorId, { connectionId: currentConnectionId }))
+      } else {
+        setConnector(Quiltt.connect(connectorId, { institution: currentInstitution }))
+      }
+
+      connectorCreatedRef.current = true
     }
 
     // Update refs
     prevConnectionIdRef.current = currentConnectionId
     prevConnectorIdRef.current = connectorId
-  }, [connector, connectorId, options?.connectionId, options?.institution, status])
+  }, [connectorId, options?.connectionId, options?.institution, status])
 
   // onEvent
   useEffect(() => {
