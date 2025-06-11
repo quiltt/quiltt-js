@@ -1,5 +1,16 @@
 # @quiltt/react
 
+## 4.1.0
+
+### Minor Changes
+
+- [#342](https://github.com/quiltt/quiltt-js/pull/342) [`6a387ba`](https://github.com/quiltt/quiltt-js/commit/6a387ba0db77912df85c6cd1924f63edf50f9cdd) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Create useQuilttInstitutions hook
+
+### Patch Changes
+
+- Updated dependencies [[`6a387ba`](https://github.com/quiltt/quiltt-js/commit/6a387ba0db77912df85c6cd1924f63edf50f9cdd)]:
+  - @quiltt/core@4.1.0
+
 ## 4.0.1
 
 ### Patch Changes
