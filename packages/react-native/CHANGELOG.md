@@ -1,5 +1,17 @@
 # @quiltt/react-native
 
+## 4.2.0
+
+### Minor Changes
+
+- [#348](https://github.com/quiltt/quiltt-js/pull/348) [`7e27845`](https://github.com/quiltt/quiltt-js/commit/7e2784523124c87fc6654d8336f924286daade1b) Thanks [@zubairaziz](https://github.com/zubairaziz)! - resolve connectionId persistence issue in QuilttContainer
+
+### Patch Changes
+
+- Updated dependencies [[`7e27845`](https://github.com/quiltt/quiltt-js/commit/7e2784523124c87fc6654d8336f924286daade1b)]:
+  - @quiltt/react@4.2.0
+  - @quiltt/core@4.2.0
+
 ## 4.1.0
 
 ### Minor Changes
