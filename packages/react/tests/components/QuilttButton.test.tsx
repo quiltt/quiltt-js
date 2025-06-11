@@ -4,22 +4,22 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { QuilttButton } from '@/components'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 
-// Mock at the top level
 vi.mock('@/hooks/useQuilttConnector', () => ({
-  useQuilttConnector: vi.fn(() => ({
-    open: vi.fn(),
-  })),
+  useQuilttConnector: vi.fn(),
 }))
 
 describe('QuilttButton', () => {
+  const mockOpen = vi.fn()
+
   beforeEach(() => {
     vi.clearAllMocks()
+    // Ensure the mock always returns the expected object structure
+    vi.mocked(useQuilttConnector).mockReturnValue({
+      open: mockOpen,
+    })
   })
 
   it('calls onClick and then opens the connector when clicked', () => {
-    const openMock = vi.fn()
-    vi.mocked(useQuilttConnector).mockReturnValue({ open: openMock })
-
     const onClick = vi.fn()
 
     const { getByRole } = render(
@@ -33,10 +33,10 @@ describe('QuilttButton', () => {
 
     // Verify the sequence of operations
     expect(onClick).toHaveBeenCalled()
-    expect(openMock).toHaveBeenCalled()
+    expect(mockOpen).toHaveBeenCalled()
 
     // Verify the order of operations
-    expect(onClick.mock.invocationCallOrder[0]).toBeLessThan(openMock.mock.invocationCallOrder[0])
+    expect(onClick.mock.invocationCallOrder[0]).toBeLessThan(mockOpen.mock.invocationCallOrder[0])
   })
 
   it('handles HTML load event separately from SDK load', () => {
