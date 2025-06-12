@@ -21,11 +21,7 @@
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**",
-    "src/**",
-    "CHANGELOG.md"
-  ],
+  "files": ["dist/**", "src/**", "CHANGELOG.md"],
   "main": "dist/index.js",
   "scripts": {
     "build": "bunchee",
@@ -44,7 +40,7 @@
     "@biomejs/biome": "1.9.4",
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
-    "@types/node": "22.14.1",
+    "@types/node": "22.15.31",
     "@types/react": "18.3.20",
     "base-64": "1.0.0",
     "bunchee": "6.3.4",
@@ -53,7 +49,7 @@
     "react-native-url-polyfill": "2.0.0",
     "react-native-webview": "13.12.5",
     "rimraf": "6.0.1",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "peerDependencies": {
     "base-64": "^1.0.0",
@@ -62,10 +58,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-webview": ">=13.0.0"
   },
-  "tags": [
-    "quiltt",
-    "react-native"
-  ],
+  "tags": ["quiltt", "react-native"],
   "publishConfig": {
     "access": "public"
   }
