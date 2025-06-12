@@ -36,52 +36,41 @@ export const useQuilttConnector = (
   const connectorCreatedRef = useRef<boolean>(false)
 
   // Set Session
+  // biome-ignore lint/correctness/useExhaustiveDependencies: trigger effects when script status changes too
   useEffect(() => {
     if (typeof Quiltt === 'undefined') return
-    console.debug('[Quiltt] script status: ', status)
 
     Quiltt.authenticate(session?.token)
   }, [status, session?.token])
 
   // Set Connector
+  // biome-ignore lint/correctness/useExhaustiveDependencies: trigger effects when script status changes too
   useEffect(() => {
     if (typeof Quiltt === 'undefined' || !connectorId) return
-    console.debug('[Quiltt] script status: ', status)
 
     const currentConnectionId = options?.connectionId
     const currentInstitution = options?.institution
 
-    // Check if this is a connectionId change on the same connector
+    // Check for changes
     const connectionIdChanged = prevConnectionIdRef.current !== currentConnectionId
     const connectorIdChanged = prevConnectorIdRef.current !== connectorId
+    const hasChanges = connectionIdChanged || connectorIdChanged || !connectorCreatedRef.current
 
-    // If only connectionId changed (not the connectorId), the core SDK should handle this
-    // via the updated Handler.updateOptions method, so we don't need to recreate the connector
-    if (connectionIdChanged && !connectorIdChanged && connectorCreatedRef.current) {
-      // The SDK will automatically update the existing handler with new connectionId
-      // via the DocumentObserver -> Engine.onChange -> Handler.updateOptions flow
-      console.debug('[Quiltt] connectionId changed, SDK will handle update automatically')
-
-      // Update our refs
-      prevConnectionIdRef.current = currentConnectionId
-      return
-    }
-
-    // Only create new connector if we haven't created one yet or if connectorId changed
-    if (!connectorCreatedRef.current || connectorIdChanged) {
-      // Create new connector (initial mount or connectorId changed)
+    // Update if there are changes, regardless of what the changes are
+    if (hasChanges) {
       if (currentConnectionId) {
+        // Always use reconnect when connectionId is available
         setConnector(Quiltt.reconnect(connectorId, { connectionId: currentConnectionId }))
       } else {
+        // Use connect for new connections without connectionId
         setConnector(Quiltt.connect(connectorId, { institution: currentInstitution }))
       }
 
+      // Update refs
       connectorCreatedRef.current = true
+      prevConnectionIdRef.current = currentConnectionId
+      prevConnectorIdRef.current = connectorId
     }
-
-    // Update refs
-    prevConnectionIdRef.current = currentConnectionId
-    prevConnectorIdRef.current = connectorId
   }, [connectorId, options?.connectionId, options?.institution, status])
 
   // onEvent
