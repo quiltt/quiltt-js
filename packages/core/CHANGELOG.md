@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 4.2.1
+
+### Patch Changes
+
+- [#350](https://github.com/quiltt/quiltt-js/pull/350) [`0233592`](https://github.com/quiltt/quiltt-js/commit/02335928bb872a6588c2ca81a1bd9a081053bd29) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Bugfix: early return in effect prevents reconnect from being called
+
 ## 4.2.0
 
 ### Minor Changes
