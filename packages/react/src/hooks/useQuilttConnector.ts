@@ -66,12 +66,11 @@ export const useQuilttConnector = (
         setConnector(Quiltt.connect(connectorId, { institution: currentInstitution }))
       }
 
+      // Update refs
       connectorCreatedRef.current = true
+      prevConnectionIdRef.current = currentConnectionId
+      prevConnectorIdRef.current = connectorId
     }
-
-    // Update refs
-    prevConnectionIdRef.current = currentConnectionId
-    prevConnectorIdRef.current = connectorId
   }, [connectorId, options?.connectionId, options?.institution, status])
 
   // onEvent
