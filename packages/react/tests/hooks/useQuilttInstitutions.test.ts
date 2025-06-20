@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { QuilttJWT } from '@quiltt/core'
 
 import { useQuilttInstitutions } from '@/hooks/useQuilttInstitutions'
+import { version } from '@/version'
 
 vi.mock('@/hooks/useQuilttSettings', () => ({
   useQuilttSettings: vi.fn().mockReturnValue({ clientId: 'test-client-id' }),
@@ -54,6 +55,11 @@ describe('useQuilttInstitutions', async () => {
       status: 200,
       data: [],
     })
+  })
+
+  // This has been observed to fail in production
+  it('has a valid version', () => {
+    expect(typeof version).toBe('string')
   })
 
   it('initializes with empty search results if no search term is provided', () => {
