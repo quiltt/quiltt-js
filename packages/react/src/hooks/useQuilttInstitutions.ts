@@ -7,7 +7,7 @@ import { useDebounce } from 'use-debounce'
 import { InstitutionsAPI } from '@quiltt/core'
 import type { ErrorData, InstitutionsData } from '@quiltt/core'
 
-import { version } from '@/version'
+import { version } from '../version'
 import useSession from './useSession'
 
 export type UseQuilttInstitutions = (
