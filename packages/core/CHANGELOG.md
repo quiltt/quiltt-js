@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 4.2.2
+
+### Patch Changes
+
+- [#352](https://github.com/quiltt/quiltt-js/pull/352) [`45b3b32`](https://github.com/quiltt/quiltt-js/commit/45b3b3270b69b95c9553e149e15870be4f43af3b) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Fix useQuilttInstitutions export
+
 ## 4.2.1
 
 ### Patch Changes
