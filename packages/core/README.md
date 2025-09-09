@@ -3,7 +3,9 @@
 [![npm version](https://badge.fury.io/js/@quiltt%2Fcore.svg)](https://badge.fury.io/js/@quiltt%2Fcore)
 [![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci.yml)
 
-`@quiltt/core` provides essential functionality for building Javascript-based applications with Quiltt. It provides an Auth API client and modules for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
+`@quiltt/core` provides essential primitives for building Javascript-based applications with Quiltt. It provides an Auth API client and modules for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
+
+This package is used by both `@quiltt/react` and `@quiltt/react-native`. If you bundle it separately, we recommend keeping versions in sync to avoid issues with mismatched dependencies.
 
 ## Install
 
@@ -27,12 +29,14 @@ $ pnpm add @quiltt/core
 
 ## Auth API Client
 
+The Auth API is used by the Quiltt Connector under the hood and can be used to perform basic operations on your Session tokens. Pull requests to extend the API to handle server-side authentication are welcome.
+
 ```ts
 // Import Auth API client
 import { AuthAPI } from '@quiltt/core'
 
 // Set up client instance
-const auth = new AuthAPI()
+const auth = new AuthAPI('{CONNECTOR_ID}')
 
 // Check if a Session token is valid
 auth.ping('{SESSION_TOKEN}')
