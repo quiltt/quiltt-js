@@ -1,6 +1,6 @@
 # quiltt-js
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/b816cde7504cfe33e9a0/maintainability)](https://codeclimate.com/github/quiltt/quiltt-js/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b816cde7504cfe33e9a0/test_coverage)](https://codeclimate.com/github/quiltt/quiltt-js/test_coverage)
+<!-- @todo: Add QLTY tags for Maintenability + Code Coverage -->
 
 This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, React Native, and Node.js environments.
 
@@ -86,7 +86,7 @@ pnpm run test
 #### Testing Stack
 
 - **Vitest**: Fast unit test runner with native TypeScript support
-- **Cypress**: End-to-end testing for React applications  
+- **Cypress**: End-to-end testing for React applications
 - **Testing Library**: React and React Native testing utilities
 - **Happy DOM**: Lightweight DOM implementation for faster tests
 
@@ -123,4 +123,3 @@ Once a changeset is created and merged to the `main` branch, our automated relea
 ## License
 
 This repository and all published packages are licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
-

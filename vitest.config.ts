@@ -39,7 +39,6 @@ export default defineConfig({
         '**/example/**/*',
         '**/examples/**/*',
         '**/browser.ts', // Only exporting types and interfaces for the browser
-        '**/src/api/graphql/links/actioncable/**', // ActionCable files
       ],
     },
   },
