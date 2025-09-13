@@ -8,6 +8,9 @@ describe('useScript', () => {
     // Reset mocks before each test to ensure a clean environment
     vi.restoreAllMocks()
 
+    // Fix timeout-related issues
+    vi.useFakeTimers()
+
     // Spy on document.body.appendChild to avoid actual DOM manipulation
     vi.spyOn(document.body, 'appendChild').mockImplementation((element) => element)
 
@@ -37,6 +40,8 @@ describe('useScript', () => {
   })
 
   afterEach(() => {
+    vi.useRealTimers()
+
     // Clean up and restore any global or module state changes
     vi.restoreAllMocks()
   })
@@ -50,7 +55,8 @@ describe('useScript', () => {
     // Re-render the hook to ensure the state transition
     await act(async () => {
       // Wait for a short period to allow the script to load
-      await new Promise((resolve) => setTimeout(resolve, 200))
+      vi.advanceTimersByTime(200)
+
       rerender()
     })
     expect(result.current).toBe('ready')

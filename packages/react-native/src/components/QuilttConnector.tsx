@@ -41,33 +41,36 @@ export const checkConnectorUrl = async (
       case 200:
         return { checked: true }
 
-      // Allow 400/404 to pass through without retries or errors
       case 400:
+        console.log('Invalid configuration')
+        return { checked: true }
+
       case 404:
+        console.error('Connector not found')
         return { checked: true }
 
       default:
         throw new Error('Connector URL is not routable.')
     }
-  } catch (e) {
-    error = e as Error
-    console.error('Failed to connect to Connector URL')
+  } catch (error) {
+    // Log error for debugging
+    console.error(error)
 
+    // Try again
     if (retryCount < PREFLIGHT_RETRY_COUNT) {
       const delay = 50 * 2 ** retryCount
       await new Promise((resolve) => setTimeout(resolve, delay))
-      console.log('Retrying connection... Attempt ${retryCount + 1}')
+      console.log(`Retrying connection... Attempt ${retryCount + 1}`)
       return checkConnectorUrl(connectorUrl, retryCount + 1)
     }
+
+    // Report error after retries exhausted
     const errorMessage = getErrorMessage(responseStatus, error as Error)
     const errorToSend = (error as Error) || new Error(errorMessage)
     const context = { connectorUrl, responseStatus }
+    await errorReporter.notify(errorToSend, context)
 
-    // Do not notify for 400/404
-    if (responseStatus !== 404 && responseStatus !== 400) {
-      await errorReporter.notify(errorToSend, context)
-    }
-
+    // Return errored preflight check
     return { checked: true, error: errorMessage }
   }
 }
@@ -318,7 +321,10 @@ const QuilttConnector = ({
     [handleQuilttEvent, isQuilttEvent, shouldRender]
   )
 
-  if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
+  if (!preFlightCheck.checked) {
+    return <LoadingScreen testId="loading-screen" />
+  }
+
   if (preFlightCheck.error) {
     return (
       <ErrorScreen
