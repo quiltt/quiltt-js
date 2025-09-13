@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 4.2.3
+
+### Patch Changes
+
+- [#355](https://github.com/quiltt/quiltt-js/pull/355) [`6d32f3e`](https://github.com/quiltt/quiltt-js/commit/6d32f3e40e7554c512ca63ef532d689d5485e10c) Thanks [@rubendinho](https://github.com/rubendinho)! - Improve error handling in React Native
+
+- Updated dependencies [[`6d32f3e`](https://github.com/quiltt/quiltt-js/commit/6d32f3e40e7554c512ca63ef532d689d5485e10c)]:
+  - @quiltt/core@4.2.3
+
 ## 4.2.2
 
 ### Patch Changes
