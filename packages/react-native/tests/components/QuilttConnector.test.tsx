@@ -40,7 +40,7 @@ vi.mock('@quiltt/react', () => ({
 // Helper to create a mock Response
 const createMockResponse = (status: number, body: any): Response => {
   return new Response(JSON.stringify(body), {
-    status: status,
+    status,
     headers: {
       'Content-Type': 'application/json',
     },
