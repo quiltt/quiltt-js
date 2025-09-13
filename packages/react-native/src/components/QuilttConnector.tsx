@@ -115,15 +115,14 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
 }
 
 type QuilttConnectorProps = {
-  testId?: string
   connectorId: string
   connectionId?: string
   institution?: string
   oauthRedirectUrl: string
+  testId?: string
 } & ConnectorSDKCallbacks
 
 const QuilttConnector = ({
-  testId,
   connectorId,
   connectionId,
   institution,
@@ -134,6 +133,7 @@ const QuilttConnector = ({
   onExitSuccess,
   onExitAbort,
   onExitError,
+  testId,
 }: QuilttConnectorProps) => {
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
@@ -312,7 +312,11 @@ const QuilttConnector = ({
         handleQuilttEvent(url)
         return false
       }
-      if (shouldRender(url)) return true
+
+      if (shouldRender(url)) {
+        return true
+      }
+
       // Plaid set oauth url by doing window.location.href = url
       // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
       handleOAuthUrl(url)
@@ -338,10 +342,8 @@ const QuilttConnector = ({
   return (
     <AndroidSafeAreaView testId={testId}>
       <WebView
-        testID="webview"
         ref={webViewRef}
         // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
-        // All whitelists are now handled in requestHandler, handleQuilttEvent and handleOAuthUrl
         style={styles.webview}
         originWhitelist={['*']}
         source={{ uri: connectorUrl }}
@@ -356,6 +358,7 @@ const QuilttConnector = ({
         contentInsetAdjustmentBehavior="never" // Controls how the WebView adjusts its content layout relative to safe areas and system UI
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
+        testID="webview"
         {...(Platform.OS === 'ios'
           ? {
               decelerationRate: 'normal',
