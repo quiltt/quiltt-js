@@ -12,14 +12,10 @@ describe('getErrorMessage', () => {
     )
   })
 
-  it('returns error message when response status is 404', () => {
-    const result = getErrorMessage(404)
-    expect(result).toBe('An error occurred loading the Connector. Response status: 404')
-  })
-
-  it('returns error message when response status is 400', () => {
-    const result = getErrorMessage(400)
-    expect(result).toBe('An error occurred loading the Connector. Response status: 400')
+  it('returns correct message when a response status is provided', () => {
+    const responseStatus = 403
+    const result = getErrorMessage(responseStatus)
+    expect(result).toBe('An error occurred loading the Connector. Response status: 403')
   })
 
   it('returns a generic error message when no arguments are provided', () => {
