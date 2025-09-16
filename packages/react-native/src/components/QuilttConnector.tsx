@@ -41,18 +41,22 @@ export const checkConnectorUrl = async (
       case 200:
         return { checked: true }
 
-      // Allow 400/404 to pass through without retries or errors
       case 400:
+        console.log('Invalid configuration')
+        return { checked: true }
+
       case 404:
+        console.error('Connector not found')
         return { checked: true }
 
       default:
         throw new Error('Connector URL is not routable.')
     }
-  } catch (e) {
-    error = e as Error
-    console.error('Failed to connect to connector URL')
+  } catch (error) {
+    // Log error for debugging
+    console.error(error)
 
+    // Try again
     if (retryCount < PREFLIGHT_RETRY_COUNT) {
       const delay = 50 * 2 ** retryCount
       await new Promise((resolve) => setTimeout(resolve, delay))
@@ -60,15 +64,13 @@ export const checkConnectorUrl = async (
       return checkConnectorUrl(connectorUrl, retryCount + 1)
     }
 
+    // Report error after retries exhausted
     const errorMessage = getErrorMessage(responseStatus, error as Error)
     const errorToSend = (error as Error) || new Error(errorMessage)
     const context = { connectorUrl, responseStatus }
+    await errorReporter.notify(errorToSend, context)
 
-    // Do not notify for 400/404
-    if (responseStatus !== 404 && responseStatus !== 400) {
-      await errorReporter.notify(errorToSend, context)
-    }
-
+    // Return errored preflight check
     return { checked: true, error: errorMessage }
   }
 }
@@ -113,15 +115,14 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
 }
 
 type QuilttConnectorProps = {
-  testId?: string
   connectorId: string
   connectionId?: string
   institution?: string
   oauthRedirectUrl: string
+  testId?: string
 } & ConnectorSDKCallbacks
 
 const QuilttConnector = ({
-  testId,
   connectorId,
   connectionId,
   institution,
@@ -132,6 +133,7 @@ const QuilttConnector = ({
   onExitSuccess,
   onExitAbort,
   onExitError,
+  testId,
 }: QuilttConnectorProps) => {
   const webViewRef = useRef<WebView>(null)
   const { session } = useQuilttSession()
@@ -310,7 +312,11 @@ const QuilttConnector = ({
         handleQuilttEvent(url)
         return false
       }
-      if (shouldRender(url)) return true
+
+      if (shouldRender(url)) {
+        return true
+      }
+
       // Plaid set oauth url by doing window.location.href = url
       // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
       handleOAuthUrl(url)
@@ -319,7 +325,10 @@ const QuilttConnector = ({
     [handleQuilttEvent, isQuilttEvent, shouldRender]
   )
 
-  if (!preFlightCheck.checked) return <LoadingScreen testId="loading-screen" />
+  if (!preFlightCheck.checked) {
+    return <LoadingScreen testId="loading-screen" />
+  }
+
   if (preFlightCheck.error) {
     return (
       <ErrorScreen
@@ -333,10 +342,8 @@ const QuilttConnector = ({
   return (
     <AndroidSafeAreaView testId={testId}>
       <WebView
-        testID="webview"
         ref={webViewRef}
         // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
-        // All whitelists are now handled in requestHandler, handleQuilttEvent and handleOAuthUrl
         style={styles.webview}
         originWhitelist={['*']}
         source={{ uri: connectorUrl }}
@@ -351,6 +358,7 @@ const QuilttConnector = ({
         contentInsetAdjustmentBehavior="never" // Controls how the WebView adjusts its content layout relative to safe areas and system UI
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
+        testID="webview"
         {...(Platform.OS === 'ios'
           ? {
               decelerationRate: 'normal',
