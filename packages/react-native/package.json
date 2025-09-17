@@ -45,7 +45,7 @@
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
     "@types/node": "22.18.5",
-    "@types/react": "18.3.20",
+    "@types/react": "18.3.23",
     "base-64": "1.0.0",
     "bunchee": "6.3.4",
     "react": "18.3.1",
