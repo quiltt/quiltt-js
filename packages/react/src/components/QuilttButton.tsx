@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
 import type { ElementType, MouseEvent, PropsWithChildren } from 'react'
+import { useEffect, useRef } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 

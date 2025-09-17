@@ -1,6 +1,7 @@
-import { renderHook } from '@testing-library/react'
 import type { PropsWithChildren } from 'react'
+
 import { describe, expect, it } from 'vitest'
+import { renderHook } from '@testing-library/react'
 
 import { useQuilttSettings } from '@/hooks/useQuilttSettings'
 import { QuilttSettingsProvider } from '@/providers/QuilttSettingsProvider'

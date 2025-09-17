@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render } from '@testing-library/react'
 
 import { QuilttAuthProvider } from '@/providers/QuilttAuthProvider'
 

@@ -3,6 +3,7 @@ import { ApolloClient, ApolloLink } from '@apollo/client/core/index.js'
 import type { DefinitionNode, OperationDefinitionNode } from 'graphql'
 
 import { debugging } from '@/configuration'
+
 import {
   AuthLink,
   BatchHttpLink,
@@ -58,10 +59,9 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
 */
 
 /** Client and Tooling */
-export { gql } from '@apollo/client/core/index.js'
+export type { NormalizedCacheObject } from '@apollo/client/cache'
 export { InMemoryCache } from '@apollo/client/cache/index.js'
 export type { ApolloError, OperationVariables } from '@apollo/client/core'
-export type { NormalizedCacheObject } from '@apollo/client/cache'
-
+export { gql } from '@apollo/client/core/index.js'
 /** React hooks used by @quiltt/react-native and @quiltt/react */
 export { useMutation, useQuery, useSubscription } from '@apollo/client/react/hooks/index.js'

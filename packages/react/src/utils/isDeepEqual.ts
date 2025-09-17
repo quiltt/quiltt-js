@@ -52,9 +52,6 @@ export const isDeepEqual = (obj1: unknown, obj2: unknown): boolean => {
   if (keys1.length !== keys2.length) return false
 
   return keys1.every((key) => {
-    return (
-      Object.prototype.hasOwnProperty.call(obj2, key) &&
-      isDeepEqual((obj1 as any)[key], (obj2 as any)[key])
-    )
+    return Object.hasOwn(obj2, key) && isDeepEqual((obj1 as any)[key], (obj2 as any)[key])
   })
 }

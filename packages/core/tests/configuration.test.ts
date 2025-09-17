@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+
 import { name as packageName, version as packageVersion } from '../package.json'
 
 // Save the original environment variables
@@ -39,7 +40,7 @@ describe('Configuration Constants', () => {
   // Ensure that packages work on React Native and other platforms with no process.env support
   describe('when process.env is not available', () => {
     beforeEach(async () => {
-      // @ts-ignore
+      // @ts-expect-error
       delete process.env
     })
 

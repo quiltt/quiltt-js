@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { renderHook } from '@testing-library/react'
 
 import { GlobalStorage } from '@quiltt/core'
 
@@ -9,7 +9,7 @@ vi.mock('@quiltt/core', () => ({
   GlobalStorage: {
     get: vi.fn(),
     set: vi.fn(),
-    subscribe: vi.fn((key, callback) => {
+    subscribe: vi.fn((_key, callback) => {
       // Mock a simple subscription mechanism
       const triggerUpdate = <T>(value: T) => callback(value)
       return { triggerUpdate }

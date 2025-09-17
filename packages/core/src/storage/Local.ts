@@ -21,7 +21,7 @@ export class LocalStorage<T> {
       localStorage.setItem('quiltt.ping', 'pong')
       localStorage.removeItem('quiltt.ping')
       return true
-    } catch (error) {
+    } catch (_error) {
       return false
     }
   }
@@ -82,11 +82,15 @@ export class LocalStorage<T> {
       const newState = event.newValue ? JSON.parse(event.newValue) : null
 
       if (this.observers[event.key]) {
-        this.observers[event.key].forEach((update) => update(newState))
+        this.observers[event.key].forEach((update) => {
+          update(newState)
+        })
       }
     } else {
       Object.entries(this.observers).forEach(([key, observers]) => {
-        observers.forEach((update) => update(this.get(key)))
+        observers.forEach((update) => {
+          update(this.get(key))
+        })
       })
     }
   }

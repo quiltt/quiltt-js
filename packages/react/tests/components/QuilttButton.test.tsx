@@ -1,5 +1,5 @@
-import { fireEvent, render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { fireEvent, render } from '@testing-library/react'
 
 import { QuilttButton } from '@/components'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'

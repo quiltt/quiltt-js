@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { cdnBase } from '@quiltt/core'
 import type {
   ConnectorSDK,
   ConnectorSDKConnector,
   ConnectorSDKConnectorOptions,
 } from '@quiltt/core'
+import { cdnBase } from '@quiltt/core'
 
 import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useScript } from '@/hooks/useScript'

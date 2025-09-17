@@ -7,14 +7,13 @@ export const TestHTMLLauncher = () => {
   useQuilttConnector()
 
   return (
-    <a
-      // biome-ignore lint/a11y/useValidAnchor: <explanation>
-      href="#"
+    <button
+      type="button"
       quiltt-button="connector"
       className="cursor-pointer rounded-full border-2 border-purple-500 px-4 py-2 text-white hover:bg-purple-500"
     >
       Launch with HTML
-    </a>
+    </button>
   )
 }
 export default TestHTMLLauncher

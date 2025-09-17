@@ -1,8 +1,6 @@
 // biome-ignore lint/correctness/noUnusedImports: React needs to be imported as a global here
 import * as React from 'react'
-
 import { StyleSheet } from 'react-native'
-
 import { Link, Stack } from 'expo-router'
 
 import { ThemedText } from '@/components/ThemedText'

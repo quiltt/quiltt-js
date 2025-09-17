@@ -55,16 +55,16 @@ export class InstitutionsAPI {
 
   private validateStatus = (status: number) => status < 500 && status !== 429
 
-  private body = (payload: any) => {
-    if (!this.clientId) {
-      console.error('Quiltt Client ID is not set. Unable to identify & authenticate')
-    }
+  // private body = (payload: any) => {
+  //   if (!this.clientId) {
+  //     console.error('Quiltt Client ID is not set. Unable to identify & authenticate')
+  //   }
 
-    return {
-      session: {
-        clientId: this.clientId,
-        ...payload,
-      },
-    }
-  }
+  //   return {
+  //     session: {
+  //       clientId: this.clientId,
+  //       ...payload,
+  //     },
+  //   }
+  // }
 }

@@ -1,5 +1,5 @@
-import { Observable } from '@/Observable'
 import type { Observer } from '@/Observable'
+import { Observable } from '@/Observable'
 import type { Maybe } from '@/types'
 
 /**

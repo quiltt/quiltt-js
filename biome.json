@@ -1,10 +1,63 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["**/*.gen.ts", "**/generated/**", "**/dist/**", "**/node_modules/**", "**/.next/**"]
+    "includes": [
+      "**",
+      "!**/*.gen.ts",
+      "!**/generated/**",
+      "!**/dist/**",
+      "!**/node_modules/**",
+      "!**/.next/**"
+    ]
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "identifierOrder": "natural",
+            "groups": [
+              ["react", "react/**"],
+              ["react-dom", "react-dom/**"],
+              ["react-native", "react-native/**"],
+              ["expo", "expo/**", "expo-*", "expo-*/**"],
+              ["next", "next/**"],
+
+              ":BLANK_LINE:",
+
+              ["vitest", "vitest/**"],
+              ["@testing-library", "@testing-library/**"],
+
+              ":BLANK_LINE:",
+
+              ":BLANK_LINE:",
+
+              ":NODE:",
+
+              ["@radix-ui/**"],
+
+              ":PACKAGE:",
+
+              ":BLANK_LINE:",
+
+              "@/**",
+
+              ":BLANK_LINE:",
+
+              ["../../../**"],
+              ["../../**"],
+              ["../**"],
+              ["./**"],
+
+              ":BLANK_LINE:",
+
+              ["**/*.css"]
+            ]
+          }
+        }
+      }
+    }
   },
   "formatter": {
     "enabled": true,
@@ -23,7 +76,8 @@
         "useGenericFontNames": "off"
       },
       "complexity": {
-        "noForEach": "off"
+        "noForEach": "off",
+        "noCommaOperator": "warn"
       },
       "correctness": {
         "noUnusedImports": "warn",
@@ -40,14 +94,14 @@
         "noDangerouslySetInnerHtml": "off"
       },
       "style": {
-        "noCommaOperator": "warn",
         "noNonNullAssertion": "off",
         "noParameterAssign": "warn"
       },
       "suspicious": {
         "noArrayIndexKey": "off",
         "noExplicitAny": "off",
-        "noImplicitAnyLet": "warn"
+        "noImplicitAnyLet": "warn",
+        "noUnknownAtRules": "off"
       }
     }
   },

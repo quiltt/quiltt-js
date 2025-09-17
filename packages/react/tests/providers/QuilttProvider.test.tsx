@@ -1,6 +1,7 @@
-import { render } from '@testing-library/react'
 import { createContext } from 'react'
+
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render } from '@testing-library/react'
 
 import { QuilttProvider } from '@/providers/QuilttProvider'
 
