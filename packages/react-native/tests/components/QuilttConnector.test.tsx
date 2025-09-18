@@ -1,10 +1,10 @@
-import { render, waitFor } from '@testing-library/react-native'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { MockInstance } from 'vitest'
-
 import { Linking, Platform } from 'react-native'
 
-import { QuilttConnector, checkConnectorUrl, handleOAuthUrl } from '@/components/QuilttConnector'
+import type { MockInstance } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { render, waitFor } from '@testing-library/react-native'
+
+import { checkConnectorUrl, handleOAuthUrl, QuilttConnector } from '@/components/QuilttConnector'
 
 // Store WebView props for testing
 let capturedWebViewProps: any = null

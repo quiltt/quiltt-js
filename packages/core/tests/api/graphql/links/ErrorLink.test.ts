@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client'
+import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client'
 
 import ErrorLink from '@/api/graphql/links/ErrorLink'
 
@@ -42,7 +42,7 @@ describe('ErrorLink', () => {
           }
         `,
       })
-    } catch (e) {
+    } catch (_e) {
       // Expecting an error to be caught here
     }
 

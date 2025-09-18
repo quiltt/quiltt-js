@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
+
 import type { Maybe } from './types'
 
 export type Observer<T> = Dispatch<SetStateAction<Maybe<T> | undefined>>
@@ -24,7 +25,9 @@ export class Observable<T> {
     if (this.state === nextState) return
 
     this.state = nextState
-    this.observers.forEach((update) => update(nextState))
+    this.observers.forEach((update) => {
+      update(nextState)
+    })
   }
 
   subscribe = (observer: Observer<T>) => {

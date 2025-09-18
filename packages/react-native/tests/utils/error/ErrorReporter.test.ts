@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ErrorReporter } from '@/utils/error/ErrorReporter'
+
 import { version } from '../../../package.json'
 
 // Mock fetch in the global environment
@@ -110,7 +111,7 @@ describe('ErrorReporter', () => {
 
       const testError = new Error('Test error')
       await errorReporter.notify(testError) // Ensure this await is effectively waiting for completion
-    } catch (error) {
+    } catch (_error) {
       expect(consoleInfoSpy).toHaveBeenCalledWith(
         'Error report sent ⚡ https://app.honeybadger.io/notice/12345'
       )
@@ -124,7 +125,7 @@ describe('ErrorReporter', () => {
 
       const testError = new Error('Test error')
       await errorReporter.notify(testError)
-    } catch (error) {
+    } catch (_error) {
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Error report failed: unknown response from server. code=500'
       )

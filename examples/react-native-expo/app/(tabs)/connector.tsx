@@ -1,9 +1,8 @@
 import { Platform, StyleSheet } from 'react-native'
-
 import { router } from 'expo-router'
 
-import { QuilttConnector } from '@quiltt/react-native'
 import type { ConnectorSDKCallbackMetadata } from '@quiltt/react-native'
+import { QuilttConnector } from '@quiltt/react-native'
 
 import { ThemedView } from '@/components/ThemedView'
 

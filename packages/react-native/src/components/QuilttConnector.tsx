@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Linking, Platform } from 'react-native'
-import { StyleSheet } from 'react-native'
+import { Linking, Platform, StyleSheet } from 'react-native'
+
+import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
+import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
 import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/react-native/issues/16434
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
-
-import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
-import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 
 import {
   ErrorReporter,
@@ -16,6 +15,7 @@ import {
   smartEncodeURIComponent,
 } from '@/utils'
 import { version } from '@/version'
+
 import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
@@ -33,7 +33,6 @@ export const checkConnectorUrl = async (
   retryCount = 0
 ): Promise<PreFlightCheck> => {
   let responseStatus: number | undefined
-  let error: Error | undefined
   try {
     const response = await fetch(connectorUrl)
 
@@ -98,7 +97,7 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
 
     // Open the normalized URL
     Linking.openURL(normalizedUrl)
-  } catch (error) {
+  } catch (_error) {
     console.error('OAuth URL handling error')
 
     // Only try the fallback if oauthUrl is not null
@@ -107,7 +106,7 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
         const fallbackUrl = typeof oauthUrl === 'string' ? oauthUrl : oauthUrl.toString()
         console.log('Attempting fallback OAuth opening')
         Linking.openURL(fallbackUrl)
-      } catch (fallbackError) {
+      } catch (_fallbackError) {
         console.error('Fallback OAuth opening failed')
       }
     }
@@ -272,7 +271,7 @@ const QuilttConnector = ({
                 try {
                   const decodedUrl = decodeURIComponent(navigateUrl)
                   handleOAuthUrl(decodedUrl)
-                } catch (error) {
+                } catch (_error) {
                   console.error('Navigate URL decoding failed, using original')
                   handleOAuthUrl(navigateUrl)
                 }

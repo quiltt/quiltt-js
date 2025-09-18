@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
 import type { FC, PropsWithChildren } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { ApolloProvider } from '@apollo/client/react/context/ApolloProvider.js'
 import { InMemoryCache, QuilttClient } from '@quiltt/core'

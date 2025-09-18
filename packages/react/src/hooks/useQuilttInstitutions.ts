@@ -2,10 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useDebounce } from 'use-debounce'
-
-import { InstitutionsAPI } from '@quiltt/core'
 import type { ErrorData, InstitutionsData } from '@quiltt/core'
+import { InstitutionsAPI } from '@quiltt/core'
+import { useDebounce } from 'use-debounce'
 
 import { version } from '../version'
 import useSession from './useSession'

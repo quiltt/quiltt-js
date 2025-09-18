@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { FetchResult, Operation } from '@apollo/client/core'
-import { Observable, gql } from '@apollo/client/core'
+import { gql, Observable } from '@apollo/client/core'
 import { createConsumer } from '@rails/actioncable'
 
 import ActionCableLink from '@/api/graphql/links/ActionCableLink'
@@ -46,7 +46,7 @@ describe('ActionCableLink', () => {
   it('should return null if no token is available', () => {
     vi.mocked(GlobalStorage.get).mockReturnValue(null)
     const link = new ActionCableLink({})
-    const dummyNextLink = (operation: Operation) =>
+    const dummyNextLink = (_operation: Operation) =>
       new Observable<FetchResult>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
@@ -65,7 +65,7 @@ describe('ActionCableLink', () => {
 
   it('should create a consumer and subscription when a token is present', () => {
     const link = new ActionCableLink({})
-    const dummyNextLink = (operation: Operation) =>
+    const dummyNextLink = (_operation: Operation) =>
       new Observable<FetchResult>((subscriber) => {
         subscriber.next({})
         subscriber.complete()

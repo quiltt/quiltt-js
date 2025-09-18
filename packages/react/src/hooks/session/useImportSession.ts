@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 
-import type { AuthAPI, Maybe, QuilttJWT } from '@quiltt/core'
+import type { AuthAPI, Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
 import { JsonWebTokenParse } from '@quiltt/core'
-import type { PrivateClaims } from '@quiltt/core'
 
 import type { SetSession } from '@/hooks/useSession'
 

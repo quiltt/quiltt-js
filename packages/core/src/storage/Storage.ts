@@ -41,7 +41,9 @@ export class Storage<T> {
     this.localStore.set(key, newState)
     this.memoryStore.set(key, newState)
 
-    this.observers[key]?.forEach((update) => update(newState))
+    this.observers[key]?.forEach((update) => {
+      update(newState)
+    })
   }
 
   /**
@@ -77,7 +79,9 @@ export class Storage<T> {
       const newState = nextState instanceof Function ? nextState(prevValue) : nextState
 
       this.memoryStore.set(key, newState)
-      this.observers[key]?.forEach((update) => update(newState))
+      this.observers[key]?.forEach((update) => {
+        update(newState)
+      })
     })
   }
 }

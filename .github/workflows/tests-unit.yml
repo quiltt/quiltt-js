@@ -34,15 +34,12 @@ jobs:
       - name: Build packages
         run: pnpm run build:packages
 
-      - name: Run unit tests
+      - name: Run unit tests with coverage
         run: pnpm run test:unit
 
-      # TODO: Qlty.sh
-      # - name: Collect code coverage and upload to CodeClimate
-      #   uses: paambaati/codeclimate-action@v8.0.0
-      #   env:
-      #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      #   with:
-      #     coverageCommand: pnpm run test:unit
-      #     coverageLocations: |
-      #       ${{github.workspace}}/coverage/lcov.info:lcov
+      - name: Upload coverage to Qlty
+        if: always()
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov.info

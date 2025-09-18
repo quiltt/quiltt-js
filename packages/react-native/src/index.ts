@@ -7,7 +7,6 @@ if (!global.atob) {
 }
 
 export * from '@quiltt/core'
-
 export {
   QuilttAuthProvider,
   QuilttProvider,
