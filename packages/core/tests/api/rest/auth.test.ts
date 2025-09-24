@@ -118,6 +118,31 @@ describe('AuthAPI', () => {
     })
   })
 
+  describe('validateStatus method', () => {
+    it('should validate status codes correctly', () => {
+      // Access private method for testing
+      const validateStatus = (authAPI as any).validateStatus
+
+      // Should return true for status < 500 and not 429
+      expect(validateStatus(200)).toBe(true)
+      expect(validateStatus(201)).toBe(true)
+      expect(validateStatus(202)).toBe(true)
+      expect(validateStatus(204)).toBe(true)
+      expect(validateStatus(400)).toBe(true)
+      expect(validateStatus(401)).toBe(true)
+      expect(validateStatus(404)).toBe(true)
+      expect(validateStatus(422)).toBe(true)
+      expect(validateStatus(499)).toBe(true)
+
+      // Should return false for status >= 500 or 429
+      expect(validateStatus(429)).toBe(false)
+      expect(validateStatus(500)).toBe(false)
+      expect(validateStatus(502)).toBe(false)
+      expect(validateStatus(503)).toBe(false)
+      expect(validateStatus(504)).toBe(false)
+    })
+  })
+
   describe('revoke', () => {
     it('should call `fetchWithRetry` with correct parameters', async () => {
       ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse(null, 204, 'No Content'))

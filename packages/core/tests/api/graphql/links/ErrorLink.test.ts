@@ -1,37 +1,86 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client'
+import type { ServerError } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, gql, InMemoryCache, Observable } from '@apollo/client/core'
 
 import ErrorLink from '@/api/graphql/links/ErrorLink'
+import { GlobalStorage } from '@/storage'
 
 vi.mock('@/storage', () => ({
   GlobalStorage: {
     set: vi.fn(),
+    get: vi.fn(),
   },
 }))
-
-// Mock HttpLink as a simple example; in practice, you would adjust this based on your setup
-vi.mock('@apollo/client', async (importOriginal) => {
-  return {
-    ...(await importOriginal<typeof import('@apollo/client')>()),
-    HttpLink: vi.fn(() => ({
-      request: vi.fn(() => {
-        throw new Error('Network error')
-      }),
-    })),
-  }
-})
 
 describe('ErrorLink', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should handle network errors by invoking the ErrorLink correctly', async () => {
-    vi.spyOn(console, 'warn')
+  it('should log GraphQL errors', async () => {
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'Field error',
+              locations: [{ line: 1, column: 2 }],
+              path: ['user', 'name'],
+            },
+          ],
+        })
+        observer.complete()
+      })
+    })
+
     const client = new ApolloClient({
       cache: new InMemoryCache(),
-      link: ErrorLink.concat(new HttpLink()), // HttpLink would normally handle HTTP requests
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            user {
+              name
+            }
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw due to GraphQL errors
+    }
+
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[GraphQL error]: Message: Field error')
+    )
+    consoleLogSpy.mockRestore()
+  })
+
+  it('should handle 401 network errors and clear session', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const error: ServerError = {
+      name: 'ServerError',
+      message: 'Unauthorized',
+      statusCode: 401,
+      result: {},
+      response: {} as Response,
+    }
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.error(error)
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
     })
 
     try {
@@ -43,11 +92,139 @@ describe('ErrorLink', () => {
         `,
       })
     } catch (_e) {
-      // Expecting an error to be caught here
+      // Expected to throw
     }
 
-    // Assuming network error handling prints a warning
-    expect(vi.mocked(console.warn)).toHaveBeenCalled()
-    // expect(vi.mocked(GlobalStorage.set)).toHaveBeenCalledWith('session', null)
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      '[Authentication error]:',
+      expect.objectContaining({ statusCode: 401 })
+    )
+    expect(GlobalStorage.set).toHaveBeenCalledWith('session', null)
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle non-401 network errors without clearing session', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const error: ServerError = {
+      name: 'ServerError',
+      message: 'Internal Server Error',
+      statusCode: 500,
+      result: {},
+      response: {} as Response,
+    }
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.error(error)
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      '[Network error]:',
+      expect.objectContaining({ statusCode: 500 })
+    )
+    expect(GlobalStorage.set).not.toHaveBeenCalled()
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle both GraphQL and network errors together', async () => {
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const error: ServerError = {
+      name: 'ServerError',
+      message: 'Server Error',
+      statusCode: 500,
+      result: {},
+      response: {} as Response,
+    }
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'Query error',
+              locations: [{ line: 1, column: 1 }],
+              path: ['data'],
+            },
+          ],
+        })
+        observer.error(error)
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw
+    }
+
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[GraphQL error]: Message: Query error')
+    )
+    expect(consoleWarnSpy).toHaveBeenCalledWith('[Network error]:', expect.any(Object))
+    consoleLogSpy.mockRestore()
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle network errors without statusCode', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.error(new Error('Connection refused'))
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith('[Network error]:', expect.any(Error))
+    expect(GlobalStorage.set).not.toHaveBeenCalled()
+    consoleWarnSpy.mockRestore()
   })
 })

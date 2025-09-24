@@ -1,48 +1,43 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { JsonWebToken } from '@/JsonWebToken'
+import type { Claims, JsonWebToken } from '@/JsonWebToken'
 import { JsonWebTokenParse } from '@/JsonWebToken'
 
 describe('JsonWebTokenParse', () => {
   it('parses a valid JWT token and returns a JsonWebToken object', () => {
-    // Sample valid JWT token
     const validToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2p3dC5kb21haW4uY29tIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjIsInN1YiI6IkpvaG4gRG9lIiwibmJmIjoxNTE2MjM5MDIyLCJpYXQiOjE1MTYyMzkwMjJ9.cAeRHO4gcvfhFn77dXTiJvjq1Pn5fuWi9RfBcmfWJDI'
 
-    // Call the function with the valid token
     const result = JsonWebTokenParse(validToken)
 
-    // Define the expected claims without extra properties
     const expectedClaims = {
-      iss: 'https://jwt.domain.com',
-      iat: 1516239022,
+      // aud: 'https://jwt.domain.com',
       exp: 1516239022,
-      sub: 'John Doe',
+      iat: 1516239022,
+      iss: 'https://jwt.domain.com',
+      // jti: 'abc123',
       nbf: 1516239022,
+      sub: 'John Doe',
     }
 
-    // Define the expected output with the adjusted claims
     const expected: JsonWebToken<{
-      oid: string
-      eid: string
-      cid: string
-      aid: string
-      ver: number
+      aud: string
+      exp: number
+      iat: number
+      iss: string
+      jti: string
+      nbf: number
+      sub: string
     }> = {
       token: validToken,
-      // @ts-expect-error
-      claims: expectedClaims,
+      claims: expectedClaims as unknown as Claims<typeof expectedClaims>,
     }
 
-    // Expect the result to match the expected output
     expect(result).toMatchObject(expected)
   })
 
   it('returns undefined for undefined or null input', () => {
-    // Call the function with undefined input
     const undefinedResult = JsonWebTokenParse(undefined)
-
-    // Call the function with null input
     const nullResult = JsonWebTokenParse(null)
 
     expect(undefinedResult).toBeUndefined()
@@ -50,29 +45,35 @@ describe('JsonWebTokenParse', () => {
   })
 
   it('returns undefined for invalid JWT token input', () => {
-    // Sample invalid JWT token
     const invalidToken = 'invalid.token'
-
-    // Call the function with the invalid token
     const result = JsonWebTokenParse(invalidToken)
 
-    // Expect the result to be undefined
     expect(result).toBeUndefined()
   })
 
-  it('logs an error message when catching an error while parsing the JWT token', () => {
-    // Mock console.error to spy on it
-    const originalConsoleError = console.error
-    const consoleErrorSpy = vi.fn()
-    console.error = consoleErrorSpy
+  it('logs an error for tokens that fail regex validation', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    // Call the function with a token that will throw an error during parsing
-    JsonWebTokenParse('invalid.token')
+    const invalidToken = 'invalid.token'
+    const result = JsonWebTokenParse(invalidToken)
 
-    // Expect console.error to have been called with the error message
-    expect(consoleErrorSpy).toHaveBeenCalled()
+    expect(result).toBeUndefined()
+    expect(consoleErrorSpy).toHaveBeenCalledWith(`Invalid Session Token: ${invalidToken}`)
 
-    // Restore console.error to its original implementation
-    console.error = originalConsoleError
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('logs an error and returns undefined when payload fails JSON parsing', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    // 'aW52YWxpZA' is valid base64 but decodes to 'invalid' which isn't valid JSON
+    const tokenWithInvalidPayload = 'header.aW52YWxpZA.signature'
+
+    const result = JsonWebTokenParse(tokenWithInvalidPayload)
+
+    expect(result).toBeUndefined()
+    expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid Session Token:'))
+
+    consoleErrorSpy.mockRestore()
   })
 })

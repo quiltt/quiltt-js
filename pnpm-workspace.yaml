@@ -1,4 +1,5 @@
+minimumReleaseAge: 4320 # 3 days
+resolutionMode: "highest"
 packages:
   - "packages/*"
   - "examples/*"
-minimumReleaseAge: 4320 # 3 days

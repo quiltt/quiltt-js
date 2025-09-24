@@ -46,5 +46,22 @@ describe('Timeoutable', () => {
     expect(observer).not.toHaveBeenCalled()
   })
 
-  // TODO: Add any additional tests here to cover more scenarios and edge cases
+  it('clears previous timeout when set is called multiple times', () => {
+    const observer1 = vi.fn()
+    const observer2 = vi.fn()
+    const delay1 = 1000
+    const delay2 = 500
+
+    timeoutable.set(observer1, delay1)
+    vi.advanceTimersByTime(500)
+
+    // This should replace observer1 with observer2
+    timeoutable.set(observer2, delay2)
+    vi.advanceTimersByTime(500)
+
+    // Original timeout was cleared, observer1 never fires
+    expect(observer1).not.toHaveBeenCalled()
+    // New timeout fires observer2
+    expect(observer2).toHaveBeenCalledTimes(1)
+  })
 })
