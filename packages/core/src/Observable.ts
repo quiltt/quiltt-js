@@ -13,8 +13,8 @@ export class Observable<T> {
   private state?: Maybe<T>
   private observers: Observer<T>[] = []
 
-  constructor(initalState?: Maybe<T>) {
-    this.state = initalState
+  constructor(initialState?: Maybe<T>) {
+    this.state = initialState
   }
 
   get = () => {

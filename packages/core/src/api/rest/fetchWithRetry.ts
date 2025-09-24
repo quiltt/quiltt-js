@@ -52,7 +52,7 @@ export const fetchWithRetry = async <T>(
 
     // If validateStatus fails, and retry is enabled, prepare to retry for eligible status codes
     if (retry && (response.status >= 500 || response.status === 429)) {
-      throw new Error('Retryable failure')
+      throw new Error('Retriable failure')
     }
 
     throw new Error(`HTTP error with status ${response.status}`)
