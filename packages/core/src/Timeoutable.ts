@@ -13,7 +13,8 @@ export class Timeoutable {
       clearTimeout(this.timeout)
     }
 
-    this.observers.push(callback)
+    // Replace all observers with the new one
+    this.observers = [callback]
     this.timeout = setTimeout(this.broadcast.bind(this), delay)
   }
 

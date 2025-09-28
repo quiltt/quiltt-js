@@ -1,14 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "includes": [
-      "**",
-      "!**/*.gen.ts",
-      "!**/generated/**",
-      "!**/dist/**",
-      "!**/node_modules/**",
-      "!**/.next/**"
-    ]
+    "includes": ["**", "!**/*.gen.ts", "!**/generated", "!**/dist", "!**/node_modules", "!**/.next"]
   },
   "assist": {
     "actions": {
