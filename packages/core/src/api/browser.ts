@@ -112,6 +112,10 @@ export type ConnectorSDKCallbackMetadata = {
   profileId?: string
   /** The ID of the Connection that was created or reconnected */
   connectionId?: string
+  /** The Connector Session Object */
+  connectorSession?: {
+    id: string
+  }
 }
 
 /**
@@ -132,15 +136,16 @@ export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   connectionId: string
 }
 
-/** Options to initialize Connector */
-// @todo: refactor into a union type - it's either or.
+/** Options to initialize Connector
+ *
+ *  @todo: refactor into a union type - it's either or.
+ *  Union types only allow direct access to properties that exist on all branches, not properties unique to individual branches.
+ */
 export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
   /** The Institution ID or search term to connect */
   institution?: string
-
   /** The ID of the Connection to reconnect */
   connectionId?: string
-
   /** The nonce to use for the script tag */
   nonce?: string
 }
