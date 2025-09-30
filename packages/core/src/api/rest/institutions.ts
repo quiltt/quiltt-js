@@ -43,7 +43,7 @@ export class InstitutionsAPI {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
-    headers.set('X-Quiltt-SDK-Agent', this.agent)
+    headers.set('Quiltt-SDK-Agent', this.agent)
     headers.set('Authorization', `Bearer ${token}`)
 
     return {
