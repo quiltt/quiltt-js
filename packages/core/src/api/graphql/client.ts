@@ -15,7 +15,10 @@ import {
   VersionLink,
 } from './links'
 
-export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'>
+export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
+  /** An array of initial links to inject before the default Quiltt Links */
+  customLinks?: ApolloLink[]
+}
 
 export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
   constructor(options: QuilttClientOptions<NormalizedCacheObject>) {
@@ -25,6 +28,8 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
         enabled: options.devtools?.enabled ?? debugging,
       },
     }
+
+    const initialLinks = options.customLinks ? [...options.customLinks] : []
 
     const isOperationDefinition = (def: DefinitionNode): def is OperationDefinitionNode =>
       def.kind === 'OperationDefinition'
@@ -42,7 +47,13 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
     const authLink = new AuthLink()
     const subscriptionsLink = new SubscriptionLink()
 
-    const quilttLink = ApolloLink.from([VersionLink, authLink, ErrorLink, RetryLink])
+    const quilttLink = ApolloLink.from([
+      ...initialLinks,
+      VersionLink,
+      authLink,
+      ErrorLink,
+      RetryLink,
+    ])
       .split(isSubscriptionOperation, subscriptionsLink, ForwardableLink)
       .split(isBatchable, BatchHttpLink, HttpLink)
 
