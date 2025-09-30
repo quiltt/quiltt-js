@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 4.3.0
+
+### Minor Changes
+
+- [#363](https://github.com/quiltt/quiltt-js/pull/363) [`641d766`](https://github.com/quiltt/quiltt-js/commit/641d76620ffbb99bc80fdc9998ac936883fe1d06) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Upgrade rails/actioncable to v8
+
 ## 4.2.3
 
 ### Patch Changes
