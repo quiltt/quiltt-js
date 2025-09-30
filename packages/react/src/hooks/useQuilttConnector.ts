@@ -73,61 +73,47 @@ export const useQuilttConnector = (
     }
   }, [connectorId, options?.connectionId, options?.institution, status])
 
-  // onEvent
+  // Register event handlers
   useEffect(() => {
-    if (!connector || !options?.onEvent) return
+    if (!connector) return
 
-    connector.onEvent(options.onEvent)
-    return () => connector.offEvent(options.onEvent as any)
-  }, [connector, options?.onEvent])
+    const handlers = {
+      onEvent: options?.onEvent,
+      onOpen: options?.onOpen,
+      onLoad: options?.onLoad,
+      onExit: options?.onExit,
+      onExitSuccess: options?.onExitSuccess,
+      onExitAbort: options?.onExitAbort,
+      onExitError: options?.onExitError,
+    }
 
-  // onOpen
-  useEffect(() => {
-    if (!connector || !options?.onOpen) return
+    if (handlers.onEvent) connector.onEvent(handlers.onEvent)
+    if (handlers.onOpen) connector.onOpen(handlers.onOpen)
+    if (handlers.onLoad) connector.onLoad(handlers.onLoad)
+    if (handlers.onExit) connector.onExit(handlers.onExit)
+    if (handlers.onExitSuccess) connector.onExitSuccess(handlers.onExitSuccess)
+    if (handlers.onExitAbort) connector.onExitAbort(handlers.onExitAbort)
+    if (handlers.onExitError) connector.onExitError(handlers.onExitError)
 
-    connector.onOpen(options.onOpen)
-    return () => connector.offOpen(options.onOpen as any)
-  }, [connector, options?.onOpen])
-
-  // onLoad
-  useEffect(() => {
-    if (!connector || !options?.onLoad) return
-
-    connector.onLoad(options.onLoad)
-    return () => connector.offLoad(options.onLoad as any)
-  }, [connector, options?.onLoad])
-
-  // onExit
-  useEffect(() => {
-    if (!connector || !options?.onExit) return
-
-    connector.onExit(options.onExit)
-    return () => connector.offExit(options.onExit as any)
-  }, [connector, options?.onExit])
-
-  // onExitSuccess
-  useEffect(() => {
-    if (!connector || !options?.onExitSuccess) return
-
-    connector.onExitSuccess(options.onExitSuccess)
-    return () => connector.offExitSuccess(options.onExitSuccess as any)
-  }, [connector, options?.onExitSuccess])
-
-  // onExitAbort
-  useEffect(() => {
-    if (!connector || !options?.onExitAbort) return
-
-    connector.onExitAbort(options.onExitAbort)
-    return () => connector.offExitAbort(options.onExitAbort as any)
-  }, [connector, options?.onExitAbort])
-
-  // onExitError
-  useEffect(() => {
-    if (!connector || !options?.onExitError) return
-
-    connector.onExitError(options.onExitError)
-    return () => connector.offExitError(options.onExitError as any)
-  }, [connector, options?.onExitError])
+    return () => {
+      if (handlers.onEvent) connector.offEvent(handlers.onEvent)
+      if (handlers.onOpen) connector.offOpen(handlers.onOpen)
+      if (handlers.onLoad) connector.offLoad(handlers.onLoad)
+      if (handlers.onExit) connector.offExit(handlers.onExit)
+      if (handlers.onExitSuccess) connector.offExitSuccess(handlers.onExitSuccess)
+      if (handlers.onExitAbort) connector.offExitAbort(handlers.onExitAbort)
+      if (handlers.onExitError) connector.offExitError(handlers.onExitError)
+    }
+  }, [
+    connector,
+    options?.onEvent,
+    options?.onOpen,
+    options?.onLoad,
+    options?.onExit,
+    options?.onExitSuccess,
+    options?.onExitAbort,
+    options?.onExitError,
+  ])
 
   // This is used to hide any potential race conditions from usage; allowing
   // interaction before the script may have loaded.

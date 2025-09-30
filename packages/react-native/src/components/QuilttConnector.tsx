@@ -28,6 +28,23 @@ export type PreFlightCheck = {
   error?: string
 }
 
+const parseMetadata = (url: URL, connectorId: string): ConnectorSDKCallbackMetadata => {
+  const metadata: ConnectorSDKCallbackMetadata = {
+    connectorId: url.searchParams.get('connectorId') ?? connectorId,
+  }
+
+  const profileId = url.searchParams.get('profileId')
+  if (profileId) metadata.profileId = profileId
+
+  const connectionId = url.searchParams.get('connectionId')
+  if (connectionId) metadata.connectionId = connectionId
+
+  const connectorSessionId = url.searchParams.get('connectorSession')
+  if (connectorSessionId) metadata.connectorSession = { id: connectorSessionId }
+
+  return metadata
+}
+
 export const checkConnectorUrl = async (
   connectorUrl: string,
   retryCount = 0
@@ -226,7 +243,7 @@ const QuilttConnector = ({
     (url: URL) => {
       url.searchParams.delete('source')
       url.searchParams.append('connectorId', connectorId)
-      const metadata = Object.fromEntries(url.searchParams) as ConnectorSDKCallbackMetadata
+      const metadata = parseMetadata(url, connectorId)
 
       requestAnimationFrame(() => {
         const eventType = url.host
