@@ -617,11 +617,7 @@ describe('useQuilttConnector', () => {
   })
 
   describe('Cleanup and Memory Management', () => {
-    it.skip('should throw if unmounted while connector is open', async () => {
-      // Note: Verified this works by temporarily changing implementation to console.warn for testing,
-      // but keeping throw for stronger dev feedback in production.
-      // Throwing during React's cleanup phase pollutes internal state and causes subsequent tests to fail,
-      // making it hard to test in a unit test suite.
+    it('should throw if unmounted while connector is open', async () => {
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
       const onOpen = vi.fn()
