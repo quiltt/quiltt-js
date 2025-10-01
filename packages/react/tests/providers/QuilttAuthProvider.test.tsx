@@ -23,6 +23,7 @@ vi.mock('@quiltt/core', () => ({
     resetStore: vi.fn(),
   })),
   InMemoryCache: vi.fn(),
+  TerminatingLink: vi.fn(),
 }))
 
 describe('QuilttAuthProvider', () => {
