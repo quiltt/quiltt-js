@@ -77,15 +77,21 @@ export const useQuilttConnector = (
   }, [connectorId, options?.connectionId, options?.institution, status])
 
   // Internal handlers to track connector state
-  const handleOpen = useCallback((metadata: any) => {
-    isConnectorOpenRef.current = true
-    options?.onOpen?.(metadata)
-  }, [options?.onOpen])
+  const handleOpen = useCallback(
+    (metadata: any) => {
+      isConnectorOpenRef.current = true
+      options?.onOpen?.(metadata)
+    },
+    [options?.onOpen]
+  )
 
-  const handleExit = useCallback((type: any, metadata: any) => {
-    isConnectorOpenRef.current = false
-    options?.onExit?.(type, metadata)
-  }, [options?.onExit])
+  const handleExit = useCallback(
+    (type: any, metadata: any) => {
+      isConnectorOpenRef.current = false
+      options?.onExit?.(type, metadata)
+    },
+    [options?.onExit]
+  )
 
   // Register event handlers
   useEffect(() => {
@@ -142,10 +148,10 @@ export const useQuilttConnector = (
   useEffect(() => {
     return () => {
       if (isConnectorOpenRef.current) {
-         throw new Error(
+        throw new Error(
           'useQuilttConnector: Component unmounted while connector is still open. ' +
-          'This may lead to memory leaks or unexpected behavior. ' +
-          'Consider ensuring the connector is properly closed before component unmount.'
+            'This may lead to memory leaks or unexpected behavior. ' +
+            'Consider ensuring the connector is properly closed before component unmount.'
         )
       }
     }
