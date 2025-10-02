@@ -148,10 +148,10 @@ export const useQuilttConnector = (
   useEffect(() => {
     return () => {
       if (isConnectorOpenRef.current) {
-        console.warn(
-          'useQuilttConnector: Component unmounted while connector is still open. ' +
+        console.error(
+          '[Quiltt] useQuilttConnector: Component unmounted while Connector is still open. ' +
             'This may lead to memory leaks or unexpected behavior. ' +
-            'Consider ensuring the connector is properly closed before component unmount.'
+            'Ensure the Connector is properly closed before component unmount.'
         )
       }
     }

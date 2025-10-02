@@ -617,8 +617,8 @@ describe('useQuilttConnector', () => {
   })
 
   describe('Cleanup and Memory Management', () => {
-    it('should throw if unmounted while connector is open', async () => {
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    it('should log an error if unmounted while connector is open', async () => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
       const onOpen = vi.fn()
 
@@ -637,11 +637,11 @@ describe('useQuilttConnector', () => {
       // Unmount while open
       unmount()
 
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Component unmounted while connector is still open')
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Component unmounted while Connector is still open')
       )
 
-      warnSpy.mockRestore()
+      errorSpy.mockRestore()
     })
 
     it('should not throw error if unmounted after connector is closed', async () => {

@@ -1,9 +1,9 @@
 import type { FC } from 'react'
 
-import { QuilttAuthProvider } from './QuilttAuthProvider'
-import { QuilttSettingsProvider } from './QuilttSettingsProvider'
-import type { QuilttSettingsProviderProps } from './QuilttSettingsProvider'
 import type { QuilttAuthProviderProps } from './QuilttAuthProvider'
+import { QuilttAuthProvider } from './QuilttAuthProvider'
+import type { QuilttSettingsProviderProps } from './QuilttSettingsProvider'
+import { QuilttSettingsProvider } from './QuilttSettingsProvider'
 
 type QuilttProviderProps = QuilttSettingsProviderProps & QuilttAuthProviderProps
 
