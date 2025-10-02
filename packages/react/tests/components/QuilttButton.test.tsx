@@ -1,9 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render } from '@testing-library/react'
 
 import { QuilttButton } from '@/components'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 
+// Mock at module level with a default implementation
 vi.mock('@/hooks/useQuilttConnector', () => ({
   useQuilttConnector: vi.fn(),
 }))
@@ -12,11 +13,18 @@ describe('QuilttButton', () => {
   const mockOpen = vi.fn()
 
   beforeEach(() => {
-    vi.clearAllMocks()
-    // Ensure the mock always returns the expected object structure
-    vi.mocked(useQuilttConnector).mockReturnValue({
+    // Clear only the mock function calls, not the implementation
+    mockOpen.mockClear()
+
+    // Set implementation
+    vi.mocked(useQuilttConnector).mockImplementation(() => ({
       open: mockOpen,
-    })
+    }))
+  })
+
+  afterEach(() => {
+    // Clean up after each test
+    vi.mocked(useQuilttConnector).mockReset()
   })
 
   it('calls onClick and then opens the connector when clicked', () => {
@@ -31,11 +39,8 @@ describe('QuilttButton', () => {
     const button = getByRole('button')
     fireEvent.click(button)
 
-    // Verify the sequence of operations
     expect(onClick).toHaveBeenCalled()
     expect(mockOpen).toHaveBeenCalled()
-
-    // Verify the order of operations
     expect(onClick.mock.invocationCallOrder[0]).toBeLessThan(mockOpen.mock.invocationCallOrder[0])
   })
 
@@ -47,17 +52,14 @@ describe('QuilttButton', () => {
       </QuilttButton>
     )
 
-    // Get the button directly from the container
     const button = container.querySelector('button')
     expect(button).toBeTruthy()
 
-    // Create a proper load event
     const loadEvent = new Event('load', {
       bubbles: true,
       cancelable: true,
     })
 
-    // Manually handle the event listener
     if (button) {
       button.addEventListener('load', onHtmlLoad)
       button.dispatchEvent(loadEvent)
