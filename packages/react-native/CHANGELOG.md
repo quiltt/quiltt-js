@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 4.3.1
+
+### Patch Changes
+
+- [#366](https://github.com/quiltt/quiltt-js/pull/366) [`dc376b5`](https://github.com/quiltt/quiltt-js/commit/dc376b52dd824d7867ca74677bbfd5c54eff5cdc) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Warn if useQuilttConnector is unmounted while in use
+
+- Updated dependencies [[`dc376b5`](https://github.com/quiltt/quiltt-js/commit/dc376b52dd824d7867ca74677bbfd5c54eff5cdc)]:
+  - @quiltt/react@4.3.1
+  - @quiltt/core@4.3.1
+
 ## 4.3.0
 
 ### Minor Changes
