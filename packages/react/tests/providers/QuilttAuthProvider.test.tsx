@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 
 import { InMemoryCache, QuilttClient, TerminatingLink } from '@quiltt/core'
+
 import { QuilttAuthProvider } from '@/providers/QuilttAuthProvider'
 
 // Mock the useQuilttSession hook
