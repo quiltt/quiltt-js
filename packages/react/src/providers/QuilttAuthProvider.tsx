@@ -9,8 +9,10 @@ import { InMemoryCache, QuilttClient } from '@quiltt/core'
 import { useQuilttSession } from '@/hooks'
 import { isDeepEqual } from '@/utils'
 
-type QuilttAuthProviderProps = PropsWithChildren & {
-  /** The Session token obtained from the server */
+export type QuilttAuthProviderProps = PropsWithChildren & {
+  /** A custom QuilttClient instance to use instead of the default */
+  graphqlClient?: QuilttClient
+  /** The Quiltt Session token obtained from the server */
   token?: string
 }
 
@@ -20,17 +22,22 @@ type QuilttAuthProviderProps = PropsWithChildren & {
  * into a loading state and the children are not rendered to prevent race conditions
  * from triggering within the transitionary state.
  */
-export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, children }) => {
+export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
+  graphqlClient,
+  token,
+  children,
+}) => {
   const { session, importSession } = useQuilttSession()
   const previousSessionRef = useRef(session)
 
-  // @todo: extract into a provider so it can accessed by child components
-  const graphQLClient = useMemo(
+  // Memoize the client to avoid unnecessary re-renders
+  const apolloClient = useMemo(
     () =>
+      graphqlClient ||
       new QuilttClient({
         cache: new InMemoryCache(),
       }),
-    []
+    [graphqlClient]
   )
 
   // Import passed in token
@@ -41,12 +48,12 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({ token, childre
   // Reset Client Store when session changes (using deep comparison)
   useEffect(() => {
     if (!isDeepEqual(session, previousSessionRef.current)) {
-      graphQLClient.resetStore()
+      apolloClient.resetStore()
       previousSessionRef.current = session
     }
-  }, [session, graphQLClient])
+  }, [session, apolloClient])
 
-  return <ApolloProvider client={graphQLClient}>{children}</ApolloProvider>
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
 }
 
 export default QuilttAuthProvider

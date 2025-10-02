@@ -1,19 +1,23 @@
-import type { FC, PropsWithChildren } from 'react'
+import type { FC } from 'react'
 
 import { QuilttAuthProvider } from './QuilttAuthProvider'
 import { QuilttSettingsProvider } from './QuilttSettingsProvider'
+import type { QuilttSettingsProviderProps } from './QuilttSettingsProvider'
+import type { QuilttAuthProviderProps } from './QuilttAuthProvider'
 
-type QuilttProviderProps = PropsWithChildren & {
-  /** The client ID for the client-side Auth API */
-  clientId?: string
-  /** The Session token obtained from the server */
-  token?: string
-}
+type QuilttProviderProps = QuilttSettingsProviderProps & QuilttAuthProviderProps
 
-export const QuilttProvider: FC<QuilttProviderProps> = ({ clientId, token, children }) => {
+export const QuilttProvider: FC<QuilttProviderProps> = ({
+  clientId,
+  graphqlClient,
+  token,
+  children,
+}) => {
   return (
     <QuilttSettingsProvider clientId={clientId}>
-      <QuilttAuthProvider token={token}>{children}</QuilttAuthProvider>
+      <QuilttAuthProvider token={token} graphqlClient={graphqlClient}>
+        {children}
+      </QuilttAuthProvider>
     </QuilttSettingsProvider>
   )
 }

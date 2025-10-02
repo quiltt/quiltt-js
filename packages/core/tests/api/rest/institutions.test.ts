@@ -143,7 +143,7 @@ describe('InstitutionsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('X-Quiltt-SDK-Agent')).toBe('test-agent')
+      expect(headers.get('Quiltt-SDK-Agent')).toBe('test-agent')
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 
@@ -164,7 +164,7 @@ describe('InstitutionsAPI', () => {
       const callArgs = mockFetchWithRetry.mock.calls[0][1]
       const headers = callArgs?.headers as Headers
 
-      expect(headers.get('X-Quiltt-SDK-Agent')).toBe('react-native')
+      expect(headers.get('Quiltt-SDK-Agent')).toBe('react-native')
     })
   })
 

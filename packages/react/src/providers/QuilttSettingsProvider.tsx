@@ -5,8 +5,8 @@ import { useState } from 'react'
 
 import { QuilttSettings } from '@/contexts/QuilttSettings'
 
-type QuilttSettingsProviderProps = PropsWithChildren & {
-  /** The Client ID to use for the client-side Auth API */
+export type QuilttSettingsProviderProps = PropsWithChildren & {
+  /** The Client ID to use for the passwordless Auth API */
   clientId?: string
 }
 

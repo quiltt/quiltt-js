@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import type { ApolloLink, Operation } from '@apollo/client/core'
-import { gql } from '@apollo/client/core'
+import type { Operation } from '@apollo/client/core'
+import { ApolloLink, gql } from '@apollo/client/core'
 
 import { InMemoryCache, QuilttClient } from '@/api/graphql/client'
 
@@ -23,6 +23,19 @@ describe('QuilttClient', () => {
   it('should configure links correctly', () => {
     const client = new QuilttClient({ cache: new InMemoryCache() })
     expect(client.link).toBeDefined()
+    expect('split' in (client.link as ApolloLink)).toBe(true) // ApolloLink instance method
+  })
+
+  it('allows custom links to be provided', () => {
+    const customLink = new ApolloLink((operation, forward) => {
+      // Custom link logic (no-op for this test)
+      return forward ? forward(operation) : null
+    })
+
+    const client = new QuilttClient({ cache: new InMemoryCache(), customLinks: [customLink] })
+
+    // @todo: test that the custom link is actually used in the link chain
+    expect(client.link).toBeInstanceOf(ApolloLink)
   })
 
   it('should handle subscription operations', async () => {

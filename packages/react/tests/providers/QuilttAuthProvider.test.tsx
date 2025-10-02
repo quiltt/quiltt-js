@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 
+import { InMemoryCache, QuilttClient, TerminatingLink } from '@quiltt/core'
 import { QuilttAuthProvider } from '@/providers/QuilttAuthProvider'
 
 // Mock the useQuilttSession hook
@@ -22,6 +23,7 @@ vi.mock('@quiltt/core', () => ({
     resetStore: vi.fn(),
   })),
   InMemoryCache: vi.fn(),
+  TerminatingLink: vi.fn(),
 }))
 
 describe('QuilttAuthProvider', () => {
@@ -37,6 +39,18 @@ describe('QuilttAuthProvider', () => {
     )
 
     expect(getByText('Test Child')).toBeTruthy()
+  })
+
+  it('handles graphqlClient prop correctly', () => {
+    const customClient = new QuilttClient({
+      customLinks: [TerminatingLink],
+      cache: new InMemoryCache(),
+    })
+    render(
+      <QuilttAuthProvider graphqlClient={customClient}>
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
   })
 
   it('handles token prop correctly', () => {
