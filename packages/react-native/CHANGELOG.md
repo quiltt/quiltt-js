@@ -5,6 +5,7 @@
 ### Patch Changes
 
 - [#366](https://github.com/quiltt/quiltt-js/pull/366) [`dc376b5`](https://github.com/quiltt/quiltt-js/commit/dc376b52dd824d7867ca74677bbfd5c54eff5cdc) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Warn if useQuilttConnector is unmounted while in use
+- [#365](https://github.com/quiltt/quiltt-js/pull/365) [`5f6b8af`](https://github.com/quiltt/quiltt-js/commit/5f6b8af153086c77bb2227d43ae7023fb0c47985) Thanks [@rubendinho](https://github.com/rubendinho)! - Standardize SDK agent tracking header to `Quiltt-SDK-Agent` and add support for custom Apollo Links injection
 
 - Updated dependencies [[`dc376b5`](https://github.com/quiltt/quiltt-js/commit/dc376b52dd824d7867ca74677bbfd5c54eff5cdc)]:
   - @quiltt/react@4.3.1
