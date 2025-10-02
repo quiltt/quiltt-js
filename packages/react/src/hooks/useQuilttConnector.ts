@@ -35,6 +35,9 @@ export const useQuilttConnector = (
   const prevConnectorIdRef = useRef<string | undefined>(connectorId)
   const connectorCreatedRef = useRef<boolean>(false)
 
+  // Track whether the connector is currently open
+  const isConnectorOpenRef = useRef<boolean>(false)
+
   // Set Session
   // biome-ignore lint/correctness/useExhaustiveDependencies: trigger effects when script status changes too
   useEffect(() => {
@@ -73,15 +76,32 @@ export const useQuilttConnector = (
     }
   }, [connectorId, options?.connectionId, options?.institution, status])
 
+  // Internal handlers to track connector state
+  const handleOpen = useCallback(
+    (metadata: any) => {
+      isConnectorOpenRef.current = true
+      options?.onOpen?.(metadata)
+    },
+    [options?.onOpen]
+  )
+
+  const handleExit = useCallback(
+    (type: any, metadata: any) => {
+      isConnectorOpenRef.current = false
+      options?.onExit?.(type, metadata)
+    },
+    [options?.onExit]
+  )
+
   // Register event handlers
   useEffect(() => {
     if (!connector) return
 
     const handlers = {
       onEvent: options?.onEvent,
-      onOpen: options?.onOpen,
+      onOpen: handleOpen,
       onLoad: options?.onLoad,
-      onExit: options?.onExit,
+      onExit: handleExit,
       onExitSuccess: options?.onExitSuccess,
       onExitAbort: options?.onExitAbort,
       onExitError: options?.onExitError,
@@ -107,9 +127,9 @@ export const useQuilttConnector = (
   }, [
     connector,
     options?.onEvent,
-    options?.onOpen,
+    handleOpen,
     options?.onLoad,
-    options?.onExit,
+    handleExit,
     options?.onExitSuccess,
     options?.onExitAbort,
     options?.onExitError,
@@ -123,6 +143,19 @@ export const useQuilttConnector = (
       connector.open()
     }
   }, [connector, isOpening])
+
+  // Cleanup effect - runs when the hook is torn down
+  useEffect(() => {
+    return () => {
+      if (isConnectorOpenRef.current) {
+        console.warn(
+          'useQuilttConnector: Component unmounted while connector is still open. ' +
+            'This may lead to memory leaks or unexpected behavior. ' +
+            'Consider ensuring the connector is properly closed before component unmount.'
+        )
+      }
+    }
+  }, [])
 
   const open = useCallback(() => {
     if (connectorId) {
