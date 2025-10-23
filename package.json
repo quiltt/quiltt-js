@@ -34,7 +34,7 @@
     "check-dependency-version-consistency": "5.0.1",
     "happy-dom": "20.0.2",
     "turbo": "2.5.6",
-    "vite": "7.1.6",
+    "vite": "7.1.11",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.4",
     "vitest-react-native": "0.1.5"
