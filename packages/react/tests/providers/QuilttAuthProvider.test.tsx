@@ -5,13 +5,20 @@ import { InMemoryCache, QuilttClient, TerminatingLink } from '@quiltt/core'
 
 import { QuilttAuthProvider } from '@/providers/QuilttAuthProvider'
 
+// Create a mock function outside to track calls
+const mockImportSession = vi.fn()
+
 // Mock the useQuilttSession hook
 vi.mock('@/hooks', () => ({
   useQuilttSession: () => ({
     session: {}, // Provide a mock session object instead of null
-    importSession: vi.fn(),
+    importSession: mockImportSession,
   }),
-  isDeepEqual: vi.fn().mockReturnValue(true), // Add this if needed
+}))
+
+// Mock the utils
+vi.mock('@/utils', () => ({
+  isDeepEqual: vi.fn().mockReturnValue(true),
 }))
 
 // Add mocks for Apollo Client
@@ -61,5 +68,40 @@ describe('QuilttAuthProvider', () => {
         <div>Test Child</div>
       </QuilttAuthProvider>
     )
+  })
+
+  it('only calls importSession when token value changes, not when reference changes', () => {
+    const token = 'test-token-123'
+
+    // Initial render with token
+    const { rerender } = render(
+      <QuilttAuthProvider token={token}>
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
+
+    expect(mockImportSession).toHaveBeenCalledTimes(1)
+    expect(mockImportSession).toHaveBeenCalledWith(token)
+
+    // Rerender with same token value but new string instance
+    rerender(
+      <QuilttAuthProvider token={'test-token-123'}>
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
+
+    // Should NOT call importSession again since value is the same
+    expect(mockImportSession).toHaveBeenCalledTimes(1)
+
+    // Rerender with different token value
+    rerender(
+      <QuilttAuthProvider token="different-token">
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
+
+    // Should call importSession with new token
+    expect(mockImportSession).toHaveBeenCalledTimes(2)
+    expect(mockImportSession).toHaveBeenCalledWith('different-token')
   })
 })
