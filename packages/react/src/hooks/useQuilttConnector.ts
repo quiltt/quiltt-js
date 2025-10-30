@@ -126,23 +126,33 @@ export const useQuilttConnector = (
   useEffect(() => {
     if (!connector) return
 
-    // Use stable callback wrappers
-    if (callbacksRef.current?.onEvent) connector.onEvent(stableOnEvent)
-    if (callbacksRef.current?.onOpen) connector.onOpen(handleOpen)
-    if (callbacksRef.current?.onLoad) connector.onLoad(stableOnLoad)
-    if (callbacksRef.current?.onExit) connector.onExit(handleExit)
-    if (callbacksRef.current?.onExitSuccess) connector.onExitSuccess(stableOnExitSuccess)
-    if (callbacksRef.current?.onExitAbort) connector.onExitAbort(stableOnExitAbort)
-    if (callbacksRef.current?.onExitError) connector.onExitError(stableOnExitError)
+    // Capture which handlers we're registering to ensure proper cleanup
+    const registered = {
+      onEvent: callbacksRef.current?.onEvent ? stableOnEvent : null,
+      onOpen: callbacksRef.current?.onOpen ? handleOpen : null,
+      onLoad: callbacksRef.current?.onLoad ? stableOnLoad : null,
+      onExit: callbacksRef.current?.onExit ? handleExit : null,
+      onExitSuccess: callbacksRef.current?.onExitSuccess ? stableOnExitSuccess : null,
+      onExitAbort: callbacksRef.current?.onExitAbort ? stableOnExitAbort : null,
+      onExitError: callbacksRef.current?.onExitError ? stableOnExitError : null,
+    }
+
+    if (registered.onEvent) connector.onEvent(registered.onEvent)
+    if (registered.onOpen) connector.onOpen(registered.onOpen)
+    if (registered.onLoad) connector.onLoad(registered.onLoad)
+    if (registered.onExit) connector.onExit(registered.onExit)
+    if (registered.onExitSuccess) connector.onExitSuccess(registered.onExitSuccess)
+    if (registered.onExitAbort) connector.onExitAbort(registered.onExitAbort)
+    if (registered.onExitError) connector.onExitError(registered.onExitError)
 
     return () => {
-      if (callbacksRef.current?.onEvent) connector.offEvent(stableOnEvent)
-      if (callbacksRef.current?.onOpen) connector.offOpen(handleOpen)
-      if (callbacksRef.current?.onLoad) connector.offLoad(stableOnLoad)
-      if (callbacksRef.current?.onExit) connector.offExit(handleExit)
-      if (callbacksRef.current?.onExitSuccess) connector.offExitSuccess(stableOnExitSuccess)
-      if (callbacksRef.current?.onExitAbort) connector.offExitAbort(stableOnExitAbort)
-      if (callbacksRef.current?.onExitError) connector.offExitError(stableOnExitError)
+      if (registered.onEvent) connector.offEvent(registered.onEvent)
+      if (registered.onOpen) connector.offOpen(registered.onOpen)
+      if (registered.onLoad) connector.offLoad(registered.onLoad)
+      if (registered.onExit) connector.offExit(registered.onExit)
+      if (registered.onExitSuccess) connector.offExitSuccess(registered.onExitSuccess)
+      if (registered.onExitAbort) connector.offExitAbort(registered.onExitAbort)
+      if (registered.onExitError) connector.offExitError(registered.onExitError)
     }
   }, [
     connector,

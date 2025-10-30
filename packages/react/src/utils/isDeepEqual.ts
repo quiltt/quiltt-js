@@ -31,8 +31,9 @@ export const isDeepEqual = (obj1: unknown, obj2: unknown): boolean => {
   }
   if (obj1 instanceof Set && obj2 instanceof Set) {
     if (obj1.size !== obj2.size) return false
+    const arr2 = Array.from(obj2)
     for (const item of obj1) {
-      if (!Array.from(obj2).some((value) => isDeepEqual(item, value))) return false
+      if (!arr2.some((value) => isDeepEqual(item, value))) return false
     }
     return true
   }
