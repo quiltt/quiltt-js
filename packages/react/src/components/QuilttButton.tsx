@@ -127,10 +127,12 @@ export const QuilttButton = <T extends ElementType = 'button'>({
     // 1. Pre-open validation
     // 2. Preventing opening via event.preventDefault()
     // 3. Setting up state before connector opens
-    if (onClick) onClick(event)
+    onClick?.(event)
 
-    // Then open the Quiltt connector
-    open()
+    // Only open if event wasn't prevented
+    if (!event.defaultPrevented) {
+      open()
+    }
   }
 
   // Generate key for forced remounting if enabled, but respect user-provided key

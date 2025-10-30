@@ -385,5 +385,40 @@ describe('useQuilttInstitutions', async () => {
         )
       })
     })
+
+    it('aborts pending request on unmount', async () => {
+      let capturedAbortSignal: AbortSignal | undefined
+
+      mockSearch.mockImplementation((_token, _connectorId, _searchTerm, signal) => {
+        capturedAbortSignal = signal
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({ status: 200, data: [] })
+          }, 1000)
+        })
+      })
+
+      const { result, unmount } = renderHook(() =>
+        useQuilttInstitutions('mockConnectorId', vi.fn())
+      )
+
+      act(() => {
+        result.current.setSearchTerm('test')
+      })
+
+      await waitFor(() => {
+        expect(mockSearch).toHaveBeenCalled()
+        expect(capturedAbortSignal).toBeDefined()
+      })
+
+      // Verify signal is not aborted yet
+      expect(capturedAbortSignal?.aborted).toBe(false)
+
+      // Unmount the hook
+      unmount()
+
+      // Verify signal is now aborted (cleanup ran)
+      expect(capturedAbortSignal?.aborted).toBe(true)
+    })
   })
 })

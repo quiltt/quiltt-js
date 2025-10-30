@@ -104,4 +104,39 @@ describe('QuilttAuthProvider', () => {
     expect(mockImportSession).toHaveBeenCalledTimes(2)
     expect(mockImportSession).toHaveBeenCalledWith('different-token')
   })
+
+  it('allows re-importing same token after it becomes undefined', () => {
+    const token = 'test-token-123'
+
+    // Initial render with token
+    const { rerender } = render(
+      <QuilttAuthProvider token={token}>
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
+
+    expect(mockImportSession).toHaveBeenCalledTimes(1)
+    expect(mockImportSession).toHaveBeenCalledWith(token)
+
+    // Clear token (simulate logout or session end)
+    rerender(
+      <QuilttAuthProvider token={undefined}>
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
+
+    // importSession shouldn't be called with undefined
+    expect(mockImportSession).toHaveBeenCalledTimes(1)
+
+    // Re-import the same token (simulate re-login)
+    rerender(
+      <QuilttAuthProvider token={token}>
+        <div>Test Child</div>
+      </QuilttAuthProvider>
+    )
+
+    // Should call importSession again since ref was reset when token became undefined
+    expect(mockImportSession).toHaveBeenCalledTimes(2)
+    expect(mockImportSession).toHaveBeenCalledWith(token)
+  })
 })

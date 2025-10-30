@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ErrorData, InstitutionsData } from '@quiltt/core'
 import { InstitutionsAPI } from '@quiltt/core'
@@ -53,6 +53,12 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
 
   const [isSearching, setIsSearching] = useState(false)
 
+  // Store callback in ref to maintain stable reference
+  const onErrorCallbackRef = useRef(onErrorCallback)
+  useEffect(() => {
+    onErrorCallbackRef.current = onErrorCallback
+  })
+
   /**
    * Start Search
    * This function is used to initiate a search for institutions based on the provided term with
@@ -69,15 +75,12 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
     setSearchTermInput(term)
   }, [])
 
-  const handleError = useCallback(
-    (message: string) => {
-      const errorMessage = message || 'Unknown error occurred while searching institutions'
+  const handleError = useCallback((message: string) => {
+    const errorMessage = message || 'Unknown error occurred while searching institutions'
 
-      console.error('Quiltt Institutions Search Error:', errorMessage)
-      if (onErrorCallback) onErrorCallback(errorMessage)
-    },
-    [onErrorCallback]
-  )
+    console.error('Quiltt Institutions Search Error:', errorMessage)
+    if (onErrorCallbackRef.current) onErrorCallbackRef.current(errorMessage)
+  }, [])
 
   /**
    * Run Search
@@ -104,7 +107,7 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
       })
       .catch((error) => {
         if (!abortController.signal.aborted) {
-          handleError(error.message)
+          handleError(error?.message)
           setIsSearching(false)
         }
       })

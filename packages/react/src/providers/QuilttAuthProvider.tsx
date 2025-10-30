@@ -46,6 +46,9 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
     if (token && token !== previousTokenRef.current) {
       importSession(token)
       previousTokenRef.current = token
+    } else if (!token) {
+      // Reset ref when token becomes undefined to allow re-import of same token later
+      previousTokenRef.current = undefined
     }
   }, [token, importSession])
 

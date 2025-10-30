@@ -359,6 +359,61 @@ describe('useQuilttConnector', () => {
         })
       })
     })
+
+    it('should not recreate connector when institution reference changes but value stays the same', async () => {
+      const { rerender } = renderHook(
+        ({ institution }) => useQuilttConnector('mockConnectorId', { institution }),
+        {
+          wrapper: Wrapper,
+          initialProps: { institution: 'chase' },
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
+          institution: 'chase',
+        })
+      })
+
+      vi.clearAllMocks()
+
+      // Rerender with the same value but different reference (simulates parent component re-render)
+      rerender({ institution: 'chase' })
+
+      // Give it time to potentially call connect (if it was going to)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      // Should NOT call connect again since the value is the same
+      expect(globalQuiltt.connect).not.toHaveBeenCalled()
+      expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
+    })
+
+    it('should recreate connector when institution value actually changes', async () => {
+      const { rerender } = renderHook(
+        ({ institution }) => useQuilttConnector('mockConnectorId', { institution }),
+        {
+          wrapper: Wrapper,
+          initialProps: { institution: 'chase' },
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
+          institution: 'chase',
+        })
+      })
+
+      vi.clearAllMocks()
+
+      // Rerender with a different value
+      rerender({ institution: 'bofa' })
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
+          institution: 'bofa',
+        })
+      })
+    })
   })
 
   describe('Event Handlers', () => {
@@ -378,13 +433,14 @@ describe('useQuilttConnector', () => {
       })
 
       await waitFor(() => {
-        expect(mockConnector.onEvent).toHaveBeenCalledWith(handlers.onEvent)
+        // Callbacks are now wrapped in stable functions for performance
+        expect(mockConnector.onEvent).toHaveBeenCalledWith(expect.any(Function))
         expect(mockConnector.onOpen).toHaveBeenCalledWith(expect.any(Function))
-        expect(mockConnector.onLoad).toHaveBeenCalledWith(handlers.onLoad)
+        expect(mockConnector.onLoad).toHaveBeenCalledWith(expect.any(Function))
         expect(mockConnector.onExit).toHaveBeenCalledWith(expect.any(Function))
-        expect(mockConnector.onExitSuccess).toHaveBeenCalledWith(handlers.onExitSuccess)
-        expect(mockConnector.onExitAbort).toHaveBeenCalledWith(handlers.onExitAbort)
-        expect(mockConnector.onExitError).toHaveBeenCalledWith(handlers.onExitError)
+        expect(mockConnector.onExitSuccess).toHaveBeenCalledWith(expect.any(Function))
+        expect(mockConnector.onExitAbort).toHaveBeenCalledWith(expect.any(Function))
+        expect(mockConnector.onExitError).toHaveBeenCalledWith(expect.any(Function))
       })
 
       unmount()
@@ -426,9 +482,10 @@ describe('useQuilttConnector', () => {
 
       unmount()
 
-      expect(mockConnector.offEvent).toHaveBeenCalledWith(handlers.onEvent)
+      // Callbacks are now wrapped in stable functions for performance
+      expect(mockConnector.offEvent).toHaveBeenCalledWith(expect.any(Function))
       expect(mockConnector.offOpen).toHaveBeenCalledWith(expect.any(Function))
-      expect(mockConnector.offLoad).toHaveBeenCalledWith(handlers.onLoad)
+      expect(mockConnector.offLoad).toHaveBeenCalledWith(expect.any(Function))
       expect(mockConnector.offExit).toHaveBeenCalledWith(expect.any(Function))
     })
 
@@ -492,17 +549,27 @@ describe('useQuilttConnector', () => {
       )
 
       await waitFor(() => {
-        expect(mockConnector.onEvent).toHaveBeenCalledWith(onEvent1)
+        expect(mockConnector.onEvent).toHaveBeenCalledWith(expect.any(Function))
       })
+
+      // Get the stable wrapper function that was registered
+      const stableWrapper = mockConnector.onEvent.mock.calls[0][0]
 
       vi.clearAllMocks()
 
       rerender({ onEvent: onEvent2 })
 
+      // With stable callbacks, handlers should NOT be re-registered
+      // This is the key improvement - no churn when callbacks change
       await waitFor(() => {
-        expect(mockConnector.offEvent).toHaveBeenCalledWith(onEvent1)
-        expect(mockConnector.onEvent).toHaveBeenCalledWith(onEvent2)
+        expect(mockConnector.offEvent).not.toHaveBeenCalled()
+        expect(mockConnector.onEvent).not.toHaveBeenCalled()
       })
+
+      // But the new callback should still be called when the event fires
+      stableWrapper('testEvent', { test: 'data' })
+      expect(onEvent2).toHaveBeenCalledWith('testEvent', { test: 'data' })
+      expect(onEvent1).not.toHaveBeenCalled()
 
       unmount()
     })
