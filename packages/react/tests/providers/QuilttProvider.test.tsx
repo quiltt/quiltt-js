@@ -1,11 +1,11 @@
 import { createContext } from 'react'
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, render, waitFor } from '@testing-library/react'
 
 import { QuilttProvider } from '@/providers/QuilttProvider'
 
-// Mock QuilttClient from core
+// Mock QuilttClient from core with proper async behavior
 vi.mock('@quiltt/core', async (importOriginal) => {
   const actual = await importOriginal()
   return {
@@ -14,6 +14,7 @@ vi.mock('@quiltt/core', async (importOriginal) => {
       apolloClient: {
         resetStore: vi.fn().mockResolvedValue(undefined),
         clearStore: vi.fn().mockResolvedValue(undefined),
+        stop: vi.fn(),
         cache: {
           reset: vi.fn(),
         },
@@ -22,7 +23,7 @@ vi.mock('@quiltt/core', async (importOriginal) => {
   }
 })
 
-// Mock the hooks module and maintain the QuilttSettings context
+// Mock the hooks module
 vi.mock('@/hooks', async (importOriginal) => {
   const actual = await importOriginal()
   return {
@@ -40,17 +41,23 @@ describe('QuilttProvider', () => {
     vi.clearAllMocks()
   })
 
-  it('renders children correctly', () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  it('renders children correctly', async () => {
     const { getByText } = render(
       <QuilttProvider clientId="test-client-id">
         <div>Test Child</div>
       </QuilttProvider>
     )
 
-    expect(getByText('Test Child')).toBeTruthy()
+    await waitFor(() => {
+      expect(getByText('Test Child')).toBeTruthy()
+    })
   })
 
-  it('accepts and passes clientId prop', () => {
+  it('accepts and passes clientId prop', async () => {
     const testClientId = 'test-client-id'
     const { container } = render(
       <QuilttProvider clientId={testClientId}>
@@ -58,6 +65,8 @@ describe('QuilttProvider', () => {
       </QuilttProvider>
     )
 
-    expect(container).toBeTruthy()
+    await waitFor(() => {
+      expect(container).toBeTruthy()
+    })
   })
 })
