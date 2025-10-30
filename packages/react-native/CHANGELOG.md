@@ -1,5 +1,15 @@
 # @quiltt/react-native
 
+## 4.3.2
+
+### Patch Changes
+
+- [#372](https://github.com/quiltt/quiltt-js/pull/372) [`c022ebe`](https://github.com/quiltt/quiltt-js/commit/c022ebed0c82404a1bdbf5abbaf6e60b49f2d07a) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Hardened React SDK against unstable prop references by implementing ref-based callback wrappers and deep equality checks, eliminating unnecessary re-renders, event handler churn, and API calls without requiring customers to use useCallback.
+
+- Updated dependencies [[`c022ebe`](https://github.com/quiltt/quiltt-js/commit/c022ebed0c82404a1bdbf5abbaf6e60b49f2d07a)]:
+  - @quiltt/react@4.3.2
+  - @quiltt/core@4.3.2
+
 ## 4.3.1
 
 ### Patch Changes
