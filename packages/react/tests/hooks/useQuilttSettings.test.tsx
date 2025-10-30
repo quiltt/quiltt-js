@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, renderHook, waitFor } from '@testing-library/react'
 
 import { useQuilttSettings } from '@/hooks/useQuilttSettings'
 import { QuilttSettingsProvider } from '@/providers/QuilttSettingsProvider'
@@ -15,6 +15,7 @@ vi.mock('@quiltt/core', async (importOriginal) => {
       apolloClient: {
         resetStore: vi.fn().mockResolvedValue(undefined),
         clearStore: vi.fn().mockResolvedValue(undefined),
+        stop: vi.fn(),
         cache: {
           reset: vi.fn(),
         },
@@ -28,7 +29,11 @@ describe('useQuilttSettings', () => {
     vi.clearAllMocks()
   })
 
-  it('returns the context value', () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  it('returns the context value', async () => {
     const expectedClientId = 'test-client-id'
 
     const Wrapper = ({ children }: PropsWithChildren) => (
@@ -39,6 +44,8 @@ describe('useQuilttSettings', () => {
       wrapper: Wrapper,
     })
 
-    expect(result.current.clientId).toBe(expectedClientId)
+    await waitFor(() => {
+      expect(result.current.clientId).toBe(expectedClientId)
+    })
   })
 })
