@@ -63,7 +63,7 @@ export default defineConfig({
       },
     },
     environment: 'node',
-    isolate: false,
+    isolate: true,
     includeTaskLocation: true,
     globals: true,
     chaiConfig: {
