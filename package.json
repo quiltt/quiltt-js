@@ -33,13 +33,13 @@
     "@vitest/coverage-istanbul": "3.2.4",
     "check-dependency-version-consistency": "5.0.1",
     "happy-dom": "20.0.2",
-    "turbo": "2.5.6",
+    "turbo": "2.5.8",
     "vite": "7.1.11",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.4",
     "vitest-react-native": "0.1.5"
   },
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.20.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
