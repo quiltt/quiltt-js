@@ -5,6 +5,23 @@ import { render } from '@testing-library/react'
 
 import { QuilttProvider } from '@/providers/QuilttProvider'
 
+// Mock QuilttClient from core
+vi.mock('@quiltt/core', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...(actual as any),
+    QuilttClient: vi.fn().mockImplementation(() => ({
+      apolloClient: {
+        resetStore: vi.fn().mockResolvedValue(undefined),
+        clearStore: vi.fn().mockResolvedValue(undefined),
+        cache: {
+          reset: vi.fn(),
+        },
+      },
+    })),
+  }
+})
+
 // Mock the hooks module and maintain the QuilttSettings context
 vi.mock('@/hooks', async (importOriginal) => {
   const actual = await importOriginal()
