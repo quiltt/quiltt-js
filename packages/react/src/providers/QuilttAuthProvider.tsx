@@ -29,6 +29,7 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
 }) => {
   const { session, importSession } = useQuilttSession()
   const previousSessionRef = useRef(session)
+  const previousTokenRef = useRef<string | undefined>()
 
   // Memoize the client to avoid unnecessary re-renders
   const apolloClient = useMemo(
@@ -40,9 +41,15 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
     [graphqlClient]
   )
 
-  // Import passed in token
+  // Import passed in token (only if value has changed)
   useEffect(() => {
-    if (token) importSession(token)
+    if (token && token !== previousTokenRef.current) {
+      importSession(token)
+      previousTokenRef.current = token
+    } else if (!token) {
+      // Reset ref when token becomes undefined to allow re-import of same token later
+      previousTokenRef.current = undefined
+    }
   }, [token, importSession])
 
   // Reset Client Store when session changes (using deep comparison)
