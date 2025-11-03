@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, waitFor } from '@testing-library/react'
 
 import { QuilttProvider } from '@/providers/QuilttProvider'
+import QuilttButton from '@/components/QuilttButton'
 
 // Mock QuilttClient from core with proper async behavior
 vi.mock('@quiltt/core', async (importOriginal) => {
@@ -68,5 +69,22 @@ describe('QuilttProvider', () => {
     await waitFor(() => {
       expect(container).toBeTruthy()
     })
+  })
+
+  it('logs an error when QuilttButton is rendered directly in QuilttProvider', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    render(
+      <QuilttProvider clientId="test-client-id">
+        <QuilttButton connectorId="test-connector-id">Test Button</QuilttButton>
+      </QuilttProvider>
+    )
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '⚠️ QuilttButton should not be rendered inside the *same component* that renders QuilttProvider.'
+      )
+    )
+
+    consoleErrorSpy.mockRestore()
   })
 })

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
+import { useProviderRenderGuard } from '@/hooks'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 import type { PropsOf } from '@/types'
 import { isDeepEqual } from '@/utils/isDeepEqual'
@@ -62,6 +63,8 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   children,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
+  useProviderRenderGuard('QuilttButton')
+
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
   const prevCallbacksRef = useRef({
