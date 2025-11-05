@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 4.3.3
+
+### Patch Changes
+
+- [#375](https://github.com/quiltt/quiltt-js/pull/375) [`fdc91e3`](https://github.com/quiltt/quiltt-js/commit/fdc91e3efb3f63659580f2d1d2ea0ff7fcaee8f5) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add 403 callback to Auth useIdentifySession
+
 ## 4.3.2
 
 ### Patch Changes
