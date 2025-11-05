@@ -14,6 +14,7 @@ type IdentifySessionCallbacks = {
   onSuccess?: () => unknown
   onChallenged?: () => unknown
   onError?: (errors: UnprocessableData) => unknown
+  onForbidden?: () => unknown
 }
 export type IdentifySession = (
   payload: UsernamePayload,
@@ -35,6 +36,10 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
 
         case 202: // Accepted
           if (callbacks.onChallenged) return callbacks.onChallenged()
+          break
+
+        case 403: // Forbidden (signups disabled)
+          if (callbacks.onForbidden) return callbacks.onForbidden()
           break
 
         case 422: // Unprocessable Content
