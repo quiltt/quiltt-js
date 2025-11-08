@@ -319,4 +319,333 @@ describe('ConnectorsAPI', () => {
       expect(result.data).toHaveLength(0)
     })
   })
+
+  describe('checkResolvable method', () => {
+    const mockToken = 'test-token-123'
+    const mockConnectorId = 'connector-456'
+
+    it('should make correct API call with plaid institution ID', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        plaid: 'ins_3',
+      })
+
+      // Verify the URL construction
+      const expectedUrl =
+        'https://api.quiltt.com/sdk/connectors/connector-456/resolvable?plaid=ins_3'
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(expectedUrl, {
+        method: 'GET',
+        signal: undefined,
+        headers: expect.any(Headers),
+        validateStatus: expect.any(Function),
+        retry: true,
+      })
+
+      expect(result).toBe(mockResponse)
+    })
+
+    it('should include abort signal when provided', async () => {
+      const mockResponse = {
+        data: { resolvable: false },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const abortController = new AbortController()
+      await connectorsAPI.checkResolvable(
+        mockToken,
+        mockConnectorId,
+        { plaid: 'ins_3' },
+        abortController.signal,
+      )
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          signal: abortController.signal,
+        }),
+      )
+    })
+
+    it('should handle empty provider ID object', async () => {
+      const mockResponse = {
+        data: { resolvable: false },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {})
+
+      const expectedUrl = 'https://api.quiltt.com/sdk/connectors/connector-456/resolvable?'
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(expectedUrl, expect.any(Object))
+    })
+
+    it('should set correct headers in config', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await connectorsAPI.checkResolvable(mockToken, mockConnectorId, { plaid: 'ins_3' })
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Content-Type')).toBe('application/json')
+      expect(headers.get('Accept')).toBe('application/json')
+      expect(headers.get('Quiltt-SDK-Agent')).toBe('test-agent')
+      expect(headers.get('Authorization')).toBe('Bearer test-token-123')
+    })
+
+    it('should handle 400 Bad Request when provider ID is missing', async () => {
+      const mockErrorResponse = {
+        data: {
+          message: 'Bad Request',
+          instruction: 'Are you sending the correct parameters?',
+        },
+        status: 400,
+        statusText: 'Bad Request',
+        headers: new Headers(),
+        ok: false,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockErrorResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {})
+
+      expect(result.status).toBe(400)
+      expect(result.data).toEqual({
+        message: 'Bad Request',
+        instruction: 'Are you sending the correct parameters?',
+      })
+    })
+
+    it('should handle 404 Not Found when connector does not exist', async () => {
+      const mockErrorResponse = {
+        data: {
+          message: 'Not Found',
+          instruction: 'Is this the correct URL?',
+        },
+        status: 404,
+        statusText: 'Not Found',
+        headers: new Headers(),
+        ok: false,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockErrorResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, 'invalid-connector', {
+        plaid: 'ins_3',
+      })
+
+      expect(result.status).toBe(404)
+      expect(result.data).toEqual({
+        message: 'Not Found',
+        instruction: 'Is this the correct URL?',
+      })
+    })
+
+    it('should handle 401 Unauthorized responses', async () => {
+      const mockErrorResponse = {
+        data: {
+          message: 'Not Authenticated',
+          instruction: 'Are you sending a valid API Key secret in the `Authorization` header?',
+        },
+        status: 401,
+        statusText: 'Unauthorized',
+        headers: new Headers(),
+        ok: false,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockErrorResponse)
+
+      const result = await connectorsAPI.checkResolvable('invalid-token', mockConnectorId, {
+        plaid: 'ins_3',
+      })
+
+      expect(result.status).toBe(401)
+      expect(result.data).toEqual({
+        message: 'Not Authenticated',
+        instruction: 'Are you sending a valid API Key secret in the `Authorization` header?',
+      })
+    })
+
+    it('should handle 403 Forbidden for unsupported SDK', async () => {
+      const mockErrorResponse = {
+        data: {
+          message: 'Forbidden',
+          instruction: 'This endpoint must be called from a supported Quiltt SDK.',
+        },
+        status: 403,
+        statusText: 'Forbidden',
+        headers: new Headers(),
+        ok: false,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockErrorResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        plaid: 'ins_3',
+      })
+
+      expect(result.status).toBe(403)
+      expect(result.data).toEqual({
+        message: 'Forbidden',
+        instruction: 'This endpoint must be called from a supported Quiltt SDK.',
+      })
+    })
+
+    it('should return resolvable true when provider ID can be resolved', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        plaid: 'ins_3',
+      })
+
+      expect(result.data).toEqual({ resolvable: true })
+      expect(result.status).toBe(200)
+    })
+
+    it('should return resolvable false when provider ID cannot be resolved', async () => {
+      const mockResponse = {
+        data: { resolvable: false },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        plaid: 'ins_unknown',
+      })
+
+      expect(result.data).toEqual({ resolvable: false })
+      expect(result.status).toBe(200)
+    })
+
+    it('should handle mock provider ID', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        mock: 'mock_123',
+      })
+
+      const expectedUrl =
+        'https://api.quiltt.com/sdk/connectors/connector-456/resolvable?mock=mock_123'
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(expectedUrl, expect.any(Object))
+      expect(result.data).toEqual({ resolvable: true })
+      expect(result.status).toBe(200)
+    })
+
+    it('should handle mx provider ID', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        mx: 'mx_123',
+      })
+
+      const expectedUrl = 'https://api.quiltt.com/sdk/connectors/connector-456/resolvable?mx=mx_123'
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(expectedUrl, expect.any(Object))
+      expect(result.data).toEqual({ resolvable: true })
+      expect(result.status).toBe(200)
+    })
+
+    it('should handle finicity provider ID', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        finicity: 'finicity_123',
+      })
+
+      const expectedUrl =
+        'https://api.quiltt.com/sdk/connectors/connector-456/resolvable?finicity=finicity_123'
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(expectedUrl, expect.any(Object))
+      expect(result.data).toEqual({ resolvable: true })
+      expect(result.status).toBe(200)
+    })
+
+    it('should handle akoya provider ID', async () => {
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      const result = await connectorsAPI.checkResolvable(mockToken, mockConnectorId, {
+        akoya: 'akoya_123',
+      })
+
+      const expectedUrl =
+        'https://api.quiltt.com/sdk/connectors/connector-456/resolvable?akoya=akoya_123'
+
+      expect(mockFetchWithRetry).toHaveBeenCalledWith(expectedUrl, expect.any(Object))
+      expect(result.data).toEqual({ resolvable: true })
+      expect(result.status).toBe(200)
+    })
+  })
 })
