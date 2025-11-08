@@ -11,7 +11,7 @@ type Search = InstitutionsData | ErrorData | UnauthorizedData
 
 export type SearchResponse = FetchResponse<InstitutionsData>
 
-export class InstitutionsAPI {
+export class ConnectorsAPI {
   clientId: string
   agent: string
 
@@ -24,18 +24,26 @@ export class InstitutionsAPI {
    * Response Statuses:
    *  - 200: OK           -> Institutions Found
    *  - 401: Unauthorized -> Invalid Token
+   *  - 403: Forbidden    -> Unsupported SDK
    *  - 400: Bad Request  -> Invalid Request
    */
-  search = async (token: string, connectorId: string, term: string, signal?: AbortSignal) => {
+  searchInstitutions = async (
+    token: string,
+    connectorId: string,
+    term: string,
+    signal?: AbortSignal,
+  ) => {
     const params = new URLSearchParams()
-    params.append('connectorId', connectorId)
     params.append('term', term)
 
-    const response = await fetchWithRetry<Search>(`${endpointRest}/sdk/institutions?${params}`, {
-      method: 'GET',
-      signal,
-      ...this.config(token),
-    })
+    const response = await fetchWithRetry<Search>(
+      `${endpointRest}/sdk/connectors/${connectorId}/institutions?${params}`,
+      {
+        method: 'GET',
+        signal,
+        ...this.config(token),
+      },
+    )
     return response
   }
 
@@ -54,17 +62,4 @@ export class InstitutionsAPI {
   }
 
   private validateStatus = (status: number) => status < 500 && status !== 429
-
-  // private body = (payload: any) => {
-  //   if (!this.clientId) {
-  //     console.error('Quiltt Client ID is not set. Unable to identify & authenticate')
-  //   }
-
-  //   return {
-  //     session: {
-  //       clientId: this.clientId,
-  //       ...payload,
-  //     },
-  //   }
-  // }
 }

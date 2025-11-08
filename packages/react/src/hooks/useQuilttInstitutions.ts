@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ErrorData, InstitutionsData } from '@quiltt/core'
-import { InstitutionsAPI } from '@quiltt/core'
+import { ConnectorsAPI } from '@quiltt/core'
 import { useDebounce } from 'use-debounce'
 
 import { version } from '../version'
@@ -41,10 +41,7 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
     return isReactNative ? `react-native-${version}` : `react-${version}`
   }, [])
 
-  const institutionsAPI = useMemo(
-    () => new InstitutionsAPI(connectorId, agent),
-    [connectorId, agent]
-  )
+  const connectorsAPI = useMemo(() => new ConnectorsAPI(connectorId, agent), [connectorId, agent])
   const [session] = useSession()
 
   const [searchTermInput, setSearchTermInput] = useState('')
@@ -93,8 +90,8 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
 
     const abortController = new AbortController()
 
-    institutionsAPI
-      .search(session?.token, connectorId, searchTerm, abortController.signal)
+    connectorsAPI
+      .searchInstitutions(session?.token, connectorId, searchTerm, abortController.signal)
       .then((response) => {
         if (!abortController.signal.aborted) {
           if (response.status === 200) {
@@ -113,7 +110,7 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
       })
 
     return () => abortController.abort()
-  }, [session?.token, connectorId, searchTerm, institutionsAPI, handleError])
+  }, [session?.token, connectorId, searchTerm, connectorsAPI, handleError])
 
   return {
     searchTerm,
