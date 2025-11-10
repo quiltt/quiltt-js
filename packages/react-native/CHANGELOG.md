@@ -1,5 +1,47 @@
 # @quiltt/react-native
 
+## 4.4.0
+
+### Minor Changes
+
+- [#378](https://github.com/quiltt/quiltt-js/pull/378) [`0af4e66`](https://github.com/quiltt/quiltt-js/commit/0af4e6622d1542e0c0c02ac7e897e3e4f9219cbd) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Add connector institution search and provider migration support.
+
+  ## New APIs
+
+  ### `useQuilttResolvable` Hook
+
+  Check if external provider institution IDs (e.g., Plaid) can be migrated to your connector.
+
+  ```typescript
+  import { useQuilttResolvable } from "@quiltt/react";
+  import { useEffect } from "react";
+
+  function ResolvableConnector({ plaidInstitutionId, children }) {
+    const { checkResolvable, isResolvable, isLoading } =
+      useQuilttResolvable("my-connector-id");
+
+    useEffect(() => {
+      checkResolvable({ plaid: plaidInstitutionId });
+    }, [plaidInstitutionId]);
+
+    if (isLoading) return <div>Checking...</div>;
+    if (!isResolvable) return null;
+
+    return <>{children}</>;
+  }
+
+  // Usage
+  <ResolvableConnector plaidInstitutionId="ins_3">
+    <QuilttButton connectorId="my-connector-id" />
+  </ResolvableConnector>;
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`0af4e66`](https://github.com/quiltt/quiltt-js/commit/0af4e6622d1542e0c0c02ac7e897e3e4f9219cbd)]:
+  - @quiltt/react@4.4.0
+  - @quiltt/core@4.4.0
+
 ## 4.3.3
 
 ### Patch Changes
