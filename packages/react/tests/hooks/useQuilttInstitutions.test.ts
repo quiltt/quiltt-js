@@ -20,10 +20,10 @@ vi.mock('@/hooks/session', () => ({
   useRevokeSession: vi.fn(),
 }))
 
-const mockSearch = vi.fn()
+const mockSearchInstitutions = vi.fn()
 vi.mock('@quiltt/core', () => ({
-  InstitutionsAPI: vi.fn().mockImplementation(() => ({
-    search: mockSearch,
+  ConnectorsAPI: vi.fn().mockImplementation(() => ({
+    searchInstitutions: mockSearchInstitutions,
   })),
 }))
 
@@ -49,7 +49,7 @@ describe('useQuilttInstitutions', async () => {
     mockConsoleError.mockClear()
 
     mockUseSession.mockReturnValue([mockSession, vi.fn()])
-    mockSearch.mockResolvedValue({
+    mockSearchInstitutions.mockResolvedValue({
       status: 200,
       data: [],
     })
@@ -112,7 +112,7 @@ describe('useQuilttInstitutions', async () => {
   describe('error handling', () => {
     it('logs error to console and calls onErrorCallback when API returns non-200 status', async () => {
       const mockErrorCallback = vi.fn()
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 400,
         data: { message: 'API Error' },
       })
@@ -138,7 +138,7 @@ describe('useQuilttInstitutions', async () => {
 
     it('uses default error message when no message provided', async () => {
       const mockErrorCallback = vi.fn()
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 400,
         data: { message: '' },
       })
@@ -164,7 +164,7 @@ describe('useQuilttInstitutions', async () => {
 
     it('uses fallback error message when message is undefined', async () => {
       const mockErrorCallback = vi.fn()
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 400,
         data: {},
       })
@@ -189,7 +189,7 @@ describe('useQuilttInstitutions', async () => {
     })
 
     it('works without onErrorCallback', async () => {
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 400,
         data: { message: 'API Error' },
       })
@@ -213,7 +213,7 @@ describe('useQuilttInstitutions', async () => {
     it('handles network errors thrown by search method', async () => {
       const mockErrorCallback = vi.fn()
       const mockError = new Error('Network error')
-      mockSearch.mockRejectedValue(mockError)
+      mockSearchInstitutions.mockRejectedValue(mockError)
 
       const { result } = renderHook(() =>
         useQuilttInstitutions('mockConnectorId', mockErrorCallback)
@@ -241,7 +241,7 @@ describe('useQuilttInstitutions', async () => {
     it('ignores errors from aborted requests', async () => {
       const mockErrorCallback = vi.fn()
 
-      mockSearch.mockImplementation(() => {
+      mockSearchInstitutions.mockImplementation(() => {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({ status: 200, data: [] })
@@ -262,7 +262,7 @@ describe('useQuilttInstitutions', async () => {
       })
 
       await waitFor(() => {
-        expect(mockSearch).toHaveBeenCalledTimes(2)
+        expect(mockSearchInstitutions).toHaveBeenCalledTimes(2)
       })
 
       expect(mockErrorCallback).not.toHaveBeenCalled()
@@ -273,7 +273,7 @@ describe('useQuilttInstitutions', async () => {
   describe('API integration', () => {
     it('sets search results when API returns success', async () => {
       const mockInstitutions = [{ id: '1', name: 'Test Bank' }]
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 200,
         data: mockInstitutions,
       })
@@ -293,7 +293,7 @@ describe('useQuilttInstitutions', async () => {
 
     it('calls error handler when API returns non-200 status', async () => {
       const mockErrorCallback = vi.fn()
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 400,
         data: { message: 'Bad Request' },
       })
@@ -318,7 +318,7 @@ describe('useQuilttInstitutions', async () => {
     })
 
     it('stops searching after API call completes', async () => {
-      mockSearch.mockResolvedValue({
+      mockSearchInstitutions.mockResolvedValue({
         status: 200,
         data: [],
       })
@@ -350,7 +350,7 @@ describe('useQuilttInstitutions', async () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100))
 
-      expect(mockSearch).not.toHaveBeenCalled()
+      expect(mockSearchInstitutions).not.toHaveBeenCalled()
       expect(result.current.isSearching).toBe(true)
     })
 
@@ -366,7 +366,7 @@ describe('useQuilttInstitutions', async () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100))
 
-      expect(mockSearch).not.toHaveBeenCalled()
+      expect(mockSearchInstitutions).not.toHaveBeenCalled()
     })
 
     it('makes API call with correct parameters when conditions are met', async () => {
@@ -377,7 +377,7 @@ describe('useQuilttInstitutions', async () => {
       })
 
       await waitFor(() => {
-        expect(mockSearch).toHaveBeenCalledWith(
+        expect(mockSearchInstitutions).toHaveBeenCalledWith(
           'mock-token',
           'mockConnectorId',
           'test',
@@ -389,7 +389,7 @@ describe('useQuilttInstitutions', async () => {
     it('aborts pending request on unmount', async () => {
       let capturedAbortSignal: AbortSignal | undefined
 
-      mockSearch.mockImplementation((_token, _connectorId, _searchTerm, signal) => {
+      mockSearchInstitutions.mockImplementation((_token, _connectorId, _searchTerm, signal) => {
         capturedAbortSignal = signal
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -407,7 +407,7 @@ describe('useQuilttInstitutions', async () => {
       })
 
       await waitFor(() => {
-        expect(mockSearch).toHaveBeenCalled()
+        expect(mockSearchInstitutions).toHaveBeenCalled()
         expect(capturedAbortSignal).toBeDefined()
       })
 

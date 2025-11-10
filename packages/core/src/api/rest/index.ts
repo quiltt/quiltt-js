@@ -1,3 +1,3 @@
 export * from './auth'
-export * from './institutions'
+export * from './connectors'
 export * from './types'
