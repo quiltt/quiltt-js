@@ -8,12 +8,13 @@ import { QuilttAuthProvider } from '@/providers/QuilttAuthProvider'
 // Create a mock function outside to track calls
 const mockImportSession = vi.fn()
 
-// Mock the useQuilttSession hook
+// Mock the hooks
 vi.mock('@/hooks', () => ({
   useQuilttSession: () => ({
     session: {}, // Provide a mock session object instead of null
     importSession: mockImportSession,
   }),
+  markProviderRender: vi.fn().mockImplementation(() => {}),
 }))
 
 // Mock the utils

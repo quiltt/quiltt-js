@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { ApolloProvider } from '@apollo/client/react/context/ApolloProvider.js'
 import { InMemoryCache, QuilttClient } from '@quiltt/core'
 
-import { useQuilttSession } from '@/hooks'
+import { useQuilttSession, markProviderRender } from '@/hooks'
 import { isDeepEqual } from '@/utils'
 
 export type QuilttAuthProviderProps = PropsWithChildren & {
@@ -60,7 +60,10 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
     }
   }, [session, apolloClient])
 
-  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+  markProviderRender(true)
+  const tree = <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+  markProviderRender(false)
+  return tree
 }
 
 export default QuilttAuthProvider
