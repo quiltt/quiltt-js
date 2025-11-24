@@ -1,5 +1,7 @@
 import type { FC } from 'react'
 
+import { QuilttProviderRender } from '@/contexts/QuilttProviderRender'
+
 import type { QuilttAuthProviderProps } from './QuilttAuthProvider'
 import { QuilttAuthProvider } from './QuilttAuthProvider'
 import type { QuilttSettingsProviderProps } from './QuilttSettingsProvider'
@@ -13,12 +15,16 @@ export const QuilttProvider: FC<QuilttProviderProps> = ({
   token,
   children,
 }) => {
+  // Mark that we're rendering the provider
+  // This helps detect if SDK components are rendered in the same component
   return (
-    <QuilttSettingsProvider clientId={clientId}>
-      <QuilttAuthProvider token={token} graphqlClient={graphqlClient}>
-        {children}
-      </QuilttAuthProvider>
-    </QuilttSettingsProvider>
+    <QuilttProviderRender.Provider value={{ isRenderingProvider: true }}>
+      <QuilttSettingsProvider clientId={clientId}>
+        <QuilttAuthProvider token={token} graphqlClient={graphqlClient}>
+          {children}
+        </QuilttAuthProvider>
+      </QuilttSettingsProvider>
+    </QuilttProviderRender.Provider>
   )
 }
 
