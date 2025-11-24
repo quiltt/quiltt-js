@@ -149,7 +149,23 @@ describe('useQuilttResolvable', async () => {
       expect(result.current.isResolvable).toBe(null)
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Missing session token or connector ID',
+        'Missing session token',
+      )
+    })
+
+    it('should return null when connector ID is missing', async () => {
+      const { result } = renderHook(() => useQuilttResolvable(''))
+
+      let resolvableResult: boolean | null = null
+      await act(async () => {
+        resolvableResult = await result.current.checkResolvable({ plaid: 'ins_3' })
+      })
+
+      expect(resolvableResult).toBe(null)
+      expect(result.current.isResolvable).toBe(null)
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        'Quiltt Connector Resolvable Error:',
+        'Missing connector ID',
       )
     })
 
