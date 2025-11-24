@@ -15,8 +15,11 @@ export const QuilttProvider: FC<QuilttProviderProps> = ({
   token,
   children,
 }) => {
-  // Mark that we're rendering the provider
-  // This helps detect if SDK components are rendered in the same component
+  // Set a context flag that SDK components can check to warn about potential anti-patterns.
+  // LIMITATION: This flags ALL descendants due to React context propagation, not just same-component usage.
+  // Will produce false positives for valid patterns like: <QuilttProvider><MyPage /></QuilttProvider>
+  // where MyPage renders SDK components (which is correct usage).
+  // The flag-based approach is simple but imprecise - a proper solution would require render stack tracking.
   return (
     <QuilttProviderRender.Provider value={{ isRenderingProvider: true }}>
       <QuilttSettingsProvider clientId={clientId}>

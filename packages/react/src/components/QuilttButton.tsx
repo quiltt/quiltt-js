@@ -63,7 +63,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   children,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
-  // Detect and warn if this component is rendered in the same component as QuilttProvider
+  // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
   useQuilttRenderGuard('QuilttButton')
 
   // Keep track of previous connectionId for change detection

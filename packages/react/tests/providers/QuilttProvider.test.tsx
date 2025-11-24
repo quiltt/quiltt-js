@@ -102,7 +102,7 @@ describe('QuilttProvider', () => {
         // The render guard should detect this anti-pattern
         expect(consoleErrorSpy).toHaveBeenCalled()
         const errorCalls = consoleErrorSpy.mock.calls.filter((call) =>
-          call[0]?.toString().includes('ANTI-PATTERN DETECTED')
+          call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCalls.length).toBeGreaterThan(0)
       })
@@ -130,7 +130,7 @@ describe('QuilttProvider', () => {
 
         expect(consoleErrorSpy).toHaveBeenCalled()
         const errorCalls = consoleErrorSpy.mock.calls.filter((call) =>
-          call[0]?.toString().includes('ANTI-PATTERN DETECTED')
+          call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCalls.length).toBeGreaterThan(0)
       })
@@ -153,7 +153,7 @@ describe('QuilttProvider', () => {
         render(<BadComponent />)
 
         const errorCalls = consoleErrorSpy.mock.calls.filter((call) =>
-          call[0]?.toString().includes('ANTI-PATTERN DETECTED')
+          call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         // Should detect the components
         expect(errorCalls.length).toBeGreaterThanOrEqual(1)
@@ -173,7 +173,7 @@ describe('QuilttProvider', () => {
         render(<BadComponent />)
 
         const errorCall = consoleErrorSpy.mock.calls.find((call) =>
-          call[0]?.toString().includes('ANTI-PATTERN DETECTED')
+          call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCall).toBeDefined()
         expect(errorCall![0]).toContain('QuilttButton')
@@ -191,11 +191,11 @@ describe('QuilttProvider', () => {
         render(<BadComponent />)
 
         const errorCall = consoleErrorSpy.mock.calls.find((call) =>
-          call[0]?.toString().includes('ANTI-PATTERN DETECTED')
+          call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCall).toBeDefined()
         const errorMessage = errorCall![0]
-        expect(errorMessage).toContain('RECOMMENDED FIX')
+        expect(errorMessage).toContain('RECOMMENDED PATTERN')
         expect(errorMessage).toContain('Move QuilttProvider to a parent component')
         expect(errorMessage).toContain('Example')
       })

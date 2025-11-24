@@ -51,7 +51,7 @@ describe('useQuilttRenderGuard', () => {
     })
 
     expect(consoleErrorSpy).toHaveBeenCalledOnce()
-    expect(consoleErrorSpy.mock.calls[0][0]).toContain('ANTI-PATTERN DETECTED')
+    expect(consoleErrorSpy.mock.calls[0][0]).toContain('POTENTIAL ANTI-PATTERN')
     expect(consoleErrorSpy.mock.calls[0][0]).toContain('QuilttButton')
   })
 
@@ -84,11 +84,11 @@ describe('useQuilttRenderGuard', () => {
     })
 
     const errorMessage = consoleErrorSpy.mock.calls[0][0]
-    expect(errorMessage).toContain('RECOMMENDED FIX')
+    expect(errorMessage).toContain('RECOMMENDED PATTERN')
     expect(errorMessage).toContain('Move QuilttProvider to a parent component')
     expect(errorMessage).toContain('Example:')
     expect(errorMessage).toContain('CORRECT')
-    expect(errorMessage).toContain('INCORRECT')
+    expect(errorMessage).toContain('ANTI-PATTERN')
   })
 
   it('only warns once per component instance', () => {
