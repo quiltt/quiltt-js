@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
 
 import type { QuilttJWT } from '@quiltt/core'
+import { AuthAPI } from '@quiltt/core'
 
 import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useSession } from '@/hooks/useSession'
@@ -78,5 +79,22 @@ describe('useQuilttSession', () => {
 
     // Verify setSession was called with null
     expect(mockSetSession).toHaveBeenCalledWith(null)
+  })
+
+  it('memoizes AuthAPI instance when clientId does not change', () => {
+    const mockSetSession = vi.fn()
+    const mockSession: QuilttJWT | undefined = undefined
+    vi.mocked(useSession).mockReturnValue([mockSession, mockSetSession])
+
+    const { rerender } = renderHook(() => useQuilttSession())
+
+    // Get the initial call count
+    const initialCallCount = vi.mocked(AuthAPI).mock.calls.length
+
+    // Re-render the hook
+    rerender()
+
+    // AuthAPI should not be instantiated again since clientId hasn't changed
+    expect(vi.mocked(AuthAPI).mock.calls.length).toBe(initialCallCount)
   })
 })

@@ -99,8 +99,8 @@ describe('useQuilttResolvable', async () => {
       mockCheckResolvable.mockImplementation(
         () =>
           new Promise((resolve) =>
-            setTimeout(() => resolve({ status: 200, data: { resolvable: true } }), 100),
-          ),
+            setTimeout(() => resolve({ status: 200, data: { resolvable: true } }), 100)
+          )
       )
 
       const { result } = renderHook(() => useQuilttResolvable('test-connector'))
@@ -149,7 +149,7 @@ describe('useQuilttResolvable', async () => {
       expect(result.current.isResolvable).toBe(null)
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Missing session token or connector ID',
+        'Missing session token or connector ID'
       )
     })
 
@@ -165,7 +165,7 @@ describe('useQuilttResolvable', async () => {
       expect(result.current.isResolvable).toBe(null)
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'No provider ID specified',
+        'No provider ID specified'
       )
     })
 
@@ -189,7 +189,7 @@ describe('useQuilttResolvable', async () => {
       expect(result.current.isResolvable).toBe(null)
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Connector not found',
+        'Connector not found'
       )
     })
 
@@ -210,7 +210,7 @@ describe('useQuilttResolvable', async () => {
       expect(result.current.isResolvable).toBe(null)
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Failed to check resolvability',
+        'Failed to check resolvability'
       )
     })
 
@@ -229,7 +229,7 @@ describe('useQuilttResolvable', async () => {
       expect(result.current.isResolvable).toBe(null)
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Network failure',
+        'Network failure'
       )
     })
 
@@ -242,9 +242,7 @@ describe('useQuilttResolvable', async () => {
         },
       })
 
-      const { result } = renderHook(() =>
-        useQuilttResolvable('test-connector', onErrorCallback),
-      )
+      const { result } = renderHook(() => useQuilttResolvable('test-connector', onErrorCallback))
 
       await act(async () => {
         await result.current.checkResolvable({ plaid: 'ins_3' })
@@ -330,7 +328,7 @@ describe('useQuilttResolvable', async () => {
         ({ connectorId }) => useQuilttResolvable(connectorId),
         {
           initialProps: { connectorId: 'connector-1' },
-        },
+        }
       )
 
       await act(async () => {
