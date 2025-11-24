@@ -10,7 +10,7 @@ import useSession from './useSession'
 
 export type UseQuilttResolvable = (
   connectorId: string,
-  onErrorCallback?: (msg: string) => void,
+  onErrorCallback?: (msg: string) => void
 ) => {
   checkResolvable: (providerId: {
     plaid?: string
@@ -24,10 +24,7 @@ export type UseQuilttResolvable = (
   error: string | null
 }
 
-export const useQuilttResolvable: UseQuilttResolvable = (
-  connectorId,
-  onErrorCallback,
-) => {
+export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCallback) => {
   const agent = useMemo(() => {
     // Try deprecated navigator.product first (still used in some RN versions)
     if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
@@ -64,7 +61,7 @@ export const useQuilttResolvable: UseQuilttResolvable = (
       console.error('Quiltt Connector Resolvable Error:', errorMessage)
       if (onErrorCallback) onErrorCallback(errorMessage)
     },
-    [onErrorCallback],
+    [onErrorCallback]
   )
 
   const checkResolvable = useCallback(
@@ -90,11 +87,7 @@ export const useQuilttResolvable: UseQuilttResolvable = (
       setError(null)
 
       try {
-        const response = await connectorsAPI.checkResolvable(
-          session.token,
-          connectorId,
-          providerId,
-        )
+        const response = await connectorsAPI.checkResolvable(session.token, connectorId, providerId)
 
         if (response.status === 200) {
           const result = (response.data as ResolvableData).resolvable
@@ -113,7 +106,7 @@ export const useQuilttResolvable: UseQuilttResolvable = (
         setIsLoading(false)
       }
     },
-    [session?.token, connectorId, connectorsAPI, handleError],
+    [session?.token, connectorId, connectorsAPI, handleError]
   )
 
   return {

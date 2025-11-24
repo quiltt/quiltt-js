@@ -35,7 +35,7 @@ export class ConnectorsAPI {
     token: string,
     connectorId: string,
     term: string,
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ) => {
     const params = new URLSearchParams()
     params.append('term', term)
@@ -46,7 +46,7 @@ export class ConnectorsAPI {
         method: 'GET',
         signal,
         ...this.config(token),
-      },
+      }
     )
     return response
   }
@@ -63,7 +63,7 @@ export class ConnectorsAPI {
     token: string,
     connectorId: string,
     providerId: { plaid?: string; mock?: string; mx?: string; finicity?: string; akoya?: string },
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ) => {
     const params = new URLSearchParams()
 
@@ -78,7 +78,7 @@ export class ConnectorsAPI {
         method: 'GET',
         signal,
         ...this.config(token),
-      },
+      }
     )
     return response
   }
