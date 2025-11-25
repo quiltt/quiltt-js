@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ErrorData, ResolvableData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
@@ -10,7 +10,7 @@ import useSession from './useSession'
 
 export type UseQuilttResolvable = (
   connectorId: string,
-  onErrorCallback?: (msg: string) => void,
+  onErrorCallback?: (msg: string) => void
 ) => {
   checkResolvable: (providerId: {
     plaid?: string
@@ -24,10 +24,7 @@ export type UseQuilttResolvable = (
   error: string | null
 }
 
-export const useQuilttResolvable: UseQuilttResolvable = (
-  connectorId,
-  onErrorCallback,
-) => {
+export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCallback) => {
   const agent = useMemo(() => {
     // Try deprecated navigator.product first (still used in some RN versions)
     if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
@@ -56,16 +53,19 @@ export const useQuilttResolvable: UseQuilttResolvable = (
   const [isResolvable, setIsResolvable] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const handleError = useCallback(
-    (message: string) => {
-      const errorMessage = message || 'Unknown error occurred while checking resolvability'
+  // Store callback in ref to maintain stable reference
+  const onErrorCallbackRef = useRef(onErrorCallback)
+  useEffect(() => {
+    onErrorCallbackRef.current = onErrorCallback
+  })
 
-      setError(errorMessage)
-      console.error('Quiltt Connector Resolvable Error:', errorMessage)
-      if (onErrorCallback) onErrorCallback(errorMessage)
-    },
-    [onErrorCallback],
-  )
+  const handleError = useCallback((message: string) => {
+    const errorMessage = message || 'Unknown error occurred while checking resolvability'
+
+    setError(errorMessage)
+    console.error('Quiltt Connector Resolvable Error:', errorMessage)
+    if (onErrorCallbackRef.current) onErrorCallbackRef.current(errorMessage)
+  }, [])
 
   const checkResolvable = useCallback(
     async (providerId: {
@@ -90,11 +90,7 @@ export const useQuilttResolvable: UseQuilttResolvable = (
       setError(null)
 
       try {
-        const response = await connectorsAPI.checkResolvable(
-          session.token,
-          connectorId,
-          providerId,
-        )
+        const response = await connectorsAPI.checkResolvable(session.token, connectorId, providerId)
 
         if (response.status === 200) {
           const result = (response.data as ResolvableData).resolvable
@@ -113,7 +109,7 @@ export const useQuilttResolvable: UseQuilttResolvable = (
         setIsLoading(false)
       }
     },
-    [session?.token, connectorId, connectorsAPI, handleError],
+    [session?.token, connectorId, connectorsAPI, handleError]
   )
 
   return {
