@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ErrorData, ResolvableData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
@@ -53,16 +53,19 @@ export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCal
   const [isResolvable, setIsResolvable] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const handleError = useCallback(
-    (message: string) => {
-      const errorMessage = message || 'Unknown error occurred while checking resolvability'
+  // Store callback in ref to maintain stable reference
+  const onErrorCallbackRef = useRef(onErrorCallback)
+  useEffect(() => {
+    onErrorCallbackRef.current = onErrorCallback
+  })
 
-      setError(errorMessage)
-      console.error('Quiltt Connector Resolvable Error:', errorMessage)
-      if (onErrorCallback) onErrorCallback(errorMessage)
-    },
-    [onErrorCallback]
-  )
+  const handleError = useCallback((message: string) => {
+    const errorMessage = message || 'Unknown error occurred while checking resolvability'
+
+    setError(errorMessage)
+    console.error('Quiltt Connector Resolvable Error:', errorMessage)
+    if (onErrorCallbackRef.current) onErrorCallbackRef.current(errorMessage)
+  }, [])
 
   const checkResolvable = useCallback(
     async (providerId: {
