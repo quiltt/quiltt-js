@@ -8,6 +8,7 @@ import { useQuilttRenderGuard } from '@/hooks/useQuilttRenderGuard'
 
 describe('useQuilttRenderGuard', () => {
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>
+  const originalNodeEnv = process.env.NODE_ENV
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -17,6 +18,7 @@ describe('useQuilttRenderGuard', () => {
   afterEach(() => {
     cleanup()
     consoleErrorSpy.mockRestore()
+    process.env.NODE_ENV = originalNodeEnv
   })
 
   it('does not log error when no provider context is available', () => {
@@ -107,5 +109,21 @@ describe('useQuilttRenderGuard', () => {
     // Rerender should not trigger another warning
     rerender()
     expect(consoleErrorSpy).toHaveBeenCalledOnce()
+  })
+
+  it('does not log error in production environment', () => {
+    process.env.NODE_ENV = 'production'
+
+    const Wrapper = ({ children }: PropsWithChildren) => (
+      <QuilttProviderRender.Provider value={{ isRenderingProvider: true }}>
+        {children}
+      </QuilttProviderRender.Provider>
+    )
+
+    renderHook(() => useQuilttRenderGuard('QuilttButton'), {
+      wrapper: Wrapper,
+    })
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled()
   })
 })

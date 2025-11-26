@@ -24,7 +24,14 @@ export const useQuilttRenderGuard = (componentName: string) => {
   const hasWarnedRef = useRef(false)
 
   useEffect(() => {
-    // Only warn once per component instance
+    // Only run in development mode and warn once per component instance
+    // Support both Node.js (process.env) and Vite (import.meta.env) environments
+    const isProduction =
+      process.env.NODE_ENV === 'production' ||
+      (typeof import.meta !== 'undefined' && (import.meta as any).env?.PROD)
+
+    if (isProduction) return
+
     if (isRenderingProvider && !hasWarnedRef.current) {
       hasWarnedRef.current = true
       console.error(
@@ -58,7 +65,9 @@ export const useQuilttRenderGuard = (componentName: string) => {
           `      </QuilttProvider>\n` +
           `    )\n` +
           `  }\n\n` +
-          `Learn more: https://github.com/quiltt/quiltt-js/tree/main/packages/react#provider-usage`
+          `Learn more:\n` +
+          `  • https://github.com/quiltt/quiltt-js/tree/main/packages/react#provider-usage\n` +
+          `  • https://react.dev/reference/react/useContext#my-component-doesnt-see-the-value-from-my-provider`
       )
     }
   }, [isRenderingProvider, componentName])
