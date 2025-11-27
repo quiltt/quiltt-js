@@ -5,17 +5,24 @@ import { GlobalStorage } from '@/storage'
 
 export const ErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, locations, path }) => {
-      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+    graphQLErrors.forEach(({ message, path, extensions }) => {
+      const parts = [`[Quiltt][GraphQL Error]: ${message}`, `Path: ${path}`]
+
+      if (extensions) {
+        if (extensions.code) parts.push(`Code: ${extensions.code}`)
+        if (extensions.errorId) parts.push(`Error ID: ${extensions.errorId}`)
+      }
+
+      console.warn(parts.join(' | '))
     })
   }
 
   if (networkError) {
     if ((networkError as ServerError).statusCode === 401) {
-      console.warn('[Authentication error]:', networkError)
+      console.warn('[Quiltt][Authentication Error]:', networkError)
       GlobalStorage.set('session', null)
     } else {
-      console.warn('[Network error]:', networkError)
+      console.warn('[Quiltt][Network Error]:', networkError)
     }
   }
 })
