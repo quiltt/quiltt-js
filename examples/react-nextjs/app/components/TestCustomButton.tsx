@@ -1,10 +1,10 @@
 'use client'
 
-import type { ButtonHTMLAttributes } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
 import { QuilttButton } from '@quiltt/react'
 
-type CustomButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+type CustomButtonProps = ComponentPropsWithoutRef<'button'>
 
 const CustomButton = ({ children, ...props }: CustomButtonProps) => {
   return (
