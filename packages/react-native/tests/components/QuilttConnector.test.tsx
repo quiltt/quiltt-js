@@ -109,6 +109,9 @@ describe('QuilttConnector', () => {
       expect(capturedWebViewProps.scrollEnabled).toBe(true)
       expect(capturedWebViewProps.automaticallyAdjustContentInsets).toBe(false)
       expect(capturedWebViewProps.contentInsetAdjustmentBehavior).toBe('never')
+      expect(capturedWebViewProps.bounces).toBe(false)
+      expect(capturedWebViewProps.showsVerticalScrollIndicator).toBe(false)
+      expect(capturedWebViewProps.showsHorizontalScrollIndicator).toBe(false)
     })
 
     it('should apply iOS specific props when platform is iOS', async () => {
@@ -118,13 +121,14 @@ describe('QuilttConnector', () => {
       await waitFor(() => {
         expect(capturedWebViewProps).toBeTruthy()
         // Test iOS specific props
-        expect(capturedWebViewProps.bounces).toBe(false)
         expect(capturedWebViewProps.decelerationRate).toBe('normal')
         expect(capturedWebViewProps.keyboardDisplayRequiresUserAction).toBe(false)
         expect(capturedWebViewProps.dataDetectorTypes).toBe('none')
         expect(capturedWebViewProps.allowsInlineMediaPlayback).toBe(true)
         expect(capturedWebViewProps.allowsBackForwardNavigationGestures).toBe(false)
         expect(capturedWebViewProps.startInLoadingState).toBe(true)
+        expect(capturedWebViewProps.scrollEventThrottle).toBe(16)
+        expect(capturedWebViewProps.overScrollMode).toBe('never')
 
         // Ensure Android props are not present
         expect(capturedWebViewProps.androidLayerType).toBeUndefined()
