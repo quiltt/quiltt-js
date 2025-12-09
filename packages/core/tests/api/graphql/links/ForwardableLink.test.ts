@@ -41,7 +41,7 @@ describe('ForwardableLink', () => {
   })
 
   it('should pass through errors from the next link', async () => {
-    const mockError = new Error('Network error')
+    const mockError = new Error('Network Error')
     const mockForward = vi.fn(() => {
       return new Observable((observer) => {
         observer.error(mockError)

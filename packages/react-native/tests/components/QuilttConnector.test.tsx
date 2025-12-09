@@ -174,7 +174,7 @@ describe('QuilttConnector', () => {
 
     it('should render ErrorScreen on pre-flight check failure', async () => {
       // Mock fetch to reject with a specific error after retries
-      fetchSpy.mockRejectedValue(new Error('Network error'))
+      fetchSpy.mockRejectedValue(new Error('Network Error'))
 
       const { getByTestId } = render(<QuilttConnector {...defaultProps} />)
 

@@ -19,7 +19,7 @@ describe('ErrorLink', () => {
   })
 
   it('should log GraphQL errors', async () => {
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -55,10 +55,10 @@ describe('ErrorLink', () => {
       // Expected to throw due to GraphQL errors
     }
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[GraphQL error]: Message: Field error')
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[GraphQL Error]: Field error | Path: user.name')
     )
-    consoleLogSpy.mockRestore()
+    consoleWarnSpy.mockRestore()
   })
 
   it('should handle 401 network errors and clear session', async () => {
@@ -96,7 +96,7 @@ describe('ErrorLink', () => {
     }
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      '[Authentication error]:',
+      '[Quiltt][Authentication Error]:',
       expect.objectContaining({ statusCode: 401 })
     )
     expect(GlobalStorage.set).toHaveBeenCalledWith('session', null)
@@ -138,7 +138,7 @@ describe('ErrorLink', () => {
     }
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      '[Network error]:',
+      '[Quiltt][Network Error]:',
       expect.objectContaining({ statusCode: 500 })
     )
     expect(GlobalStorage.set).not.toHaveBeenCalled()
@@ -146,7 +146,6 @@ describe('ErrorLink', () => {
   })
 
   it('should handle both GraphQL and network errors together', async () => {
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     const error: ServerError = {
@@ -189,11 +188,10 @@ describe('ErrorLink', () => {
       // Expected to throw
     }
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[GraphQL error]: Message: Query error')
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[Quiltt][GraphQL Error]: Query error | Path: data')
     )
-    expect(consoleWarnSpy).toHaveBeenCalledWith('[Network error]:', expect.any(Object))
-    consoleLogSpy.mockRestore()
+    expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Network Error]:', expect.any(Object))
     consoleWarnSpy.mockRestore()
   })
 
@@ -223,7 +221,7 @@ describe('ErrorLink', () => {
       // Expected to throw
     }
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith('[Network error]:', expect.any(Error))
+    expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Network Error]:', expect.any(Error))
     expect(GlobalStorage.set).not.toHaveBeenCalled()
     consoleWarnSpy.mockRestore()
   })
