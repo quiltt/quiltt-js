@@ -1,7 +1,8 @@
-import { Platform, StyleSheet } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { Linking, Platform, StyleSheet } from 'react-native'
 import { router } from 'expo-router'
 
-import type { ConnectorSDKCallbackMetadata } from '@quiltt/react-native'
+import type { ConnectorSDKCallbackMetadata, QuilttConnectorHandle } from '@quiltt/react-native'
 import { QuilttConnector } from '@quiltt/react-native'
 
 import { ThemedView } from '@/components/ThemedView'
@@ -11,15 +12,46 @@ const HTTPS_APP_LINK = process.env.EXPO_PUBLIC_HTTPS_APP_LINK
 const INSTITUTION_SEARCH_TERM = process.env.EXPO_PUBLIC_INSTITUTION_SEARCH_TERM
 
 export default function ConnectorScreen() {
+  const connectorRef = useRef<QuilttConnectorHandle>(null)
+
   const navigateBack = () => {
     router.canGoBack() ? router.back() : router.push('/(tabs)')
   }
+
+  // Handle incoming deep links (OAuth callbacks)
+  useEffect(() => {
+    const handleUrl = ({ url }: { url: string }) => {
+      console.log('Received deep link:', url)
+
+      // Check if this is an OAuth callback URL
+      // You can customize this check based on your OAuth redirect URL structure
+      if (url && connectorRef.current) {
+        // Forward the callback URL to the QuilttConnector
+        connectorRef.current.handleOAuthCallback(url)
+      }
+    }
+
+    // Listen for incoming links while the app is open
+    const subscription = Linking.addEventListener('url', handleUrl)
+
+    // Check if the app was opened with a URL
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleUrl({ url })
+      }
+    })
+
+    return () => {
+      subscription.remove()
+    }
+  }, [])
 
   console.log({ HTTPS_APP_LINK })
 
   return (
     <ThemedView style={styles.container} testID="quiltt-connector">
       <QuilttConnector
+        ref={connectorRef}
         connectorId={CONNECTOR_ID!}
         oauthRedirectUrl="https://www.example.com"
         institution={INSTITUTION_SEARCH_TERM}

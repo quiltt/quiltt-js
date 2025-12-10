@@ -24,13 +24,13 @@ export const smartEncodeURIComponent = (str: string): string => {
 
   // If it's already encoded, return as is
   if (isEncoded(str)) {
-    console.log('URL already encoded, skipping encoding:', str)
+    console.log('URL already encoded, skipping encoding')
     return str
   }
 
   // Otherwise, encode it
   const encoded = encodeURIComponent(str)
-  console.log('URL encoded from:', str, 'to:', encoded)
+  console.log('URL encoded')
   return encoded
 }
 

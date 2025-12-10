@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Linking, Platform, StyleSheet } from 'react-native'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
@@ -130,6 +138,10 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
   }
 }
 
+export type QuilttConnectorHandle = {
+  handleOAuthCallback: (url: string) => void
+}
+
 type QuilttConnectorProps = {
   connectorId: string
   connectionId?: string
@@ -138,25 +150,29 @@ type QuilttConnectorProps = {
   testId?: string
 } & ConnectorSDKCallbacks
 
-const QuilttConnector = ({
-  connectorId,
-  connectionId,
-  institution,
-  oauthRedirectUrl,
-  onEvent,
-  onLoad,
-  onExit,
-  onExitSuccess,
-  onExitAbort,
-  onExitError,
-  testId,
-}: QuilttConnectorProps) => {
-  const webViewRef = useRef<WebView>(null)
-  const { session } = useQuilttSession()
-  const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
+const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
+  (
+    {
+      connectorId,
+      connectionId,
+      institution,
+      oauthRedirectUrl,
+      onEvent,
+      onLoad,
+      onExit,
+      onExitSuccess,
+      onExitAbort,
+      onExitError,
+      testId,
+    },
+    ref
+  ) => {
+    const webViewRef = useRef<WebView>(null)
+    const { session } = useQuilttSession()
+    const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
 
-  // Script to disable scrolling on header
-  const disableHeaderScrollScript = `
+    // Script to disable scrolling on header
+    const disableHeaderScrollScript = `
     (function() {
       const header = document.querySelector('header');
       if (header) {
@@ -169,48 +185,48 @@ const QuilttConnector = ({
     })();
   `
 
-  const onLoadEnd = useCallback(() => {
-    if (Platform.OS === 'ios') {
-      webViewRef.current?.injectJavaScript(disableHeaderScrollScript)
-    }
-  }, [])
+    const onLoadEnd = useCallback(() => {
+      if (Platform.OS === 'ios') {
+        webViewRef.current?.injectJavaScript(disableHeaderScrollScript)
+      }
+    }, [])
 
-  // Ensure oauthRedirectUrl is encoded properly - only once
-  const safeOAuthRedirectUrl = useMemo(() => {
-    return smartEncodeURIComponent(oauthRedirectUrl)
-  }, [oauthRedirectUrl])
+    // Ensure oauthRedirectUrl is encoded properly - only once
+    const safeOAuthRedirectUrl = useMemo(() => {
+      return smartEncodeURIComponent(oauthRedirectUrl)
+    }, [oauthRedirectUrl])
 
-  const connectorUrl = useMemo(() => {
-    const url = new URL(`https://${connectorId}.quiltt.app`)
+    const connectorUrl = useMemo(() => {
+      const url = new URL(`https://${connectorId}.quiltt.app`)
 
-    // For normal parameters, just append them directly
-    url.searchParams.append('mode', 'webview')
-    url.searchParams.append('agent', `react-native-${version}`)
+      // For normal parameters, just append them directly
+      url.searchParams.append('mode', 'webview')
+      url.searchParams.append('agent', `react-native-${version}`)
 
-    // For the oauth_redirect_url, we need to be careful
-    // If it's already encoded, we need to decode it once to prevent
-    // the automatic encoding that happens with searchParams.append
-    if (isEncoded(safeOAuthRedirectUrl)) {
-      const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
-      url.searchParams.append('oauth_redirect_url', decodedOnce)
-    } else {
-      url.searchParams.append('oauth_redirect_url', safeOAuthRedirectUrl)
-    }
+      // For the oauth_redirect_url, we need to be careful
+      // If it's already encoded, we need to decode it once to prevent
+      // the automatic encoding that happens with searchParams.append
+      if (isEncoded(safeOAuthRedirectUrl)) {
+        const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
+        url.searchParams.append('oauth_redirect_url', decodedOnce)
+      } else {
+        url.searchParams.append('oauth_redirect_url', safeOAuthRedirectUrl)
+      }
 
-    return url.toString()
-  }, [connectorId, safeOAuthRedirectUrl])
+      return url.toString()
+    }, [connectorId, safeOAuthRedirectUrl])
 
-  useEffect(() => {
-    if (preFlightCheck.checked) return
-    const fetchDataAndSetState = async () => {
-      const connectorUrlStatus = await checkConnectorUrl(connectorUrl)
-      setPreFlightCheck(connectorUrlStatus)
-    }
-    fetchDataAndSetState()
-  }, [connectorUrl, preFlightCheck])
+    useEffect(() => {
+      if (preFlightCheck.checked) return
+      const fetchDataAndSetState = async () => {
+        const connectorUrlStatus = await checkConnectorUrl(connectorUrl)
+        setPreFlightCheck(connectorUrlStatus)
+      }
+      fetchDataAndSetState()
+    }, [connectorUrl, preFlightCheck])
 
-  const initInjectedJavaScript = useCallback(() => {
-    const script = `\
+    const initInjectedJavaScript = useCallback(() => {
+      const script = `\
       const options = {\
         source: 'quiltt',\
         type: 'Options',\
@@ -227,174 +243,222 @@ const QuilttConnector = ({
       }, {});\
       window.postMessage(compactedOptions);\
     `
-    webViewRef.current?.injectJavaScript(script)
-  }, [connectionId, connectorId, institution, session?.token])
+      webViewRef.current?.injectJavaScript(script)
+    }, [connectionId, connectorId, institution, session?.token])
 
-  const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
+    const isQuilttEvent = useCallback((url: URL) => url.protocol === 'quilttconnector:', [])
 
-  const shouldRender = useCallback((url: URL) => !isQuilttEvent(url), [isQuilttEvent])
+    const shouldRender = useCallback((url: URL) => !isQuilttEvent(url), [isQuilttEvent])
 
-  const clearLocalStorage = useCallback(() => {
-    const script = 'localStorage.clear();'
-    webViewRef.current?.injectJavaScript(script)
-  }, [])
+    const clearLocalStorage = useCallback(() => {
+      const script = 'localStorage.clear();'
+      webViewRef.current?.injectJavaScript(script)
+    }, [])
 
-  const handleQuilttEvent = useCallback(
-    (url: URL) => {
-      url.searchParams.delete('source')
-      url.searchParams.append('connectorId', connectorId)
-      const metadata = parseMetadata(url, connectorId)
+    const handleQuilttEvent = useCallback(
+      (url: URL) => {
+        url.searchParams.delete('source')
+        url.searchParams.append('connectorId', connectorId)
+        const metadata = parseMetadata(url, connectorId)
 
-      requestAnimationFrame(() => {
-        const eventType = url.host
-        switch (eventType) {
-          case 'Load':
-            console.log('Event: Load')
-            initInjectedJavaScript()
-            onEvent?.(ConnectorSDKEventType.Load, metadata)
-            onLoad?.(metadata)
-            break
-          case 'ExitAbort':
-            console.log('Event: ExitAbort')
-            clearLocalStorage()
-            onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
-            onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
-            onExitAbort?.(metadata)
-            break
-          case 'ExitError':
-            console.log('Event: ExitError')
-            clearLocalStorage()
-            onEvent?.(ConnectorSDKEventType.ExitError, metadata)
-            onExit?.(ConnectorSDKEventType.ExitError, metadata)
-            onExitError?.(metadata)
-            break
-          case 'ExitSuccess':
-            console.log('Event: ExitSuccess')
-            clearLocalStorage()
-            onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
-            onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
-            onExitSuccess?.(metadata)
-            break
-          case 'Authenticate':
-            console.log('Event: Authenticate')
-            // TODO: handle Authenticate
-            break
-          case 'Navigate': {
-            console.log('Event: Navigate')
-            const navigateUrl = url.searchParams.get('url')
+        requestAnimationFrame(() => {
+          const eventType = url.host
+          switch (eventType) {
+            case 'Load':
+              console.log('Event: Load')
+              initInjectedJavaScript()
+              onEvent?.(ConnectorSDKEventType.Load, metadata)
+              onLoad?.(metadata)
+              break
+            case 'ExitAbort':
+              console.log('Event: ExitAbort')
+              clearLocalStorage()
+              onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
+              onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
+              onExitAbort?.(metadata)
+              break
+            case 'ExitError':
+              console.log('Event: ExitError')
+              clearLocalStorage()
+              onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+              onExit?.(ConnectorSDKEventType.ExitError, metadata)
+              onExitError?.(metadata)
+              break
+            case 'ExitSuccess':
+              console.log('Event: ExitSuccess')
+              clearLocalStorage()
+              onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
+              onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
+              onExitSuccess?.(metadata)
+              break
+            case 'Authenticate':
+              console.log('Event: Authenticate')
+              // TODO: handle Authenticate
+              break
+            case 'Navigate': {
+              console.log('Event: Navigate')
+              const navigateUrl = url.searchParams.get('url')
 
-            if (navigateUrl) {
-              if (isEncoded(navigateUrl)) {
-                try {
-                  const decodedUrl = decodeURIComponent(navigateUrl)
-                  handleOAuthUrl(decodedUrl)
-                } catch (_error) {
-                  console.error('Navigate URL decoding failed, using original')
+              if (navigateUrl) {
+                if (isEncoded(navigateUrl)) {
+                  try {
+                    const decodedUrl = decodeURIComponent(navigateUrl)
+                    handleOAuthUrl(decodedUrl)
+                  } catch (_error) {
+                    console.error('Navigate URL decoding failed, using original')
+                    handleOAuthUrl(navigateUrl)
+                  }
+                } else {
                   handleOAuthUrl(navigateUrl)
                 }
               } else {
-                handleOAuthUrl(navigateUrl)
+                console.error('Navigate URL missing from request')
               }
-            } else {
-              console.error('Navigate URL missing from request')
+              break
             }
-            break
+            // NOTE: The `OauthRequested` is deprecated and should not be used
+            default:
+              console.log(`Unhandled event: ${eventType}`)
+              break
           }
-          // NOTE: The `OauthRequested` is deprecated and should not be used
-          default:
-            console.log(`Unhandled event: ${eventType}`)
-            break
+        })
+      },
+      [
+        clearLocalStorage,
+        connectorId,
+        initInjectedJavaScript,
+        onEvent,
+        onExit,
+        onExitAbort,
+        onExitError,
+        onExitSuccess,
+        onLoad,
+      ]
+    )
+
+    const requestHandler = useCallback(
+      (request: ShouldStartLoadRequest) => {
+        const url = new URL(request.url)
+
+        if (isQuilttEvent(url)) {
+          handleQuilttEvent(url)
+          return false
         }
-      })
-    },
-    [
-      clearLocalStorage,
-      connectorId,
-      initInjectedJavaScript,
-      onEvent,
-      onExit,
-      onExitAbort,
-      onExitError,
-      onExitSuccess,
-      onLoad,
-    ]
-  )
 
-  const requestHandler = useCallback(
-    (request: ShouldStartLoadRequest) => {
-      const url = new URL(request.url)
+        if (shouldRender(url)) {
+          return true
+        }
 
-      if (isQuilttEvent(url)) {
-        handleQuilttEvent(url)
+        // Plaid set oauth url by doing window.location.href = url
+        // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
+        handleOAuthUrl(url)
         return false
-      }
+      },
+      [handleQuilttEvent, isQuilttEvent, shouldRender]
+    )
 
-      if (shouldRender(url)) {
-        return true
-      }
+    // Expose method to handle OAuth callbacks from parent component
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleOAuthCallback: (callbackUrl: string) => {
+          try {
+            console.log('Handling OAuth callback:', callbackUrl)
+            const url = new URL(callbackUrl)
 
-      // Plaid set oauth url by doing window.location.href = url
-      // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
-      handleOAuthUrl(url)
-      return false
-    },
-    [handleQuilttEvent, isQuilttEvent, shouldRender]
-  )
+            // Extract OAuth callback parameters
+            const oauthParams: Record<string, string> = {}
+            url.searchParams.forEach((value, key) => {
+              oauthParams[key] = value
+            })
 
-  if (!preFlightCheck.checked) {
-    return <LoadingScreen testId="loading-screen" />
-  }
+            // Send OAuth callback data to the connector via postMessage
+            // This preserves the connector's state and allows events to fire properly
+            const message = {
+              source: 'quiltt',
+              type: 'OAuthCallback',
+              data: {
+                url: callbackUrl,
+                params: oauthParams,
+              },
+            }
 
-  if (preFlightCheck.error) {
+            const script = `
+              (function() {
+                try {
+                  window.postMessage(${JSON.stringify(message)});
+                  console.log('OAuth callback message sent to connector');
+                } catch (e) {
+                  console.error('Failed to send OAuth callback message:', e);
+                }
+              })();
+              true;
+            `
+
+            webViewRef.current?.injectJavaScript(script)
+          } catch (error) {
+            console.error('Error handling OAuth callback:', error)
+          }
+        },
+      }),
+      []
+    )
+
+    if (!preFlightCheck.checked) {
+      return <LoadingScreen testId="loading-screen" />
+    }
+
+    if (preFlightCheck.error) {
+      return (
+        <ErrorScreen
+          testId="error-screen"
+          error={preFlightCheck.error}
+          cta={() => onExitError?.({ connectorId })}
+        />
+      )
+    }
+
     return (
-      <ErrorScreen
-        testId="error-screen"
-        error={preFlightCheck.error}
-        cta={() => onExitError?.({ connectorId })}
-      />
+      <AndroidSafeAreaView testId={testId}>
+        <WebView
+          ref={webViewRef}
+          // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
+          domStorageEnabled // To enable localStorage in Android webview
+          javaScriptEnabled
+          onLoadEnd={onLoadEnd}
+          onShouldStartLoadWithRequest={requestHandler}
+          originWhitelist={['*']}
+          scrollEnabled={true} // Enables scrolling within the WebView
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          source={{ uri: connectorUrl }}
+          style={styles.webview}
+          testID="webview"
+          webviewDebuggingEnabled
+          {...(Platform.OS === 'ios'
+            ? {
+                allowsBackForwardNavigationGestures: false, // Disables swipe to go back/forward
+                allowsInlineMediaPlayback: true, // Allows videos to play inline
+                automaticallyAdjustContentInsets: false, // Disables automatic padding adjustments
+                bounces: false, // Controls the bouncing effect when scrolling past content boundaries
+                contentInsetAdjustmentBehavior: 'never', // Controls how safe area insets modify content
+                dataDetectorTypes: 'none', // Disables automatic data detection (phone numbers, links, etc.)
+                decelerationRate: 'normal', // Controls scroll deceleration speed
+                keyboardDisplayRequiresUserAction: false, // Allows programmatic keyboard display
+                scrollEventThrottle: 16, // Optimize scroll performance (throttle scroll events)
+                startInLoadingState: true, // Shows loading indicator on first load
+              }
+            : {
+                androidLayerType: 'hardware', // Use hardware acceleration for rendering
+                cacheEnabled: true, // Enable caching
+                cacheMode: 'LOAD_CACHE_ELSE_NETWORK', // Load from cache when available
+                overScrollMode: 'never', // Disable overscroll effect
+              })}
+        />
+      </AndroidSafeAreaView>
     )
   }
-
-  return (
-    <AndroidSafeAreaView testId={testId}>
-      <WebView
-        ref={webViewRef}
-        // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
-        style={styles.webview}
-        originWhitelist={['*']}
-        source={{ uri: connectorUrl }}
-        onShouldStartLoadWithRequest={requestHandler}
-        onLoadEnd={onLoadEnd}
-        javaScriptEnabled
-        domStorageEnabled // To enable localStorage in Android webview
-        webviewDebuggingEnabled
-        bounces={false} // Controls the bouncing effect when scrolling past content boundaries (iOS only)
-        scrollEnabled={true} // Enables scrolling within the WebView
-        automaticallyAdjustContentInsets={false} // Disables automatic padding adjustments based on navigation bars/safe areas
-        contentInsetAdjustmentBehavior="never" // Controls how the WebView adjusts its content layout relative to safe areas and system UI
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        testID="webview"
-        {...(Platform.OS === 'ios'
-          ? {
-              decelerationRate: 'normal',
-              keyboardDisplayRequiresUserAction: false,
-              dataDetectorTypes: 'none',
-              allowsInlineMediaPlayback: true,
-              allowsBackForwardNavigationGestures: false,
-              startInLoadingState: true,
-              scrollEventThrottle: 16, // Optimize scroll performance
-              overScrollMode: 'never', // Prevent overscroll effect
-            }
-          : {
-              androidLayerType: 'hardware',
-              cacheEnabled: true,
-              cacheMode: 'LOAD_CACHE_ELSE_NETWORK',
-            })}
-      />
-    </AndroidSafeAreaView>
-  )
-}
+)
 
 // Add styles for the WebView container
 const styles = StyleSheet.create({
