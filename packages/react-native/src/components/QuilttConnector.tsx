@@ -423,36 +423,36 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
         <WebView
           ref={webViewRef}
           // Plaid keeps sending window.location = 'about:srcdoc' and causes some noise in RN
-          style={styles.webview}
-          originWhitelist={['*']}
-          source={{ uri: connectorUrl }}
-          onShouldStartLoadWithRequest={requestHandler}
-          onLoadEnd={onLoadEnd}
-          javaScriptEnabled
           domStorageEnabled // To enable localStorage in Android webview
-          webviewDebuggingEnabled
-          bounces={false} // Controls the bouncing effect when scrolling past content boundaries (iOS only)
+          javaScriptEnabled
+          onLoadEnd={onLoadEnd}
+          onShouldStartLoadWithRequest={requestHandler}
+          originWhitelist={['*']}
           scrollEnabled={true} // Enables scrolling within the WebView
-          automaticallyAdjustContentInsets={false} // Disables automatic padding adjustments based on navigation bars/safe areas
-          contentInsetAdjustmentBehavior="never" // Controls how the WebView adjusts its content layout relative to safe areas and system UI
-          showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          source={{ uri: connectorUrl }}
+          style={styles.webview}
           testID="webview"
+          webviewDebuggingEnabled
           {...(Platform.OS === 'ios'
             ? {
-                decelerationRate: 'normal',
-                keyboardDisplayRequiresUserAction: false,
-                dataDetectorTypes: 'none',
-                allowsInlineMediaPlayback: true,
-                allowsBackForwardNavigationGestures: false,
-                startInLoadingState: true,
-                scrollEventThrottle: 16, // Optimize scroll performance
-                overScrollMode: 'never', // Prevent overscroll effect
+                allowsBackForwardNavigationGestures: false, // Disables swipe to go back/forward
+                allowsInlineMediaPlayback: true, // Allows videos to play inline
+                automaticallyAdjustContentInsets: false, // Disables automatic padding adjustments
+                bounces: false, // Controls the bouncing effect when scrolling past content boundaries
+                contentInsetAdjustmentBehavior: 'never', // Controls how safe area insets modify content
+                dataDetectorTypes: 'none', // Disables automatic data detection (phone numbers, links, etc.)
+                decelerationRate: 'normal', // Controls scroll deceleration speed
+                keyboardDisplayRequiresUserAction: false, // Allows programmatic keyboard display
+                scrollEventThrottle: 16, // Optimize scroll performance (throttle scroll events)
+                startInLoadingState: true, // Shows loading indicator on first load
               }
             : {
-                androidLayerType: 'hardware',
-                cacheEnabled: true,
-                cacheMode: 'LOAD_CACHE_ELSE_NETWORK',
+                androidLayerType: 'hardware', // Use hardware acceleration for rendering
+                cacheEnabled: true, // Enable caching
+                cacheMode: 'LOAD_CACHE_ELSE_NETWORK', // Load from cache when available
+                overScrollMode: 'never', // Disable overscroll effect
               })}
         />
       </AndroidSafeAreaView>
