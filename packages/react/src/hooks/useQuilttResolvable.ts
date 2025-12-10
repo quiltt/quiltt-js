@@ -75,8 +75,13 @@ export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCal
       finicity?: string
       akoya?: string
     }): Promise<boolean | null> => {
-      if (!session?.token || !connectorId) {
-        handleError('Missing session token or connector ID')
+      if (!session?.token) {
+        handleError('Missing session token')
+        return null
+      }
+
+      if (!connectorId) {
+        handleError('Missing connector ID')
         return null
       }
 
