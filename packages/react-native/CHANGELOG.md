@@ -1,5 +1,19 @@
 # @quiltt/react-native
 
+## 4.5.0
+
+### Minor Changes
+
+- [#386](https://github.com/quiltt/quiltt-js/pull/386) [`0bf706c`](https://github.com/quiltt/quiltt-js/commit/0bf706ce2ad926304d6eac739ee58971736f913e) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Update platform webview props
+
+### Patch Changes
+
+- [#380](https://github.com/quiltt/quiltt-js/pull/380) [`31cd190`](https://github.com/quiltt/quiltt-js/commit/31cd1902618ebc2314d42dd7aca81b3ab94068ea) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Improve useQuilttResolvable error messaging
+
+- Updated dependencies [[`31cd190`](https://github.com/quiltt/quiltt-js/commit/31cd1902618ebc2314d42dd7aca81b3ab94068ea), [`0bf706c`](https://github.com/quiltt/quiltt-js/commit/0bf706ce2ad926304d6eac739ee58971736f913e)]:
+  - @quiltt/core@4.5.0
+  - @quiltt/react@4.5.0
+
 ## 4.4.0
 
 ### Minor Changes
