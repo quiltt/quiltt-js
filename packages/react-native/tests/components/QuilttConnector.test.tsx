@@ -1,13 +1,20 @@
+import { createRef, forwardRef } from 'react'
 import { Linking, Platform } from 'react-native'
 
 import type { MockInstance } from 'vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react-native'
 
-import { checkConnectorUrl, handleOAuthUrl, QuilttConnector } from '@/components/QuilttConnector'
+import {
+  checkConnectorUrl,
+  handleOAuthUrl,
+  QuilttConnector,
+  type QuilttConnectorHandle,
+} from '@/components/QuilttConnector'
 
 // Store WebView props for testing
 let capturedWebViewProps: any = null
+let capturedWebViewRef: any = null
 
 // Mock ErrorReporter before importing QuilttConnector
 vi.mock('@/utils/error/ErrorReporter', () => ({
@@ -18,12 +25,13 @@ vi.mock('@/utils/error/ErrorReporter', () => ({
   },
 }))
 
-// Mock WebView component with proper testID handling
+// Mock WebView component with proper ref support using forwardRef
 vi.mock('react-native-webview', () => ({
-  WebView: (props: any) => {
+  WebView: forwardRef((props: any, ref: any) => {
     capturedWebViewProps = { ...props } // Synchronous capture
+    capturedWebViewRef = ref // Capture the ref
     return null
-  },
+  }),
 }))
 
 // Mock Quiltt React
@@ -68,6 +76,7 @@ describe('QuilttConnector', () => {
     fetchSpy = vi.spyOn(global, 'fetch')
     vi.spyOn(Linking, 'openURL').mockImplementation(() => Promise.resolve(true))
     capturedWebViewProps = null
+    capturedWebViewRef = null
 
     // Mock successful fetch for all tests by default
     fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
@@ -235,6 +244,246 @@ describe('QuilttConnector', () => {
       const url = new URL('https://oauth.test.com/callback')
       handleOAuthUrl(url)
       expect(Linking.openURL).toHaveBeenCalledWith(url.toString())
+    })
+  })
+
+  describe('QuilttConnectorHandle - handleOAuthCallback', () => {
+    let mockInjectJavaScript: any
+
+    beforeEach(() => {
+      capturedWebViewProps = null
+      capturedWebViewRef = null
+      mockInjectJavaScript = vi.fn()
+    })
+
+    it('should expose handleOAuthCallback method via ref', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      // Verify ref is accessible and method exists
+      expect(ref.current).toBeTruthy()
+      expect(typeof ref.current?.handleOAuthCallback).toBe('function')
+    })
+
+    it('should construct and inject correct JavaScript message with OAuth parameters', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      //Wait for props to be captured and the webViewRef to be set
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      // Give React a moment to set the ref
+      await waitFor(() => {
+        expect(capturedWebViewRef).not.toBeNull()
+      })
+
+      // Mock the WebView instance and set it on the captured ref
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+
+      // capturedWebViewRef is the ref object from useRef inside the component
+      // We need to set its `current` property to our mock WebView
+      if (
+        capturedWebViewRef &&
+        typeof capturedWebViewRef === 'object' &&
+        capturedWebViewRef !== null
+      ) {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      // Call handleOAuthCallback with a test URL containing OAuth parameters
+      const callbackUrl =
+        'https://oauth.test.com/callback?code=test-code&state=test-state&institution_id=test-bank'
+      ref.current?.handleOAuthCallback(callbackUrl)
+
+      // Verify injectJavaScript was called
+      expect(mockInjectJavaScript).toHaveBeenCalled()
+
+      // Get the injected script
+      const injectedScript = mockInjectJavaScript.mock.calls[0][0]
+
+      // Verify the script contains the expected structure
+      expect(injectedScript).toContain('window.postMessage')
+      expect(injectedScript).toContain('"source":"quiltt"')
+      expect(injectedScript).toContain('"type":"OAuthCallback"')
+      expect(injectedScript).toContain(callbackUrl)
+      expect(injectedScript).toContain('"code":"test-code"')
+      expect(injectedScript).toContain('"state":"test-state"')
+      expect(injectedScript).toContain('"institution_id":"test-bank"')
+    })
+
+    it('should extract OAuth parameters correctly from callback URL', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewRef).toBeTruthy()
+      })
+
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (
+        capturedWebViewRef &&
+        typeof capturedWebViewRef === 'object' &&
+        capturedWebViewRef !== null
+      ) {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      // Test with multiple parameters
+      const callbackUrl =
+        'https://oauth.test.com/callback?code=abc123&state=xyz789&error=access_denied&error_description=User+cancelled'
+      ref.current?.handleOAuthCallback(callbackUrl)
+
+      const injectedScript = mockInjectJavaScript.mock.calls[0][0]
+
+      // Verify all parameters are extracted
+      expect(injectedScript).toContain('"code":"abc123"')
+      expect(injectedScript).toContain('"state":"xyz789"')
+      expect(injectedScript).toContain('"error":"access_denied"')
+      // Note: URL searchParams automatically decodes parameters, so "User+cancelled" becomes "User cancelled"
+      expect(injectedScript).toContain('"error_description":"User cancelled"')
+    })
+
+    it('should handle invalid URL gracefully', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      // Call with an invalid URL
+      const invalidUrl = 'not-a-valid-url'
+
+      // Should not throw
+      expect(() => {
+        ref.current?.handleOAuthCallback(invalidUrl)
+      }).not.toThrow()
+
+      // Should log error
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error handling OAuth callback:',
+        expect.any(Error)
+      )
+
+      consoleErrorSpy.mockRestore()
+    })
+
+    it('should handle callback with no parameters', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewRef).toBeTruthy()
+      })
+
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (
+        capturedWebViewRef &&
+        typeof capturedWebViewRef === 'object' &&
+        capturedWebViewRef !== null
+      ) {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      // Call with URL with no parameters
+      const callbackUrl = 'https://oauth.test.com/callback'
+      ref.current?.handleOAuthCallback(callbackUrl)
+
+      const injectedScript = mockInjectJavaScript.mock.calls[0][0]
+
+      // Should still construct proper message with empty params
+      expect(injectedScript).toContain('"source":"quiltt"')
+      expect(injectedScript).toContain('"type":"OAuthCallback"')
+      expect(injectedScript).toContain(callbackUrl)
+      expect(injectedScript).toContain('"params":{}')
+    })
+
+    it('should handle special characters in OAuth parameters', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewRef).toBeTruthy()
+      })
+
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (
+        capturedWebViewRef &&
+        typeof capturedWebViewRef === 'object' &&
+        capturedWebViewRef !== null
+      ) {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      // Test with special characters that need encoding
+      const callbackUrl = 'https://oauth.test.com/callback?message=Hello%20World&special=%26%3D%3F'
+      ref.current?.handleOAuthCallback(callbackUrl)
+
+      const injectedScript = mockInjectJavaScript.mock.calls[0][0]
+
+      // Verify parameters are included
+      // Note: URL searchParams automatically decodes parameters
+      expect(injectedScript).toContain('"message":"Hello World"')
+      expect(injectedScript).toContain('"special":"&=?"')
+    })
+
+    it('should log success message when injecting JavaScript', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const ref = createRef<QuilttConnectorHandle>()
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+      render(<QuilttConnector {...defaultProps} ref={ref} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewRef).toBeTruthy()
+      })
+
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (
+        capturedWebViewRef &&
+        typeof capturedWebViewRef === 'object' &&
+        capturedWebViewRef !== null
+      ) {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      const callbackUrl = 'https://oauth.test.com/callback?code=test'
+      ref.current?.handleOAuthCallback(callbackUrl)
+
+      // Verify the injected script contains success logging
+      const injectedScript = mockInjectJavaScript.mock.calls[0][0]
+      expect(injectedScript).toContain("console.log('OAuth callback message sent to connector')")
+
+      consoleLogSpy.mockRestore()
     })
   })
 })
