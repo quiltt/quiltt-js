@@ -85,7 +85,7 @@ describe('URL Utilities', () => {
 
       encodedStrings.forEach((str) => {
         expect(smartEncodeURIComponent(str)).toBe(str)
-        expect(console.log).toHaveBeenCalledWith('URL already encoded, skipping encoding:', str)
+        expect(console.log).toHaveBeenCalledWith('URL already encoded, skipping encoding')
       })
     })
 
@@ -101,7 +101,7 @@ describe('URL Utilities', () => {
 
       testCases.forEach(({ input, expected }) => {
         expect(smartEncodeURIComponent(input)).toBe(expected)
-        expect(console.log).toHaveBeenCalledWith('URL encoded from:', input, 'to:', expected)
+        expect(console.log).toHaveBeenCalledWith('URL encoded')
       })
     })
 
@@ -181,68 +181,66 @@ describe('URL Utilities', () => {
   })
 
   describe('normalizeUrlEncoding', () => {
-    describe('normalizeUrlEncoding', () => {
-      it('should decode double-encoded URLs once', () => {
-        const testCases = [
-          {
-            input: 'https%3A%252F%252Fexample.com',
-            expected: 'https:%2F%2Fexample.com',
-          },
-          {
-            input: 'user%2540example.com',
-            expected: 'user%40example.com',
-          },
-          {
-            input: 'path%252Fto%252Fresource',
-            expected: 'path%2Fto%2Fresource',
-          },
-          {
-            input: 'query%253Fparam%253Dvalue',
-            expected: 'query%3Fparam%3Dvalue',
-          },
-          {
-            input: '%25E2%2582%25AC%20is%20the%20euro%20symbol',
-            expected: '%E2%82%AC is the euro symbol',
-          },
-        ]
+    it('should decode double-encoded URLs once', () => {
+      const testCases = [
+        {
+          input: 'https%3A%252F%252Fexample.com',
+          expected: 'https:%2F%2Fexample.com',
+        },
+        {
+          input: 'user%2540example.com',
+          expected: 'user%40example.com',
+        },
+        {
+          input: 'path%252Fto%252Fresource',
+          expected: 'path%2Fto%2Fresource',
+        },
+        {
+          input: 'query%253Fparam%253Dvalue',
+          expected: 'query%3Fparam%3Dvalue',
+        },
+        {
+          input: '%25E2%2582%25AC%20is%20the%20euro%20symbol',
+          expected: '%E2%82%AC is the euro symbol',
+        },
+      ]
 
-        testCases.forEach(({ input, expected }) => {
-          const result = normalizeUrlEncoding(input)
-          expect(result).toBe(expected)
-          expect(console.log).toHaveBeenCalledWith('Detected double-encoded URL:', input)
-          expect(console.log).toHaveBeenCalledWith('Normalized to:', expected)
-        })
+      testCases.forEach(({ input, expected }) => {
+        const result = normalizeUrlEncoding(input)
+        expect(result).toBe(expected)
+        expect(console.log).toHaveBeenCalledWith('Detected double-encoded URL:', input)
+        expect(console.log).toHaveBeenCalledWith('Normalized to:', expected)
+      })
+    })
+
+    it('should correctly identify double-encoded strings', () => {
+      // This test requires accessing the private isDoubleEncoded function
+      // If this function isn't directly testable, this test might need to be skipped
+
+      // Testing through normalizeUrlEncoding behavior
+      const doubleEncodedStrings = [
+        'https%3A%252F%252Fexample.com', // Contains %25
+        '%25E2%2582%25AC', // Contains %25
+        'path%252Fto', // Contains %25
+      ]
+
+      const nonDoubleEncodedStrings = [
+        'https%3A%2F%2Fexample.com', // Single-encoded URL
+        'user%40example.com', // Single-encoded email
+        'plain text', // No encoding
+        '', // Empty string
+      ]
+
+      doubleEncodedStrings.forEach((str) => {
+        const result = normalizeUrlEncoding(str)
+        expect(result).not.toBe(str) // Should be decoded
+        expect(console.log).toHaveBeenCalledWith('Detected double-encoded URL:', str)
       })
 
-      it('should correctly identify double-encoded strings', () => {
-        // This test requires accessing the private isDoubleEncoded function
-        // If this function isn't directly testable, this test might need to be skipped
-
-        // Testing through normalizeUrlEncoding behavior
-        const doubleEncodedStrings = [
-          'https%3A%252F%252Fexample.com', // Contains %25
-          '%25E2%2582%25AC', // Contains %25
-          'path%252Fto', // Contains %25
-        ]
-
-        const nonDoubleEncodedStrings = [
-          'https%3A%2F%2Fexample.com', // Single-encoded URL
-          'user%40example.com', // Single-encoded email
-          'plain text', // No encoding
-          '', // Empty string
-        ]
-
-        doubleEncodedStrings.forEach((str) => {
-          const result = normalizeUrlEncoding(str)
-          expect(result).not.toBe(str) // Should be decoded
-          expect(console.log).toHaveBeenCalledWith('Detected double-encoded URL:', str)
-        })
-
-        nonDoubleEncodedStrings.forEach((str) => {
-          const result = normalizeUrlEncoding(str)
-          expect(result).toBe(str) // Should remain unchanged
-          // No log messages expected for non-double-encoded strings
-        })
+      nonDoubleEncodedStrings.forEach((str) => {
+        const result = normalizeUrlEncoding(str)
+        expect(result).toBe(str) // Should remain unchanged
+        // No log messages expected for non-double-encoded strings
       })
     })
 
