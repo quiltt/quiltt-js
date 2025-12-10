@@ -99,8 +99,8 @@ describe('useQuilttResolvable', async () => {
       mockCheckResolvable.mockImplementation(
         () =>
           new Promise((resolve) =>
-            setTimeout(() => resolve({ status: 200, data: { resolvable: true } }), 100),
-          ),
+            setTimeout(() => resolve({ status: 200, data: { resolvable: true } }), 100)
+          )
       )
 
       const { result } = renderHook(() => useQuilttResolvable('test-connector'))
@@ -147,9 +147,10 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(result.current.isResolvable).toBe(null)
+      expect(result.current.error).toBe('Missing session token')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Missing session token',
+        'Missing session token'
       )
     })
 
@@ -163,9 +164,10 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(result.current.isResolvable).toBe(null)
+      expect(result.current.error).toBe('Missing connector ID')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Missing connector ID',
+        'Missing connector ID'
       )
     })
 
@@ -179,9 +181,10 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(result.current.isResolvable).toBe(null)
+      expect(result.current.error).toBe('No provider ID specified')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'No provider ID specified',
+        'No provider ID specified'
       )
     })
 
@@ -203,9 +206,10 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(result.current.isResolvable).toBe(null)
+      expect(result.current.error).toBe('Connector not found')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Connector not found',
+        'Connector not found'
       )
     })
 
@@ -224,9 +228,10 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(result.current.isResolvable).toBe(null)
+      expect(result.current.error).toBe('Failed to check resolvability')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Failed to check resolvability',
+        'Failed to check resolvability'
       )
     })
 
@@ -243,9 +248,10 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(result.current.isResolvable).toBe(null)
+      expect(result.current.error).toBe('Network failure')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Connector Resolvable Error:',
-        'Network failure',
+        'Network failure'
       )
     })
 
@@ -258,9 +264,7 @@ describe('useQuilttResolvable', async () => {
         },
       })
 
-      const { result } = renderHook(() =>
-        useQuilttResolvable('test-connector', onErrorCallback),
-      )
+      const { result } = renderHook(() => useQuilttResolvable('test-connector', onErrorCallback))
 
       await act(async () => {
         await result.current.checkResolvable({ plaid: 'ins_3' })
@@ -284,6 +288,61 @@ describe('useQuilttResolvable', async () => {
 
       expect(resolvableResult).toBe(null)
       expect(mockConsoleError).toHaveBeenCalled()
+    })
+
+    it('should clear error on successful call after error', async () => {
+      mockCheckResolvable
+        .mockResolvedValueOnce({
+          status: 404,
+          data: { message: 'Not found' },
+        })
+        .mockResolvedValueOnce({
+          status: 200,
+          data: { resolvable: true },
+        })
+
+      const { result } = renderHook(() => useQuilttResolvable('test-connector'))
+
+      await act(async () => {
+        await result.current.checkResolvable({ plaid: 'ins_3' })
+      })
+      expect(result.current.error).toBe('Not found')
+
+      await act(async () => {
+        await result.current.checkResolvable({ plaid: 'ins_3' })
+      })
+      expect(result.current.error).toBe(null)
+      expect(result.current.isResolvable).toBe(true)
+    })
+
+    it('should update onErrorCallback when it changes', async () => {
+      const firstCallback = vi.fn()
+      const secondCallback = vi.fn()
+
+      mockCheckResolvable.mockResolvedValue({
+        status: 404,
+        data: { message: 'Not found' },
+      })
+
+      const { result, rerender } = renderHook(
+        ({ callback }) => useQuilttResolvable('test-connector', callback),
+        { initialProps: { callback: firstCallback } }
+      )
+
+      await act(async () => {
+        await result.current.checkResolvable({ plaid: 'ins_3' })
+      })
+      expect(firstCallback).toHaveBeenCalledWith('Not found')
+      expect(secondCallback).not.toHaveBeenCalled()
+
+      firstCallback.mockClear()
+      rerender({ callback: secondCallback })
+
+      await act(async () => {
+        await result.current.checkResolvable({ plaid: 'ins_3' })
+      })
+      expect(firstCallback).not.toHaveBeenCalled()
+      expect(secondCallback).toHaveBeenCalledWith('Not found')
     })
   })
 
@@ -346,7 +405,7 @@ describe('useQuilttResolvable', async () => {
         ({ connectorId }) => useQuilttResolvable(connectorId),
         {
           initialProps: { connectorId: 'connector-1' },
-        },
+        }
       )
 
       await act(async () => {
@@ -365,6 +424,94 @@ describe('useQuilttResolvable', async () => {
 
       expect(mockCheckResolvable).toHaveBeenLastCalledWith('mock-token', 'connector-2', {
         plaid: 'ins_3',
+      })
+    })
+  })
+
+  describe('provider ID variations', () => {
+    it('should handle mx provider ID', async () => {
+      mockCheckResolvable.mockResolvedValue({
+        status: 200,
+        data: { resolvable: true },
+      })
+
+      const { result } = renderHook(() => useQuilttResolvable('test-connector'))
+
+      await act(async () => {
+        await result.current.checkResolvable({ mx: 'mx_bank_123' })
+      })
+
+      expect(mockCheckResolvable).toHaveBeenCalledWith('mock-token', 'test-connector', {
+        mx: 'mx_bank_123',
+      })
+    })
+
+    it('should handle finicity provider ID', async () => {
+      mockCheckResolvable.mockResolvedValue({
+        status: 200,
+        data: { resolvable: true },
+      })
+
+      const { result } = renderHook(() => useQuilttResolvable('test-connector'))
+
+      await act(async () => {
+        await result.current.checkResolvable({ finicity: 'finicity_123' })
+      })
+
+      expect(mockCheckResolvable).toHaveBeenCalledWith('mock-token', 'test-connector', {
+        finicity: 'finicity_123',
+      })
+    })
+
+    it('should handle akoya provider ID', async () => {
+      mockCheckResolvable.mockResolvedValue({
+        status: 200,
+        data: { resolvable: true },
+      })
+
+      const { result } = renderHook(() => useQuilttResolvable('test-connector'))
+
+      await act(async () => {
+        await result.current.checkResolvable({ akoya: 'akoya_123' })
+      })
+
+      expect(mockCheckResolvable).toHaveBeenCalledWith('mock-token', 'test-connector', {
+        akoya: 'akoya_123',
+      })
+    })
+
+    it('should handle mock provider ID', async () => {
+      mockCheckResolvable.mockResolvedValue({
+        status: 200,
+        data: { resolvable: true },
+      })
+
+      const { result } = renderHook(() => useQuilttResolvable('test-connector'))
+
+      await act(async () => {
+        await result.current.checkResolvable({ mock: 'mock_123' })
+      })
+
+      expect(mockCheckResolvable).toHaveBeenCalledWith('mock-token', 'test-connector', {
+        mock: 'mock_123',
+      })
+    })
+
+    it('should handle multiple provider IDs with only first valid one', async () => {
+      mockCheckResolvable.mockResolvedValue({
+        status: 200,
+        data: { resolvable: true },
+      })
+
+      const { result } = renderHook(() => useQuilttResolvable('test-connector'))
+
+      await act(async () => {
+        await result.current.checkResolvable({ plaid: 'ins_3', mx: 'mx_123' })
+      })
+
+      expect(mockCheckResolvable).toHaveBeenCalledWith('mock-token', 'test-connector', {
+        plaid: 'ins_3',
+        mx: 'mx_123',
       })
     })
   })

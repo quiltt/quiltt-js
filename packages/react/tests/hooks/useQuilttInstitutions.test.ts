@@ -212,7 +212,7 @@ describe('useQuilttInstitutions', async () => {
 
     it('handles network errors thrown by search method', async () => {
       const mockErrorCallback = vi.fn()
-      const mockError = new Error('Network error')
+      const mockError = new Error('Network Error')
       mockSearchInstitutions.mockRejectedValue(mockError)
 
       const { result } = renderHook(() =>
@@ -227,10 +227,10 @@ describe('useQuilttInstitutions', async () => {
         expect(result.current.isSearching).toBe(false)
       })
 
-      expect(mockErrorCallback).toHaveBeenCalledWith('Network error')
+      expect(mockErrorCallback).toHaveBeenCalledWith('Network Error')
       expect(mockConsoleError).toHaveBeenCalledWith(
         'Quiltt Institutions Search Error:',
-        'Network error'
+        'Network Error'
       )
     })
 

@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
+import { useQuilttRenderGuard } from '@/hooks/useQuilttRenderGuard'
 import type { PropsOf } from '@/types'
 import { isDeepEqual } from '@/utils/isDeepEqual'
 
@@ -62,6 +63,9 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   children,
   ...props
 }: QuilttButtonProps<T> & PropsOf<T>) => {
+  // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
+  useQuilttRenderGuard('QuilttButton')
+
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
   const prevCallbacksRef = useRef({

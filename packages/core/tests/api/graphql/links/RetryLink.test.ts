@@ -103,7 +103,7 @@ describe('RetryLink', () => {
       return new Observable((observer) => {
         attemptCount++
         if (attemptCount < 2) {
-          observer.error(new Error('Network error'))
+          observer.error(new Error('Network Error'))
         } else {
           observer.next({ data: { success: true } })
           observer.complete()

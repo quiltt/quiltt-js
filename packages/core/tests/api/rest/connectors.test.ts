@@ -1,8 +1,8 @@
 import type { MockedFunction } from 'vitest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
 import { ConnectorsAPI } from '@/api/rest/connectors'
+import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
 
 // Mock fetchWithRetry
 vi.mock('@/api/rest/fetchWithRetry', () => ({
@@ -97,14 +97,14 @@ describe('ConnectorsAPI', () => {
         mockToken,
         mockConnectorId,
         mockTerm,
-        abortController.signal,
+        abortController.signal
       )
 
       expect(mockFetchWithRetry).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
           signal: abortController.signal,
-        }),
+        })
       )
     })
 
@@ -233,7 +233,11 @@ describe('ConnectorsAPI', () => {
 
       mockFetchWithRetry.mockResolvedValueOnce(mockErrorResponse)
 
-      const result = await connectorsAPI.searchInstitutions('invalid-token', 'connector-123', 'Chase')
+      const result = await connectorsAPI.searchInstitutions(
+        'invalid-token',
+        'connector-123',
+        'Chase'
+      )
 
       expect(result.status).toBe(401)
       expect(result.data).toEqual({
@@ -272,7 +276,7 @@ describe('ConnectorsAPI', () => {
       mockFetchWithRetry.mockRejectedValueOnce(networkError)
 
       await expect(connectorsAPI.searchInstitutions('token', 'connector', 'term')).rejects.toThrow(
-        'Network failure',
+        'Network failure'
       )
     })
   })
@@ -370,14 +374,14 @@ describe('ConnectorsAPI', () => {
         mockToken,
         mockConnectorId,
         { plaid: 'ins_3' },
-        abortController.signal,
+        abortController.signal
       )
 
       expect(mockFetchWithRetry).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
           signal: abortController.signal,
-        }),
+        })
       )
     })
 

@@ -28,7 +28,7 @@
       "outputs": []
     },
     "typecheck": {
-      "outputs": ["tsconfig.tsbuildinfo"]
+      "outputs": []
     },
     "cypress": {
       "dependsOn": ["^build", "build"],
