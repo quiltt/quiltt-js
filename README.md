@@ -12,7 +12,11 @@ Quiltt's unified API streamlines fintech application development by providing a 
 
 For comprehensive documentation including core concepts, guides, and API reference, visit [https://quiltt.dev](https://quiltt.dev).
 
-Each package includes detailed setup instructions and examples. See the individual package READMEs below for specific implementation details.
+Each package includes detailed setup instructions and examples. See the individual package READMEs below for specific implementation details:
+
+- [Core Package](packages/core#readme) - Essential functionality and types
+- [React Package](packages/react#readme) - React components and hooks
+- [React Native Package](packages/react-native#readme) - React Native and Expo components
 
 ## Packages
 
@@ -107,7 +111,7 @@ pnpm run check:packages
 
 We welcome contributions from developers at all skill levels. Whether you're reporting bugs, proposing features, or contributing code, your involvement drives the improvement of these projects.
 
-Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for detailed information on how to get started.
+Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for detailed information on how to get started. For information on creating releases and changesets, see our [Release Documentation](RELEASING.md).
 
 ## Publishing
 
@@ -119,6 +123,8 @@ pnpm changeset
 ```
 
 Once a changeset is created and merged to the `main` branch, our automated release workflow handles versioning and publishing to npm via the Changesets GitHub bot.
+
+For detailed information on the release process, version management, and troubleshooting, see our [Release Documentation](RELEASING.md).
 
 ## License
 

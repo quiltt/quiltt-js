@@ -7,24 +7,26 @@
 
 See the guides [here](https://www.quiltt.dev/connector/sdks/react).
 
+For general project information and contributing guidelines, see the [main repository README](../../README.md).
+
 ## Installation
 
 With `npm`:
 
 ```shell
-$ npm install @quiltt/react
+npm install @quiltt/react
 ```
 
 With `yarn`:
 
 ```shell
-$ yarn add @quiltt/react
+yarn add @quiltt/react
 ```
 
 With `pnpm`:
 
 ```shell
-$ pnpm add @quiltt/react
+pnpm add @quiltt/react
 ```
 
 ## Core Modules and Types
@@ -204,4 +206,9 @@ This project is licensed under the terms of the MIT license. See the [LICENSE](L
 
 ## Contributing
 
-For information on how to contribute to this project, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+For information on how to contribute to this project, please refer to the [repository contributing guidelines](../../CONTRIBUTING.md).
+
+## Related Packages
+
+- [`@quiltt/core`](../core#readme) - Essential functionality and types
+- [`@quiltt/react-native`](../react-native#readme) - React Native and Expo components

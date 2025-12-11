@@ -1,6 +1,12 @@
-# Welcome to Quiltt's example Expo app 👋
+# Quiltt React Native Expo Example 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.pnpmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app) that demonstrates how to integrate Quiltt Connector into a React Native application.
+
+For more information about Quiltt and the available packages, see:
+
+- [Main Repository README](../../README.md)
+- [@quiltt/react-native Documentation](../../packages/react-native#readme)
+- [Quiltt Developer Docs](https://quiltt.dev)
 
 ## Get started
 

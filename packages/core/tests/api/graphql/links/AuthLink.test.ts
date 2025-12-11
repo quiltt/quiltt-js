@@ -1,7 +1,7 @@
 import type { MockedFunction } from 'vitest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Operation } from '@apollo/client/core'
+import type { NextLink, Operation } from '@apollo/client/core'
 
 import AuthLink from '@/api/graphql/links/AuthLink'
 import { GlobalStorage } from '@/storage'
@@ -18,7 +18,7 @@ const mockGlobalStorage = vi.mocked(GlobalStorage)
 describe('AuthLink', () => {
   let authLink: AuthLink
   let mockOperation: Operation
-  let mockForward: MockedFunction<any>
+  let mockForward: NextLink
   let mockSetContext: MockedFunction<any>
 
   beforeEach(() => {
@@ -35,12 +35,16 @@ describe('AuthLink', () => {
       variables: {},
       operationName: 'TestQuery',
       extensions: {},
-      setContext: mockSetContext,
+      setContext: mockSetContext as any,
       getContext: vi.fn().mockReturnValue({}),
     } as any
 
-    // Mock forward function
-    mockForward = vi.fn()
+    // Mock forward function that returns an observable
+    const mockObservable = {
+      subscribe: vi.fn(),
+    } as any
+
+    mockForward = vi.fn().mockReturnValue(mockObservable) as any
 
     // Mock console.warn to avoid noise in tests
     vi.spyOn(console, 'warn').mockImplementation(() => {})
@@ -67,7 +71,7 @@ describe('AuthLink', () => {
       })
 
       expect(mockForward).toHaveBeenCalledWith(mockOperation)
-      expect(result).toBe(mockForward.mock.results[0].value)
+      expect(result).toBe((mockForward as any).mock.results[0].value)
     })
 
     it('should preserve existing headers when adding authorization', () => {
@@ -269,7 +273,7 @@ describe('AuthLink', () => {
       // Clear mocks for second request
       vi.clearAllMocks()
       // Re-assign the mock since we cleared it
-      mockOperation.setContext = mockSetContext
+      mockOperation.setContext = mockSetContext as any
 
       // Second request with new token (simulating token refresh)
       const newToken = 'new-token-456'
@@ -292,7 +296,7 @@ describe('AuthLink', () => {
       // Clear mocks
       vi.clearAllMocks()
       // Re-assign the mock since we cleared it
-      mockOperation.setContext = mockSetContext
+      mockOperation.setContext = mockSetContext as any
 
       // Second request fails due to expired/cleared session
       mockGlobalStorage.get.mockReturnValue(null)
@@ -327,7 +331,7 @@ describe('AuthLink', () => {
     it('should handle forward function errors', () => {
       const mockToken = 'test-token'
       mockGlobalStorage.get.mockReturnValue(mockToken)
-      mockForward.mockImplementation(() => {
+      ;(mockForward as any).mockImplementation(() => {
         throw new Error('Forward failed')
       })
 
@@ -346,7 +350,7 @@ describe('AuthLink', () => {
       const mockObservable = { subscribe: vi.fn() }
 
       mockGlobalStorage.get.mockReturnValue(mockToken)
-      mockForward.mockReturnValue(mockObservable)
+      ;(mockForward as any).mockReturnValue(mockObservable)
 
       const result = authLink.request(mockOperation, mockForward)
 

@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Quiltt Next.js Example
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) that demonstrates how to integrate Quiltt into a React application.
+
+For more information about Quiltt and the available packages, see:
+
+- [Main Repository README](../../README.md)
+- [@quiltt/react Documentation](../../packages/react#readme)
+- [Quiltt Developer Docs](https://quiltt.dev)
 
 ## Getting Started
 
