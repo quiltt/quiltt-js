@@ -26,13 +26,19 @@ vi.mock('@apollo/client/react/context/ApolloProvider.js', () => ({
   ApolloProvider: ({ children }: any) => children,
 }))
 
-vi.mock('@quiltt/core', () => ({
-  QuilttClient: vi.fn().mockImplementation(() => ({
-    resetStore: vi.fn(),
-  })),
-  InMemoryCache: vi.fn(),
-  TerminatingLink: vi.fn(),
-}))
+vi.mock('@quiltt/core', () => {
+  class MockQuilttClient {
+    resetStore = vi.fn()
+  }
+  class MockInMemoryCache {}
+  class MockTerminatingLink {}
+
+  return {
+    QuilttClient: MockQuilttClient,
+    InMemoryCache: MockInMemoryCache,
+    TerminatingLink: MockTerminatingLink,
+  }
+})
 
 describe('QuilttAuthProvider', () => {
   beforeEach(() => {

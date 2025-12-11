@@ -10,18 +10,21 @@ import { QuilttProvider } from '@/providers/QuilttProvider'
 // Mock QuilttClient from core with proper async behavior
 vi.mock('@quiltt/core', async (importOriginal) => {
   const actual = await importOriginal()
+
+  class MockQuilttClient {
+    apolloClient = {
+      resetStore: vi.fn().mockResolvedValue(undefined),
+      clearStore: vi.fn().mockResolvedValue(undefined),
+      stop: vi.fn(),
+      cache: {
+        reset: vi.fn(),
+      },
+    }
+  }
+
   return {
     ...(actual as any),
-    QuilttClient: vi.fn().mockImplementation(() => ({
-      apolloClient: {
-        resetStore: vi.fn().mockResolvedValue(undefined),
-        clearStore: vi.fn().mockResolvedValue(undefined),
-        stop: vi.fn(),
-        cache: {
-          reset: vi.fn(),
-        },
-      },
-    })),
+    QuilttClient: MockQuilttClient,
   }
 })
 

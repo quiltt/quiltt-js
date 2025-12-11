@@ -60,5 +60,12 @@ vi.mock('react-native-webview', () => ({
   WebView: (props: any) => React.createElement('WebView', props),
 }))
 
+// Mock react-native-url-polyfill to avoid module resolution issues
+vi.mock('react-native-url-polyfill', () => ({
+  // Export URL and URLSearchParams from global
+  URL: globalThis.URL,
+  URLSearchParams: globalThis.URLSearchParams,
+}))
+
 // Export mocks for individual test usage
 export { mockLinking, mockPlatform, mockStyleSheet }

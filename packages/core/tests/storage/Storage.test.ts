@@ -55,13 +55,36 @@ describe('Storage', () => {
   beforeEach(async () => {
     vi.resetModules()
 
-    vi.doMock('../../src/storage/Local', () => ({
-      LocalStorage: vi.fn().mockImplementation(() => createMockLocalStorage()),
-    }))
+    vi.doMock('../../src/storage/Local', () => {
+      class MockLocalStorage {
+        private instance = createMockLocalStorage()
+        get = this.instance.get
+        set = this.instance.set
+        subscribe = this.instance.subscribe
+        unsubscribe = this.instance.unsubscribe
+        _triggerStorageEvent = this.instance._triggerStorageEvent
+        _getStore = this.instance._getStore
+        _getSubscribers = this.instance._getSubscribers
+      }
+      return {
+        LocalStorage: MockLocalStorage,
+      }
+    })
 
-    vi.doMock('../../src/storage/Memory', () => ({
-      MemoryStorage: vi.fn().mockImplementation(() => createMockMemoryStorage()),
-    }))
+    vi.doMock('../../src/storage/Memory', () => {
+      class MockMemoryStorage {
+        private instance = createMockMemoryStorage()
+        get = this.instance.get
+        set = this.instance.set
+        subscribe = this.instance.subscribe
+        unsubscribe = this.instance.unsubscribe
+        _setStore = this.instance._setStore
+        _clearStore = this.instance._clearStore
+      }
+      return {
+        MemoryStorage: MockMemoryStorage,
+      }
+    })
 
     // Dynamic import AFTER mocks are set
     const mod = await import('../../src/storage/Storage')
