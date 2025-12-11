@@ -50,9 +50,11 @@
       "detox",
       "dtrace-provider",
       "esbuild",
-      "iltorb",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "iltorb": "npm:noop2@^2.0.0"
+    }
   },
   "bundlesize": [
     {
