@@ -10,18 +10,21 @@ import { QuilttProvider } from '@/providers/QuilttProvider'
 // Mock QuilttClient from core with proper async behavior
 vi.mock('@quiltt/core', async (importOriginal) => {
   const actual = await importOriginal()
+
+  class MockQuilttClient {
+    apolloClient = {
+      resetStore: vi.fn().mockResolvedValue(undefined),
+      clearStore: vi.fn().mockResolvedValue(undefined),
+      stop: vi.fn(),
+      cache: {
+        reset: vi.fn(),
+      },
+    }
+  }
+
   return {
     ...(actual as any),
-    QuilttClient: vi.fn().mockImplementation(() => ({
-      apolloClient: {
-        resetStore: vi.fn().mockResolvedValue(undefined),
-        clearStore: vi.fn().mockResolvedValue(undefined),
-        stop: vi.fn(),
-        cache: {
-          reset: vi.fn(),
-        },
-      },
-    })),
+    QuilttClient: MockQuilttClient,
   }
 })
 
@@ -101,7 +104,7 @@ describe('QuilttProvider', () => {
 
         // The render guard should detect this anti-pattern
         expect(consoleErrorSpy).toHaveBeenCalled()
-        const errorCalls = consoleErrorSpy.mock.calls.filter((call) =>
+        const errorCalls = consoleErrorSpy.mock.calls.filter((call: any) =>
           call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCalls.length).toBeGreaterThan(0)
@@ -129,7 +132,7 @@ describe('QuilttProvider', () => {
         render(<BadComponent />)
 
         expect(consoleErrorSpy).toHaveBeenCalled()
-        const errorCalls = consoleErrorSpy.mock.calls.filter((call) =>
+        const errorCalls = consoleErrorSpy.mock.calls.filter((call: any) =>
           call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCalls.length).toBeGreaterThan(0)
@@ -152,7 +155,7 @@ describe('QuilttProvider', () => {
 
         render(<BadComponent />)
 
-        const errorCalls = consoleErrorSpy.mock.calls.filter((call) =>
+        const errorCalls = consoleErrorSpy.mock.calls.filter((call: any) =>
           call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         // Should detect the components
@@ -172,7 +175,7 @@ describe('QuilttProvider', () => {
 
         render(<BadComponent />)
 
-        const errorCall = consoleErrorSpy.mock.calls.find((call) =>
+        const errorCall = consoleErrorSpy.mock.calls.find((call: any) =>
           call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCall).toBeDefined()
@@ -190,7 +193,7 @@ describe('QuilttProvider', () => {
 
         render(<BadComponent />)
 
-        const errorCall = consoleErrorSpy.mock.calls.find((call) =>
+        const errorCall = consoleErrorSpy.mock.calls.find((call: any) =>
           call[0]?.toString().includes('POTENTIAL ANTI-PATTERN')
         )
         expect(errorCall).toBeDefined()

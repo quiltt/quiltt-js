@@ -52,8 +52,9 @@ describe('LocalStorage', () => {
     vi.clearAllMocks()
     window.localStorage.clear()
     ;(localStorageMock as any)._setShouldThrow(false)
-    ls = new LocalStorage()
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    // Create instance after spies are set up
+    ls = new LocalStorage()
   })
 
   afterEach(() => {
@@ -203,13 +204,24 @@ describe('LocalStorage', () => {
 
   describe('storage event handling', () => {
     let mockEventListener: (event: StorageEvent) => void
+    let addEventListenerSpy: ReturnType<typeof vi.spyOn>
 
     beforeEach(() => {
-      const addEventListenerSpy = vi.spyOn(window, 'addEventListener')
+      // Set up spy before creating instance
+      vi.clearAllMocks()
+      window.localStorage.clear()
+      ;(localStorageMock as any)._setShouldThrow(false)
+      consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      addEventListenerSpy = vi.spyOn(window, 'addEventListener')
+
+      // Now create instance which will register the event listener
       ls = new LocalStorage()
-      mockEventListener = addEventListenerSpy.mock.calls.find(
-        (call) => call[0] === 'storage'
-      )?.[1] as (event: StorageEvent) => void
+
+      // Get the storage event listener
+      const storageCall = addEventListenerSpy.mock.calls.find((call: any) => call[0] === 'storage')
+      if (storageCall) {
+        mockEventListener = storageCall[1] as (event: StorageEvent) => void
+      }
     })
 
     it('should handle storage events for quiltt keys', () => {

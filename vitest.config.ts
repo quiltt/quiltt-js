@@ -45,11 +45,6 @@ export default defineConfig({
             clearMocks: true,
             restoreMocks: true,
             environment: 'node',
-            server: {
-              deps: {
-                inline: ['react-native-url-polyfill'],
-              },
-            },
           },
         }
       ),
@@ -57,17 +52,18 @@ export default defineConfig({
 
     // Shared configurations
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
-    environment: 'node',
+    maxWorkers: 1,
     isolate: true,
+    environment: 'node',
     includeTaskLocation: true,
     globals: true,
     chaiConfig: {
       truncateThreshold: 80,
+    },
+    server: {
+      deps: {
+        inline: ['react-native-url-polyfill'],
+      },
     },
 
     coverage: {

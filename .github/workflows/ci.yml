@@ -34,6 +34,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install

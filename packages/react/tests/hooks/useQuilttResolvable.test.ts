@@ -21,11 +21,14 @@ vi.mock('@/hooks/session', () => ({
 }))
 
 const mockCheckResolvable = vi.fn()
-vi.mock('@quiltt/core', () => ({
-  ConnectorsAPI: vi.fn().mockImplementation(() => ({
-    checkResolvable: mockCheckResolvable,
-  })),
-}))
+vi.mock('@quiltt/core', () => {
+  class MockConnectorsAPI {
+    checkResolvable = mockCheckResolvable
+  }
+  return {
+    ConnectorsAPI: MockConnectorsAPI,
+  }
+})
 
 const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 

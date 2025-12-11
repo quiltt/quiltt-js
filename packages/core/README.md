@@ -5,26 +5,28 @@
 
 `@quiltt/core` provides essential primitives for building Javascript-based applications with Quiltt. It provides an Auth API client and modules for handling JSON Web Tokens (JWT), observables, storage management, timeouts, API handling, and Typescript types.
 
-This package is used by both `@quiltt/react` and `@quiltt/react-native`. If you bundle it separately, we recommend keeping versions in sync to avoid issues with mismatched dependencies.
+This package is used by both [`@quiltt/react`](../react#readme) and [`@quiltt/react-native`](../react-native#readme). If you bundle it separately, we recommend keeping versions in sync to avoid issues with mismatched dependencies.
+
+For general project information and contributing guidelines, see the [main repository README](../../README.md).
 
 ## Install
 
 With `npm`:
 
 ```shell
-$ npm install @quiltt/core
+npm install @quiltt/core
 ```
 
 With `yarn`:
 
 ```shell
-$ yarn add @quiltt/core
+yarn add @quiltt/core
 ```
 
 With `pnpm`:
 
 ```shell
-$ pnpm add @quiltt/core
+pnpm add @quiltt/core
 ```
 
 ## Auth API Client
@@ -90,4 +92,9 @@ This project is licensed under the terms of the MIT license. See the [LICENSE](L
 
 ## Contributing
 
-For information on how to contribute to this project, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+For information on how to contribute to this project, please refer to the [repository contributing guidelines](../../CONTRIBUTING.md).
+
+## Related Packages
+
+- [`@quiltt/react`](../react#readme) - React components and hooks
+- [`@quiltt/react-native`](../react-native#readme) - React Native and Expo components

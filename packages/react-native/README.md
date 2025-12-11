@@ -5,6 +5,8 @@
 
 `@quiltt/react-native` provides React Native Components for integrating Quiltt Connector into React Native and Expo applications.
 
+For general project information and contributing guidelines, see the [main repository README](../../README.md).
+
 ## Installation
 
 `@quiltt/react-native` expects `react`, `react-native`,`react-native-webview`, `base-64` and `react-native-url-polyfill` as peer dependencies.
@@ -12,15 +14,15 @@
 With `npm`:
 
 ```shell
-$ npm install base-64 react-native-webview react-native-url-polyfill
-$ npm install @quiltt/react-native
+npm install base-64 react-native-webview react-native-url-polyfill
+npm install @quiltt/react-native
 ```
 
 With `yarn`:
 
 ```shell
-$ yarn add base-64 react-native-webview react-native-url-polyfill
-$ yarn add @quiltt/react-native
+yarn add base-64 react-native-webview react-native-url-polyfill
+yarn add @quiltt/react-native
 ```
 
 With `pnpm`:
@@ -76,3 +78,85 @@ export const App = () => {
 
 export default App
 ```
+
+### Handling OAuth Deep Links
+
+When users authenticate with financial institutions, they'll be redirected back to your app via a deep link. You need to listen for these deep links and pass them to the `QuilttConnector` to complete the OAuth flow.
+
+**Platform Note:** This deep link handling is primarily needed for **Android**, where OAuth flows typically open in an external browser. On **iOS**, the OAuth flow usually stays within the app's web view, so this fallback mechanism may not be necessary. However, implementing it ensures consistent behavior across both platforms.
+
+#### Example with Deep Link Handling
+
+```tsx
+import { useEffect, useRef } from 'react'
+import { Linking, View } from 'react-native'
+import { QuilttProvider } from '@quiltt/react'
+import { QuilttConnector } from '@quiltt/react-native'
+import type { ConnectorSDKCallbackMetadata, QuilttConnectorHandle } from '@quiltt/react-native'
+
+export const ConnectorScreen = () => {
+  const connectorRef = useRef<QuilttConnectorHandle>(null)
+  
+  const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
+  const oauthRedirectUrl = 'https://myapp.com/quiltt/callback'
+
+  // Listen for deep links and handle OAuth callbacks
+  useEffect(() => {
+    const subscription = Linking.addEventListener('url', (event) => {
+      console.log('Deep link received:', event.url)
+      
+      // Check if this is an OAuth callback for Quiltt
+      if (event.url.includes('quiltt-connect/callback') || event.url.includes('quiltt/callback')) {
+        console.log('Processing Quiltt OAuth callback')
+        connectorRef.current?.handleOAuthCallback(event.url)
+      }
+    })
+
+    return () => subscription.remove()
+  }, [])
+
+  const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
+    console.log('Successfully created connection!', {
+      connectionId: metadata.connectionId,
+    })
+  }
+
+  return (
+    <QuilttProvider token={sessionToken}>
+      <View style={{ flex: 1 }}>
+        <QuilttConnector
+          ref={connectorRef}
+          connectorId="<CONNECTOR_ID>"
+          oauthRedirectUrl={oauthRedirectUrl}
+          onExitSuccess={handleExitSuccess}
+        />
+      </View>
+    </QuilttProvider>
+  )
+}
+
+export default ConnectorScreen
+```
+
+**Important Notes:**
+
+- The `ref` prop is required when handling OAuth callbacks
+- The deep link URL pattern should match your `oauthRedirectUrl` configuration
+- Make sure your app is properly configured to handle deep links (see [React Native Linking documentation](https://reactnative.dev/docs/linking))
+
+## Typescript support
+
+`@quiltt/react-native` is written in Typescript and ships with its own type definitions, as well as the type definitions from `@quiltt/core`.
+
+## License
+
+This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE.md) file for more information.
+
+## Contributing
+
+For information on how to contribute to this project, please refer to the [repository contributing guidelines](../../CONTRIBUTING.md).
+
+## Related Packages
+
+- [`@quiltt/core`](../core#readme) - Essential functionality and types
+- [`@quiltt/react`](../react#readme) - React components and hooks

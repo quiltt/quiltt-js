@@ -21,11 +21,14 @@ vi.mock('@/hooks/session', () => ({
 }))
 
 const mockSearchInstitutions = vi.fn()
-vi.mock('@quiltt/core', () => ({
-  ConnectorsAPI: vi.fn().mockImplementation(() => ({
-    searchInstitutions: mockSearchInstitutions,
-  })),
-}))
+vi.mock('@quiltt/core', () => {
+  class MockConnectorsAPI {
+    searchInstitutions = mockSearchInstitutions
+  }
+  return {
+    ConnectorsAPI: MockConnectorsAPI,
+  }
+})
 
 vi.mock('use-debounce', () => ({
   useDebounce: vi.fn((value) => [value]),

@@ -1,24 +1,22 @@
-name: Unit Tests
+name: Bundlewatch
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
-  pull_request:
-  workflow_dispatch:
 
 permissions:
   contents: read
-  pull-requests: read
-  checks: write
+  pull-requests: write
   statuses: write
-  actions: write
 
 jobs:
-  test:
-    name: Run Tests
+  bundlewatch:
+    name: Check bundle size
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -36,14 +34,10 @@ jobs:
         run: pnpm install
 
       - name: Build packages
-        run: pnpm run build:packages
+        run: pnpm build:packages
 
-      - name: Run unit tests with coverage
-        run: pnpm run test:unit
-
-      - name: Upload coverage to Qlty
-        if: always()
-        uses: qltysh/qlty-action/coverage@v2
-        with:
-          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: coverage/lcov.info
+      - name: Check bundle size
+        run: pnpm bundlesize
+        env:
+          BUNDLESIZE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI: true

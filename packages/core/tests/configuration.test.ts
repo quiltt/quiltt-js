@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { name as packageName, version as packageVersion } from '../package.json'
 
@@ -7,19 +7,22 @@ const originalEnv = process.env
 
 // Function to load the configuration with cache busting
 const loadConfig = async (envConfig: Record<string, string | undefined>) => {
+  // Reset modules to clear the cache
+  vi.resetModules()
+
   // Set environment variables
   for (const key of Object.keys(envConfig)) {
     process.env[key] = envConfig[key]
   }
 
-  // Cache busting by appending a query string based on the current timestamp
-  const configModulePath = `@/configuration?update=${Date.now()}`
-  return import(configModulePath)
+  // Dynamic import the configuration module
+  return import('@/configuration')
 }
 
 // Reset the environment variables before each test
 beforeEach(() => {
   process.env = { ...originalEnv }
+  vi.resetModules()
 })
 
 describe('Configuration Constants', () => {

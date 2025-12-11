@@ -6,3 +6,11 @@ find the full documentation for it [in our repository](https://github.com/change
 
 We have a quick list of common questions to get you started engaging with this project in
 [our documentation](https://github.com/changesets/changesets/blob/main/docs/common-questions.md)
+
+## Quiltt Project Context
+
+This directory is part of the Quiltt JavaScript monorepo. For information about:
+
+- **Creating changesets**: See [RELEASING.md](../RELEASING.md)
+- **Contributing**: See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Project overview**: See the [main README](../README.md)
