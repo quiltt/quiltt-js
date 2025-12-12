@@ -60,7 +60,7 @@ pnpm run dev
 
 ### Testing
 
-This project uses Vitest for unit testing and Cypress for end-to-end testing, with comprehensive coverage reporting.
+This project uses Vitest for unit testing and Playwright for component and end-to-end testing, with comprehensive coverage reporting.
 
 #### Running Tests
 
@@ -84,13 +84,13 @@ pnpm run test
 #### Test Structure
 
 - **Unit Tests**: Located alongside source files with `.test.ts/.tsx` extensions
-- **E2E Tests**: Cypress tests in `examples/react-nextjs/cypress/`
+- **Component/E2E Tests**: Playwright tests in `examples/react-nextjs/playwright/`
 - **Coverage**: Istanbul coverage reports generated in `coverage/` directory
 
 #### Testing Stack
 
 - **Vitest**: Fast unit test runner with native TypeScript support
-- **Cypress**: End-to-end testing for React applications
+- **Playwright**: Component and end-to-end testing for React applications
 - **Testing Library**: React and React Native testing utilities
 - **Happy DOM**: Lightweight DOM implementation for faster tests
 

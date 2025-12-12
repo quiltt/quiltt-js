@@ -25,10 +25,7 @@ export const useQuilttRenderGuard = (componentName: string) => {
 
   useEffect(() => {
     // Only run in development mode and warn once per component instance
-    // Support both Node.js (process.env) and Vite (import.meta.env) environments
-    const isProduction =
-      process.env.NODE_ENV === 'production' ||
-      (typeof import.meta !== 'undefined' && (import.meta as any).env?.PROD)
+    const isProduction = process.env.NODE_ENV === 'production'
 
     if (isProduction) return
 

@@ -29,7 +29,7 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
 }) => {
   const { session, importSession } = useQuilttSession()
   const previousSessionRef = useRef(session)
-  const previousTokenRef = useRef<string | undefined>()
+  const previousTokenRef = useRef<string | undefined>(undefined)
 
   // Memoize the client to avoid unnecessary re-renders
   const apolloClient = useMemo(

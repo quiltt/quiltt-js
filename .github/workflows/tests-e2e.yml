@@ -20,8 +20,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: 'Test Next App'
-            directory: './examples/react-nextjs'
+          - name: "Test Next App"
+            directory: "./examples/react-nextjs"
           # - name: 'Test Expo App' # Figure out how to run Detox tests on Expo
           #   directory: './examples/react-native-expo'
 
@@ -35,8 +35,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
 
       - name: Install Sharp CLI
         run: npm install -g sharp-cli
@@ -46,6 +46,10 @@ jobs:
 
       - name: Build packages
         run: pnpm run build:packages
+
+      - name: Install Playwright Browsers
+        run: pnpm run playwright:install
+        working-directory: ${{ matrix.directory }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -85,16 +89,17 @@ jobs:
         working-directory: ${{ matrix.directory }}
 
       - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}
-        name: Upload Error Screenshot
+        name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
-          name: error_screenshots_${{ github.sha }} # Make name unique per commit
+          name: playwright_results_${{ github.sha }} # Make name unique per commit
           path: |
-            ${{github.workspace}}/**/cypress/screenshots
-            ${{github.workspace}}/**/cypress/videos
+            ${{github.workspace}}/**/playwright-report
+            ${{github.workspace}}/**/test-results
           retention-days: 3
-          if-no-files-found: warn  # Add warning if no files found
-          compression-level: 6  # Balance between size and speed
+          if-no-files-found: warn # Add warning if no files found
+          compression-level: 6 # Balance between size and speed
+
 
       # - if: ${{ failure() }} && ${{ matrix.name == 'Test Expo App' }}
       #   name: Upload iOS Test Artifacts # Enable this when running Detox tests on Expo

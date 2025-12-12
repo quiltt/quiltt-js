@@ -50,10 +50,10 @@
     "@biomejs/biome": "2.3.8",
     "@types/node": "22.19.2",
     "@types/rails__actioncable": "6.1.11",
-    "@types/react": "18.3.27",
-    "bunchee": "6.6.0",
-    "rimraf": "6.0.1",
-    "typescript": "5.9.2"
+    "@types/react": "19.2.7",
+    "bunchee": "6.6.2",
+    "rimraf": "6.1.2",
+    "typescript": "5.9.3"
   },
   "tags": [
     "quiltt"
