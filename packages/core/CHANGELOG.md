@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 4.5.1
+
+### Patch Changes
+
+- [#389](https://github.com/quiltt/quiltt-js/pull/389) [`a6a2a7e`](https://github.com/quiltt/quiltt-js/commit/a6a2a7ea94c7204a69b53f191ee738bcdc520a10) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Upgrade React versions across all projects
+
 ## 4.5.0
 
 ### Minor Changes
