@@ -18,7 +18,7 @@
     "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
     "test": "turbo run test",
     "test:unit": "vitest run --coverage",
-    "test:e2e": "turbo run cypress",
+    "test:e2e": "turbo run test:component",
     "typecheck": "turbo run typecheck",
     "version": "npx changeset version",
     "postversion": "pnpm exec pnpm install --filter=./packages/** "
@@ -46,11 +46,11 @@
     "onlyBuiltDependencies": [
       "@biomejs/biome",
       "@swc/core",
-      "cypress",
       "detox",
       "dtrace-provider",
       "esbuild",
-      "sharp"
+      "sharp",
+      "unrs-resolver"
     ],
     "overrides": {
       "iltorb": "npm:noop2@^2.0.0"

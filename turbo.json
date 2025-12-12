@@ -30,7 +30,7 @@
     "typecheck": {
       "outputs": []
     },
-    "cypress": {
+    "test:component": {
       "dependsOn": ["^build", "build"],
       "cache": false,
       "persistent": true

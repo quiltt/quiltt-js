@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
 
 import type { QuilttJWT } from '@quiltt/core'
-import { AuthAPI } from '@quiltt/core'
 
 import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useSession } from '@/hooks/useSession'

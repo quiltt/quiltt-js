@@ -2,6 +2,63 @@ import * as React from 'react'
 
 import { vi } from 'vitest'
 
+// Setup global for React Native TurboModule before any imports
+// This is required for React Native 0.76+ which uses feature flags via TurboModules
+const mockFeatureFlags = {
+  commonTestFlag: () => false,
+  allowCollapsableChildren: () => true,
+  allowRecursiveCommitsWithSynchronousMountOnAndroid: () => false,
+  batchRenderingUpdatesInEventLoop: () => false,
+  destroyFabricSurfacesInReactInstanceManager: () => false,
+  enableBackgroundExecutor: () => false,
+  enableCleanTextInputYogaNode: () => false,
+  enableGranularShadowTreeStateReconciliation: () => false,
+  enableMicrotasks: () => false,
+  enablePropsUpdateReconciliationAndroid: () => false,
+  enableSynchronousStateUpdates: () => false,
+  enableUIConsistency: () => false,
+  fetchImagesInViewPreallocation: () => false,
+  fixIncorrectScrollViewStateUpdateOnAndroid: () => false,
+  fixMappingOfEventPrioritiesBetweenFabricAndReact: () => false,
+  fixMissedFabricStateUpdatesOnAndroid: () => false,
+  forceBatchingMountItemsOnAndroid: () => false,
+  fuseboxEnabledDebug: () => true,
+  fuseboxEnabledRelease: () => false,
+  lazyAnimationCallbacks: () => false,
+  loadVectorDrawablesOnImages: () => false,
+  setAndroidLayoutDirection: () => false,
+  traceTurboModulePromiseRejectionsOnAndroid: () => false,
+  useFabricInterop: () => false,
+  useImmediateExecutorInAndroidBridgeless: () => false,
+  useModernRuntimeScheduler: () => false,
+  useNativeViewConfigsInBridgelessMode: () => false,
+  useNewReactImageViewBackgroundDrawing: () => false,
+  useRuntimeShadowNodeReferenceUpdate: () => false,
+  useRuntimeShadowNodeReferenceUpdateOnLayout: () => false,
+  useStateAlignmentMechanism: () => false,
+  useTurboModuleInterop: () => false,
+}
+
+// Set up global TurboModuleRegistry mock before React Native loads
+;(global as any).__turboModuleProxy = (name: string) => {
+  if (name === 'NativeReactNativeFeatureFlagsCxx') {
+    return mockFeatureFlags
+  }
+  if (name === 'DeviceInfo') {
+    return {
+      getConstants: () => ({
+        Dimensions: {
+          window: { width: 375, height: 667, scale: 2, fontScale: 1 },
+          screen: { width: 375, height: 667, scale: 2, fontScale: 1 },
+        },
+        isIPhoneX_deprecated: false,
+      }),
+    }
+  }
+  // Return null for other TurboModules to avoid errors
+  return null
+}
+
 // Mock react-native
 const mockPlatform = {
   OS: 'ios',
