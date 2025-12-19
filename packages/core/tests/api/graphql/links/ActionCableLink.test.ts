@@ -641,4 +641,676 @@ describe('ActionCableLink', () => {
       })
     })
   })
+
+  it('should invoke custom connected callback when connection is established', async () => {
+    const connectedCallback = vi.fn()
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.connected({ reconnected: false })
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({
+      callbacks: {
+        connected: connectedCallback,
+      },
+    })
+
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          expect(connectedCallback).toHaveBeenCalledWith({ reconnected: false })
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should invoke custom disconnected callback when connection is lost', async () => {
+    const disconnectedCallback = vi.fn()
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.disconnected()
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({
+      callbacks: {
+        disconnected: disconnectedCallback,
+      },
+    })
+
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          expect(disconnectedCallback).toHaveBeenCalled()
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should invoke custom received callback when data is received', async () => {
+    const receivedCallback = vi.fn()
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            const payload = { result: { data: { test: 'value' } }, more: false }
+            handlers.received(payload)
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({
+      callbacks: {
+        received: receivedCallback,
+      },
+    })
+
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        next: () => {},
+        complete: () => {
+          setTimeout(() => {
+            expect(receivedCallback).toHaveBeenCalledWith({
+              result: { data: { test: 'value' } },
+              more: false,
+            })
+            resolve()
+          }, 10)
+        },
+      })
+    })
+  })
+
+  it('should reuse existing consumer for the same token', async () => {
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    // First subscription
+    const observable1 = link.request(operation, dummyNextLink)
+    await new Promise<void>((resolve) => {
+      observable1?.subscribe({
+        complete: () => {
+          resolve()
+        },
+      })
+    })
+
+    // Second subscription with same token
+    const observable2 = link.request(operation, dummyNextLink)
+    await new Promise<void>((resolve) => {
+      observable2?.subscribe({
+        complete: () => {
+          resolve()
+        },
+      })
+    })
+
+    // createConsumer should only be called once
+    expect(createConsumer).toHaveBeenCalledTimes(1)
+  })
+
+  it('should create different consumers for different tokens', async () => {
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    // First subscription with token1
+    vi.mocked(GlobalStorage.get).mockReturnValue('token1')
+    const observable1 = link.request(operation, dummyNextLink)
+    await new Promise<void>((resolve) => {
+      observable1?.subscribe({
+        complete: () => {
+          resolve()
+        },
+      })
+    })
+
+    // Second subscription with token2
+    vi.mocked(GlobalStorage.get).mockReturnValue('token2')
+    const observable2 = link.request(operation, dummyNextLink)
+    await new Promise<void>((resolve) => {
+      observable2?.subscribe({
+        complete: () => {
+          resolve()
+        },
+      })
+    })
+
+    // createConsumer should be called twice for different tokens
+    expect(createConsumer).toHaveBeenCalledTimes(2)
+  })
+
+  it('should handle connectionParams as a static object', async () => {
+    const staticParams = { apiKey: 'test-key', version: '1.0' }
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((config, handlers) => {
+          expect(config).toMatchObject(staticParams)
+          setTimeout(() => {
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({
+      connectionParams: staticParams,
+    })
+
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          expect(mockConsumer.subscriptions.create).toHaveBeenCalledWith(
+            expect.objectContaining(staticParams),
+            expect.any(Object)
+          )
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should return observable that wraps ActionCable channel with closed property', async () => {
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+      closed: false,
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          // Trigger received to complete the test
+          setTimeout(() => {
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+    expect(observable).toBeInstanceOf(Observable)
+
+    // Subscribe to trigger the channel creation
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          // Verify the mock subscription was created and has closed: false
+          expect(mockConsumer.subscriptions.create).toHaveBeenCalled()
+          const createdChannel = mockConsumer.subscriptions.create.mock.results[0].value
+          expect(createdChannel).toHaveProperty('closed', false)
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should construct websocket URL with token parameter', async () => {
+    const token = 'test-token-123'
+    vi.mocked(GlobalStorage.get).mockReturnValue(token)
+
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          expect(createConsumer).toHaveBeenCalledWith(expect.stringContaining(`?token=${token}`))
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should invoke all custom callbacks when provided together', async () => {
+    const connectedCallback = vi.fn()
+    const disconnectedCallback = vi.fn()
+    const receivedCallback = vi.fn()
+
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.connected({ reconnected: true })
+            const payload = { result: { data: { test: 'data' } }, more: false }
+            handlers.received(payload)
+            handlers.disconnected()
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({
+      callbacks: {
+        connected: connectedCallback,
+        disconnected: disconnectedCallback,
+        received: receivedCallback,
+      },
+    })
+
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        next: () => {},
+        complete: () => {
+          setTimeout(() => {
+            expect(connectedCallback).toHaveBeenCalledWith({ reconnected: true })
+            expect(receivedCallback).toHaveBeenCalledWith({
+              result: { data: { test: 'data' } },
+              more: false,
+            })
+            expect(disconnectedCallback).toHaveBeenCalled()
+            resolve()
+          }, 10)
+        },
+      })
+    })
+  })
+
+  it('should include channelId in subscription config', async () => {
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((config, handlers) => {
+          expect(config).toHaveProperty('channelId')
+          expect(typeof config.channelId).toBe('string')
+          setTimeout(() => {
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should handle connected callback without arguments', async () => {
+    const connectedCallback = vi.fn()
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn((_config, handlers) => {
+          setTimeout(() => {
+            handlers.connected()
+            handlers.received({ result: { data: {} }, more: false })
+          }, 0)
+          return mockSubscription
+        }),
+      },
+    }
+
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({
+      callbacks: {
+        connected: connectedCallback,
+      },
+    })
+
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve) => {
+      observable?.subscribe({
+        complete: () => {
+          expect(connectedCallback).toHaveBeenCalledWith(undefined)
+          resolve()
+        },
+      })
+    })
+  })
+
+  it('should log warning when attempting subscription without token', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    vi.mocked(GlobalStorage.get).mockReturnValue(null)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      query TestQuery {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as Operation
+
+    const dummyNextLink = (_operation: Operation) =>
+      new Observable<FetchResult>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const result = link.request(operation, dummyNextLink)
+
+    expect(result).toBeNull()
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'QuilttClient attempted to send an unauthenticated Subscription'
+    )
+
+    consoleWarnSpy.mockRestore()
+  })
 })
