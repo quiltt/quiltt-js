@@ -28,7 +28,6 @@ class ActionCableLink extends ApolloLink {
   connectionParams: ConnectionParams
   callbacks: SubscriptionCallbacks
 
-
   constructor(options: {
     channelName?: string
     actionName?: string
@@ -100,7 +99,7 @@ class ActionCableLink extends ApolloLink {
           },
           disconnected: () => {
             callbacks.disconnected?.()
-          }
+          },
         }
       )
       // Make the ActionCable subscription behave like an Apollo subscription
