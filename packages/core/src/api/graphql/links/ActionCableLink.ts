@@ -1,3 +1,4 @@
+// Adapted from https://github.com/rmosolgo/graphql-ruby/blob/master/javascript_client/src/subscriptions/ActionCableLink.ts
 import type { FetchResult, NextLink, Operation } from '@apollo/client/core'
 import { ApolloLink } from '@apollo/client/core/index.js'
 import { Observable } from '@apollo/client/utilities/index.js'
@@ -14,23 +15,32 @@ type RequestResult = FetchResult<
   Record<string, unknown>
 >
 type ConnectionParams = object | ((operation: Operation) => object)
+type SubscriptionCallbacks = {
+	connected?: (args?: { reconnected: boolean }) => void
+	disconnected?: () => void
+	received?: (payload: unknown) => void
+}
 
 class ActionCableLink extends ApolloLink {
   cables: { [id: string]: Consumer }
   channelName: string
   actionName: string
   connectionParams: ConnectionParams
+  callbacks: SubscriptionCallbacks
+
 
   constructor(options: {
     channelName?: string
     actionName?: string
     connectionParams?: ConnectionParams
+    callbacks?: SubscriptionCallbacks
   }) {
     super()
     this.cables = {}
     this.channelName = options.channelName || 'GraphqlChannel'
     this.actionName = options.actionName || 'execute'
     this.connectionParams = options.connectionParams || {}
+    this.callbacks = options.callbacks || {}
   }
 
   // Interestingly, this link does _not_ call through to `next` because
@@ -55,6 +65,7 @@ class ActionCableLink extends ApolloLink {
           ? this.connectionParams(operation)
           : this.connectionParams
 
+      const callbacks = this.callbacks
       const channel = this.cables[token].subscriptions.create(
         Object.assign(
           {},
@@ -65,7 +76,7 @@ class ActionCableLink extends ApolloLink {
           connectionParams
         ),
         {
-          connected: () => {
+          connected: (args?: { reconnected: boolean }) => {
             channel.perform(actionName, {
               query: operation.query ? print(operation.query) : null,
               variables: operation.variables,
@@ -73,6 +84,7 @@ class ActionCableLink extends ApolloLink {
               operationId: (operation as { operationId?: string }).operationId,
               operationName: operation.operationName,
             })
+            callbacks.connected?.(args)
           },
 
           received: (payload: { result: RequestResult; more: any }) => {
@@ -83,7 +95,12 @@ class ActionCableLink extends ApolloLink {
             if (!payload.more) {
               observer.complete()
             }
+
+            callbacks.received?.(payload)
           },
+          disconnected: () => {
+						callbacks.disconnected?.()
+					}
         }
       )
       // Make the ActionCable subscription behave like an Apollo subscription
