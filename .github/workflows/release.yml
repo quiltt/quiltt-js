@@ -16,17 +16,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Setup environment
+        uses: ./.github/actions/setup
         with:
-          node-version-file: ".nvmrc"
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
+          build-packages: "false"
 
       - name: Create .npmrc in home folder
         run: |

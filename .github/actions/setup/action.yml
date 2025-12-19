@@ -1,0 +1,40 @@
+name: "Setup Node.js Environment"
+description: "Checkout code, install pnpm, setup Node.js, install dependencies, and optionally build packages"
+
+inputs:
+  node-version:
+    description: "Node.js version to use (defaults to .nvmrc)"
+    required: false
+    default: ""
+  build-packages:
+    description: "Whether to build packages after installing dependencies"
+    required: false
+    default: "true"
+  working-directory:
+    description: "Working directory for dependency installation"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version != '' && inputs.node-version || '' }}
+        node-version-file: ${{ inputs.node-version == '' && '.nvmrc' || '' }}
+        check-latest: ${{ inputs.node-version != '' && 'true' || 'false' }}
+        cache: "pnpm"
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install
+
+    - name: Build packages
+      if: inputs.build-packages == 'true' && inputs.working-directory == '.'
+      shell: bash
+      run: pnpm build:packages
