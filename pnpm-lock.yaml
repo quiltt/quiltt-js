@@ -246,8 +246,8 @@ importers:
         specifier: 22.19.2
         version: 22.19.2
       '@types/rails__actioncable':
-        specifier: 6.1.11
-        version: 6.1.11
+        specifier: 8.0.3
+        version: 8.0.3
       '@types/react':
         specifier: 19.2.7
         version: 19.2.7
@@ -2741,8 +2741,8 @@ packages:
   '@types/node@22.19.2':
     resolution: {integrity: sha512-LPM2G3Syo1GLzXLGJAKdqoU35XvrWzGJ21/7sgZTUpbkBaOasTj8tjwn6w+hCkqaa1TfJ/w67rJSwYItlJ2mYw==}
 
-  '@types/rails__actioncable@6.1.11':
-    resolution: {integrity: sha512-L6A3Rg6sGsv2cqalOgdOmyFvL1Pw69Mg0WuG6NtY9chzabhtkiSFY5fczo72mqRGezrMvl0Jy80v+N719CW+Tg==}
+  '@types/rails__actioncable@8.0.3':
+    resolution: {integrity: sha512-y46MOTYorVQVwlHUyaZYbrh3nIkXsRYNuPna32lb3RngLVBlndNbIPvAUywFfhivftNhYg+vW5sZKWYCVIX2lA==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -9549,7 +9549,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/rails__actioncable@6.1.11': {}
+  '@types/rails__actioncable@8.0.3': {}
 
   '@types/react-dom@19.2.3(@types/react@19.2.7)':
     dependencies:

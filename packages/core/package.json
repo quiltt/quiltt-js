@@ -48,7 +48,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
     "@types/node": "22.19.2",
-    "@types/rails__actioncable": "6.1.11",
+    "@types/rails__actioncable": "8.0.3",
     "@types/react": "19.2.7",
     "bunchee": "6.6.2",
     "rimraf": "6.1.2",
