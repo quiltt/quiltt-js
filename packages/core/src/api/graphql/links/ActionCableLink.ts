@@ -16,9 +16,9 @@ type RequestResult = FetchResult<
 >
 type ConnectionParams = object | ((operation: Operation) => object)
 type SubscriptionCallbacks = {
-	connected?: (args?: { reconnected: boolean }) => void
-	disconnected?: () => void
-	received?: (payload: unknown) => void
+  connected?: (args?: { reconnected: boolean }) => void
+  disconnected?: () => void
+  received?: (payload: unknown) => void
 }
 
 class ActionCableLink extends ApolloLink {
@@ -99,8 +99,8 @@ class ActionCableLink extends ApolloLink {
             callbacks.received?.(payload)
           },
           disconnected: () => {
-						callbacks.disconnected?.()
-					}
+            callbacks.disconnected?.()
+          }
         }
       )
       // Make the ActionCable subscription behave like an Apollo subscription
