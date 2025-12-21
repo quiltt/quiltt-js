@@ -171,6 +171,10 @@ jobs:
 
       - name: Create Android emulator
         run: |
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export ANDROID_SDK_HOME=$HOME
+          # Remove existing AVD if present
+          $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager delete avd -n Pixel_API_34_AOSP || true
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "system-images;android-34;default;x86_64"
           echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
             -n Pixel_API_34_AOSP \
@@ -180,6 +184,8 @@ jobs:
 
       - name: Start Android emulator
         run: |
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export ANDROID_SDK_HOME=$HOME
           nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim &
           $ANDROID_HOME/platform-tools/adb wait-for-device
           # Wait for boot to complete
