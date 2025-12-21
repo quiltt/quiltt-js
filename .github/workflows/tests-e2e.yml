@@ -165,6 +165,15 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup
 
+      - name: Update emulator binary
+        run: |
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install emulator
+
+      - name: Increase file watcher limit
+        run: |
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: ./examples/react-native-expo
@@ -180,6 +189,12 @@ jobs:
             -n Pixel_API_34_AOSP \
             -k "system-images;android-34;default;x86_64" \
             -d "pixel"
+          # Set RAM and heap size for stability
+          CONFIG_INI="$HOME/.android/avd/Pixel_API_34_AOSP.avd/config.ini"
+          if [ -f "$CONFIG_INI" ]; then
+            echo "hw.ramSize=2048" >> "$CONFIG_INI"
+            echo "vm.heapSize=576" >> "$CONFIG_INI"
+          fi
           $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd
 
       - name: Start Android emulator
@@ -194,6 +209,17 @@ jobs:
             sleep 5
           done
           echo "Emulator booted successfully"
+
+      - name: Download Test Butler APK
+        run: |
+          mkdir -p /tmp/test-butler
+          curl -L -o /tmp/test-butler/test-butler-app.apk https://repo1.maven.org/maven2/com/linkedin/testbutler/test-butler-app/2.2.1/test-butler-app-2.2.1.apk
+
+      - name: Install Test Butler APK
+        run: |
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export ANDROID_SDK_HOME=$HOME
+          $ANDROID_HOME/platform-tools/adb install -r -t /tmp/test-butler/test-butler-app.apk
 
       - name: Cache Gradle
         uses: actions/cache@v4
