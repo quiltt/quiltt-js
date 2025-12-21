@@ -178,6 +178,17 @@ jobs:
             -d "pixel"
           $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd
 
+      - name: Start Android emulator
+        run: |
+          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim &
+          $ANDROID_HOME/platform-tools/adb wait-for-device
+          # Wait for boot to complete
+          until $ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+            echo "Waiting for Android emulator to boot..."
+            sleep 5
+          done
+          echo "Emulator booted successfully"
+
       - name: Cache Gradle
         uses: actions/cache@v4
         with:
