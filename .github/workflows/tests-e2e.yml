@@ -14,8 +14,8 @@ permissions:
   statuses: write
   actions: write
 
+
 jobs:
-  # Detect which files changed to conditionally run tests
   changes:
     runs-on: ubuntu-latest
     permissions:
@@ -39,63 +39,26 @@ jobs:
             core:
               - 'packages/core/**'
 
-  test:
+  test-ios:
     needs: changes
-    runs-on: macos-latest # Run on MacOS so that iPhone simulator works
-    strategy:
-      fail-fast: false # Don't cancel other jobs if one fails
-      matrix:
-        include:
-          - name: "Test Next App"
-            directory: "./examples/react-nextjs"
-            run: ${{ needs.changes.outputs.nextjs == 'true' || needs.changes.outputs.core == 'true' }}
-          - name: "Test Expo App iOS"
-            directory: "./examples/react-native-expo"
-            platform: "ios"
-            run: ${{ needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true' }}
-          - name: "Test Expo App Android"
-            directory: "./examples/react-native-expo"
-            platform: "android"
-            run: ${{ needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true' }}
-
+    runs-on: macos-latest
+    if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
     steps:
       - name: Checkout branch
-        if: ${{ matrix.run != 'false' }}
         uses: actions/checkout@v4
 
       - name: Setup environment
-        if: ${{ matrix.run != 'false' }}
         uses: ./.github/actions/setup
 
-      - name: Install Sharp CLI
-        if: ${{ matrix.run != 'false' && matrix.name == 'Test Next App' }}
-        run: npm install -g sharp-cli
-
       - name: Install dependencies
-        if: ${{ matrix.run != 'false' }}
         run: pnpm install --frozen-lockfile
-        working-directory: ${{ matrix.directory }}
-
-      - name: Cache Playwright browsers
-        if: ${{ matrix.run != 'false' && matrix.name == 'Test Next App' }}
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright Browsers
-        if: ${{ matrix.run != 'false' && matrix.name == 'Test Next App' }}
-        run: pnpm run playwright:install
-        working-directory: ${{ matrix.directory }}
+        working-directory: ./examples/react-native-expo
 
       - name: Cache CocoaPods
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
         uses: actions/cache@v4
         with:
           path: |
-            ${{ matrix.directory }}/ios/Pods
+            ./examples/react-native-expo/ios/Pods
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
@@ -103,16 +66,14 @@ jobs:
             ${{ runner.os }}-pods-
 
       - name: Cache iOS DerivedData
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
         uses: actions/cache@v4
         with:
-          path: ${{ matrix.directory }}/ios/build
+          path: ./examples/react-native-expo/ios/build
           key: ${{ runner.os }}-ios-build-${{ hashFiles('**/Podfile.lock', '**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-ios-build-
 
       - name: Cache Detox framework
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
         uses: actions/cache@v4
         with:
           path: ~/Library/Detox
@@ -120,8 +81,96 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-detox-framework-
 
+      - name: Install Detox dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+
+      - name: Build Detox framework cache
+        run: |
+          cd ./examples/react-native-expo
+          pnpm exec detox clean-framework-cache
+          pnpm exec detox build-framework-cache
+
+      - name: List available Xcode versions
+        run: |
+          xcrun xcode-select --print-path
+          xcodebuild -version
+
+      - name: Install iOS 26.2 simulator runtime
+        run: |
+          xcrun simctl list runtimes
+          echo "iOS runtimes:"
+          xcrun simctl list runtimes | grep iOS
+
+      - name: Create and boot iPhone 17 Pro simulator
+        run: |
+          RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS 26" | tail -1 | awk '{print $NF}')
+          echo "Using runtime: $RUNTIME_ID"
+          DEVICE_ID=$(xcrun simctl list | grep "iPhone 17 Pro" | head -1 | awk '{print $(NF-1)}' | tr -d '()')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "Creating iPhone 17 Pro simulator..."
+            DEVICE_ID=$(xcrun simctl create "iPhone 17 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro" "$RUNTIME_ID" | head -1)
+          else
+            echo "iPhone 17 Pro simulator already exists: $DEVICE_ID"
+          fi
+          echo "Booting simulator..."
+          xcrun simctl boot "$DEVICE_ID" || true
+          sleep 10
+          xcrun simctl list devices | grep "iPhone 17 Pro"
+
+      - name: Build app
+        run: pnpm run build
+        working-directory: ./examples/react-native-expo
+        env:
+          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
+          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
+          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
+
+      - name: Build for testing
+        run: pnpm run test:ios:build
+        working-directory: ./examples/react-native-expo
+        env:
+          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
+          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
+          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
+
+      - name: Run tests
+        run: pnpm run test
+        working-directory: ./examples/react-native-expo
+        env:
+          PLATFORM: ios
+
+      - if: failure()
+        name: Upload iOS Test Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios_test_artifacts_${{ github.sha }}
+          path: |
+            ./examples/react-native-expo/artifacts
+            ./examples/react-native-expo/ios/build/logs
+          retention-days: 3
+          if-no-files-found: warn
+          compression-level: 6
+
+  test-android:
+    needs: changes
+    runs-on: ubuntu-latest
+    if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./examples/react-native-expo
+
       - name: Cache Gradle
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
         uses: actions/cache@v4
         with:
           path: |
@@ -132,18 +181,16 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Cache Android build
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
         uses: actions/cache@v4
         with:
           path: |
-            ${{ matrix.directory }}/android/app/build
-            ${{ matrix.directory }}/android/build
+            ./examples/react-native-expo/android/app/build
+            ./examples/react-native-expo/android/build
           key: ${{ runner.os }}-android-build-${{ hashFiles('**/build.gradle', '**/gradle-wrapper.properties', '**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-android-build-
 
       - name: Cache Android SDK system images
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
         uses: actions/cache@v4
         with:
           path: |
@@ -155,178 +202,36 @@ jobs:
             ${{ runner.os }}-android-sdk-
 
       - name: Setup Java (Android)
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
 
       - name: Setup Android SDK (Android)
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
         uses: android-actions/setup-android@v3
 
-      - name: Install Detox dependencies
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
-        run: |
-          brew tap wix/brew
-          brew install applesimutils
-
-      - name: Build Detox framework cache
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
-        run: |
-          cd ${{ matrix.directory }}
-          pnpm exec detox clean-framework-cache
-          pnpm exec detox build-framework-cache
-
-      - name: List available Xcode versions
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
-        run: |
-          xcrun xcode-select --print-path
-          xcodebuild -version
-
-      - name: Install iOS 26.2 simulator runtime
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
-        run: |
-          # List available runtimes
-          xcrun simctl list runtimes
-
-          # Install iOS 26.2 if not present (Xcode usually includes recent runtimes)
-          # The runtime should be pre-installed with macos-latest Xcode
-          echo "iOS runtimes:"
-          xcrun simctl list runtimes | grep iOS
-
-      - name: Create and boot iPhone 17 Pro simulator
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
-        run: |
-          # Get the latest iOS runtime
-          RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS 26" | tail -1 | awk '{print $NF}')
-          echo "Using runtime: $RUNTIME_ID"
-
-          # Check if simulator already exists
-          DEVICE_ID=$(xcrun simctl list | grep "iPhone 17 Pro" | head -1 | awk '{print $(NF-1)}' | tr -d '()')
-
-          if [ -z "$DEVICE_ID" ]; then
-            echo "Creating iPhone 17 Pro simulator..."
-            DEVICE_ID=$(xcrun simctl create "iPhone 17 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro" "$RUNTIME_ID" | head -1)
-          else
-            echo "iPhone 17 Pro simulator already exists: $DEVICE_ID"
-          fi
-
-          # Boot the simulator
-          echo "Booting simulator..."
-          xcrun simctl boot "$DEVICE_ID" || true
-          sleep 10
-
-          # Verify it's running
-          xcrun simctl list devices | grep "iPhone 17 Pro"
-
-      - name: Create Android emulator
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
-        run: |
-          # Install AOSP system image (use arm64-v8a for Apple Silicon runners)
-          echo "Installing Android API 34 AOSP system image..."
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "system-images;android-34;default;arm64-v8a"
-
-          # Accept licenses
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
-          # Create AVD if it doesn't exist
-          if ! $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd | grep -q "Pixel_API_34_AOSP"; then
-            echo "Creating Pixel API 34 AOSP emulator..."
-            echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
-              -n Pixel_API_34_AOSP \
-              -k "system-images;android-34;default;arm64-v8a" \
-              -d "pixel"
-          else
-            echo "Pixel_API_34_AOSP emulator already exists"
-          fi
-
-          # List available emulators
-          $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd
-
-      - name: Start Android emulator
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
-        run: |
-          echo "Starting Android emulator..."
-          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim &
-
-          # Wait for emulator to boot
-          echo "Waiting for emulator to boot..."
-          $ANDROID_HOME/platform-tools/adb wait-for-device
-
-          # Wait for boot to complete
-          while [ "$($ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do
-            echo "Waiting for boot to complete..."
-            sleep 5
-          done
-
-          echo "Emulator booted successfully"
-          $ANDROID_HOME/platform-tools/adb devices
-
       - name: Build app
-        if: ${{ matrix.run != 'false' }}
         run: pnpm run build
-        working-directory: ${{ matrix.directory }}
-        env:
-          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
-          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
-          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
-          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
-
-      - name: Build for testing
-        if: ${{ matrix.run != 'false' && matrix.platform == 'ios' }}
-        run: pnpm run test:ios:build
-        working-directory: ${{ matrix.directory }}
-        env:
-          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
-          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
-          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
-          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
+        working-directory: ./examples/react-native-expo
 
       - name: Build for testing (Android)
-        if: ${{ matrix.run != 'false' && matrix.platform == 'android' }}
         run: pnpm run build
-        working-directory: ${{ matrix.directory }}
+        working-directory: ./examples/react-native-expo
 
       - name: Run tests
-        if: ${{ matrix.run != 'false' }}
         run: pnpm run test
-        working-directory: ${{ matrix.directory }}
+        working-directory: ./examples/react-native-expo
         env:
-          PLATFORM: ${{ matrix.platform || 'ios' }}
+          PLATFORM: android
 
-      - if: failure() && matrix.name == 'Test Next App'
-        name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright_results_${{ github.sha }} # Make name unique per commit
-          path: |
-            ${{github.workspace}}/**/playwright-report
-            ${{github.workspace}}/**/test-results
-          retention-days: 3
-          if-no-files-found: warn # Add warning if no files found
-          compression-level: 6 # Balance between size and speed
-
-      - if: failure() && matrix.name == 'Test Expo App iOS'
-        name: Upload iOS Test Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios_test_artifacts_${{ github.sha }} # Make name unique per commit
-          path: |
-            ${{ matrix.directory }}/artifacts
-            ${{ matrix.directory }}/ios/build/logs
-          retention-days: 3
-          if-no-files-found: warn # Add warning if no files found
-          compression-level: 6 # Balance between size and speed
-
-      - if: failure() && matrix.name == 'Test Expo App Android'
+      - if: failure()
         name: Upload Android Test Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android_test_artifacts_${{ github.sha }} # Make name unique per commit
+          name: android_test_artifacts_${{ github.sha }}
           path: |
-            ${{ matrix.directory }}/artifacts
-            ${{ matrix.directory }}/android/app/build/outputs/androidTest-results
+            ./examples/react-native-expo/artifacts
+            ./examples/react-native-expo/android/app/build/outputs/androidTest-results
           retention-days: 3
-          if-no-files-found: warn # Add warning if no files found
-          compression-level: 6 # Balance between size and speed
+          if-no-files-found: warn
+          compression-level: 6
