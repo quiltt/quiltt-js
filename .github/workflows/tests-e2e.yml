@@ -295,7 +295,7 @@ jobs:
         env:
           PLATFORM: ${{ matrix.platform || 'ios' }}
 
-      - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}
+      - if: failure() && matrix.name == 'Test Next App'
         name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
@@ -307,7 +307,7 @@ jobs:
           if-no-files-found: warn # Add warning if no files found
           compression-level: 6 # Balance between size and speed
 
-      - if: ${{ failure() }} && ${{ matrix.name == 'Test Expo App iOS' }}
+      - if: failure() && matrix.name == 'Test Expo App iOS'
         name: Upload iOS Test Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -319,7 +319,7 @@ jobs:
           if-no-files-found: warn # Add warning if no files found
           compression-level: 6 # Balance between size and speed
 
-      - if: ${{ failure() }} && ${{ matrix.name == 'Test Expo App Android' }}
+      - if: failure() && matrix.name == 'Test Expo App Android'
         name: Upload Android Test Artifacts
         uses: actions/upload-artifact@v4
         with:
