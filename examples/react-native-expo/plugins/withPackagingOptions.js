@@ -11,20 +11,32 @@ const withPackagingOptions = (config) => {
   return withProjectBuildGradle(config, (config) => {
     if (config.modResults.language === 'groovy') {
       const subprojectsBlock = `
-subprojects {
-    afterEvaluate { project ->
-        if (project.hasProperty('android')) {
-            project.android {
-                packagingOptions {
-                    pickFirst 'lib/arm64-v8a/libfbjni.so'
-                    pickFirst 'lib/armeabi-v7a/libfbjni.so'
-                    pickFirst 'lib/x86/libfbjni.so'
-                    pickFirst 'lib/x86_64/libfbjni.so'
-                    pickFirst 'lib/arm64-v8a/libc++_shared.so'
-                    pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-                    pickFirst 'lib/x86/libc++_shared.so'
-                    pickFirst 'lib/x86_64/libc++_shared.so'
-                }
+subprojects { subproject ->
+    subproject.plugins.withId('com.android.library') {
+        subproject.android {
+            packagingOptions {
+                pickFirst 'lib/arm64-v8a/libfbjni.so'
+                pickFirst 'lib/armeabi-v7a/libfbjni.so'
+                pickFirst 'lib/x86/libfbjni.so'
+                pickFirst 'lib/x86_64/libfbjni.so'
+                pickFirst 'lib/arm64-v8a/libc++_shared.so'
+                pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+                pickFirst 'lib/x86/libc++_shared.so'
+                pickFirst 'lib/x86_64/libc++_shared.so'
+            }
+        }
+    }
+    subproject.plugins.withId('com.android.application') {
+        subproject.android {
+            packagingOptions {
+                pickFirst 'lib/arm64-v8a/libfbjni.so'
+                pickFirst 'lib/armeabi-v7a/libfbjni.so'
+                pickFirst 'lib/x86/libfbjni.so'
+                pickFirst 'lib/x86_64/libfbjni.so'
+                pickFirst 'lib/arm64-v8a/libc++_shared.so'
+                pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+                pickFirst 'lib/x86/libc++_shared.so'
+                pickFirst 'lib/x86_64/libc++_shared.so'
             }
         }
     }
