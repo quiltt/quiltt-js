@@ -161,6 +161,29 @@ jobs:
     timeout-minutes: 120
     if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
     steps:
+      - name: Free disk space (aggressive)
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          # Remove large pre-installed software
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/lib/android/sdk/ndk
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/graalvm
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /usr/local/lib/node_modules
+          # Clean apt cache
+          sudo apt-get clean
+          # Remove docker images
+          docker rmi $(docker image ls -aq) 2>/dev/null || true
+          echo "=== After cleanup ==="
+          df -h
+
       - name: Checkout branch
         uses: actions/checkout@v4
 
@@ -177,12 +200,6 @@ jobs:
         run: |
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
           sudo sysctl -p
-
-      - name: Free disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/share/boost
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
