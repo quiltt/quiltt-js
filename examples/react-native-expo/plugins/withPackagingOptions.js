@@ -1,31 +1,38 @@
-const { withAppBuildGradle } = require('expo/config-plugins')
+const { withProjectBuildGradle } = require('expo/config-plugins')
 
 /**
  * Config plugin to add packagingOptions to resolve duplicate native library conflicts
  * This is needed for Detox E2E testing with React Native
+ *
+ * The fix must be applied to ALL subprojects (not just :app) because library modules
+ * like react-native-gesture-handler also build test APKs that encounter the same conflict.
  */
 const withPackagingOptions = (config) => {
-  return withAppBuildGradle(config, (config) => {
+  return withProjectBuildGradle(config, (config) => {
     if (config.modResults.language === 'groovy') {
-      const packagingOptions = `
-    packagingOptions {
-        pickFirst 'lib/arm64-v8a/libfbjni.so'
-        pickFirst 'lib/armeabi-v7a/libfbjni.so'
-        pickFirst 'lib/x86/libfbjni.so'
-        pickFirst 'lib/x86_64/libfbjni.so'
-        pickFirst 'lib/arm64-v8a/libc++_shared.so'
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-        pickFirst 'lib/x86/libc++_shared.so'
-        pickFirst 'lib/x86_64/libc++_shared.so'
-    }`
-
-      // Insert packagingOptions inside the android { } block
-      // Find the android { block and add packagingOptions before the closing brace
-      if (!config.modResults.contents.includes('packagingOptions')) {
-        config.modResults.contents = config.modResults.contents.replace(
-          /android\s*\{/,
-          `android {${packagingOptions}`
-        )
+      const subprojectsBlock = `
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                packagingOptions {
+                    pickFirst 'lib/arm64-v8a/libfbjni.so'
+                    pickFirst 'lib/armeabi-v7a/libfbjni.so'
+                    pickFirst 'lib/x86/libfbjni.so'
+                    pickFirst 'lib/x86_64/libfbjni.so'
+                    pickFirst 'lib/arm64-v8a/libc++_shared.so'
+                    pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+                    pickFirst 'lib/x86/libc++_shared.so'
+                    pickFirst 'lib/x86_64/libc++_shared.so'
+                }
+            }
+        }
+    }
+}
+`
+      // Add subprojects block at the end of the root build.gradle
+      if (!config.modResults.contents.includes("pickFirst 'lib/arm64-v8a/libfbjni.so'")) {
+        config.modResults.contents += subprojectsBlock
       }
     }
     return config
