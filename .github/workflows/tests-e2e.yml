@@ -41,7 +41,7 @@ jobs:
   test-ios:
     needs: changes
     runs-on: macos-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
     steps:
       - name: Checkout branch
@@ -158,7 +158,7 @@ jobs:
   test-android:
     needs: changes
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
     steps:
       - name: Checkout branch
@@ -173,81 +173,29 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Update emulator binary
-        run: |
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install emulator
-
       - name: Increase file watcher limit
         run: |
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
           sudo sysctl -p
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: ./examples/react-native-expo
 
-      - name: Cache Android SDK system images
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.ANDROID_HOME }}/system-images
-            ${{ env.ANDROID_HOME }}/platforms
-            ${{ env.ANDROID_HOME }}/build-tools
-          key: ${{ runner.os }}-android-sdk-34-x86_64
-          restore-keys: |
-            ${{ runner.os }}-android-sdk-
-
-      - name: Setup Java (Android)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Setup Android SDK (Android)
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Create Android emulator
-        run: |
-          export ANDROID_AVD_HOME=$HOME/.android/avd
-          export ANDROID_SDK_HOME=$HOME
-          # Remove existing AVD if present
-          $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager delete avd -n Pixel_API_34_AOSP || true
-          # Use x86_64 system image for ubuntu-latest (x86_64 host)
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "system-images;android-34;google_apis;x86_64"
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
-            -n Pixel_API_34_AOSP \
-            -k "system-images;android-34;google_apis;x86_64" \
-            -d "pixel"
-          # Set RAM and heap size for stability
-          CONFIG_INI="$HOME/.android/avd/Pixel_API_34_AOSP.avd/config.ini"
-          if [ -f "$CONFIG_INI" ]; then
-            echo "hw.ramSize=2048" >> "$CONFIG_INI"
-            echo "vm.heapSize=576" >> "$CONFIG_INI"
-          fi
-          $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd
-
-      - name: Start Android emulator
-        run: |
-          export ANDROID_AVD_HOME=$HOME/.android/avd
-          export ANDROID_SDK_HOME=$HOME
-          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim &
-          $ANDROID_HOME/platform-tools/adb wait-for-device
-          # Wait for boot to complete with timeout
-          BOOT_TIMEOUT=300
-          BOOT_WAIT=0
-          until $ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null | grep -m 1 '1'; do
-            if [ $BOOT_WAIT -ge $BOOT_TIMEOUT ]; then
-              echo "Emulator boot timed out after ${BOOT_TIMEOUT}s"
-              exit 1
-            fi
-            echo "Waiting for Android emulator to boot... (${BOOT_WAIT}s)"
-            sleep 5
-            BOOT_WAIT=$((BOOT_WAIT + 5))
-          done
-          echo "Emulator booted successfully"
-          # Additional wait for UI to be ready
-          sleep 10
-          $ANDROID_HOME/platform-tools/adb shell input keyevent 82
 
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -263,19 +211,63 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
+            ./examples/react-native-expo/android/.gradle
             ./examples/react-native-expo/android/app/build
             ./examples/react-native-expo/android/build
           key: ${{ runner.os }}-android-build-${{ hashFiles('**/build.gradle', '**/gradle-wrapper.properties', '**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-android-build-
 
-      - name: Build app
+      - name: Accept Android SDK licenses
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Install Android SDK components
+        run: |
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-34;google_apis;x86_64" "emulator" "platform-tools" "platforms;android-34"
+
+      - name: Create Android emulator
+        run: |
+          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+            -n test_emulator \
+            -k "system-images;android-34;google_apis;x86_64" \
+            -d "pixel" \
+            --force
+
+      - name: Build app (prebuild)
         run: pnpm run build
         working-directory: ./examples/react-native-expo
 
-      - name: Build for testing (Android)
-        run: pnpm run test:android:build
+      - name: Build Android app for testing
+        run: |
+          cd android
+          ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug --no-daemon --max-workers=2 -Dorg.gradle.parallel=true
         working-directory: ./examples/react-native-expo
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Xmx4g -XX:MaxMetaspaceSize=512m"
+
+      - name: Start Android emulator
+        run: |
+          nohup $ANDROID_HOME/emulator/emulator -avd test_emulator -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048 &
+          $ANDROID_HOME/platform-tools/adb wait-for-device
+          # Wait for boot to complete with timeout
+          BOOT_TIMEOUT=300
+          BOOT_WAIT=0
+          until $ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null | grep -m 1 '1'; do
+            if [ $BOOT_WAIT -ge $BOOT_TIMEOUT ]; then
+              echo "Emulator boot timed out after ${BOOT_TIMEOUT}s"
+              exit 1
+            fi
+            echo "Waiting for Android emulator to boot... (${BOOT_WAIT}s)"
+            sleep 5
+            BOOT_WAIT=$((BOOT_WAIT + 5))
+          done
+          echo "Emulator booted successfully"
+          # Disable animations for faster tests
+          $ANDROID_HOME/platform-tools/adb shell settings put global window_animation_scale 0
+          $ANDROID_HOME/platform-tools/adb shell settings put global transition_animation_scale 0
+          $ANDROID_HOME/platform-tools/adb shell settings put global animator_duration_scale 0
+          # Unlock screen
+          $ANDROID_HOME/platform-tools/adb shell input keyevent 82
 
       - name: Run tests
         run: pnpm run test
