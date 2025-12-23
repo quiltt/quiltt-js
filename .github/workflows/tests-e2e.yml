@@ -249,17 +249,6 @@ jobs:
           sleep 10
           $ANDROID_HOME/platform-tools/adb shell input keyevent 82
 
-      - name: Download Test Butler APK
-        run: |
-          mkdir -p /tmp/test-butler
-          curl -L -o /tmp/test-butler/test-butler-app.apk https://repo1.maven.org/maven2/com/linkedin/testbutler/test-butler-app/2.2.1/test-butler-app-2.2.1.apk
-
-      - name: Install Test Butler APK
-        run: |
-          export ANDROID_AVD_HOME=$HOME/.android/avd
-          export ANDROID_SDK_HOME=$HOME
-          $ANDROID_HOME/platform-tools/adb install -r -t /tmp/test-butler/test-butler-app.apk
-
       - name: Cache Gradle
         uses: actions/cache@v4
         with:
