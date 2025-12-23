@@ -22,7 +22,7 @@
     "test:android": "pnpm run build && pnpm run test:android:build && pnpm run test:android:run",
     "test:e2e": "pnpm run build && (pnpm run test:ios:build & pnpm run test:android:build & wait) && (pnpm run test:ios:run & pnpm run test:android:run & wait)",
     "test": "node scripts/test.js",
-    "lint": "TIMING=1 biome check src/ e2e/ scripts/ --fix",
+    "lint": "TIMING=1 biome check src/ e2e/ scripts/ plugins/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {

@@ -40,7 +40,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "@config-plugins/detox"
+      "@config-plugins/detox",
+      "./plugins/withPackagingOptions"
     ],
     "experiments": {
       "typedRoutes": true,
