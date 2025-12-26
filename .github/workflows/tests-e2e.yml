@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 120
     if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
     steps:
-      - name: Checkout branch
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup environment
@@ -97,13 +97,13 @@ jobs:
           xcrun xcode-select --print-path
           xcodebuild -version
 
-      - name: Install iOS 26.2 simulator runtime
+      - name: Install iOS simulator runtime
         run: |
           xcrun simctl list runtimes
           echo "iOS runtimes:"
           xcrun simctl list runtimes | grep iOS
 
-      - name: Create and boot iPhone 17 Pro simulator
+      - name: Create and boot iOS simulator
         run: |
           RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS 26" | tail -1 | awk '{print $NF}')
           echo "Using runtime: $RUNTIME_ID"
@@ -137,14 +137,14 @@ jobs:
           EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
           EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
-      - name: Run tests
+      - name: Run E2E tests
         run: pnpm run test
         working-directory: ./examples/react-native-expo
         env:
           PLATFORM: ios
 
       - if: failure()
-        name: Upload iOS Test Artifacts
+        name: Upload test artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ios_test_artifacts_${{ github.sha }}
@@ -161,7 +161,7 @@ jobs:
     timeout-minutes: 120
     if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
     steps:
-      - name: Free disk space (aggressive)
+      - name: Free disk space
         run: |
           echo "=== Before cleanup ==="
           df -h
@@ -184,13 +184,13 @@ jobs:
           echo "=== After cleanup ==="
           df -h
 
-      - name: Checkout branch
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup environment
         uses: ./.github/actions/setup
 
-      - name: Enable KVM group perms
+      - name: Enable KVM group permissions
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
@@ -250,11 +250,11 @@ jobs:
             -d "pixel" \
             --force
 
-      - name: Build app (prebuild)
+      - name: Build app
         run: pnpm run build
         working-directory: ./examples/react-native-expo
 
-      - name: Build Android app for testing
+      - name: Build for testing
         run: |
           cd android
           ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug --no-daemon --max-workers=2 -Dorg.gradle.parallel=true
@@ -286,14 +286,14 @@ jobs:
           # Unlock screen
           $ANDROID_HOME/platform-tools/adb shell input keyevent 82
 
-      - name: Run tests
+      - name: Run E2E tests
         run: pnpm run test
         working-directory: ./examples/react-native-expo
         env:
           PLATFORM: android
 
       - if: failure()
-        name: Upload Android Test Artifacts
+        name: Upload test artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android_test_artifacts_${{ github.sha }}
@@ -303,3 +303,34 @@ jobs:
           retention-days: 3
           if-no-files-found: warn
           compression-level: 6
+
+  test-nextjs:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: needs.changes.outputs.nextjs == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./examples/react-nextjs
+
+      - name: Build app
+        run: pnpm run build
+        working-directory: ./examples/react-nextjs
+
+      - name: Run E2E tests
+        run: pnpm run test:e2e
+        working-directory: ./examples/react-nextjs
+
+      - if: failure()
+        name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs_test_artifacts_${{ github.sha }}
+          path: ./examples/react-nextjs/playwright-report
