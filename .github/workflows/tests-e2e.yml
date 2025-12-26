@@ -262,33 +262,58 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Xmx4g -XX:MaxMetaspaceSize=512m"
 
-      - name: Start Android emulator
+      - name: Run E2E tests
         run: |
-          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048 &
-          $ANDROID_HOME/platform-tools/adb wait-for-device
-          # Wait for boot to complete with timeout
-          BOOT_TIMEOUT=300
+          # Start emulator in background and capture PID
+          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048 >/tmp/emulator.log 2>&1 &
+          EMU_PID=$!
+          echo "Started emulator (PID=$EMU_PID), waiting for adb to report boot completion"
+
+          # Wait for adb device to be available
+          ADB_RETRY=0
+          until $ANDROID_HOME/platform-tools/adb devices | grep -m 1 emulator || [ $ADB_RETRY -ge 12 ]; do
+            ADB_RETRY=$((ADB_RETRY+1))
+            echo "Waiting for emulator to appear in adb devices... (${ADB_RETRY})"
+            sleep 5
+          done
+
+          # Wait for the Android system to finish booting (sys.boot_completed == 1)
+          BOOT_TIMEOUT=180
           BOOT_WAIT=0
           until $ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null | grep -m 1 '1'; do
             if [ $BOOT_WAIT -ge $BOOT_TIMEOUT ]; then
               echo "Emulator boot timed out after ${BOOT_TIMEOUT}s"
+              # Dump emulator logs for debugging
+              tail -n 200 /tmp/emulator.log || true
+              kill $EMU_PID || true
               exit 1
             fi
             echo "Waiting for Android emulator to boot... (${BOOT_WAIT}s)"
             sleep 5
             BOOT_WAIT=$((BOOT_WAIT + 5))
           done
+
           echo "Emulator booted successfully"
           # Disable animations for faster tests
-          $ANDROID_HOME/platform-tools/adb shell settings put global window_animation_scale 0
-          $ANDROID_HOME/platform-tools/adb shell settings put global transition_animation_scale 0
-          $ANDROID_HOME/platform-tools/adb shell settings put global animator_duration_scale 0
+          $ANDROID_HOME/platform-tools/adb shell settings put global window_animation_scale 0 || true
+          $ANDROID_HOME/platform-tools/adb shell settings put global transition_animation_scale 0 || true
+          $ANDROID_HOME/platform-tools/adb shell settings put global animator_duration_scale 0 || true
           # Unlock screen
-          $ANDROID_HOME/platform-tools/adb shell input keyevent 82
+          $ANDROID_HOME/platform-tools/adb shell input keyevent 82 || true
 
-      - name: Run E2E tests
-        run: pnpm run test
-        working-directory: ./examples/react-native-expo
+          # Start tests in background so emulator startup doesn't block overall step
+          (cd ./examples/react-native-expo && pnpm run test) &
+          TEST_PID=$!
+
+          # Monitor test process and exit with its status once it completes
+          wait $TEST_PID
+          TEST_EXIT=$?
+          echo "E2E tests exited with code: $TEST_EXIT"
+
+          # Teardown emulator
+          kill $EMU_PID || true
+          # Forward test exit code for workflow status
+          exit $TEST_EXIT
         env:
           PLATFORM: android
 
