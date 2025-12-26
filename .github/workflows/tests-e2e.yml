@@ -245,7 +245,7 @@ jobs:
       - name: Create Android emulator
         run: |
           echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
-            -n test_emulator \
+            -n Pixel_API_34_AOSP \
             -k "system-images;android-34;google_apis;x86_64" \
             -d "pixel" \
             --force
@@ -264,7 +264,7 @@ jobs:
 
       - name: Start Android emulator
         run: |
-          nohup $ANDROID_HOME/emulator/emulator -avd test_emulator -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048 &
+          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048 &
           $ANDROID_HOME/platform-tools/adb wait-for-device
           # Wait for boot to complete with timeout
           BOOT_TIMEOUT=300
