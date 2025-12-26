@@ -165,7 +165,6 @@ jobs:
         run: |
           echo "=== Before cleanup ==="
           df -h
-          # Remove large pre-installed software
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
@@ -177,9 +176,7 @@ jobs:
           sudo rm -rf /usr/local/share/powershell
           sudo rm -rf /usr/local/share/chromium
           sudo rm -rf /usr/local/lib/node_modules
-          # Clean apt cache
           sudo apt-get clean
-          # Remove docker images
           docker rmi $(docker image ls -aq) 2>/dev/null || true
           echo "=== After cleanup ==="
           df -h
@@ -196,11 +193,6 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Increase file watcher limit
-        run: |
-          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
-          sudo sysctl -p
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: ./examples/react-native-expo
@@ -211,9 +203,6 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Cache Gradle
         uses: actions/cache@v4
         with:
@@ -223,32 +212,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: Cache Android build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ./examples/react-native-expo/android/.gradle
-            ./examples/react-native-expo/android/app/build
-            ./examples/react-native-expo/android/build
-          key: ${{ runner.os }}-android-build-${{ hashFiles('**/build.gradle', '**/gradle-wrapper.properties', '**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-android-build-
-
-      - name: Accept Android SDK licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
-      - name: Install Android SDK components
-        run: |
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-34;google_apis;x86_64" "emulator" "platform-tools" "platforms;android-34"
-
-      - name: Create Android emulator
-        run: |
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
-            -n Pixel_API_34_AOSP \
-            -k "system-images;android-34;google_apis;x86_64" \
-            -d "pixel" \
-            --force
 
       - name: Build app
         run: pnpm run build
@@ -263,57 +226,17 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Xmx4g -XX:MaxMetaspaceSize=512m"
 
       - name: Run E2E tests
-        run: |
-          # Start emulator in background and capture PID
-          nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_34_AOSP -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 2048 >/tmp/emulator.log 2>&1 &
-          EMU_PID=$!
-          echo "Started emulator (PID=$EMU_PID), waiting for adb to report boot completion"
-
-          # Wait for adb device to be available
-          ADB_RETRY=0
-          until $ANDROID_HOME/platform-tools/adb devices | grep -m 1 emulator || [ $ADB_RETRY -ge 12 ]; do
-            ADB_RETRY=$((ADB_RETRY+1))
-            echo "Waiting for emulator to appear in adb devices... (${ADB_RETRY})"
-            sleep 5
-          done
-
-          # Wait for the Android system to finish booting (sys.boot_completed == 1)
-          BOOT_TIMEOUT=180
-          BOOT_WAIT=0
-          until $ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null | grep -m 1 '1'; do
-            if [ $BOOT_WAIT -ge $BOOT_TIMEOUT ]; then
-              echo "Emulator boot timed out after ${BOOT_TIMEOUT}s"
-              # Dump emulator logs for debugging
-              tail -n 200 /tmp/emulator.log || true
-              kill $EMU_PID || true
-              exit 1
-            fi
-            echo "Waiting for Android emulator to boot... (${BOOT_WAIT}s)"
-            sleep 5
-            BOOT_WAIT=$((BOOT_WAIT + 5))
-          done
-
-          echo "Emulator booted successfully"
-          # Disable animations for faster tests
-          $ANDROID_HOME/platform-tools/adb shell settings put global window_animation_scale 0 || true
-          $ANDROID_HOME/platform-tools/adb shell settings put global transition_animation_scale 0 || true
-          $ANDROID_HOME/platform-tools/adb shell settings put global animator_duration_scale 0 || true
-          # Unlock screen
-          $ANDROID_HOME/platform-tools/adb shell input keyevent 82 || true
-
-          # Start tests in background so emulator startup doesn't block overall step
-          (cd ./examples/react-native-expo && pnpm run test) &
-          TEST_PID=$!
-
-          # Monitor test process and exit with its status once it completes
-          wait $TEST_PID
-          TEST_EXIT=$?
-          echo "E2E tests exited with code: $TEST_EXIT"
-
-          # Teardown emulator
-          kill $EMU_PID || true
-          # Forward test exit code for workflow status
-          exit $TEST_EXIT
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel
+          avd-name: Pixel_API_34_AOSP
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          working-directory: ./examples/react-native-expo
+          script: pnpm run test
         env:
           PLATFORM: android
 
