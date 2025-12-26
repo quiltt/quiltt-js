@@ -26,21 +26,10 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node with ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Setup environment
+        uses: ./.github/actions/setup
         with:
           node-version: ${{ matrix.node-version }}
-          check-latest: true
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build packages
-        run: pnpm build:packages
 
       - name: Lint
         run: pnpm lint

@@ -9,7 +9,7 @@ const CustomContainer: FC = ({ ...props }) => {
 }
 
 export const TestCustomContainer = () => {
-  return <QuilttContainer as={CustomContainer} connectorId="connector" />
+  return <QuilttContainer as={CustomContainer} connectorId="container-connector" />
 }
 
 export default TestCustomContainer
