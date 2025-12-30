@@ -50,7 +50,7 @@
     "@types/node": "22.19.3",
     "@types/rails__actioncable": "8.0.3",
     "@types/react": "19.2.7",
-    "bunchee": "6.6.2",
+    "bunchee": "6.9.3",
     "rimraf": "6.1.2",
     "typescript": "5.9.3"
   },

@@ -31,6 +31,61 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Run the example app
+
+Follow these steps to run the example locally with Expo.
+
+- **Set environment variables:** Copy the example env and edit if needed:
+
+```bash
+cp .env.example .env
+# edit .env to set values if required
+```
+
+- **Install dependencies:**
+
+```bash
+pnpm install
+```
+
+- **Start Expo metro/dev server:**
+
+```bash
+npx expo start
+# or
+pnpm run dev
+```
+
+- **Open on iOS Simulator (macOS + Xcode installed):**
+
+```bash
+npx expo run:ios
+# or
+pnpm run ios
+```
+
+- **Open on Android emulator (Android Studio installed):**
+
+```bash
+npx expo run:android
+# or
+pnpm run android
+```
+
+- **Open in Expo Go (phone):** Scan the QR code shown by `expo start` with Expo Go.
+
+- **Run on web:**
+
+```bash
+pnpm run web
+```
+
+Notes:
+
+- If you rely on the included `.env` values for the Quiltt client ID and token, ensure those keys are present before starting the app.
+- Running on iOS/Android with `run:ios`/`run:android` requires native build tools (Xcode/Android Studio) and a compatible device/emulator.
+- For CI or end-to-end tests, see the `test:*` scripts in `package.json`.
+
 ## Learn more
 
 To learn more about developing your project with Expo, look at the following resources:
