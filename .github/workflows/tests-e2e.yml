@@ -323,8 +323,8 @@ jobs:
         run: pnpm run build
         working-directory: ./examples/react-nextjs
 
-      - name: Run E2E tests
-        run: pnpm run test:e2e
+      - name: Run E2E tests (component + e2e)
+        run: pnpm run test
         working-directory: ./examples/react-nextjs
 
       - if: failure()
