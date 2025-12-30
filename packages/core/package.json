@@ -46,8 +46,8 @@
     "graphql": "^16.10.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
-    "@types/node": "22.19.2",
+    "@biomejs/biome": "2.3.10",
+    "@types/node": "22.19.3",
     "@types/rails__actioncable": "8.0.3",
     "@types/react": "19.2.7",
     "bunchee": "6.6.2",

@@ -15,100 +15,321 @@ permissions:
   actions: write
 
 jobs:
-  test:
-    runs-on: macos-latest # Run on MacOS so that iPhone simulator works
-    strategy:
-      matrix:
-        include:
-          - name: "Test Next App"
-            directory: "./examples/react-nextjs"
-          # - name: 'Test Expo App' # Figure out how to run Detox tests on Expo
-          #   directory: './examples/react-native-expo'
-
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      nextjs: ${{ steps.filter.outputs.nextjs }}
+      react-native: ${{ steps.filter.outputs.react-native }}
+      core: ${{ steps.filter.outputs.core }}
     steps:
-      - name: Checkout branch
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            nextjs:
+              - 'examples/react-nextjs/**'
+              - 'packages/react/**'
+            react-native:
+              - 'examples/react-native-expo/**'
+              - 'packages/react-native/**'
+            core:
+              - 'packages/core/**'
+
+  test-ios:
+    needs: changes
+    runs-on: macos-latest
+    timeout-minutes: 120
+    if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "pnpm"
-
-      - name: Install Sharp CLI
-        run: npm install -g sharp-cli
-
-      - name: Install Root Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build packages
-        run: pnpm run build:packages
-
-      - name: Install Playwright Browsers
-        run: pnpm run playwright:install
-        working-directory: ${{ matrix.directory }}
+      - name: Setup environment
+        uses: ./.github/actions/setup
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        working-directory: ${{ matrix.directory }}
+        working-directory: ./examples/react-native-expo
 
-      # - name: Cache Pods # Enable this when running Detox tests on Expo
-      #   if: ${{ matrix.name == 'Test Expo App' }}
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ${{ matrix.directory }}/ios/Pods
-      #     key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./examples/react-native-expo/ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
 
-      # - name: Cache Derived Data # Enable this when running Detox tests on Expo
-      #   if: ${{ matrix.name == 'Test Expo App' }}
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ${{ matrix.directory }}/ios/build
-      #     key: ${{ runner.os }}-derived-data-${{ github.sha }}
+      - name: Cache iOS DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ./examples/react-native-expo/ios/build
+          key: ${{ runner.os }}-ios-build-${{ hashFiles('**/Podfile.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-ios-build-
 
-      # - name: Install Detox dependencies # Enable this when running Detox tests on Expo
-      #   if: ${{ matrix.name == 'Test Expo App' }}
-      #   run: |
-      #     brew tap wix/brew
-      #     brew install applesimutils
+      - name: Cache Detox framework
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Detox
+          key: ${{ runner.os }}-detox-framework-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-detox-framework-
+
+      - name: Install Detox dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+
+      - name: Build Detox framework cache
+        run: |
+          cd ./examples/react-native-expo
+          pnpm exec detox clean-framework-cache
+          pnpm exec detox build-framework-cache
+
+      - name: List available Xcode versions
+        run: |
+          xcrun xcode-select --print-path
+          xcodebuild -version
+
+      - name: Install iOS simulator runtime
+        run: |
+          xcrun simctl list runtimes
+          echo "iOS runtimes:"
+          xcrun simctl list runtimes | grep iOS
+
+      - name: Create and boot iOS simulator
+        run: |
+          RUNTIME_ID=$(xcrun simctl list runtimes | grep "iOS 26" | tail -1 | awk '{print $NF}')
+          echo "Using runtime: $RUNTIME_ID"
+          DEVICE_ID=$(xcrun simctl list | grep "iPhone 17 Pro" | head -1 | awk '{print $(NF-1)}' | tr -d '()')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "Creating iPhone 17 Pro simulator..."
+            DEVICE_ID=$(xcrun simctl create "iPhone 17 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro" "$RUNTIME_ID" | head -1)
+          else
+            echo "iPhone 17 Pro simulator already exists: $DEVICE_ID"
+          fi
+          echo "Booting simulator..."
+          xcrun simctl boot "$DEVICE_ID" || true
+          sleep 10
+          xcrun simctl list devices | grep "iPhone 17 Pro"
 
       - name: Build app
         run: pnpm run build
-        working-directory: ${{ matrix.directory }}
+        working-directory: ./examples/react-native-expo
+        env:
+          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
+          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
+          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
-      # - name: Build for testing # Enable this when running Detox tests on Expo
-      #   if: ${{ matrix.name == 'Test Expo App' }}
-      #   run: pnpm run test:ios:build
-      #   working-directory: ${{ matrix.directory }}
+      - name: Build for testing
+        run: pnpm run test:ios:build
+        working-directory: ./examples/react-native-expo
+        env:
+          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
+          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
+          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
-      - name: Run tests
+      - name: Run E2E tests
         run: pnpm run test
-        working-directory: ${{ matrix.directory }}
+        working-directory: ./examples/react-native-expo
+        env:
+          PLATFORM: ios
 
-      - if: ${{ failure() }} && ${{ matrix.name == 'Test Next App' }}
-        name: Upload Test Results
+      - if: failure()
+        name: Upload test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: playwright_results_${{ github.sha }} # Make name unique per commit
+          name: ios_test_artifacts_${{ github.sha }}
           path: |
-            ${{github.workspace}}/**/playwright-report
-            ${{github.workspace}}/**/test-results
+            ./examples/react-native-expo/artifacts
+            ./examples/react-native-expo/ios/build/logs
           retention-days: 3
-          if-no-files-found: warn # Add warning if no files found
-          compression-level: 6 # Balance between size and speed
+          if-no-files-found: warn
+          compression-level: 6
 
+  test-android:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    if: needs.changes.outputs.react-native == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Free disk space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/lib/android/sdk/ndk
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/graalvm
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /usr/local/lib/node_modules
+          sudo apt-get clean
+          docker rmi $(docker image ls -aq) 2>/dev/null || true
+          echo "=== After cleanup ==="
+          df -h
 
-      # - if: ${{ failure() }} && ${{ matrix.name == 'Test Expo App' }}
-      #   name: Upload iOS Test Artifacts # Enable this when running Detox tests on Expo
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ios_test_artifacts_${{ github.sha }} # Make name unique per commit
-      #     path: |
-      #       ${{ matrix.directory }}/artifacts
-      #       ${{ matrix.directory }}/ios/build/logs
-      #     retention-days: 3
-      #     if-no-files-found: warn  # Add warning if no files found
-      #     compression-level: 6  # Balance between size and speed
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./examples/react-native-expo
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-34-google_apis-x86_64
+
+      - name: Build app
+        run: pnpm run build
+        working-directory: ./examples/react-native-expo
+        env:
+          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
+          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
+          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
+
+      - name: Build for testing
+        run: pnpm run test:android:build
+        working-directory: ./examples/react-native-expo
+        env:
+          EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
+          EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
+          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
+
+      - name: Verify APK files exist
+        run: |
+          echo "Checking for APK files..."
+          ls -la android/app/build/outputs/apk/debug/ || echo "Debug APK directory not found"
+          ls -la android/app/build/outputs/apk/androidTest/debug/ || echo "Test APK directory not found"
+        working-directory: ./examples/react-native-expo
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7_pro
+          avd-name: Pixel_API_34_AOSP
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run E2E tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7_pro
+          avd-name: Pixel_API_34_AOSP
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          working-directory: ./examples/react-native-expo
+          script: |
+            adb devices
+            pnpm run test
+        env:
+          PLATFORM: android
+
+      - if: failure()
+        name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android_test_artifacts_${{ github.sha }}
+          path: |
+            ./examples/react-native-expo/artifacts
+            ./examples/react-native-expo/android/app/build/outputs/androidTest-results
+          retention-days: 3
+          if-no-files-found: warn
+          compression-level: 6
+
+  test-nextjs:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: needs.changes.outputs.nextjs == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./examples/react-nextjs
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: pnpm run playwright:install
+        working-directory: ./examples/react-nextjs
+
+      - name: Build app
+        run: pnpm run build
+        working-directory: ./examples/react-nextjs
+
+      - name: Run E2E tests
+        run: pnpm run test:e2e
+        working-directory: ./examples/react-nextjs
+
+      - if: failure()
+        name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs_test_artifacts_${{ github.sha }}
+          path: ./examples/react-nextjs/playwright-report

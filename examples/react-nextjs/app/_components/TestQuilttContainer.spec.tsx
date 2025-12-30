@@ -7,7 +7,7 @@ test.describe('<TestQuilttContainer />', () => {
     await mount(<TestQuilttContainer />)
 
     // Find the iframe in the container
-    const container = page.locator('div[quiltt-container="connector"]')
+    const container = page.locator('div[quiltt-container="container-connector"]')
     const iframe = container.locator('iframe#quiltt--frame')
     await expect(iframe).toBeVisible()
   })

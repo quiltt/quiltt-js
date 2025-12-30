@@ -3,6 +3,6 @@ import '../app/globals.css'
 
 // Make sure Next.js environment variables are available
 if (typeof window !== 'undefined') {
-  // @ts-ignore
+  // @ts-expect-error
   window.process = { env: {} }
 }
