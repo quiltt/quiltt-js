@@ -63,7 +63,7 @@ export const App = () => {
       connectorId="<CONNECTOR_ID>"
       onExitSuccess={handleExitSuccess}
       className="my-css-class"
-      styles={{ borderWidth: '2px' }}
+      style={{ borderWidth: '2px' }}
       // ... other props to pass through to the button
     >
       Add Account
@@ -97,7 +97,7 @@ export const App = () => {
       connectorId="<CONNECTOR_ID>"
       onExitSuccess={handleExitSuccess}
       className="my-css-class"
-      styles={{ height: '100%' }}
+      style={{ height: '100%' }}
       // ... other props to pass through to the container
     />
   )
@@ -139,7 +139,7 @@ import { useQuilttConnector } from '@quiltt/react'
 
 const App = () => {
   const { open } = useQuilttConnector('<CONNECTOR_ID>', {
-    onEvent: (type) => console.log(`Received Quiltt Event: ${type}`)
+    onEvent: (type) => console.log(`Received Quiltt Event: ${type}`),
     onExitSuccess: (metadata) => console.log("Connector onExitSuccess", metadata.connectionId),
   })
 

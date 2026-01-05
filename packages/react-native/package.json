@@ -35,19 +35,19 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@honeybadger-io/core": "6.6.0",
+    "@honeybadger-io/core": "6.7.2",
     "@quiltt/core": "workspace:*",
     "@quiltt/react": "workspace:*",
     "lodash.debounce": "4.0.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
+    "@biomejs/biome": "2.3.10",
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
-    "@types/node": "22.19.2",
+    "@types/node": "22.19.3",
     "@types/react": "19.2.7",
     "base-64": "1.0.0",
-    "bunchee": "6.6.2",
+    "bunchee": "6.9.3",
     "react": "19.2.3",
     "react-native": "0.81.5",
     "react-native-url-polyfill": "3.0.0",

@@ -46,11 +46,11 @@
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
-    "@types/node": "22.19.2",
+    "@biomejs/biome": "2.3.10",
+    "@types/node": "22.19.3",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "bunchee": "6.6.2",
+    "bunchee": "6.9.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "rimraf": "6.1.2",

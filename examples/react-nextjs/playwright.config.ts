@@ -4,8 +4,6 @@ import { defineConfig, devices } from '@playwright/experimental-ct-react'
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './app',
-  testMatch: '**/*.spec.tsx',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -21,16 +19,40 @@ export default defineConfig({
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-
     /* Port to use for Playwright component testing server. */
     ctPort: 3100,
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects for component tests and E2E tests */
   projects: [
+    // Component Tests
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'component-chromium',
+      testDir: './app',
+      testMatch: '**/*.spec.tsx',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
+
+    // E2E Tests
+    {
+      name: 'e2e-chromium',
+      testDir: './e2e',
+      testMatch: '**/*.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:3000',
+      },
     },
   ],
+
+  /* Run your local dev server before starting the tests */
+  webServer: {
+    command: 'pnpm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    stdout: 'ignore',
+    stderr: 'pipe',
+  },
 })

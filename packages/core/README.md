@@ -41,10 +41,10 @@ import { AuthAPI } from '@quiltt/core'
 const auth = new AuthAPI('{CONNECTOR_ID}')
 
 // Check if a Session token is valid
-auth.ping('{SESSION_TOKEN}')
+await auth.ping('{SESSION_TOKEN}')
 
 // Revoke a Session token
-auth.revoke('{SESSION_TOKEN}')
+await auth.revoke('{SESSION_TOKEN}')
 ```
 
 ## Modules
@@ -76,7 +76,15 @@ The `types` module provides a collection of TypeScript type definitions and inte
 ## Usage
 
 ```javascript
-import { JsonWebToken, Observable, Storage, Timeoutable, api, types } from '@quiltt/core'
+import { 
+  AuthAPI,
+  JsonWebToken, 
+  Observable, 
+  Storage,
+  Timeoutable, 
+  ConnectorSDK,
+  ConnectorSDKEventType
+} from '@quiltt/core'
 
 // Example usage of the library modules
 // ...

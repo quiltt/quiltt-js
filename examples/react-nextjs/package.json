@@ -8,12 +8,13 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "TIMING=1 biome check app/ --fix",
+    "lint": "TIMING=1 biome check app/ e2e/ playwright/ --fix",
     "playwright:install": "playwright install --with-deps chromium",
     "start": "next start",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:e2e": "playwright test",
+    "test:component": "playwright test --project=component-chromium",
+    "test:e2e": "playwright test --project=e2e-chromium",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -23,11 +24,11 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
+    "@biomejs/biome": "2.3.10",
     "@playwright/experimental-ct-react": "1.57.0",
     "@playwright/test": "1.57.0",
     "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "22.19.2",
+    "@types/node": "22.19.3",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "encoding": "0.1.13",
