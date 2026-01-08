@@ -52,23 +52,15 @@ export const useStorage = <T>(
   )
 
   useEffect(() => {
-    // Subscribe to storage changes and ensure state is synchronized
-    // Reruns when key or state changes to maintain consistency
-    GlobalStorage.subscribe(key, (newValue) => {
-      // Only update if the value is different from current state
-      if (newValue !== hookState) {
-        setHookState(newValue)
-      }
-    })
-
-    // Initial sync
-    const initialValue = getStorage()
-    if (initialValue !== hookState) {
-      setHookState(initialValue)
+    // Subscribe to storage changes from other sources (e.g., other hook instances, browser tabs)
+    const handleStorageChange = (newValue: Maybe<T> | undefined) => {
+      setHookState(newValue)
     }
 
-    return () => GlobalStorage.unsubscribe(key, setHookState)
-  }, [key, hookState, getStorage])
+    GlobalStorage.subscribe(key, handleStorageChange)
+
+    return () => GlobalStorage.unsubscribe(key, handleStorageChange)
+  }, [key])
 
   return [hookState, setStorage]
 }
