@@ -1,18 +1,31 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import type { Operation } from '@apollo/client/core'
-import { ApolloLink, gql } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, gql } from '@apollo/client/core'
+import { OperationTypeNode } from 'graphql'
+import { Observable } from 'rxjs'
 
 import { InMemoryCache, QuilttClient } from '@/api/graphql/client'
+import { TerminatingLink } from '@/api/graphql/links/TerminatingLink'
 
-const createMockOperation = (query: any, context: Record<string, any> = {}): Operation => ({
-  query,
-  variables: {},
-  operationName: 'TestOperation',
-  extensions: {},
-  setContext: () => {},
-  getContext: () => context,
-})
+const createMockOperation = (
+  query: any,
+  context: Record<string, any> = {}
+): ApolloLink.Operation => {
+  const mockClient = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: TerminatingLink,
+  })
+  return {
+    query,
+    variables: {},
+    operationName: 'TestOperation',
+    operationType: OperationTypeNode.QUERY,
+    extensions: {},
+    setContext: vi.fn(),
+    getContext: () => context as any,
+    client: mockClient,
+  }
+}
 
 describe('QuilttClient', () => {
   it('should be instantiated with an InMemoryCache', () => {
@@ -28,8 +41,8 @@ describe('QuilttClient', () => {
 
   it('allows custom links to be provided', () => {
     const customLink = new ApolloLink((operation, forward) => {
-      // Custom link logic (no-op for this test)
-      return forward ? forward(operation) : null
+      // Custom link logic - just pass through
+      return forward(operation)
     })
 
     const client = new QuilttClient({ cache: new InMemoryCache(), customLinks: [customLink] })
@@ -75,9 +88,12 @@ describe('QuilttClient', () => {
     `
 
     const link = client.link as ApolloLink
+    const mockForward = vi.fn((op) =>
+      TerminatingLink.request(op, () => new Observable((observer) => observer.complete()))
+    )
 
-    const queryObs = link.request(createMockOperation(QUERY))
-    const subObs = link.request(createMockOperation(SUBSCRIPTION))
+    const queryObs = link.request(createMockOperation(QUERY), mockForward)
+    const subObs = link.request(createMockOperation(SUBSCRIPTION), mockForward)
 
     expect(queryObs).toBeDefined()
     expect(subObs).toBeDefined()
@@ -95,10 +111,16 @@ describe('QuilttClient', () => {
     `
 
     const link = client.link as ApolloLink
+    const mockForward = vi.fn((op) =>
+      TerminatingLink.request(op, () => new Observable((observer) => observer.complete()))
+    )
 
-    const batchableObs = link.request(createMockOperation(QUERY, { batchable: true }))
-    const nonBatchableObs = link.request(createMockOperation(QUERY, { batchable: false }))
-    const defaultObs = link.request(createMockOperation(QUERY))
+    const batchableObs = link.request(createMockOperation(QUERY, { batchable: true }), mockForward)
+    const nonBatchableObs = link.request(
+      createMockOperation(QUERY, { batchable: false }),
+      mockForward
+    )
+    const defaultObs = link.request(createMockOperation(QUERY), mockForward)
 
     expect(batchableObs).toBeDefined()
     expect(nonBatchableObs).toBeDefined()

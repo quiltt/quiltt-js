@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ServerError } from '@apollo/client/core'
-import { ApolloClient, ApolloLink, gql, InMemoryCache, Observable } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, gql, InMemoryCache } from '@apollo/client/core'
+import { Observable } from '@apollo/client/utilities'
 
 import ErrorLink from '@/api/graphql/links/ErrorLink'
 import { GlobalStorage } from '@/storage'
@@ -56,7 +56,7 @@ describe('ErrorLink', () => {
     }
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[GraphQL Error]: Field error | Path: user.name')
+      expect.stringContaining('[Quiltt][GraphQL Error]: Field error | Path: user.name')
     )
     consoleWarnSpy.mockRestore()
   })
@@ -64,13 +64,11 @@ describe('ErrorLink', () => {
   it('should handle 401 network errors and clear session', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    const error: ServerError = {
-      name: 'ServerError',
-      message: 'Unauthorized',
+    const error = Object.assign(new Error('Unauthorized'), {
       statusCode: 401,
-      result: {},
-      response: {} as Response,
-    }
+      bodyText: 'Unauthorized',
+      response: new Response('Unauthorized', { status: 401 }),
+    })
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -106,13 +104,11 @@ describe('ErrorLink', () => {
   it('should handle non-401 network errors without clearing session', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    const error: ServerError = {
-      name: 'ServerError',
-      message: 'Internal Server Error',
+    const error = Object.assign(new Error('Internal Server Error'), {
       statusCode: 500,
-      result: {},
-      response: {} as Response,
-    }
+      bodyText: 'Internal Server Error',
+      response: new Response('Internal Server Error', { status: 500 }),
+    })
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -138,7 +134,7 @@ describe('ErrorLink', () => {
     }
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      '[Quiltt][Network Error]:',
+      '[Quiltt][Server Error]:',
       expect.objectContaining({ statusCode: 500 })
     )
     expect(GlobalStorage.set).not.toHaveBeenCalled()
@@ -148,13 +144,11 @@ describe('ErrorLink', () => {
   it('should handle both GraphQL and network errors together', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    const error: ServerError = {
-      name: 'ServerError',
-      message: 'Server Error',
+    const error = Object.assign(new Error('Server Error'), {
       statusCode: 500,
-      result: {},
-      response: {} as Response,
-    }
+      bodyText: 'Server Error',
+      response: new Response('Server Error', { status: 500 }),
+    })
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -191,7 +185,7 @@ describe('ErrorLink', () => {
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       expect.stringContaining('[Quiltt][GraphQL Error]: Query error | Path: data')
     )
-    expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Network Error]:', expect.any(Object))
+    expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Server Error]:', expect.any(Object))
     consoleWarnSpy.mockRestore()
   })
 

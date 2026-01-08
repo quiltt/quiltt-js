@@ -41,7 +41,7 @@
     "lodash.debounce": "4.0.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.10",
+    "@biomejs/biome": "2.3.11",
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
     "@types/node": "22.19.3",

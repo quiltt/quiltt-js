@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { Operation } from '@apollo/client/core'
+import type { ApolloLink } from '@apollo/client/core'
 import { gql } from '@apollo/client/core'
 
 import TerminatingLink from '@/api/graphql/links/TerminatingLink'
@@ -18,7 +18,7 @@ describe('TerminatingLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     const mockForward = vi.fn()
 
@@ -40,7 +40,7 @@ describe('TerminatingLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     const mockForward = vi.fn()
 
@@ -61,7 +61,7 @@ describe('TerminatingLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     const mockForward = vi.fn()
 

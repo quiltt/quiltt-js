@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { FetchResult, Operation } from '@apollo/client/core'
-import { gql, Observable } from '@apollo/client/core'
+import { type ApolloLink, gql } from '@apollo/client/core'
 import { createConsumer } from '@rails/actioncable'
+import { Observable } from 'rxjs'
 
 import ActionCableLink from '@/api/graphql/links/ActionCableLink'
 import { GlobalStorage } from '@/storage'
@@ -46,8 +46,8 @@ describe('ActionCableLink', () => {
   it('should return null if no token is available', () => {
     vi.mocked(GlobalStorage.get).mockReturnValue(null)
     const link = new ActionCableLink({})
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -56,7 +56,7 @@ describe('ActionCableLink', () => {
         mockField
       }
     `
-    const operation = { query: mockQuery } as Operation
+    const operation = { query: mockQuery } as ApolloLink.Operation
     const result = link.request(operation, dummyNextLink)
 
     expect(result).toBeNull()
@@ -65,8 +65,8 @@ describe('ActionCableLink', () => {
 
   it('should create a consumer and subscription when a token is present', () => {
     const link = new ActionCableLink({})
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -75,7 +75,7 @@ describe('ActionCableLink', () => {
         mockField
       }
     `
-    const operation = { query: mockQuery } as Operation
+    const operation = { query: mockQuery } as ApolloLink.Operation
     const result = link.request(operation, dummyNextLink)
 
     expect(result).toBeInstanceOf(Observable)
@@ -132,10 +132,10 @@ describe('ActionCableLink', () => {
       extensions: {},
       setContext: () => {},
       getContext: () => ({}),
-    } as Operation
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -155,7 +155,9 @@ describe('ActionCableLink', () => {
   })
 
   it('should handle connectionParams as a function', async () => {
-    const connectionParamsFn = vi.fn((op: Operation) => ({ customParam: op.operationName }))
+    const connectionParamsFn = vi.fn((op: ApolloLink.Operation) => ({
+      customParam: op.operationName,
+    }))
 
     const mockSubscription = {
       perform: vi.fn(),
@@ -188,10 +190,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -242,10 +244,10 @@ describe('ActionCableLink', () => {
       extensions: {},
       setContext: () => {},
       getContext: () => ({}),
-    } as Operation
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -292,10 +294,14 @@ describe('ActionCableLink', () => {
         mockField
       }
     `
-    const operation = { query: mockQuery, variables: {}, operationName: 'TestQuery' } as Operation
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -342,10 +348,14 @@ describe('ActionCableLink', () => {
         mockField
       }
     `
-    const operation = { query: mockQuery, variables: {}, operationName: 'TestQuery' } as Operation
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -393,10 +403,14 @@ describe('ActionCableLink', () => {
         mockField
       }
     `
-    const operation = { query: mockQuery, variables: {}, operationName: 'TestQuery' } as Operation
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestQuery',
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -446,8 +460,8 @@ describe('ActionCableLink', () => {
       getContext: () => ({}),
     } as any
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -505,8 +519,8 @@ describe('ActionCableLink', () => {
       getContext: () => ({}),
     } as any
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -562,10 +576,10 @@ describe('ActionCableLink', () => {
       extensions: {},
       setContext: () => {},
       getContext: () => ({}),
-    } as Operation
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -622,10 +636,10 @@ describe('ActionCableLink', () => {
       extensions: {},
       setContext: () => {},
       getContext: () => ({}),
-    } as Operation
+    } as unknown as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -678,10 +692,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -734,10 +748,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -790,10 +804,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -845,10 +859,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -906,10 +920,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -974,10 +988,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -1028,10 +1042,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -1085,10 +1099,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -1148,10 +1162,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -1207,10 +1221,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -1262,10 +1276,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })
@@ -1296,10 +1310,10 @@ describe('ActionCableLink', () => {
       query: mockQuery,
       variables: {},
       operationName: 'TestQuery',
-    } as Operation
+    } as ApolloLink.Operation
 
-    const dummyNextLink = (_operation: Operation) =>
-      new Observable<FetchResult>((subscriber) => {
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
         subscriber.next({})
         subscriber.complete()
       })

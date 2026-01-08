@@ -1,7 +1,7 @@
 import type { MockedFunction } from 'vitest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { NextLink, Operation } from '@apollo/client/core'
+import type { ApolloLink } from '@apollo/client/core'
 
 import AuthLink from '@/api/graphql/links/AuthLink'
 import { GlobalStorage } from '@/storage'
@@ -17,8 +17,8 @@ const mockGlobalStorage = vi.mocked(GlobalStorage)
 
 describe('AuthLink', () => {
   let authLink: AuthLink
-  let mockOperation: Operation
-  let mockForward: NextLink
+  let mockOperation: ApolloLink.Operation
+  let mockForward: ApolloLink.ForwardFunction
   let mockSetContext: MockedFunction<any>
 
   beforeEach(() => {
