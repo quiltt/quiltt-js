@@ -1,5 +1,5 @@
 import { ApolloLink } from '@apollo/client/core'
-import type { Observable } from '@apollo/client/utilities'
+import { Observable } from '@apollo/client/utilities'
 
 import { GlobalStorage } from '@/storage'
 
@@ -18,7 +18,9 @@ export class AuthLink extends ApolloLink {
 
     if (!token) {
       console.warn('QuilttLink attempted to send an unauthenticated Query')
-      throw new Error('No authentication token available')
+      return new Observable((observer) => {
+        observer.error(new Error('No authentication token available'))
+      })
     }
 
     operation.setContext(({ headers = {} }) => ({

@@ -47,7 +47,9 @@ class ActionCableLink extends ApolloLink {
 
     if (!token) {
       console.warn('QuilttClient attempted to send an unauthenticated Subscription')
-      throw new Error('No authentication token available')
+      return new Observable((observer) => {
+        observer.error(new Error('No authentication token available'))
+      })
     }
 
     if (!this.cables[token]) {

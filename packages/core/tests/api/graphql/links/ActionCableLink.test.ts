@@ -43,7 +43,7 @@ describe('ActionCableLink', () => {
     vi.mocked(GlobalStorage.get).mockReturnValue('some_token')
   })
 
-  it('should return null if no token is available', () => {
+  it('should return null if no token is available', async () => {
     vi.mocked(GlobalStorage.get).mockReturnValue(null)
     const link = new ActionCableLink({})
     const dummyNextLink = (_operation: ApolloLink.Operation) =>
@@ -57,11 +57,21 @@ describe('ActionCableLink', () => {
       }
     `
     const operation = { query: mockQuery } as ApolloLink.Operation
-    expect(() => link.request(operation, dummyNextLink)).toThrow(
-      'No authentication token available'
-    )
+    const observable = link.request(operation, dummyNextLink)
 
-    expect(GlobalStorage.get).toHaveBeenCalledWith('session')
+    await new Promise<void>((resolve, reject) => {
+      observable.subscribe({
+        error: (error) => {
+          try {
+            expect(error.message).toBe('No authentication token available')
+            expect(GlobalStorage.get).toHaveBeenCalledWith('session')
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
+        },
+      })
+    })
   })
 
   it('should create a consumer and subscription when a token is present', () => {
@@ -1297,7 +1307,7 @@ describe('ActionCableLink', () => {
     })
   })
 
-  it('should log warning when attempting subscription without token', () => {
+  it('should log warning when attempting subscription without token', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     vi.mocked(GlobalStorage.get).mockReturnValue(null)
 
@@ -1319,13 +1329,23 @@ describe('ActionCableLink', () => {
         subscriber.complete()
       })
 
-    expect(() => link.request(operation, dummyNextLink)).toThrow(
-      'No authentication token available'
-    )
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'QuilttClient attempted to send an unauthenticated Subscription'
-    )
+    const observable = link.request(operation, dummyNextLink)
 
-    consoleWarnSpy.mockRestore()
+    await new Promise<void>((resolve, reject) => {
+      observable.subscribe({
+        error: (error) => {
+          try {
+            expect(error.message).toBe('No authentication token available')
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+              'QuilttClient attempted to send an unauthenticated Subscription'
+            )
+            consoleWarnSpy.mockRestore()
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
+        },
+      })
+    })
   })
 })
