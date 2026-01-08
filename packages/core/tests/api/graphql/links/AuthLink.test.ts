@@ -154,9 +154,9 @@ describe('AuthLink', () => {
     it('should return null and log warning when no token exists', () => {
       mockGlobalStorage.get.mockReturnValue(null)
 
-      const result = authLink.request(mockOperation, mockForward)
-
-      expect(result).toBeNull()
+      expect(() => authLink.request(mockOperation, mockForward)).toThrow(
+        'No authentication token available'
+      )
       expect(mockGlobalStorage.get).toHaveBeenCalledWith('session')
       expect(console.warn).toHaveBeenCalledWith(
         'QuilttLink attempted to send an unauthenticated Query'
@@ -168,9 +168,9 @@ describe('AuthLink', () => {
     it('should return null when token is undefined', () => {
       mockGlobalStorage.get.mockReturnValue(undefined)
 
-      const result = authLink.request(mockOperation, mockForward)
-
-      expect(result).toBeNull()
+      expect(() => authLink.request(mockOperation, mockForward)).toThrow(
+        'No authentication token available'
+      )
       expect(console.warn).toHaveBeenCalledWith(
         'QuilttLink attempted to send an unauthenticated Query'
       )
@@ -179,9 +179,9 @@ describe('AuthLink', () => {
     it('should return null when token is empty string', () => {
       mockGlobalStorage.get.mockReturnValue('')
 
-      const result = authLink.request(mockOperation, mockForward)
-
-      expect(result).toBeNull()
+      expect(() => authLink.request(mockOperation, mockForward)).toThrow(
+        'No authentication token available'
+      )
       expect(console.warn).toHaveBeenCalledWith(
         'QuilttLink attempted to send an unauthenticated Query'
       )
@@ -194,9 +194,9 @@ describe('AuthLink', () => {
         vi.clearAllMocks()
         mockGlobalStorage.get.mockReturnValue(falsyValue)
 
-        const result = authLink.request(mockOperation, mockForward)
-
-        expect(result).toBeNull()
+        expect(() => authLink.request(mockOperation, mockForward)).toThrow(
+          'No authentication token available'
+        )
         expect(console.warn).toHaveBeenCalledWith(
           'QuilttLink attempted to send an unauthenticated Query'
         )
@@ -246,9 +246,9 @@ describe('AuthLink', () => {
         operationName: 'GetSensitiveData',
       }
 
-      const result = authLink.request(protectedOperation, mockForward)
-
-      expect(result).toBeNull()
+      expect(() => authLink.request(protectedOperation, mockForward)).toThrow(
+        'No authentication token available'
+      )
       expect(mockSetContext).not.toHaveBeenCalled()
       expect(mockForward).not.toHaveBeenCalled()
       expect(console.warn).toHaveBeenCalledWith(
@@ -290,7 +290,7 @@ describe('AuthLink', () => {
     it('should handle session expiry scenarios', () => {
       // First request succeeds
       mockGlobalStorage.get.mockReturnValue('valid-token')
-      let result = authLink.request(mockOperation, mockForward)
+      const result = authLink.request(mockOperation, mockForward)
       expect(result).not.toBeNull()
 
       // Clear mocks
@@ -300,9 +300,10 @@ describe('AuthLink', () => {
 
       // Second request fails due to expired/cleared session
       mockGlobalStorage.get.mockReturnValue(null)
-      result = authLink.request(mockOperation, mockForward)
+      expect(() => authLink.request(mockOperation, mockForward)).toThrow(
+        'No authentication token available'
+      )
 
-      expect(result).toBeNull()
       expect(console.warn).toHaveBeenCalledWith(
         'QuilttLink attempted to send an unauthenticated Query'
       )

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ApolloClient, ApolloLink, gql } from '@apollo/client/core'
 import { OperationTypeNode } from 'graphql'
@@ -6,6 +6,14 @@ import { Observable } from 'rxjs'
 
 import { InMemoryCache, QuilttClient } from '@/api/graphql/client'
 import { TerminatingLink } from '@/api/graphql/links/TerminatingLink'
+import { GlobalStorage } from '@/storage'
+
+vi.mock('@/storage', () => ({
+  GlobalStorage: {
+    get: vi.fn(),
+    set: vi.fn(),
+  },
+}))
 
 const createMockOperation = (
   query: any,
@@ -28,6 +36,12 @@ const createMockOperation = (
 }
 
 describe('QuilttClient', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // Mock GlobalStorage to return a valid token for all tests
+    vi.mocked(GlobalStorage.get).mockReturnValue('test-token-123')
+  })
+
   it('should be instantiated with an InMemoryCache', () => {
     const client = new QuilttClient({ cache: new InMemoryCache() })
     expect(client.cache).toBeInstanceOf(InMemoryCache)

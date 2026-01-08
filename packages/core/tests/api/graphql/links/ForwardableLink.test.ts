@@ -7,12 +7,12 @@ import ForwardableLink from '@/api/graphql/links/ForwardableLink'
 
 describe('ForwardableLink', () => {
   it('should forward operations to the next link', async () => {
-    const mockForward: ApolloLink.ForwardFunction = () => {
+    const mockForward: ApolloLink.ForwardFunction = vi.fn(() => {
       return new Observable<ApolloLink.Result>((observer) => {
         observer.next({ data: { test: 'value' } })
         observer.complete()
       })
-    }
+    })
 
     const operation = {
       query: gql`
@@ -42,11 +42,11 @@ describe('ForwardableLink', () => {
 
   it('should pass through errors from the next link', async () => {
     const mockError = new Error('Network Error')
-    const mockForward: ApolloLink.ForwardFunction = () => {
+    const mockForward: ApolloLink.ForwardFunction = vi.fn(() => {
       return new Observable<ApolloLink.Result>((observer) => {
         observer.error(mockError)
       })
-    }
+    })
 
     const operation = {
       query: gql`

@@ -24,7 +24,10 @@ describe('TerminatingLink', () => {
 
     const result = TerminatingLink.request(operation, mockForward)
 
-    expect(result).toBeNull()
+    expect(result).toBeDefined()
+    // In Apollo Client v4, links must return an Observable, not null
+    // The TerminatingLink returns an Observable that immediately completes
+    expect(result?.subscribe).toBeDefined()
     expect(mockForward).not.toHaveBeenCalled()
   })
 
@@ -46,7 +49,9 @@ describe('TerminatingLink', () => {
 
     const result = TerminatingLink.request(operation, mockForward)
 
-    expect(result).toBeNull()
+    // In Apollo Client v4, links must return an Observable, not null
+    expect(result).toBeDefined()
+    expect(result?.subscribe).toBeDefined()
   })
 
   it('should not execute forward function', () => {

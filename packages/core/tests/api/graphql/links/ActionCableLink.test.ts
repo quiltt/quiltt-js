@@ -57,9 +57,10 @@ describe('ActionCableLink', () => {
       }
     `
     const operation = { query: mockQuery } as ApolloLink.Operation
-    const result = link.request(operation, dummyNextLink)
+    expect(() => link.request(operation, dummyNextLink)).toThrow(
+      'No authentication token available'
+    )
 
-    expect(result).toBeNull()
     expect(GlobalStorage.get).toHaveBeenCalledWith('session')
   })
 
@@ -1318,9 +1319,9 @@ describe('ActionCableLink', () => {
         subscriber.complete()
       })
 
-    const result = link.request(operation, dummyNextLink)
-
-    expect(result).toBeNull()
+    expect(() => link.request(operation, dummyNextLink)).toThrow(
+      'No authentication token available'
+    )
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'QuilttClient attempted to send an unauthenticated Subscription'
     )
