@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { ApolloLink, gql } from '@apollo/client/core'
-import { Observable } from '@apollo/client/utilities'
+import { Observable } from 'rxjs'
 
 import ForwardableLink from '@/api/graphql/links/ForwardableLink'
 

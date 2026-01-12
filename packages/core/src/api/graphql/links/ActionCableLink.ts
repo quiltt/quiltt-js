@@ -1,9 +1,9 @@
 // Adapted from https://github.com/rmosolgo/graphql-ruby/blob/master/javascript_client/src/subscriptions/ActionCableLink.ts
 import { ApolloLink } from '@apollo/client/core'
-import { Observable } from '@apollo/client/utilities'
 import type { Consumer } from '@rails/actioncable'
 import { createConsumer } from '@rails/actioncable'
 import { print } from 'graphql'
+import { Observable } from 'rxjs'
 
 import { endpointWebsockets } from '@/configuration'
 import { GlobalStorage } from '@/storage'

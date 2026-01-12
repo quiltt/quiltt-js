@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import type { ServerError } from '@apollo/client/core'
 import { ApolloLink, gql } from '@apollo/client/core'
-import { Observable } from '@apollo/client/utilities'
+import { Observable } from 'rxjs'
 
 import RetryLink from '@/api/graphql/links/RetryLink'
 

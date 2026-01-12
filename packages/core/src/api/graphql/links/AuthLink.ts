@@ -1,5 +1,5 @@
 import { ApolloLink } from '@apollo/client/core'
-import { Observable } from '@apollo/client/utilities'
+import { Observable } from 'rxjs'
 
 import { GlobalStorage } from '@/storage'
 
