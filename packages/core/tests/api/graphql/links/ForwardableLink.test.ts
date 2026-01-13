@@ -107,35 +107,35 @@ describe('ForwardableLink', () => {
       })
     })
   })
-})
 
-it('should preserve operation context', async () => {
-  const mockForward: ApolloLink.ForwardFunction = (operation) => {
-    expect(operation.getContext()).toEqual({ customContext: 'value' })
-    return new Observable<ApolloLink.Result>((observer) => {
-      observer.next({ data: {} })
-      observer.complete()
-    })
-  }
+  it('should preserve operation context', async () => {
+    const mockForward: ApolloLink.ForwardFunction = (operation) => {
+      expect(operation.getContext()).toEqual({ customContext: 'value' })
+      return new Observable<ApolloLink.Result>((observer) => {
+        observer.next({ data: {} })
+        observer.complete()
+      })
+    }
 
-  const operation = {
-    query: gql`
+    const operation = {
+      query: gql`
         query Test {
           data
         }
       `,
-    variables: {},
-    operationName: 'Test',
-    extensions: {},
-    setContext: vi.fn(),
-    getContext: () => ({ customContext: 'value' }),
-  } as unknown as ApolloLink.Operation
+      variables: {},
+      operationName: 'Test',
+      extensions: {},
+      setContext: vi.fn(),
+      getContext: () => ({ customContext: 'value' }),
+    } as unknown as ApolloLink.Operation
 
-  await new Promise<void>((resolve) => {
-    ForwardableLink.request(operation, mockForward)?.subscribe({
-      complete: () => {
-        resolve()
-      },
+    await new Promise<void>((resolve) => {
+      ForwardableLink.request(operation, mockForward)?.subscribe({
+        complete: () => {
+          resolve()
+        },
+      })
     })
   })
 })
