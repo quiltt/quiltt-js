@@ -24,12 +24,12 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.11",
+    "@biomejs/biome": "2.3.13",
     "@playwright/experimental-ct-react": "1.57.0",
     "@playwright/test": "1.57.0",
     "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "22.19.5",
-    "@types/react": "19.2.8",
+    "@types/node": "24.10.9",
+    "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "encoding": "0.1.13",
     "postcss": "8.5.6",

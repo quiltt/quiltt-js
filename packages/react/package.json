@@ -41,16 +41,16 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.0.12",
+    "@apollo/client": "^4.1.2",
     "@quiltt/core": "workspace:*",
     "use-debounce": "^10.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.11",
-    "@types/node": "22.19.5",
-    "@types/react": "19.2.8",
+    "@biomejs/biome": "2.3.13",
+    "@types/node": "24.10.9",
+    "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
-    "bunchee": "6.9.3",
+    "bunchee": "6.9.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "rimraf": "6.1.2",
