@@ -1,11 +1,15 @@
-import type { ServerError } from '@apollo/client/core'
-import { onError } from '@apollo/client/link/error/index.js'
+import { ErrorLink as ApolloErrorLink } from '@apollo/client/link/error'
+import type { GraphQLFormattedError } from 'graphql'
 
 import { GlobalStorage } from '@/storage'
 
-export const ErrorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, path, extensions }) => {
+export const ErrorLink = new ApolloErrorLink(({ error, result }) => {
+  // In Apollo Client 4, errors are consolidated to the 'error' and 'result' properties
+
+  // Handle GraphQL errors from result
+  if (result?.errors) {
+    result.errors.forEach((graphQLError: GraphQLFormattedError) => {
+      const { message, path, extensions } = graphQLError
       const formattedPath = Array.isArray(path) ? path.join('.') : (path ?? 'N/A')
       const parts = [`[Quiltt][GraphQL Error]: ${message}`, `Path: ${formattedPath}`]
 
@@ -18,12 +22,15 @@ export const ErrorLink = onError(({ graphQLErrors, networkError }) => {
     })
   }
 
-  if (networkError) {
-    if ((networkError as ServerError).statusCode === 401) {
-      console.warn('[Quiltt][Authentication Error]:', networkError)
+  // Handle network/server errors
+  if (error) {
+    if ('statusCode' in error && error.statusCode === 401) {
+      console.warn('[Quiltt][Authentication Error]:', error)
       GlobalStorage.set('session', null)
+    } else if ('statusCode' in error) {
+      console.warn('[Quiltt][Server Error]:', error)
     } else {
-      console.warn('[Quiltt][Network Error]:', networkError)
+      console.warn('[Quiltt][Network Error]:', error)
     }
   }
 })

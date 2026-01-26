@@ -1,4 +1,4 @@
-import { HttpLink as ApolloHttpLink } from '@apollo/client/link/http/index.js'
+import { HttpLink as ApolloHttpLink } from '@apollo/client/link/http'
 import crossfetch from 'cross-fetch'
 
 // Use `cross-fetch` only if `fetch` is not available on the `globalThis` object

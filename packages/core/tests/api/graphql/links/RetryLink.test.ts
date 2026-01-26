@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { Operation, ServerError } from '@apollo/client/core'
-import { ApolloLink, gql, Observable } from '@apollo/client/core'
+import type { ServerError } from '@apollo/client/core'
+import { ApolloLink, gql } from '@apollo/client/core'
+import { Observable } from 'rxjs'
 
 import RetryLink from '@/api/graphql/links/RetryLink'
 
@@ -16,7 +17,7 @@ describe('RetryLink', () => {
             name: 'ServerError',
             message: 'Internal Server Error',
             statusCode: 500,
-            result: {},
+            bodyText: 'Internal Server Error',
             response: {} as Response,
           }
           observer.error(error)
@@ -40,10 +41,10 @@ describe('RetryLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     await new Promise<void>((resolve) => {
-      link.request(operation)?.subscribe({
+      link.request(operation, vi.fn() as any)?.subscribe({
         next: (result) => {
           expect(result).toEqual({ data: { success: true } })
           expect(attemptCount).toBe(3)
@@ -64,7 +65,7 @@ describe('RetryLink', () => {
           name: 'ServerError',
           message: 'Bad Request',
           statusCode: 400,
-          result: {},
+          bodyText: 'Bad Request',
           response: {} as Response,
         }
         observer.error(error)
@@ -84,10 +85,10 @@ describe('RetryLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     await new Promise<void>((resolve) => {
-      link.request(operation)?.subscribe({
+      link.request(operation, vi.fn() as any)?.subscribe({
         error: (error) => {
           expect(error.statusCode).toBe(400)
           expect(attemptCount).toBe(1)
@@ -124,10 +125,10 @@ describe('RetryLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     await new Promise<void>((resolve) => {
-      link.request(operation)?.subscribe({
+      link.request(operation, vi.fn() as any)?.subscribe({
         next: (result) => {
           expect(result).toEqual({ data: { success: true } })
           expect(attemptCount).toBe(2)
@@ -148,7 +149,7 @@ describe('RetryLink', () => {
           name: 'ServerError',
           message: 'Unauthorized',
           statusCode: 401,
-          result: {},
+          bodyText: 'Unauthorized',
           response: {} as Response,
         }
         observer.error(error)
@@ -168,10 +169,10 @@ describe('RetryLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     await new Promise<void>((resolve) => {
-      link.request(operation)?.subscribe({
+      link.request(operation, vi.fn() as any)?.subscribe({
         error: (error) => {
           expect(error.statusCode).toBe(401)
           expect(attemptCount).toBe(1)
@@ -191,7 +192,7 @@ describe('RetryLink', () => {
             name: 'ServerError',
             message: 'Service Unavailable',
             statusCode: 503,
-            result: {},
+            bodyText: 'Service Unavailable',
             response: {} as Response,
           }
           observer.error(error)
@@ -215,10 +216,10 @@ describe('RetryLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     await new Promise<void>((resolve) => {
-      link.request(operation)?.subscribe({
+      link.request(operation, vi.fn() as any)?.subscribe({
         next: (result) => {
           expect(result).toEqual({ data: { success: true } })
           expect(attemptCount).toBe(3)
@@ -253,10 +254,10 @@ describe('RetryLink', () => {
       extensions: {},
       setContext: vi.fn(),
       getContext: () => ({}),
-    } as unknown as Operation
+    } as unknown as ApolloLink.Operation
 
     await new Promise<void>((resolve) => {
-      link.request(operation)?.subscribe({
+      link.request(operation, vi.fn() as any)?.subscribe({
         next: (result) => {
           expect(result).toEqual({ data: { success: true } })
           expect(attemptCount).toBe(1)

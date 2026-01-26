@@ -1,6 +1,5 @@
-import type { FetchResult, NextLink, Operation } from '@apollo/client/core'
-import { ApolloLink } from '@apollo/client/core/index.js'
-import type { Observable } from '@apollo/client/utilities'
+import { ApolloLink } from '@apollo/client/core'
+import { Observable } from 'rxjs'
 
 import { GlobalStorage } from '@/storage'
 
@@ -11,12 +10,17 @@ import { GlobalStorage } from '@/storage'
  * valid sessions during rotation and networking weirdness.
  */
 export class AuthLink extends ApolloLink {
-  request(operation: Operation, forward: NextLink): Observable<FetchResult> | null {
+  request(
+    operation: ApolloLink.Operation,
+    forward: ApolloLink.ForwardFunction
+  ): Observable<ApolloLink.Result> {
     const token = GlobalStorage.get('session')
 
     if (!token) {
       console.warn('QuilttLink attempted to send an unauthenticated Query')
-      return null
+      return new Observable((observer) => {
+        observer.error(new Error('No authentication token available'))
+      })
     }
 
     operation.setContext(({ headers = {} }) => ({

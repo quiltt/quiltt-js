@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ServerError } from '@apollo/client/core'
-import { ApolloClient, ApolloLink, gql, InMemoryCache, Observable } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, gql, InMemoryCache } from '@apollo/client/core'
+import { Observable } from 'rxjs'
 
 import ErrorLink from '@/api/graphql/links/ErrorLink'
 import { GlobalStorage } from '@/storage'
@@ -56,7 +56,7 @@ describe('ErrorLink', () => {
     }
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('[GraphQL Error]: Field error | Path: user.name')
+      expect.stringContaining('[Quiltt][GraphQL Error]: Field error | Path: user.name')
     )
     consoleWarnSpy.mockRestore()
   })
@@ -64,13 +64,11 @@ describe('ErrorLink', () => {
   it('should handle 401 network errors and clear session', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    const error: ServerError = {
-      name: 'ServerError',
-      message: 'Unauthorized',
+    const error = Object.assign(new Error('Unauthorized'), {
       statusCode: 401,
-      result: {},
-      response: {} as Response,
-    }
+      bodyText: 'Unauthorized',
+      response: new Response('Unauthorized', { status: 401 }),
+    })
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -106,13 +104,11 @@ describe('ErrorLink', () => {
   it('should handle non-401 network errors without clearing session', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    const error: ServerError = {
-      name: 'ServerError',
-      message: 'Internal Server Error',
+    const error = Object.assign(new Error('Internal Server Error'), {
       statusCode: 500,
-      result: {},
-      response: {} as Response,
-    }
+      bodyText: 'Internal Server Error',
+      response: new Response('Internal Server Error', { status: 500 }),
+    })
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -138,7 +134,7 @@ describe('ErrorLink', () => {
     }
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      '[Quiltt][Network Error]:',
+      '[Quiltt][Server Error]:',
       expect.objectContaining({ statusCode: 500 })
     )
     expect(GlobalStorage.set).not.toHaveBeenCalled()
@@ -148,13 +144,11 @@ describe('ErrorLink', () => {
   it('should handle both GraphQL and network errors together', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    const error: ServerError = {
-      name: 'ServerError',
-      message: 'Server Error',
+    const error = Object.assign(new Error('Server Error'), {
       statusCode: 500,
-      result: {},
-      response: {} as Response,
-    }
+      bodyText: 'Server Error',
+      response: new Response('Server Error', { status: 500 }),
+    })
 
     const mockLink = new ApolloLink(() => {
       return new Observable((observer) => {
@@ -191,7 +185,7 @@ describe('ErrorLink', () => {
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       expect.stringContaining('[Quiltt][GraphQL Error]: Query error | Path: data')
     )
-    expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Network Error]:', expect.any(Object))
+    expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Server Error]:', expect.any(Object))
     consoleWarnSpy.mockRestore()
   })
 
@@ -223,6 +217,186 @@ describe('ErrorLink', () => {
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('[Quiltt][Network Error]:', expect.any(Error))
     expect(GlobalStorage.set).not.toHaveBeenCalled()
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle GraphQL errors without path', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'General error without path',
+              locations: [{ line: 1, column: 1 }],
+              // path is undefined
+            },
+          ],
+        })
+        observer.complete()
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw due to GraphQL errors
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[Quiltt][GraphQL Error]: General error without path | Path: N/A')
+    )
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle GraphQL errors with extensions.code', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'Validation error',
+              locations: [{ line: 1, column: 1 }],
+              path: ['input'],
+              extensions: {
+                code: 'BAD_USER_INPUT',
+              },
+            },
+          ],
+        })
+        observer.complete()
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw due to GraphQL errors
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '[Quiltt][GraphQL Error]: Validation error | Path: input | Code: BAD_USER_INPUT'
+      )
+    )
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle GraphQL errors with extensions.errorId', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'Internal error',
+              locations: [{ line: 1, column: 1 }],
+              path: ['query'],
+              extensions: {
+                errorId: 'error-12345',
+              },
+            },
+          ],
+        })
+        observer.complete()
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw due to GraphQL errors
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '[Quiltt][GraphQL Error]: Internal error | Path: query | Error ID: error-12345'
+      )
+    )
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('should handle GraphQL errors with both extensions.code and extensions.errorId', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'Complex error',
+              locations: [{ line: 1, column: 1 }],
+              path: ['mutation'],
+              extensions: {
+                code: 'INTERNAL_SERVER_ERROR',
+                errorId: 'error-67890',
+              },
+            },
+          ],
+        })
+        observer.complete()
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw due to GraphQL errors
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '[Quiltt][GraphQL Error]: Complex error | Path: mutation | Code: INTERNAL_SERVER_ERROR | Error ID: error-67890'
+      )
+    )
     consoleWarnSpy.mockRestore()
   })
 })
