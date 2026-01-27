@@ -86,7 +86,7 @@ describe('React Native Telemetry', () => {
       vi.spyOn(Platform, 'Version', 'get').mockReturnValue('17.0')
 
       const osInfo = getOSInfo()
-      expect(osInfo).toBe('Ios/17.0')
+      expect(osInfo).toBe('iOS/17.0')
     })
 
     it('should return Android version info', () => {
@@ -153,7 +153,7 @@ describe('React Native Telemetry', () => {
       const platformInfo = await getPlatformInfo()
       // Device model is Unknown in test environment since DeviceInfo is not loaded
       expect(platformInfo).toMatch(
-        /^React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Ios\/17\.0; Unknown$/
+        /^React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown$/
       )
     })
 
@@ -165,7 +165,7 @@ describe('React Native Telemetry', () => {
 
       const platformInfo = await getPlatformInfo()
       expect(platformInfo).toMatch(
-        /^React\/\d+\.\d+\.\d+; ReactNative\/unknown; Ios\/17\.0; Unknown$/
+        /^React\/\d+\.\d+\.\d+; ReactNative\/unknown; iOS\/17\.0; Unknown$/
       )
     })
   })
@@ -199,7 +199,7 @@ describe('React Native Telemetry', () => {
       const userAgent = await getUserAgent('4.5.1')
       // Device model is Unknown in test environment since DeviceInfo is not loaded
       expect(userAgent).toMatch(
-        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Ios\/17\.0; Unknown\)$/
+        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
       )
     })
 
@@ -224,14 +224,14 @@ describe('React Native Telemetry', () => {
       const userAgent = await getUserAgent('5.0.0-beta.1')
       // Device model is Unknown in test environment
       expect(userAgent).toMatch(
-        /^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Ios\/17\.0; Unknown\)$/
+        /^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
       )
     })
 
     it('should handle Unknown device model', async () => {
       const userAgent = await getUserAgent('4.5.1')
       expect(userAgent).toMatch(
-        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Ios\/17\.0; Unknown\)$/
+        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
       )
     })
   })

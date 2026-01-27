@@ -4,10 +4,10 @@ import type { FC, PropsWithChildren } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { ApolloProvider } from '@apollo/client/react/context/ApolloProvider.js'
-import { InMemoryCache, QuilttClient } from '@quiltt/core'
+import { createVersionLink, InMemoryCache, QuilttClient } from '@quiltt/core'
 
 import { useQuilttSession } from '@/hooks'
-import { isDeepEqual } from '@/utils'
+import { getPlatformInfo, isDeepEqual } from '@/utils'
 
 export type QuilttAuthProviderProps = PropsWithChildren & {
   /** A custom QuilttClient instance to use instead of the default */
@@ -37,6 +37,7 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
       graphqlClient ||
       new QuilttClient({
         cache: new InMemoryCache(),
+        versionLink: createVersionLink(getPlatformInfo()),
       }),
     [graphqlClient]
   )
