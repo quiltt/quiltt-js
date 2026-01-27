@@ -38,7 +38,8 @@
     "@honeybadger-io/core": "6.7.2",
     "@quiltt/core": "workspace:*",
     "@quiltt/react": "workspace:*",
-    "lodash.debounce": "4.0.8"
+    "lodash.debounce": "4.0.8",
+    "react-native-device-info": "15.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
@@ -60,8 +61,14 @@
     "base-64": "^1.0.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-native": ">=0.72.0",
+    "react-native-device-info": ">=10.0.0",
     "react-native-url-polyfill": "^3.0.0",
     "react-native-webview": ">=13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-device-info": {
+      "optional": true
+    }
   },
   "tags": [
     "quiltt",

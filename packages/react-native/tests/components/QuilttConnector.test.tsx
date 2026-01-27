@@ -16,6 +16,13 @@ import {
 let capturedWebViewProps: any = null
 let capturedWebViewRef: any = null
 
+// Mock react-native-device-info
+vi.mock('react-native-device-info', () => ({
+  default: {
+    getModel: vi.fn().mockResolvedValue('iPhone14,2'),
+  },
+}))
+
 // Mock ErrorReporter before importing QuilttConnector
 vi.mock('@/utils/error/ErrorReporter', () => ({
   ErrorReporter: class {
@@ -223,17 +230,25 @@ describe('QuilttConnector', () => {
 
   describe('URL Checking', () => {
     it('should handle routable URL successfully', async () => {
+      const mockErrorReporter = {
+        notify: vi.fn().mockResolvedValue(undefined),
+      } as any
+
       fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
-      const result = await checkConnectorUrl('http://test.com')
+      const result = await checkConnectorUrl('http://test.com', mockErrorReporter)
       expect(result).toEqual({ checked: true })
     })
 
     it('should retry on failure', async () => {
+      const mockErrorReporter = {
+        notify: vi.fn().mockResolvedValue(undefined),
+      } as any
+
       fetchSpy
         .mockRejectedValueOnce(new Error('First failure'))
         .mockResolvedValueOnce(createMockResponse(200, { ok: true }))
 
-      const result = await checkConnectorUrl('http://test.com', 0)
+      const result = await checkConnectorUrl('http://test.com', mockErrorReporter, 0)
       expect(result).toEqual({ checked: true })
       expect(fetchSpy).toHaveBeenCalledTimes(2)
     })

@@ -18,6 +18,7 @@ import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTyp
 import {
   ErrorReporter,
   getErrorMessage,
+  getUserAgent,
   isEncoded,
   normalizeUrlEncoding,
   smartEncodeURIComponent,
@@ -28,7 +29,6 @@ import { AndroidSafeAreaView } from './AndroidSafeAreaView'
 import { ErrorScreen } from './ErrorScreen'
 import { LoadingScreen } from './LoadingScreen'
 
-const errorReporter = new ErrorReporter(`${Platform.OS} ${Platform.Version}`)
 const PREFLIGHT_RETRY_COUNT = 3
 
 export type PreFlightCheck = {
@@ -55,6 +55,7 @@ const parseMetadata = (url: URL, connectorId: string): ConnectorSDKCallbackMetad
 
 export const checkConnectorUrl = async (
   connectorUrl: string,
+  errorReporter: ErrorReporter,
   retryCount = 0
 ): Promise<PreFlightCheck> => {
   let responseStatus: number | undefined
@@ -85,7 +86,7 @@ export const checkConnectorUrl = async (
       const delay = 50 * 2 ** retryCount
       await new Promise((resolve) => setTimeout(resolve, delay))
       console.log(`Retrying connection... Attempt ${retryCount + 1}`)
-      return checkConnectorUrl(connectorUrl, retryCount + 1)
+      return checkConnectorUrl(connectorUrl, errorReporter, retryCount + 1)
     }
 
     // Report error after retries exhausted
@@ -170,6 +171,18 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const webViewRef = useRef<WebView>(null)
     const { session } = useQuilttSession()
     const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
+    const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
+    const [userAgent, setUserAgent] = useState<string>('')
+
+    // Initialize error reporter and user agent
+    useEffect(() => {
+      const init = async () => {
+        const agent = await getUserAgent(version)
+        setUserAgent(agent)
+        setErrorReporter(new ErrorReporter(agent))
+      }
+      init()
+    }, [])
 
     // Script to disable scrolling on header
     const disableHeaderScrollScript = `
@@ -197,11 +210,13 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     }, [oauthRedirectUrl])
 
     const connectorUrl = useMemo(() => {
+      if (!userAgent) return null
+
       const url = new URL(`https://${connectorId}.quiltt.app`)
 
       // For normal parameters, just append them directly
       url.searchParams.append('mode', 'webview')
-      url.searchParams.append('agent', `react-native-${version}`)
+      url.searchParams.append('agent', userAgent)
 
       // For the oauth_redirect_url, we need to be careful
       // If it's already encoded, we need to decode it once to prevent
@@ -214,16 +229,16 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       }
 
       return url.toString()
-    }, [connectorId, safeOAuthRedirectUrl])
+    }, [connectorId, safeOAuthRedirectUrl, userAgent])
 
     useEffect(() => {
-      if (preFlightCheck.checked) return
+      if (preFlightCheck.checked || !connectorUrl || !errorReporter) return
       const fetchDataAndSetState = async () => {
-        const connectorUrlStatus = await checkConnectorUrl(connectorUrl)
+        const connectorUrlStatus = await checkConnectorUrl(connectorUrl, errorReporter)
         setPreFlightCheck(connectorUrlStatus)
       }
       fetchDataAndSetState()
-    }, [connectorUrl, preFlightCheck])
+    }, [connectorUrl, preFlightCheck, errorReporter])
 
     const initInjectedJavaScript = useCallback(() => {
       const script = `\
@@ -404,7 +419,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       []
     )
 
-    if (!preFlightCheck.checked) {
+    if (!preFlightCheck.checked || !connectorUrl) {
       return <LoadingScreen testId="loading-screen" />
     }
 
