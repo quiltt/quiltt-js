@@ -39,8 +39,12 @@ export const getOSInfo = (): string => {
     const os = Platform.OS // 'ios' or 'android'
     const osVersion = Platform.Version // string (iOS) or number (Android)
 
-    // Capitalize first letter of OS name
-    const osName = os.charAt(0).toUpperCase() + os.slice(1)
+    // Map platform names to correct capitalization
+    const platformNames: Record<string, string> = {
+      ios: 'iOS',
+      android: 'Android',
+    }
+    const osName = platformNames[os] || 'Unknown'
 
     return `${osName}/${osVersion}`
   } catch (error) {
@@ -78,6 +82,19 @@ export const getPlatformInfo = async (): Promise<string> => {
   const deviceModel = await getDeviceModel()
 
   return `React/${reactVersion}; ReactNative/${rnVersion}; ${osInfo}; ${deviceModel}`
+}
+
+/**
+ * Synchronously generates platform information string for React Native
+ * Format: React/<version>; ReactNative/<version>; <OS>/<version>; Unknown
+ * Note: Device model is set to 'Unknown' since it requires async DeviceInfo call
+ */
+export const getPlatformInfoSync = (): string => {
+  const reactVersion = getReactVersion()
+  const rnVersion = getReactNativeVersion()
+  const osInfo = getOSInfo()
+
+  return `React/${reactVersion}; ReactNative/${rnVersion}; ${osInfo}; Unknown`
 }
 
 /**

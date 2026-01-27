@@ -19,6 +19,7 @@ vi.mock('@/hooks', () => ({
 // Mock the utils
 vi.mock('@/utils', () => ({
   isDeepEqual: vi.fn().mockReturnValue(true),
+  getPlatformInfo: vi.fn().mockReturnValue('React/19.0.0; Chrome/120'),
 }))
 
 // Add mocks for Apollo Client
@@ -32,11 +33,13 @@ vi.mock('@quiltt/core', () => {
   }
   class MockInMemoryCache {}
   class MockTerminatingLink {}
+  class MockApolloLink {}
 
   return {
     QuilttClient: MockQuilttClient,
     InMemoryCache: MockInMemoryCache,
     TerminatingLink: MockTerminatingLink,
+    createVersionLink: vi.fn(() => new MockApolloLink()),
   }
 })
 
