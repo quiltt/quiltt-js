@@ -1,4 +1,5 @@
-import { endpointRest } from '@/configuration'
+import { endpointRest, version } from '@/configuration'
+import { getUserAgent } from '@/utils/telemetry'
 
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
@@ -19,7 +20,7 @@ export class ConnectorsAPI {
   clientId: string
   userAgent: string
 
-  constructor(clientId: string, userAgent: string) {
+  constructor(clientId: string, userAgent: string = getUserAgent(version, 'Unknown')) {
     this.clientId = clientId
     this.userAgent = userAgent
   }
