@@ -48,6 +48,14 @@ describe('ConnectorsAPI', () => {
       expect(api.clientId).toBe('client-123')
       expect(api.userAgent).toBe(userAgent)
     })
+
+    it('should use default Unknown user-agent when userAgent is not provided', () => {
+      const api = new ConnectorsAPI('client-123')
+      const expectedUserAgent = getUserAgent(version, 'Unknown')
+
+      expect(api.clientId).toBe('client-123')
+      expect(api.userAgent).toBe(expectedUserAgent)
+    })
   })
 
   describe('searchInstitutions method', () => {

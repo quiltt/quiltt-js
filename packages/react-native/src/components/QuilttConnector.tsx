@@ -176,12 +176,19 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
 
     // Initialize error reporter and user agent
     useEffect(() => {
+      let mounted = true
       const init = async () => {
         const agent = await getUserAgent(version)
-        setUserAgent(agent)
-        setErrorReporter(new ErrorReporter(agent))
+        if (mounted) {
+          setUserAgent(agent)
+          setErrorReporter(new ErrorReporter(agent))
+        }
       }
       init()
+
+      return () => {
+        mounted = false
+      }
     }, [])
 
     // Script to disable scrolling on header
