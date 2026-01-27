@@ -9,13 +9,18 @@ For general project information and contributing guidelines, see the [main repos
 
 ## Installation
 
-`@quiltt/react-native` expects `react`, `react-native`,`react-native-webview`, `base-64` and `react-native-url-polyfill` as peer dependencies.
+`@quiltt/react-native` expects `react`, `react-native`, `react-native-webview`, `base-64` and `react-native-url-polyfill` as peer dependencies.
+
+**Optional:** Install `react-native-device-info` for enhanced telemetry (device model detection). If not installed, the SDK will use "Unknown" as the device model.
 
 With `npm`:
 
 ```shell
 npm install base-64 react-native-webview react-native-url-polyfill
 npm install @quiltt/react-native
+
+# Optional: for device model detection
+npm install react-native-device-info
 ```
 
 With `yarn`:
@@ -23,6 +28,9 @@ With `yarn`:
 ```shell
 yarn add base-64 react-native-webview react-native-url-polyfill
 yarn add @quiltt/react-native
+
+# Optional: for device model detection
+yarn add react-native-device-info
 ```
 
 With `pnpm`:
@@ -31,6 +39,9 @@ With `pnpm`:
 # Make sure to add `node-linker=hoisted` to your `.npmrc` when using pnpm in an Expo app.
 $ pnpm add base-64 react-native-webview react-native-url-polyfill
 $ pnpm add @quiltt/react-native
+
+# Optional: for device model detection
+$ pnpm add react-native-device-info
 ```
 
 ## Documentation

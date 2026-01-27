@@ -6,7 +6,9 @@ import type { ErrorData, InstitutionsData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
 import { useDebounce } from 'use-debounce'
 
-import { version } from '../version'
+import { getUserAgent } from '@/utils'
+import { version } from '@/version'
+
 import useSession from './useSession'
 
 export type UseQuilttInstitutions = (
@@ -20,28 +22,11 @@ export type UseQuilttInstitutions = (
 }
 
 export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErrorCallback) => {
-  const agent = useMemo(() => {
-    // Try deprecated navigator.product first (still used in some RN versions)
-    if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-      return `react-native-${version}`
-    }
-
-    // Detect React Native by its unique environment characteristics
-    const isReactNative = !!(
-      // Has window (unlike Node.js)
-      (
-        typeof window !== 'undefined' &&
-        // No document in window (unlike browsers)
-        typeof window.document === 'undefined' &&
-        // Has navigator (unlike Node.js)
-        typeof navigator !== 'undefined'
-      )
-    )
-
-    return isReactNative ? `react-native-${version}` : `react-${version}`
-  }, [])
-
-  const connectorsAPI = useMemo(() => new ConnectorsAPI(connectorId, agent), [connectorId, agent])
+  const userAgent = useMemo(() => getUserAgent(version), [])
+  const connectorsAPI = useMemo(
+    () => new ConnectorsAPI(connectorId, userAgent),
+    [connectorId, userAgent]
+  )
   const [session] = useSession()
 
   const [searchTermInput, setSearchTermInput] = useState('')

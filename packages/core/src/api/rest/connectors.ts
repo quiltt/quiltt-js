@@ -17,11 +17,11 @@ export type ResolvableResponse = FetchResponse<ResolvableData>
 
 export class ConnectorsAPI {
   clientId: string
-  agent: string
+  userAgent: string
 
-  constructor(clientId: string, agent = 'web') {
+  constructor(clientId: string, userAgent: string) {
     this.clientId = clientId
-    this.agent = agent
+    this.userAgent = userAgent
   }
 
   /**
@@ -87,7 +87,7 @@ export class ConnectorsAPI {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
-    headers.set('Quiltt-SDK-Agent', this.agent)
+    headers.set('User-Agent', this.userAgent)
     headers.set('Authorization', `Bearer ${token}`)
 
     return {
