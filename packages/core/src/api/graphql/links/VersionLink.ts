@@ -1,10 +1,11 @@
 import { ApolloLink } from '@apollo/client/core/index.js'
 
 import { version } from '@/configuration'
-import { getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 export const createVersionLink = (platformInfo: string) => {
-  const userAgent = getUserAgent(version, platformInfo)
+  const versionNumber = extractVersionNumber(version)
+  const userAgent = getUserAgent(versionNumber, platformInfo)
 
   return new ApolloLink((operation, forward) => {
     operation.setContext(({ headers = {} }) => ({
