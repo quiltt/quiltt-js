@@ -1,8 +1,66 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getBrowserInfo, getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getBrowserInfo, getUserAgent } from '@/utils/telemetry'
 
 describe('Core Telemetry', () => {
+  describe('extractVersionNumber', () => {
+    it('should extract version from formatted string', () => {
+      expect(extractVersionNumber('@quiltt/core: v4.5.1')).toBe('4.5.1')
+    })
+
+    it('should extract version from simple v-prefixed string', () => {
+      expect(extractVersionNumber('v1.2.3')).toBe('1.2.3')
+    })
+
+    it('should extract version and ignore pre-release tags', () => {
+      expect(extractVersionNumber('v4.5.1-beta')).toBe('4.5.1')
+      expect(extractVersionNumber('v4.5.1-alpha.1')).toBe('4.5.1')
+      expect(extractVersionNumber('v4.5.1-rc.2')).toBe('4.5.1')
+    })
+
+    it('should extract version and ignore build metadata', () => {
+      expect(extractVersionNumber('v4.5.1+build.123')).toBe('4.5.1')
+    })
+
+    it('should return "unknown" when no v prefix found', () => {
+      expect(extractVersionNumber('4.5.1')).toBe('unknown')
+      expect(extractVersionNumber('@quiltt/core: 4.5.1')).toBe('unknown')
+      expect(extractVersionNumber('no-version-here')).toBe('unknown')
+    })
+
+    it('should return "unknown" for empty string', () => {
+      expect(extractVersionNumber('')).toBe('unknown')
+    })
+
+    it('should return "unknown" when version has less than 3 parts', () => {
+      expect(extractVersionNumber('v1.2')).toBe('unknown')
+      expect(extractVersionNumber('v1')).toBe('unknown')
+      expect(extractVersionNumber('v')).toBe('unknown')
+    })
+
+    it('should return "unknown" when major version is non-numeric', () => {
+      expect(extractVersionNumber('vx.2.3')).toBe('unknown')
+      expect(extractVersionNumber('vabc.2.3')).toBe('unknown')
+      expect(extractVersionNumber('v.2.3')).toBe('unknown')
+    })
+
+    it('should return "unknown" when minor version is non-numeric', () => {
+      expect(extractVersionNumber('v1.x.3')).toBe('unknown')
+      expect(extractVersionNumber('v1.def.3')).toBe('unknown')
+      expect(extractVersionNumber('v1..3')).toBe('unknown')
+    })
+
+    it('should return "unknown" when patch version is non-numeric', () => {
+      expect(extractVersionNumber('v1.2.x')).toBe('unknown')
+      expect(extractVersionNumber('v1.2.ghi')).toBe('unknown')
+      expect(extractVersionNumber('v1.2.')).toBe('unknown')
+    })
+
+    it('should return "unknown" when all parts are non-numeric', () => {
+      expect(extractVersionNumber('vabc.def.ghi')).toBe('unknown')
+    })
+  })
+
   describe('getUserAgent', () => {
     it('should generate correct User-Agent string', () => {
       const userAgent = getUserAgent('4.5.1', 'React/19.2.3; Chrome/120')

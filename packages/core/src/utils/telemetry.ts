@@ -4,8 +4,24 @@
  * @returns Version number like "4.5.1" or "unknown" if not found
  */
 export const extractVersionNumber = (formattedVersion: string): string => {
-  const match = formattedVersion.match(/\d+\.\d+\.\d+/)
-  return match ? match[0] : 'unknown'
+  // Find the 'v' prefix and extract version after it
+  const vIndex = formattedVersion.indexOf('v')
+  if (vIndex === -1) return 'unknown'
+
+  const versionPart = formattedVersion.substring(vIndex + 1)
+  const parts = versionPart.split('.')
+
+  // Validate we have at least major.minor.patch
+  if (parts.length < 3) return 'unknown'
+
+  // Extract numeric parts (handles cases like "4.5.1-beta")
+  const major = parts[0].match(/^\d+/)?.[0]
+  const minor = parts[1].match(/^\d+/)?.[0]
+  const patch = parts[2].match(/^\d+/)?.[0]
+
+  if (!major || !minor || !patch) return 'unknown'
+
+  return `${major}.${minor}.${patch}`
 }
 
 /**
