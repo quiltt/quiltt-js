@@ -1,4 +1,14 @@
 /**
+ * Extracts version number from formatted version string
+ * @param formattedVersion - Formatted version like "@quiltt/core: v4.5.1"
+ * @returns Version number like "4.5.1" or "unknown" if not found
+ */
+export const extractVersionNumber = (formattedVersion: string): string => {
+  const match = formattedVersion.match(/\d+\.\d+\.\d+/)
+  return match ? match[0] : 'unknown'
+}
+
+/**
  * Generates a User-Agent string following standard format
  * Format: Quiltt/<version> (<platform-info>)
  */

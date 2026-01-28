@@ -1,5 +1,5 @@
 import { endpointRest, version } from '@/configuration'
-import { getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
@@ -15,12 +15,6 @@ type Resolvable = ResolvableData | ErrorData | UnauthorizedData
 
 export type SearchResponse = FetchResponse<InstitutionsData>
 export type ResolvableResponse = FetchResponse<ResolvableData>
-
-// Extract version number from formatted version string (e.g., "@quiltt/core: v4.5.1" -> "4.5.1")
-const extractVersionNumber = (formattedVersion: string): string => {
-  const match = formattedVersion.match(/\d+\.\d+\.\d+/)
-  return match ? match[0] : 'unknown'
-}
 
 export class ConnectorsAPI {
   clientId: string

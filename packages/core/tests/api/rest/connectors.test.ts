@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConnectorsAPI } from '@/api/rest/connectors'
 import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
 import { version } from '@/configuration'
-import { getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 // Mock fetchWithRetry
 vi.mock('@/api/rest/fetchWithRetry', () => ({
@@ -51,8 +51,7 @@ describe('ConnectorsAPI', () => {
 
     it('should use default Unknown user-agent when userAgent is not provided', () => {
       const api = new ConnectorsAPI('client-123')
-      // Extract version number from formatted version (e.g., "@quiltt/core: v4.5.1" -> "4.5.1")
-      const versionNumber = version.match(/\d+\.\d+\.\d+/)?.[0] || 'unknown'
+      const versionNumber = extractVersionNumber(version)
       const expectedUserAgent = getUserAgent(versionNumber, 'Unknown')
 
       expect(api.clientId).toBe('client-123')
