@@ -51,7 +51,9 @@ describe('ConnectorsAPI', () => {
 
     it('should use default Unknown user-agent when userAgent is not provided', () => {
       const api = new ConnectorsAPI('client-123')
-      const expectedUserAgent = getUserAgent(version, 'Unknown')
+      // Extract version number from formatted version (e.g., "@quiltt/core: v4.5.1" -> "4.5.1")
+      const versionNumber = version.match(/\d+\.\d+\.\d+/)?.[0] || 'unknown'
+      const expectedUserAgent = getUserAgent(versionNumber, 'Unknown')
 
       expect(api.clientId).toBe('client-123')
       expect(api.userAgent).toBe(expectedUserAgent)
