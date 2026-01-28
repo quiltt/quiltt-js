@@ -21,11 +21,13 @@ vi.mock('@/hooks/session', () => ({
 }))
 
 const mockSearchInstitutions = vi.fn()
-vi.mock('@quiltt/core', () => {
+vi.mock('@quiltt/core', async (importOriginal) => {
+  const actual = (await importOriginal()) as any
   class MockConnectorsAPI {
     searchInstitutions = mockSearchInstitutions
   }
   return {
+    ...actual,
     ConnectorsAPI: MockConnectorsAPI,
   }
 })

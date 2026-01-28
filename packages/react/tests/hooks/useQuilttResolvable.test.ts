@@ -21,11 +21,13 @@ vi.mock('@/hooks/session', () => ({
 }))
 
 const mockCheckResolvable = vi.fn()
-vi.mock('@quiltt/core', () => {
+vi.mock('@quiltt/core', async (importOriginal) => {
+  const actual = (await importOriginal()) as any
   class MockConnectorsAPI {
     checkResolvable = mockCheckResolvable
   }
   return {
+    ...actual,
     ConnectorsAPI: MockConnectorsAPI,
   }
 })

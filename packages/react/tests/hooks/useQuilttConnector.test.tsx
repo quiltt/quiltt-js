@@ -753,7 +753,7 @@ describe('useQuilttConnector', () => {
 
       // useScript is called with just the URL string
       expect(mockUseScript).toHaveBeenCalledWith(
-        expect.stringContaining('https://cdn.quiltt.io/v1/connector.js?agent=react-')
+        expect.stringContaining('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt')
       )
 
       unmount()
@@ -766,7 +766,7 @@ describe('useQuilttConnector', () => {
 
       expect(mockUseScript).toHaveBeenCalled()
       const callArg = mockUseScript.mock.calls[0][0]
-      expect(callArg).toContain('https://cdn.quiltt.io/v1/connector.js?agent=react-')
+      expect(callArg).toContain('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt')
 
       unmount()
     })
