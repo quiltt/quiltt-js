@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 
-import { InMemoryCache, QuilttClient, TerminatingLink } from '@quiltt/core'
+import { createVersionLink, InMemoryCache, QuilttClient, TerminatingLink } from '@quiltt/core'
 
 import { QuilttAuthProvider } from '@/providers/QuilttAuthProvider'
 
@@ -62,6 +62,7 @@ describe('QuilttAuthProvider', () => {
     const customClient = new QuilttClient({
       customLinks: [TerminatingLink],
       cache: new InMemoryCache(),
+      versionLink: createVersionLink('Test'),
     })
     render(
       <QuilttAuthProvider graphqlClient={customClient}>
