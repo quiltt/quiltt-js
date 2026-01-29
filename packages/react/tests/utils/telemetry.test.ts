@@ -13,7 +13,7 @@ describe('React Telemetry', () => {
 
     it('should return actual React version', () => {
       const version = getReactVersion()
-      // Should be a version string like "19.2.3"
+      // Should be a version string like "19.2.4"
       expect(version).toMatch(/^\d+\.\d+\.\d+/)
     })
   })

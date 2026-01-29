@@ -20,8 +20,8 @@
   "dependencies": {
     "@quiltt/react": "workspace:*",
     "next": "16.1.5",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
