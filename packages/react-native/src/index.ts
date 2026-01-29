@@ -8,8 +8,6 @@ if (!global.atob) {
 
 export * from '@quiltt/core'
 export {
-  QuilttAuthProvider,
-  QuilttProvider,
   QuilttSettingsProvider,
   useQuilttClient,
   useQuilttConnector,
@@ -20,3 +18,4 @@ export {
 } from '@quiltt/react'
 
 export * from './components'
+export * from './providers'

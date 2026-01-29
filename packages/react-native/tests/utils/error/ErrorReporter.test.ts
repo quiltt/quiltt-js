@@ -2,8 +2,7 @@ import type { MockInstance } from 'vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ErrorReporter } from '@/utils/error/ErrorReporter'
-
-import { version } from '../../../package.json'
+import { version } from '@/version'
 
 // Mock fetch in the global environment
 global.fetch = vi.fn()
@@ -23,10 +22,11 @@ describe('ErrorReporter', () => {
   let consoleInfoSpy: MockInstance
   let consoleWarnSpy: MockInstance
   let consoleErrorSpy: MockInstance
+  const testUserAgent = `Quiltt/${version} (React/18.2.0; ReactNative/0.73.0; iOS/17.0; iPhone14,2)`
 
   beforeEach(() => {
     vi.resetAllMocks()
-    errorReporter = new ErrorReporter('test-platform')
+    errorReporter = new ErrorReporter(testUserAgent)
 
     consoleInfoSpy = vi.spyOn(console, 'info')
     consoleWarnSpy = vi.spyOn(console, 'warn')
@@ -51,7 +51,7 @@ describe('ErrorReporter', () => {
         url: 'https://www.quiltt.dev/connector/sdk/react-native',
       },
       server: {
-        environment_name: `react-native-sdk ${version.toString()}; test-platform`,
+        environment_name: testUserAgent,
       },
     })
 
@@ -68,7 +68,7 @@ describe('ErrorReporter', () => {
         headers: expect.objectContaining({
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'User-Agent': `react-native-sdk ${version.toString()}; test-platform`,
+          'User-Agent': testUserAgent,
           'X-API-Key': '',
         }),
       })

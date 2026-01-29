@@ -17,20 +17,14 @@ type HoneybadgerResponseData = {
 class ErrorReporter {
   private noticeUrl: string
   private apiKey: string
-  private clientName: string
-  private clientVersion: string
-  private platform: string
   private logger: Console
   private userAgent: string
 
-  constructor(platform: string) {
+  constructor(userAgent: string) {
     this.noticeUrl = 'https://api.honeybadger.io/v1/notices'
     this.apiKey = process.env.HONEYBADGER_API_KEY_REACT_NATIVE || ''
-    this.clientName = 'react-native-sdk'
-    this.clientVersion = version
-    this.platform = platform
     this.logger = console
-    this.userAgent = `${this.clientName} ${this.clientVersion}; ${this.platform}`
+    this.userAgent = userAgent
   }
 
   async notify(error: Error, context?: any): Promise<void> {
@@ -38,7 +32,7 @@ class ErrorReporter {
       'X-API-Key': this.apiKey,
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'User-Agent': `${this.clientName} ${this.clientVersion}; ${this.platform}`,
+      'User-Agent': this.userAgent,
     }
 
     const payload = await this.buildPayload(error, context)
@@ -92,7 +86,7 @@ class ErrorReporter {
         project_root: notice.projectRoot,
         environment_name: this.userAgent,
         revision: version,
-        hostname: this.platform,
+        hostname: this.userAgent,
         time: new Date().toUTCString(),
       },
       details: notice.details || {},

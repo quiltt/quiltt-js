@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConnectorsAPI } from '@/api/rest/connectors'
 import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
+import { version } from '@/configuration'
+import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 // Mock fetchWithRetry
 vi.mock('@/api/rest/fetchWithRetry', () => ({
@@ -23,25 +25,37 @@ const mockFetchWithRetry = vi.mocked(fetchWithRetry) as MockedFunction<typeof fe
 
 describe('ConnectorsAPI', () => {
   let connectorsAPI: ConnectorsAPI
+  const testUserAgent = getUserAgent(version, 'React/18.2.0; Chrome/120')
 
   beforeEach(() => {
     vi.clearAllMocks()
-    connectorsAPI = new ConnectorsAPI('test-client-id', 'test-agent')
+    connectorsAPI = new ConnectorsAPI('test-client-id', testUserAgent)
   })
 
   describe('constructor', () => {
-    it('should initialize with clientId and default agent', () => {
-      const api = new ConnectorsAPI('client-123')
+    it('should initialize with clientId and userAgent', () => {
+      const userAgent = getUserAgent(version, 'React/18.2.0; Chrome/120')
+      const api = new ConnectorsAPI('client-123', userAgent)
 
       expect(api.clientId).toBe('client-123')
-      expect(api.agent).toBe('web') // default value
+      expect(api.userAgent).toBe(userAgent)
     })
 
-    it('should initialize with custom agent', () => {
-      const api = new ConnectorsAPI('client-123', 'mobile')
+    it('should initialize with custom userAgent', () => {
+      const userAgent = getUserAgent(version, 'React/18.2.0; Safari/17')
+      const api = new ConnectorsAPI('client-123', userAgent)
 
       expect(api.clientId).toBe('client-123')
-      expect(api.agent).toBe('mobile')
+      expect(api.userAgent).toBe(userAgent)
+    })
+
+    it('should use default Unknown user-agent when userAgent is not provided', () => {
+      const api = new ConnectorsAPI('client-123')
+      const versionNumber = extractVersionNumber(version)
+      const expectedUserAgent = getUserAgent(versionNumber, 'Unknown')
+
+      expect(api.clientId).toBe('client-123')
+      expect(api.userAgent).toBe(expectedUserAgent)
     })
   })
 
@@ -148,12 +162,13 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('Quiltt-SDK-Agent')).toBe('test-agent')
+      expect(headers.get('User-Agent')).toBe(testUserAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 
-    it('should use custom agent in headers', async () => {
-      const customAPI = new ConnectorsAPI('client-123', 'react-native')
+    it('should use custom userAgent in headers', async () => {
+      const customUserAgent = getUserAgent(version, 'ReactNative/0.73.0; iOS/17.0; iPhone14,2')
+      const customAPI = new ConnectorsAPI('client-123', customUserAgent)
       const mockResponse = {
         data: [],
         status: 200,
@@ -169,7 +184,7 @@ describe('ConnectorsAPI', () => {
       const callArgs = mockFetchWithRetry.mock.calls[0][1]
       const headers = callArgs?.headers as Headers
 
-      expect(headers.get('Quiltt-SDK-Agent')).toBe('react-native')
+      expect(headers.get('User-Agent')).toBe(customUserAgent)
     })
   })
 
@@ -421,7 +436,7 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('Quiltt-SDK-Agent')).toBe('test-agent')
+      expect(headers.get('User-Agent')).toBe(testUserAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 
