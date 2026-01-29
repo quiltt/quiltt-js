@@ -1,5 +1,4 @@
-import type { ApolloClientOptions, NormalizedCacheObject, Operation } from '@apollo/client/core'
-import { ApolloClient, ApolloLink } from '@apollo/client/core/index.js'
+import { ApolloClient, ApolloLink } from '@apollo/client/core'
 import type { DefinitionNode, OperationDefinitionNode } from 'graphql'
 
 import { debugging } from '@/configuration'
@@ -14,15 +13,15 @@ import {
   SubscriptionLink,
 } from './links'
 
-export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
+export type QuilttClientOptions = Omit<ApolloClient.Options, 'link'> & {
   /** An array of initial links to inject before the default Quiltt Links */
   customLinks?: ApolloLink[]
   /** Platform-specific version link (required) */
   versionLink: ApolloLink
 }
 
-export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
-  constructor(options: QuilttClientOptions<NormalizedCacheObject>) {
+export class QuilttClient extends ApolloClient {
+  constructor(options: QuilttClientOptions) {
     const finalOptions = {
       ...options,
       devtools: {
@@ -35,13 +34,13 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
     const isOperationDefinition = (def: DefinitionNode): def is OperationDefinitionNode =>
       def.kind === 'OperationDefinition'
 
-    const isSubscriptionOperation = (operation: Operation) => {
+    const isSubscriptionOperation = (operation: ApolloLink.Operation) => {
       return operation.query.definitions.some(
         (definition) => isOperationDefinition(definition) && definition.operation === 'subscription'
       )
     }
 
-    const isBatchable = (operation: Operation) => {
+    const isBatchable = (operation: ApolloLink.Operation) => {
       return operation.getContext().batchable ?? true
     }
 
@@ -54,8 +53,8 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
       authLink,
       ErrorLink,
       RetryLink,
-    ])
-      .split(isSubscriptionOperation, subscriptionsLink, ForwardableLink)
+    ] as ApolloLink[])
+      .split(isSubscriptionOperation, subscriptionsLink as ApolloLink, ForwardableLink)
       .split(isBatchable, BatchHttpLink, HttpLink)
 
     super({
@@ -72,8 +71,8 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
 
 /** Client and Tooling */
 export type { NormalizedCacheObject } from '@apollo/client/cache'
-export { InMemoryCache } from '@apollo/client/cache/index.js'
-export type { ApolloError, OperationVariables } from '@apollo/client/core'
-export { gql } from '@apollo/client/core/index.js'
+export { InMemoryCache } from '@apollo/client/cache'
+export type { OperationVariables } from '@apollo/client/core'
+export { gql } from '@apollo/client/core'
 /** React hooks used by @quiltt/react-native and @quiltt/react */
-export { useMutation, useQuery, useSubscription } from '@apollo/client/react/hooks/index.js'
+export { useMutation, useQuery, useSubscription } from '@apollo/client/react'

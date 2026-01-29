@@ -1,4 +1,4 @@
-import { ApolloLink } from '@apollo/client/core/index.js'
+import { ApolloLink } from '@apollo/client/core'
 
 import { version } from '@/configuration'
 import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'

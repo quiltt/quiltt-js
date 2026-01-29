@@ -1,8 +1,12 @@
-import { RetryLink as ApolloRetryLink } from '@apollo/client/link/retry/index.js'
+import { RetryLink as ApolloRetryLink } from '@apollo/client/link/retry'
 
 export const RetryLink = new ApolloRetryLink({
   attempts: {
-    retryIf: (error, _operation) => !!error && (!error.statusCode || error.statusCode >= 500),
+    retryIf: (error, _operation) => {
+      if (!error) return false
+      const statusCode = 'statusCode' in error ? (error as any).statusCode : undefined
+      return !statusCode || statusCode >= 500
+    },
   },
 })
 

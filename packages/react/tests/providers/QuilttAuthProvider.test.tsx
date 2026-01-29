@@ -23,7 +23,7 @@ vi.mock('@/utils', () => ({
 }))
 
 // Add mocks for Apollo Client
-vi.mock('@apollo/client/react/context/ApolloProvider.js', () => ({
+vi.mock('@apollo/client/react', () => ({
   ApolloProvider: ({ children }: any) => children,
 }))
 

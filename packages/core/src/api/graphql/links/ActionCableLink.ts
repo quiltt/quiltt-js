@@ -1,20 +1,15 @@
 // Adapted from https://github.com/rmosolgo/graphql-ruby/blob/master/javascript_client/src/subscriptions/ActionCableLink.ts
-import type { FetchResult, NextLink, Operation } from '@apollo/client/core'
-import { ApolloLink } from '@apollo/client/core/index.js'
-import { Observable } from '@apollo/client/utilities/index.js'
+import { ApolloLink } from '@apollo/client/core'
 import type { Consumer } from '@rails/actioncable'
 import { createConsumer } from '@rails/actioncable'
 import { print } from 'graphql'
+import { Observable } from 'rxjs'
 
 import { endpointWebsockets } from '@/configuration'
 import { GlobalStorage } from '@/storage'
 
-type RequestResult = FetchResult<
-  { [key: string]: unknown },
-  Record<string, unknown>,
-  Record<string, unknown>
->
-type ConnectionParams = object | ((operation: Operation) => object)
+type RequestResult = ApolloLink.Result<{ [key: string]: unknown }>
+type ConnectionParams = object | ((operation: ApolloLink.Operation) => object)
 type SubscriptionCallbacks = {
   connected?: (args?: { reconnected: boolean }) => void
   disconnected?: () => void
@@ -44,12 +39,17 @@ class ActionCableLink extends ApolloLink {
 
   // Interestingly, this link does _not_ call through to `next` because
   // instead, it sends the request to ActionCable.
-  request(operation: Operation, _next: NextLink): Observable<RequestResult> | null {
+  request(
+    operation: ApolloLink.Operation,
+    _next: ApolloLink.ForwardFunction
+  ): Observable<RequestResult> {
     const token = GlobalStorage.get('session')
 
     if (!token) {
       console.warn('QuilttClient attempted to send an unauthenticated Subscription')
-      return null
+      return new Observable((observer) => {
+        observer.error(new Error('No authentication token available'))
+      })
     }
 
     if (!this.cables[token]) {

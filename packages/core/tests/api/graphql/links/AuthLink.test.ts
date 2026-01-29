@@ -1,7 +1,7 @@
 import type { MockedFunction } from 'vitest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { NextLink, Operation } from '@apollo/client/core'
+import type { ApolloLink } from '@apollo/client/core'
 
 import AuthLink from '@/api/graphql/links/AuthLink'
 import { GlobalStorage } from '@/storage'
@@ -17,8 +17,8 @@ const mockGlobalStorage = vi.mocked(GlobalStorage)
 
 describe('AuthLink', () => {
   let authLink: AuthLink
-  let mockOperation: Operation
-  let mockForward: NextLink
+  let mockOperation: ApolloLink.Operation
+  let mockForward: ApolloLink.ForwardFunction
   let mockSetContext: MockedFunction<any>
 
   beforeEach(() => {
@@ -151,56 +151,95 @@ describe('AuthLink', () => {
   })
 
   describe('request method without token', () => {
-    it('should return null and log warning when no token exists', () => {
+    it('should return null and log warning when no token exists', async () => {
       mockGlobalStorage.get.mockReturnValue(null)
 
-      const result = authLink.request(mockOperation, mockForward)
+      const observable = authLink.request(mockOperation, mockForward)
 
-      expect(result).toBeNull()
-      expect(mockGlobalStorage.get).toHaveBeenCalledWith('session')
-      expect(console.warn).toHaveBeenCalledWith(
-        'QuilttLink attempted to send an unauthenticated Query'
-      )
-      expect(mockSetContext).not.toHaveBeenCalled()
-      expect(mockForward).not.toHaveBeenCalled()
+      await new Promise<void>((resolve, reject) => {
+        observable.subscribe({
+          error: (error) => {
+            try {
+              expect(error.message).toBe('No authentication token available')
+              expect(mockGlobalStorage.get).toHaveBeenCalledWith('session')
+              expect(console.warn).toHaveBeenCalledWith(
+                'QuilttLink attempted to send an unauthenticated Query'
+              )
+              expect(mockSetContext).not.toHaveBeenCalled()
+              expect(mockForward).not.toHaveBeenCalled()
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          },
+        })
+      })
     })
 
-    it('should return null when token is undefined', () => {
+    it('should return null when token is undefined', async () => {
       mockGlobalStorage.get.mockReturnValue(undefined)
 
-      const result = authLink.request(mockOperation, mockForward)
+      const observable = authLink.request(mockOperation, mockForward)
 
-      expect(result).toBeNull()
-      expect(console.warn).toHaveBeenCalledWith(
-        'QuilttLink attempted to send an unauthenticated Query'
-      )
+      await new Promise<void>((resolve, reject) => {
+        observable.subscribe({
+          error: (error) => {
+            try {
+              expect(error.message).toBe('No authentication token available')
+              expect(console.warn).toHaveBeenCalledWith(
+                'QuilttLink attempted to send an unauthenticated Query'
+              )
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          },
+        })
+      })
     })
 
-    it('should return null when token is empty string', () => {
+    it('should return null when token is empty string', async () => {
       mockGlobalStorage.get.mockReturnValue('')
 
-      const result = authLink.request(mockOperation, mockForward)
+      const observable = authLink.request(mockOperation, mockForward)
 
-      expect(result).toBeNull()
-      expect(console.warn).toHaveBeenCalledWith(
-        'QuilttLink attempted to send an unauthenticated Query'
-      )
+      await new Promise<void>((resolve, reject) => {
+        observable.subscribe({
+          error: (error) => {
+            try {
+              expect(error.message).toBe('No authentication token available')
+              expect(console.warn).toHaveBeenCalledWith(
+                'QuilttLink attempted to send an unauthenticated Query'
+              )
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          },
+        })
+      })
     })
 
-    it('should handle falsy values correctly', () => {
+    it('should handle falsy values correctly', async () => {
       const falsyValues = [null, undefined, '', 0, false]
 
-      falsyValues.forEach((falsyValue) => {
+      for (const falsyValue of falsyValues) {
         vi.clearAllMocks()
         mockGlobalStorage.get.mockReturnValue(falsyValue)
 
-        const result = authLink.request(mockOperation, mockForward)
-
-        expect(result).toBeNull()
-        expect(console.warn).toHaveBeenCalledWith(
-          'QuilttLink attempted to send an unauthenticated Query'
-        )
-      })
+        await new Promise<void>((resolve) => {
+          const observable = authLink.request(mockOperation, mockForward)
+          observable.subscribe({
+            error: (error) => {
+              expect(error.message).toBe('No authentication token available')
+              expect(console.warn).toHaveBeenCalledWith(
+                'QuilttLink attempted to send an unauthenticated Query'
+              )
+              resolve()
+            },
+          })
+        })
+      }
     })
   })
 
@@ -237,7 +276,7 @@ describe('AuthLink', () => {
       })
     })
 
-    it('should prevent unauthenticated requests from proceeding', () => {
+    it('should prevent unauthenticated requests from proceeding', async () => {
       mockGlobalStorage.get.mockReturnValue(null)
 
       // Simulate a protected query
@@ -246,14 +285,25 @@ describe('AuthLink', () => {
         operationName: 'GetSensitiveData',
       }
 
-      const result = authLink.request(protectedOperation, mockForward)
+      const observable = authLink.request(protectedOperation, mockForward)
 
-      expect(result).toBeNull()
-      expect(mockSetContext).not.toHaveBeenCalled()
-      expect(mockForward).not.toHaveBeenCalled()
-      expect(console.warn).toHaveBeenCalledWith(
-        'QuilttLink attempted to send an unauthenticated Query'
-      )
+      await new Promise<void>((resolve, reject) => {
+        observable.subscribe({
+          error: (error) => {
+            try {
+              expect(error.message).toBe('No authentication token available')
+              expect(mockSetContext).not.toHaveBeenCalled()
+              expect(mockForward).not.toHaveBeenCalled()
+              expect(console.warn).toHaveBeenCalledWith(
+                'QuilttLink attempted to send an unauthenticated Query'
+              )
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          },
+        })
+      })
     })
   })
 
@@ -287,10 +337,10 @@ describe('AuthLink', () => {
       expect(result.headers.authorization).toBe(`Bearer ${newToken}`)
     })
 
-    it('should handle session expiry scenarios', () => {
+    it('should handle session expiry scenarios', async () => {
       // First request succeeds
       mockGlobalStorage.get.mockReturnValue('valid-token')
-      let result = authLink.request(mockOperation, mockForward)
+      const result = authLink.request(mockOperation, mockForward)
       expect(result).not.toBeNull()
 
       // Clear mocks
@@ -300,12 +350,23 @@ describe('AuthLink', () => {
 
       // Second request fails due to expired/cleared session
       mockGlobalStorage.get.mockReturnValue(null)
-      result = authLink.request(mockOperation, mockForward)
+      const observable = authLink.request(mockOperation, mockForward)
 
-      expect(result).toBeNull()
-      expect(console.warn).toHaveBeenCalledWith(
-        'QuilttLink attempted to send an unauthenticated Query'
-      )
+      await new Promise<void>((resolve, reject) => {
+        observable.subscribe({
+          error: (error) => {
+            try {
+              expect(error.message).toBe('No authentication token available')
+              expect(console.warn).toHaveBeenCalledWith(
+                'QuilttLink attempted to send an unauthenticated Query'
+              )
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          },
+        })
+      })
     })
   })
 
