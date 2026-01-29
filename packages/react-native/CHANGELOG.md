@@ -1,5 +1,21 @@
 # @quiltt/react-native
 
+## 5.0.0
+
+### Major Changes
+
+- [#394](https://github.com/quiltt/quiltt-js/pull/394) [`2ba646a`](https://github.com/quiltt/quiltt-js/commit/2ba646a2efcb7bef7949dab74778ab1c3babdb84) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Migrate Apollo Client to v4
+
+### Minor Changes
+
+- [#395](https://github.com/quiltt/quiltt-js/pull/395) [`f635500`](https://github.com/quiltt/quiltt-js/commit/f635500f17ab8a76aa0fb87ed7f4971e63a93f12) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Enhanced SDK telemetry with standardized User-Agent headers
+
+### Patch Changes
+
+- Updated dependencies [[`f635500`](https://github.com/quiltt/quiltt-js/commit/f635500f17ab8a76aa0fb87ed7f4971e63a93f12), [`2ba646a`](https://github.com/quiltt/quiltt-js/commit/2ba646a2efcb7bef7949dab74778ab1c3babdb84)]:
+  - @quiltt/react@5.0.0
+  - @quiltt/core@5.0.0
+
 ## 4.5.1
 
 ### Patch Changes
