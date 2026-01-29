@@ -4,13 +4,15 @@ import type { ApolloLink } from '@apollo/client/core'
 import { gql } from '@apollo/client/core'
 import { Observable } from 'rxjs'
 
-import VersionLink from '@/api/graphql/links/VersionLink'
+import { createVersionLink } from '@/api/graphql/links/VersionLink'
 import { version } from '@/configuration'
 
 type NextLink = (operation: ApolloLink.Operation) => Observable<ApolloLink.Result>
 
 describe('VersionLink', () => {
   it('should add Quiltt-Client-Version header to the request', () => {
+    const versionLink = createVersionLink('Test')
+
     const operation = {
       query: gql`
         query Test {
@@ -26,7 +28,7 @@ describe('VersionLink', () => {
 
     const mockForward = vi.fn(() => new Observable((observer) => observer.complete())) as NextLink
 
-    VersionLink.request(operation, mockForward)
+    versionLink.request(operation, mockForward)
 
     expect(operation.setContext).toHaveBeenCalledWith(expect.any(Function))
 
@@ -37,12 +39,15 @@ describe('VersionLink', () => {
     expect(result).toEqual({
       headers: {
         'Quiltt-Client-Version': version,
+        'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
     expect(mockForward).toHaveBeenCalledWith(operation)
   })
 
   it('should preserve existing headers', () => {
+    const versionLink = createVersionLink('Test')
+
     const existingHeaders = {
       Authorization: 'Bearer token123',
       'Content-Type': 'application/json',
@@ -63,7 +68,7 @@ describe('VersionLink', () => {
 
     const mockForward = vi.fn(() => new Observable((observer) => observer.complete())) as NextLink
 
-    VersionLink.request(operation, mockForward)
+    versionLink.request(operation, mockForward)
 
     expect(operation.setContext).toHaveBeenCalledWith(expect.any(Function))
 
@@ -75,11 +80,14 @@ describe('VersionLink', () => {
       headers: {
         ...existingHeaders,
         'Quiltt-Client-Version': version,
+        'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
   })
 
   it('should handle operations with no existing headers', () => {
+    const versionLink = createVersionLink('Test')
+
     const operation = {
       query: gql`
         query Test {
@@ -95,7 +103,7 @@ describe('VersionLink', () => {
 
     const mockForward = vi.fn(() => new Observable((observer) => observer.complete())) as NextLink
 
-    VersionLink.request(operation, mockForward)
+    versionLink.request(operation, mockForward)
 
     expect(operation.setContext).toHaveBeenCalledWith(expect.any(Function))
 
@@ -106,11 +114,14 @@ describe('VersionLink', () => {
     expect(result).toEqual({
       headers: {
         'Quiltt-Client-Version': version,
+        'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
   })
 
   it('should call forward with the operation', () => {
+    const versionLink = createVersionLink('Test')
+
     const operation = {
       query: gql`
         subscription OnUpdate {
@@ -126,7 +137,7 @@ describe('VersionLink', () => {
 
     const mockForward = vi.fn(() => new Observable((observer) => observer.complete())) as NextLink
 
-    const result = VersionLink.request(operation, mockForward)
+    const result = versionLink.request(operation, mockForward)
 
     expect(mockForward).toHaveBeenCalledTimes(1)
     expect(mockForward).toHaveBeenCalledWith(operation)
@@ -134,6 +145,8 @@ describe('VersionLink', () => {
   })
 
   it('should return the observable from forward', () => {
+    const versionLink = createVersionLink('Test')
+
     const operation = {
       query: gql`
         query Test {
@@ -154,7 +167,7 @@ describe('VersionLink', () => {
 
     const mockForward = vi.fn(() => mockObservable) as NextLink
 
-    const result = VersionLink.request(operation, mockForward)
+    const result = versionLink.request(operation, mockForward)
 
     expect(result).toBe(mockObservable)
   })

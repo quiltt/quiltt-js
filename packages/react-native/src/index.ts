@@ -27,10 +27,6 @@ export type {
 // Re-export Apollo Client utilities and hooks (via @quiltt/react)
 // Re-export Quiltt-specific providers and hooks
 export {
-  gql,
-  NetworkStatus,
-  QuilttAuthProvider,
-  QuilttProvider,
   QuilttSettingsProvider,
   useLazyQuery,
   useMutation,
@@ -45,3 +41,4 @@ export {
 } from '@quiltt/react'
 
 export * from './components'
+export * from './providers'

@@ -5,6 +5,7 @@ import { OperationTypeNode } from 'graphql'
 import { Observable } from 'rxjs'
 
 import { InMemoryCache, QuilttClient } from '@/api/graphql/client'
+import { createVersionLink } from '@/api/graphql/links'
 import { TerminatingLink } from '@/api/graphql/links/TerminatingLink'
 import { GlobalStorage } from '@/storage'
 
@@ -43,12 +44,18 @@ describe('QuilttClient', () => {
   })
 
   it('should be instantiated with an InMemoryCache', () => {
-    const client = new QuilttClient({ cache: new InMemoryCache() })
+    const client = new QuilttClient({
+      cache: new InMemoryCache(),
+      versionLink: createVersionLink('Test'),
+    })
     expect(client.cache).toBeInstanceOf(InMemoryCache)
   })
 
   it('should configure links correctly', () => {
-    const client = new QuilttClient({ cache: new InMemoryCache() })
+    const client = new QuilttClient({
+      cache: new InMemoryCache(),
+      versionLink: createVersionLink('Test'),
+    })
     expect(client.link).toBeDefined()
     expect('split' in (client.link as ApolloLink)).toBe(true) // ApolloLink instance method
   })
@@ -59,14 +66,21 @@ describe('QuilttClient', () => {
       return forward(operation)
     })
 
-    const client = new QuilttClient({ cache: new InMemoryCache(), customLinks: [customLink] })
+    const client = new QuilttClient({
+      cache: new InMemoryCache(),
+      customLinks: [customLink],
+      versionLink: createVersionLink('Test'),
+    })
 
     // @todo: test that the custom link is actually used in the link chain
     expect(client.link).toBeInstanceOf(ApolloLink)
   })
 
   it('should handle subscription operations', async () => {
-    const client = new QuilttClient({ cache: new InMemoryCache() })
+    const client = new QuilttClient({
+      cache: new InMemoryCache(),
+      versionLink: createVersionLink('Test'),
+    })
 
     const SUBSCRIPTION = gql`
       subscription OnDataUpdated {
@@ -83,7 +97,10 @@ describe('QuilttClient', () => {
   })
 
   it('should route queries through appropriate links based on operation type', () => {
-    const client = new QuilttClient({ cache: new InMemoryCache() })
+    const client = new QuilttClient({
+      cache: new InMemoryCache(),
+      versionLink: createVersionLink('Test'),
+    })
 
     const QUERY = gql`
       query GetData {
@@ -114,7 +131,10 @@ describe('QuilttClient', () => {
   })
 
   it('should handle batchable context in operations', () => {
-    const client = new QuilttClient({ cache: new InMemoryCache() })
+    const client = new QuilttClient({
+      cache: new InMemoryCache(),
+      versionLink: createVersionLink('Test'),
+    })
 
     const QUERY = gql`
       query GetData {
@@ -155,6 +175,7 @@ describe('QuilttClient', () => {
     it('should enable devtools when explicitly set to true', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
         devtools: { enabled: true },
       })
 
@@ -165,6 +186,7 @@ describe('QuilttClient', () => {
     it('should disable devtools when explicitly set to false', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
         devtools: { enabled: false },
       })
 
@@ -172,7 +194,10 @@ describe('QuilttClient', () => {
     })
 
     it('should use debugging configuration as default for devtools', () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       expect(client).toBeDefined()
       // Default devtools.enabled should match the debugging configuration
@@ -196,6 +221,7 @@ describe('QuilttClient', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
         customLinks: [customLink1, customLink2],
+        versionLink: createVersionLink('Test'),
       })
 
       expect(client.link).toBeInstanceOf(ApolloLink)
@@ -205,6 +231,7 @@ describe('QuilttClient', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
         customLinks: undefined,
+        versionLink: createVersionLink('Test'),
       })
 
       expect(client.link).toBeDefined()
@@ -214,6 +241,7 @@ describe('QuilttClient', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
         customLinks: [],
+        versionLink: createVersionLink('Test'),
       })
 
       expect(client.link).toBeDefined()
@@ -222,7 +250,10 @@ describe('QuilttClient', () => {
 
   describe('operation types', () => {
     it('should correctly identify and route subscription operations', async () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const SUBSCRIPTION = gql`
         subscription OnUserUpdated {
@@ -248,7 +279,10 @@ describe('QuilttClient', () => {
     })
 
     it('should correctly identify non-subscription operations', async () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const QUERY = gql`
         query GetUser {
@@ -269,7 +303,10 @@ describe('QuilttClient', () => {
     })
 
     it('should route batchable operations correctly', async () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const QUERY = gql`
         query GetData {
@@ -293,7 +330,10 @@ describe('QuilttClient', () => {
     })
 
     it('should route non-batchable operations correctly', async () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const QUERY = gql`
         query GetData {
@@ -317,7 +357,10 @@ describe('QuilttClient', () => {
     })
 
     it('should handle query operations', () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const QUERY = gql`
         query GetUser {
@@ -339,7 +382,10 @@ describe('QuilttClient', () => {
     })
 
     it('should handle mutation operations', () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const MUTATION = gql`
         mutation UpdateUser($id: ID!, $name: String!) {
@@ -361,7 +407,10 @@ describe('QuilttClient', () => {
     })
 
     it('should handle operations with fragments', () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const QUERY_WITH_FRAGMENT = gql`
         fragment UserFields on User {
@@ -388,7 +437,10 @@ describe('QuilttClient', () => {
     })
 
     it('should handle operations with multiple definitions', () => {
-      const client = new QuilttClient({ cache: new InMemoryCache() })
+      const client = new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
+      })
 
       const COMPLEX_QUERY = gql`
         fragment UserInfo on User {
@@ -426,6 +478,7 @@ describe('QuilttClient', () => {
     it('should preserve other Apollo Client options', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
         defaultOptions: {
           query: {
             fetchPolicy: 'network-only',
@@ -440,6 +493,7 @@ describe('QuilttClient', () => {
     it('should handle additional Apollo Client options', () => {
       const client = new QuilttClient({
         cache: new InMemoryCache(),
+        versionLink: createVersionLink('Test'),
       } as any)
 
       expect(client).toBeDefined()

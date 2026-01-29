@@ -38,7 +38,8 @@
     "@honeybadger-io/core": "6.7.2",
     "@quiltt/core": "workspace:*",
     "@quiltt/react": "workspace:*",
-    "lodash.debounce": "4.0.8"
+    "lodash.debounce": "4.0.8",
+    "react-native-device-info": "15.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
