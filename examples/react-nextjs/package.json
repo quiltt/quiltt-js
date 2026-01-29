@@ -20,8 +20,8 @@
   "dependencies": {
     "@quiltt/react": "workspace:*",
     "next": "16.1.5",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
@@ -29,7 +29,7 @@
     "@playwright/test": "1.57.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "24.10.9",
-    "@types/react": "19.2.9",
+    "@types/react": "19.2.10",
     "@types/react-dom": "19.2.3",
     "encoding": "0.1.13",
     "postcss": "8.5.6",
