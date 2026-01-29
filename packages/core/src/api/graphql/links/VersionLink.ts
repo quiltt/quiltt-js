@@ -18,8 +18,3 @@ export const createVersionLink = (platformInfo: string) => {
     return forward(operation)
   })
 }
-
-// Keep backward compatibility - default Web platform
-export const VersionLink = createVersionLink('Web')
-
-export default VersionLink

@@ -12,14 +12,13 @@ import {
   HttpLink,
   RetryLink,
   SubscriptionLink,
-  VersionLink,
 } from './links'
 
 export type QuilttClientOptions<T> = Omit<ApolloClientOptions<T>, 'link'> & {
   /** An array of initial links to inject before the default Quiltt Links */
   customLinks?: ApolloLink[]
-  /** Optional platform-specific version link (defaults to Web platform if not provided) */
-  versionLink?: ApolloLink
+  /** Platform-specific version link (required) */
+  versionLink: ApolloLink
 }
 
 export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
@@ -51,7 +50,7 @@ export class QuilttClient extends ApolloClient<NormalizedCacheObject> {
 
     const quilttLink = ApolloLink.from([
       ...initialLinks,
-      options.versionLink || VersionLink,
+      options.versionLink,
       authLink,
       ErrorLink,
       RetryLink,
