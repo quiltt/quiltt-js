@@ -1,3 +1,5 @@
+## Summary
+
 <!--- CHANGELOG_START -->
 ## Features <!--- Delete section if not needed -->
 <!---
@@ -22,6 +24,7 @@ Feature Description...
 -->
 
 <!--- CHANGELOG_END -->
+
 ## Release Checklist
 
 - [ ] **Is commit history clean?**

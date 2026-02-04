@@ -542,4 +542,297 @@ describe('useSession', () => {
       expect(useStorage).toHaveBeenCalledWith('session')
     })
   })
+
+  describe('visibility change handling', () => {
+    let mockAddEventListener: ReturnType<typeof vi.fn>
+    let mockRemoveEventListener: ReturnType<typeof vi.fn>
+    let visibilityChangeHandler: ((event?: Event) => void) | null = null
+
+    beforeEach(() => {
+      mockAddEventListener = vi.fn((event, handler) => {
+        if (event === 'visibilitychange') {
+          visibilityChangeHandler = handler
+        }
+      })
+      mockRemoveEventListener = vi.fn()
+
+      Object.defineProperty(document, 'addEventListener', {
+        value: mockAddEventListener,
+        writable: true,
+      })
+      Object.defineProperty(document, 'removeEventListener', {
+        value: mockRemoveEventListener,
+        writable: true,
+      })
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    afterEach(() => {
+      visibilityChangeHandler = null
+    })
+
+    it('registers visibility change listener for valid token', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const payload = btoa(
+        JSON.stringify({
+          exp: expirationTime,
+          iat: currentTime,
+          iss: 'issuer',
+          sub: 'subject',
+          rol: 'manager',
+          nbf: currentTime,
+          aud: 'audience',
+          jti: 'token-id',
+          cid: 'client-id',
+          oid: 'org-id',
+          eid: 'entity-id',
+          aid: 'app-id',
+          ver: 1,
+        })
+      )
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const token = `${header}.${payload}.signature`
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(mockAddEventListener).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
+    })
+
+    it('clears expired token when tab becomes visible', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const payload = btoa(
+        JSON.stringify({
+          exp: expirationTime,
+          iat: currentTime,
+          iss: 'issuer',
+          sub: 'subject',
+          rol: 'manager',
+          nbf: currentTime,
+          aud: 'audience',
+          jti: 'token-id',
+          cid: 'client-id',
+          oid: 'org-id',
+          eid: 'entity-id',
+          aid: 'app-id',
+          ver: 1,
+        })
+      )
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const token = `${header}.${payload}.signature`
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(visibilityChangeHandler).toBeDefined()
+
+      // Simulate time passing and token expiring
+      vi.spyOn(Date, 'now').mockImplementation(() => (expirationTime + 100) * 1000)
+
+      // Simulate tab becoming visible
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      })
+
+      act(() => {
+        visibilityChangeHandler?.()
+      })
+
+      expect(mockSetStorage).toHaveBeenCalledWith(null)
+    })
+
+    it('does not clear valid token when tab becomes visible', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const payload = btoa(
+        JSON.stringify({
+          exp: expirationTime,
+          iat: currentTime,
+          iss: 'issuer',
+          sub: 'subject',
+          rol: 'manager',
+          nbf: currentTime,
+          aud: 'audience',
+          jti: 'token-id',
+          cid: 'client-id',
+          oid: 'org-id',
+          eid: 'entity-id',
+          aid: 'app-id',
+          ver: 1,
+        })
+      )
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const token = `${header}.${payload}.signature`
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(visibilityChangeHandler).toBeDefined()
+
+      // Token is still valid
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      })
+
+      act(() => {
+        visibilityChangeHandler?.()
+      })
+
+      expect(mockSetStorage).not.toHaveBeenCalled()
+    })
+
+    it('does not check expiration when tab is hidden', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const payload = btoa(
+        JSON.stringify({
+          exp: expirationTime,
+          iat: currentTime,
+          iss: 'issuer',
+          sub: 'subject',
+          rol: 'manager',
+          nbf: currentTime,
+          aud: 'audience',
+          jti: 'token-id',
+          cid: 'client-id',
+          oid: 'org-id',
+          eid: 'entity-id',
+          aid: 'app-id',
+          ver: 1,
+        })
+      )
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const token = `${header}.${payload}.signature`
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      // Simulate time passing and token expiring
+      vi.spyOn(Date, 'now').mockImplementation(() => (expirationTime + 100) * 1000)
+
+      // Tab is hidden
+      Object.defineProperty(document, 'hidden', {
+        value: true,
+        writable: true,
+        configurable: true,
+      })
+
+      act(() => {
+        visibilityChangeHandler?.()
+      })
+
+      // Should not clear even though expired, because tab is hidden
+      expect(mockSetStorage).not.toHaveBeenCalled()
+    })
+
+    it('removes visibility change listener on unmount', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const payload = btoa(
+        JSON.stringify({
+          exp: expirationTime,
+          iat: currentTime,
+          iss: 'issuer',
+          sub: 'subject',
+          rol: 'manager',
+          nbf: currentTime,
+          aud: 'audience',
+          jti: 'token-id',
+          cid: 'client-id',
+          oid: 'org-id',
+          eid: 'entity-id',
+          aid: 'app-id',
+          ver: 1,
+        })
+      )
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
+
+      const token = `${header}.${payload}.signature`
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      const { unmount } = renderHook(() => useSession())
+
+      unmount()
+
+      expect(mockRemoveEventListener).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
+    })
+
+    it('does not register listener when no session exists', () => {
+      const mockSetStorage = vi.fn()
+      vi.mocked(useStorage).mockReturnValue([undefined, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(mockAddEventListener).not.toHaveBeenCalled()
+    })
+  })
 })

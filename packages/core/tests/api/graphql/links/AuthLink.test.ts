@@ -2,6 +2,8 @@ import type { MockedFunction } from 'vitest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ApolloLink } from '@apollo/client/core'
+import { GraphQLError } from 'graphql'
+import { Observable } from 'rxjs'
 
 import AuthLink from '@/api/graphql/links/AuthLink'
 import { GlobalStorage } from '@/storage'
@@ -10,7 +12,13 @@ import { GlobalStorage } from '@/storage'
 vi.mock('@/storage', () => ({
   GlobalStorage: {
     get: vi.fn(),
+    set: vi.fn(),
   },
+}))
+
+// Mock JsonWebTokenParse
+vi.mock('@/JsonWebToken', () => ({
+  JsonWebTokenParse: vi.fn(),
 }))
 
 const mockGlobalStorage = vi.mocked(GlobalStorage)
@@ -151,7 +159,7 @@ describe('AuthLink', () => {
   })
 
   describe('request method without token', () => {
-    it('should return null and log warning when no token exists', async () => {
+    it('should emit GraphQLError when no token exists', async () => {
       mockGlobalStorage.get.mockReturnValue(null)
 
       const observable = authLink.request(mockOperation, mockForward)
@@ -160,11 +168,11 @@ describe('AuthLink', () => {
         observable.subscribe({
           error: (error) => {
             try {
-              expect(error.message).toBe('No authentication token available')
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.message).toBe('No session token available')
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+              expect(error.extensions?.reason).toBe('NO_TOKEN')
               expect(mockGlobalStorage.get).toHaveBeenCalledWith('session')
-              expect(console.warn).toHaveBeenCalledWith(
-                'QuilttLink attempted to send an unauthenticated Query'
-              )
               expect(mockSetContext).not.toHaveBeenCalled()
               expect(mockForward).not.toHaveBeenCalled()
               resolve()
@@ -176,7 +184,7 @@ describe('AuthLink', () => {
       })
     })
 
-    it('should return null when token is undefined', async () => {
+    it('should emit GraphQLError when token is undefined', async () => {
       mockGlobalStorage.get.mockReturnValue(undefined)
 
       const observable = authLink.request(mockOperation, mockForward)
@@ -185,10 +193,9 @@ describe('AuthLink', () => {
         observable.subscribe({
           error: (error) => {
             try {
-              expect(error.message).toBe('No authentication token available')
-              expect(console.warn).toHaveBeenCalledWith(
-                'QuilttLink attempted to send an unauthenticated Query'
-              )
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+              expect(error.extensions?.reason).toBe('NO_TOKEN')
               resolve()
             } catch (e) {
               reject(e)
@@ -198,7 +205,7 @@ describe('AuthLink', () => {
       })
     })
 
-    it('should return null when token is empty string', async () => {
+    it('should emit GraphQLError when token is empty string', async () => {
       mockGlobalStorage.get.mockReturnValue('')
 
       const observable = authLink.request(mockOperation, mockForward)
@@ -207,10 +214,9 @@ describe('AuthLink', () => {
         observable.subscribe({
           error: (error) => {
             try {
-              expect(error.message).toBe('No authentication token available')
-              expect(console.warn).toHaveBeenCalledWith(
-                'QuilttLink attempted to send an unauthenticated Query'
-              )
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+              expect(error.extensions?.reason).toBe('NO_TOKEN')
               resolve()
             } catch (e) {
               reject(e)
@@ -231,10 +237,9 @@ describe('AuthLink', () => {
           const observable = authLink.request(mockOperation, mockForward)
           observable.subscribe({
             error: (error) => {
-              expect(error.message).toBe('No authentication token available')
-              expect(console.warn).toHaveBeenCalledWith(
-                'QuilttLink attempted to send an unauthenticated Query'
-              )
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+              expect(error.extensions?.reason).toBe('NO_TOKEN')
               resolve()
             },
           })
@@ -291,12 +296,11 @@ describe('AuthLink', () => {
         observable.subscribe({
           error: (error) => {
             try {
-              expect(error.message).toBe('No authentication token available')
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.message).toBe('No session token available')
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
               expect(mockSetContext).not.toHaveBeenCalled()
               expect(mockForward).not.toHaveBeenCalled()
-              expect(console.warn).toHaveBeenCalledWith(
-                'QuilttLink attempted to send an unauthenticated Query'
-              )
               resolve()
             } catch (e) {
               reject(e)
@@ -356,10 +360,9 @@ describe('AuthLink', () => {
         observable.subscribe({
           error: (error) => {
             try {
-              expect(error.message).toBe('No authentication token available')
-              expect(console.warn).toHaveBeenCalledWith(
-                'QuilttLink attempted to send an unauthenticated Query'
-              )
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.message).toBe('No session token available')
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
               resolve()
             } catch (e) {
               reject(e)
@@ -400,6 +403,121 @@ describe('AuthLink', () => {
     })
   })
 
+  describe('token expiration handling', () => {
+    it('should emit GraphQLError and clear storage when token is expired', async () => {
+      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const mockToken = 'expired.token.here'
+      const expiredTimestamp = Math.floor(Date.now() / 1000) - 3600 // 1 hour ago
+
+      mockGlobalStorage.get.mockReturnValue(mockToken)
+      vi.mocked(JsonWebTokenParse).mockReturnValue({
+        token: mockToken,
+        claims: {
+          exp: expiredTimestamp,
+          iat: expiredTimestamp - 7200,
+          iss: 'test',
+          sub: 'test',
+          aud: 'test',
+          nbf: expiredTimestamp - 7200,
+          jti: 'test',
+          oid: 'test',
+          eid: 'test',
+          cid: 'test',
+          aid: 'test',
+          ver: 1,
+          rol: 'manager',
+        } as any,
+      })
+
+      const observable = authLink.request(mockOperation, mockForward)
+
+      await new Promise<void>((resolve, reject) => {
+        observable.subscribe({
+          error: (error) => {
+            try {
+              expect(error).toBeInstanceOf(GraphQLError)
+              expect(error.message).toBe('Session token has expired')
+              expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+              expect(error.extensions?.reason).toBe('TOKEN_EXPIRED')
+              expect(error.extensions?.expiredAt).toBe(expiredTimestamp)
+              expect(mockGlobalStorage.set).toHaveBeenCalledWith('session', null)
+              expect(mockSetContext).not.toHaveBeenCalled()
+              expect(mockForward).not.toHaveBeenCalled()
+              resolve()
+            } catch (e) {
+              reject(e)
+            }
+          },
+        })
+      })
+    })
+
+    it('should allow valid non-expired tokens through', async () => {
+      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const mockToken = 'valid.token.here'
+      const futureTimestamp = Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
+
+      mockGlobalStorage.get.mockReturnValue(mockToken)
+      vi.mocked(JsonWebTokenParse).mockReturnValue({
+        token: mockToken,
+        claims: {
+          exp: futureTimestamp,
+          iat: Math.floor(Date.now() / 1000),
+          iss: 'test',
+          sub: 'test',
+          aud: 'test',
+          nbf: Math.floor(Date.now() / 1000),
+          jti: 'test',
+          oid: 'test',
+          eid: 'test',
+          cid: 'test',
+          aid: 'test',
+          ver: 1,
+          rol: 'manager',
+        } as any,
+      })
+
+      const result = authLink.request(mockOperation, mockForward)
+
+      expect(result).not.toBeNull()
+      expect(mockGlobalStorage.set).not.toHaveBeenCalled()
+      expect(mockSetContext).toHaveBeenCalled()
+      expect(mockForward).toHaveBeenCalled()
+    })
+
+    it('should allow tokens without exp claim', async () => {
+      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const mockToken = 'token.without.exp'
+
+      mockGlobalStorage.get.mockReturnValue(mockToken)
+      vi.mocked(JsonWebTokenParse).mockReturnValue({
+        token: mockToken,
+        claims: {
+          exp: undefined as any,
+          iat: Math.floor(Date.now() / 1000),
+          iss: 'test',
+          sub: 'test',
+          aud: 'test',
+          nbf: Math.floor(Date.now() / 1000),
+          jti: 'test',
+          oid: 'test',
+          eid: 'test',
+          cid: 'test',
+          aid: 'test',
+          ver: 1,
+          rol: 'manager',
+        } as any,
+      })
+
+      const result = authLink.request(mockOperation, mockForward)
+
+      expect(result).not.toBeNull()
+      expect(mockGlobalStorage.set).not.toHaveBeenCalled()
+      expect(mockSetContext).toHaveBeenCalled()
+      expect(mockForward).toHaveBeenCalled()
+    })
+  })
+
   describe('inheritance and Apollo Link compatibility', () => {
     it('should extend ApolloLink properly', () => {
       expect(authLink).toBeInstanceOf(AuthLink)
@@ -407,15 +525,18 @@ describe('AuthLink', () => {
     })
 
     it('should return the correct type from forward', () => {
-      const mockToken = 'test-token'
-      const mockObservable = { subscribe: vi.fn() }
+      const mockToken = 'valid.token.here'
+      const mockObservable = new Observable((subscriber) => {
+        subscriber.next({ data: { test: 'value' } })
+        subscriber.complete()
+      })
 
       mockGlobalStorage.get.mockReturnValue(mockToken)
       ;(mockForward as any).mockReturnValue(mockObservable)
 
       const result = authLink.request(mockOperation, mockForward)
 
-      expect(result).toBe(mockObservable)
+      expect(result).toBeInstanceOf(Observable)
       expect(mockForward).toHaveBeenCalledWith(mockOperation)
     })
   })

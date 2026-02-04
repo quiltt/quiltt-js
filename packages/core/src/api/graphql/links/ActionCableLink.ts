@@ -2,10 +2,11 @@
 import { ApolloLink } from '@apollo/client/core'
 import type { Consumer } from '@rails/actioncable'
 import { createConsumer } from '@rails/actioncable'
-import { print } from 'graphql'
+import { GraphQLError, print } from 'graphql'
 import { Observable } from 'rxjs'
 
 import { endpointWebsockets } from '@/configuration'
+import { JsonWebTokenParse } from '@/JsonWebToken'
 import { GlobalStorage } from '@/storage'
 
 type RequestResult = ApolloLink.Result<{ [key: string]: unknown }>
@@ -46,10 +47,38 @@ class ActionCableLink extends ApolloLink {
     const token = GlobalStorage.get('session')
 
     if (!token) {
-      console.warn('QuilttClient attempted to send an unauthenticated Subscription')
       return new Observable((observer) => {
-        observer.error(new Error('No authentication token available'))
+        observer.error(
+          new GraphQLError('No session token available for subscription', {
+            extensions: {
+              code: 'UNAUTHENTICATED',
+              reason: 'NO_TOKEN',
+            },
+          })
+        )
       })
+    }
+
+    // Check if token is expired
+    const jwt = JsonWebTokenParse(token)
+    if (jwt?.claims.exp) {
+      const nowInSeconds = Math.floor(Date.now() / 1000)
+      if (jwt.claims.exp < nowInSeconds) {
+        // Clear expired token - this triggers observers and React re-renders
+        GlobalStorage.set('session', null)
+
+        return new Observable((observer) => {
+          observer.error(
+            new GraphQLError('Session token has expired', {
+              extensions: {
+                code: 'UNAUTHENTICATED',
+                reason: 'TOKEN_EXPIRED',
+                expiredAt: jwt.claims.exp,
+              },
+            })
+          )
+        })
+      }
     }
 
     if (!this.cables[token]) {
