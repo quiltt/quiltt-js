@@ -1,9 +1,7 @@
 import { ApolloLink } from '@apollo/client/core'
-import { GraphQLError } from 'graphql'
 import { Observable } from 'rxjs'
 
-import { JsonWebTokenParse } from '@/JsonWebToken'
-import { GlobalStorage } from '@/storage'
+import { validateSessionToken } from '@/utils/token-validation'
 
 /**
  * Apollo Link that handles authentication and session expiration for GraphQL requests.
@@ -19,42 +17,15 @@ export class AuthLink extends ApolloLink {
     operation: ApolloLink.Operation,
     forward: ApolloLink.ForwardFunction
   ): Observable<ApolloLink.Result> {
-    const token = GlobalStorage.get('session')
+    const validation = validateSessionToken()
 
-    if (!token) {
+    if (!validation.valid) {
       return new Observable((observer) => {
-        observer.error(
-          new GraphQLError('No session token available', {
-            extensions: {
-              code: 'UNAUTHENTICATED',
-              reason: 'NO_TOKEN',
-            },
-          })
-        )
+        observer.error(validation.error)
       })
     }
 
-    // Check if token is expired
-    const jwt = JsonWebTokenParse(token)
-    if (jwt?.claims.exp) {
-      const nowInSeconds = Math.floor(Date.now() / 1000)
-      if (jwt.claims.exp < nowInSeconds) {
-        // Clear expired token - this triggers observers and React re-renders
-        GlobalStorage.set('session', null)
-
-        return new Observable((observer) => {
-          observer.error(
-            new GraphQLError('Session token has expired', {
-              extensions: {
-                code: 'UNAUTHENTICATED',
-                reason: 'TOKEN_EXPIRED',
-                expiredAt: jwt.claims.exp,
-              },
-            })
-          )
-        })
-      }
-    }
+    const { token } = validation
 
     operation.setContext(({ headers = {} }) => ({
       headers: {

@@ -2,12 +2,11 @@
 import { ApolloLink } from '@apollo/client/core'
 import type { Consumer } from '@rails/actioncable'
 import { createConsumer } from '@rails/actioncable'
-import { GraphQLError, print } from 'graphql'
+import { print } from 'graphql'
 import { Observable } from 'rxjs'
 
 import { endpointWebsockets } from '@/configuration'
-import { JsonWebTokenParse } from '@/JsonWebToken'
-import { GlobalStorage } from '@/storage'
+import { validateSessionToken } from '@/utils/token-validation'
 
 type RequestResult = ApolloLink.Result<{ [key: string]: unknown }>
 type ConnectionParams = object | ((operation: ApolloLink.Operation) => object)
@@ -44,42 +43,15 @@ class ActionCableLink extends ApolloLink {
     operation: ApolloLink.Operation,
     _next: ApolloLink.ForwardFunction
   ): Observable<RequestResult> {
-    const token = GlobalStorage.get('session')
+    const validation = validateSessionToken('for subscription')
 
-    if (!token) {
+    if (!validation.valid) {
       return new Observable((observer) => {
-        observer.error(
-          new GraphQLError('No session token available for subscription', {
-            extensions: {
-              code: 'UNAUTHENTICATED',
-              reason: 'NO_TOKEN',
-            },
-          })
-        )
+        observer.error(validation.error)
       })
     }
 
-    // Check if token is expired
-    const jwt = JsonWebTokenParse(token)
-    if (jwt?.claims.exp) {
-      const nowInSeconds = Math.floor(Date.now() / 1000)
-      if (jwt.claims.exp < nowInSeconds) {
-        // Clear expired token - this triggers observers and React re-renders
-        GlobalStorage.set('session', null)
-
-        return new Observable((observer) => {
-          observer.error(
-            new GraphQLError('Session token has expired', {
-              extensions: {
-                code: 'UNAUTHENTICATED',
-                reason: 'TOKEN_EXPIRED',
-                expiredAt: jwt.claims.exp,
-              },
-            })
-          )
-        })
-      }
-    }
+    const { token } = validation
 
     if (!this.cables[token]) {
       this.cables[token] = createConsumer(endpointWebsockets + (token ? `?token=${token}` : ''))
