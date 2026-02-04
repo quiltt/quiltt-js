@@ -1,4 +1,4 @@
-import { name as packageName, version as packageVersion } from '../package.json'
+import { name as packageName, version as packageVersion } from '../../package.json'
 
 const QUILTT_API_INSECURE = (() => {
   try {

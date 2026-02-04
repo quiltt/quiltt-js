@@ -19,6 +19,24 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "require": "./dist/components/index.cjs",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers/index.d.ts",
+      "require": "./dist/providers/index.cjs",
+      "import": "./dist/providers/index.js",
+      "default": "./dist/providers/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "require": "./dist/utils/index.cjs",
+      "import": "./dist/utils/index.js",
+      "default": "./dist/utils/index.js"
     }
   },
   "module": "./dist/index.js",
@@ -44,11 +62,11 @@
     "react-native-device-info": "15.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
+    "@biomejs/biome": "2.3.14",
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
-    "@types/node": "24.10.9",
-    "@types/react": "19.2.10",
+    "@types/node": "24.10.10",
+    "@types/react": "19.2.11",
     "base-64": "1.0.0",
     "bunchee": "6.9.4",
     "react": "19.2.4",

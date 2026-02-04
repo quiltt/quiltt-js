@@ -43,6 +43,12 @@ Launch the [Quiltt Connector](https://www.quiltt.dev/connector) in a webview.
 
 `@quiltt/react-native` does not ship with a navigation library, so you might want to navigate to a new "page" when using QuilttConnector.
 
+For better tree-shaking, you can import components from subpaths:
+
+```tsx
+import { QuilttConnector } from '@quiltt/react-native/components'
+```
+
 #### Example
 
 ```tsx

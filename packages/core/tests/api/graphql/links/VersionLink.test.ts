@@ -5,7 +5,7 @@ import { gql } from '@apollo/client/core'
 import { Observable } from 'rxjs'
 
 import { createVersionLink } from '@/api/graphql/links/VersionLink'
-import { version } from '@/configuration'
+import { version } from '@/config'
 
 type NextLink = (operation: ApolloLink.Operation) => Observable<ApolloLink.Result>
 
