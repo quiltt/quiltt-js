@@ -3,6 +3,15 @@ import { Platform } from 'react-native'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+// Mock react-native-device-info
+vi.mock('react-native-device-info', () => ({
+  default: {
+    getModel: vi.fn(),
+  },
+}))
+
+import DeviceInfo from 'react-native-device-info'
+
 import {
   getDeviceModel,
   getOSInfo,
@@ -13,6 +22,12 @@ import {
 } from '@/utils/telemetry'
 
 describe('React Native Telemetry', () => {
+  beforeEach(() => {
+    // Reset and set default mock behavior
+    vi.mocked(DeviceInfo.getModel).mockClear()
+    vi.mocked(DeviceInfo.getModel).mockResolvedValue('iPhone14,2')
+  })
+
   describe('getReactVersion', () => {
     it('should return React version from React.version', () => {
       const version = getReactVersion()
@@ -112,16 +127,28 @@ describe('React Native Telemetry', () => {
   })
 
   describe('getDeviceModel', () => {
-    it('should return Unknown if react-native-device-info is not installed', async () => {
-      // Default behavior - DeviceInfo is null in test environment
+    it('should return device model from DeviceInfo', async () => {
+      const model = await getDeviceModel()
+      expect(model).toBe('iPhone14,2')
+    })
+
+    it('should return Unknown if getModel returns null or empty', async () => {
+      vi.mocked(DeviceInfo.getModel).mockResolvedValueOnce('')
+
       const model = await getDeviceModel()
       expect(model).toBe('Unknown')
     })
 
-    // NOTE: Lines inside the try-catch block when DeviceInfo is loaded cannot be unit tested
-    // because DeviceInfo is initialized via require() at module load time, before mocks are applied.
-    // These lines are covered by integration tests when react-native-device-info is installed
-    // in the example app, and the implementation is sound - it will work correctly in production.
+    it('should handle errors gracefully', async () => {
+      vi.mocked(DeviceInfo.getModel).mockRejectedValueOnce(new Error('Mock error'))
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const model = await getDeviceModel()
+      expect(model).toBe('Unknown')
+      expect(consoleWarnSpy).toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
+    })
   })
 
   describe('getPlatformInfo', () => {
@@ -151,9 +178,9 @@ describe('React Native Telemetry', () => {
 
     it('should combine all platform information', async () => {
       const platformInfo = await getPlatformInfo()
-      // Device model is Unknown in test environment since DeviceInfo is not loaded
+      // Device model comes from mocked DeviceInfo
       expect(platformInfo).toMatch(
-        /^React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown$/
+        /^React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; iPhone14,2$/
       )
     })
 
@@ -165,7 +192,7 @@ describe('React Native Telemetry', () => {
 
       const platformInfo = await getPlatformInfo()
       expect(platformInfo).toMatch(
-        /^React\/\d+\.\d+\.\d+; ReactNative\/unknown; iOS\/17\.0; Unknown$/
+        /^React\/\d+\.\d+\.\d+; ReactNative\/unknown; iOS\/17\.0; iPhone14,2$/
       )
     })
   })
@@ -197,9 +224,9 @@ describe('React Native Telemetry', () => {
 
     it('should generate correct User-Agent string for iOS', async () => {
       const userAgent = await getUserAgent('4.5.1')
-      // Device model is Unknown in test environment since DeviceInfo is not loaded
+      // Device model comes from mocked DeviceInfo
       expect(userAgent).toMatch(
-        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
+        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; iPhone14,2\)$/
       )
     })
 
@@ -214,21 +241,22 @@ describe('React Native Telemetry', () => {
       })
 
       const userAgent = await getUserAgent('4.5.1')
-      // Device model is Unknown in test environment
       expect(userAgent).toMatch(
-        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Android\/33; Unknown\)$/
+        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Android\/33; iPhone14,2\)$/
       )
     })
 
     it('should handle different SDK versions', async () => {
       const userAgent = await getUserAgent('5.0.0-beta.1')
-      // Device model is Unknown in test environment
       expect(userAgent).toMatch(
-        /^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
+        /^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; iPhone14,2\)$/
       )
     })
 
-    it('should handle Unknown device model', async () => {
+    it('should handle device model errors gracefully', async () => {
+      vi.mocked(DeviceInfo.getModel).mockRejectedValueOnce(new Error('Mock error'))
+      vi.spyOn(console, 'warn').mockImplementation(() => {})
+
       const userAgent = await getUserAgent('4.5.1')
       expect(userAgent).toMatch(
         /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
