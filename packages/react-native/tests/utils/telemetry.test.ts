@@ -303,9 +303,12 @@ describe('React Native Telemetry', () => {
         configurable: true,
       })
 
+      // Override mock to return Android device model
+      vi.mocked(DeviceInfo.getModel).mockResolvedValueOnce('SM-G998B')
+
       const userAgent = await getUserAgent('4.5.1')
       expect(userAgent).toMatch(
-        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Android\/33; iPhone14,2\)$/
+        /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Android\/33; SM-G998B\)$/
       )
     })
 
