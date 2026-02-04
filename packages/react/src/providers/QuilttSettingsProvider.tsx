@@ -1,7 +1,7 @@
 'use client'
 
 import type { FC, PropsWithChildren } from 'react'
-import { useState } from 'react'
+import { useMemo } from 'react'
 
 import { QuilttSettings } from '@/contexts/QuilttSettings'
 
@@ -11,11 +11,10 @@ export type QuilttSettingsProviderProps = PropsWithChildren & {
 }
 
 export const QuilttSettingsProvider: FC<QuilttSettingsProviderProps> = ({ clientId, children }) => {
-  const [_clientId] = useState(clientId)
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({ clientId }), [clientId])
 
-  return (
-    <QuilttSettings.Provider value={{ clientId: _clientId }}>{children}</QuilttSettings.Provider>
-  )
+  return <QuilttSettings.Provider value={contextValue}>{children}</QuilttSettings.Provider>
 }
 
 export default QuilttSettingsProvider
