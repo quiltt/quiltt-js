@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { Claims, JsonWebToken } from '@/JsonWebToken'
-import { JsonWebTokenParse } from '@/JsonWebToken'
+import type { Claims, JsonWebToken } from '@/auth'
+import { JsonWebTokenParse } from '@/auth'
 
 describe('JsonWebTokenParse', () => {
   it('parses a valid JWT token and returns a JsonWebToken object', () => {

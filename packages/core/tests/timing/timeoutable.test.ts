@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Timeoutable } from '@/Timeoutable'
+import { Timeoutable } from '@/timing'
 
 describe('Timeoutable', () => {
   let timeoutable: Timeoutable

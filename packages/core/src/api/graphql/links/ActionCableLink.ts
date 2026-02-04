@@ -5,7 +5,7 @@ import { createConsumer } from '@rails/actioncable'
 import { print } from 'graphql'
 import { Observable } from 'rxjs'
 
-import { endpointWebsockets } from '@/configuration'
+import { endpointWebsockets } from '@/config'
 import { GlobalStorage } from '@/storage'
 
 type RequestResult = ApolloLink.Result<{ [key: string]: unknown }>
