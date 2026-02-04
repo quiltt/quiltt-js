@@ -16,6 +16,7 @@ import {
   getDeviceModel,
   getOSInfo,
   getPlatformInfo,
+  getPlatformInfoSync,
   getReactNativeVersion,
   getReactVersion,
   getUserAgent,
@@ -193,6 +194,68 @@ describe('React Native Telemetry', () => {
       const platformInfo = await getPlatformInfo()
       expect(platformInfo).toMatch(
         /^React\/\d+\.\d+\.\d+; ReactNative\/unknown; iOS\/17\.0; iPhone14,2$/
+      )
+    })
+  })
+
+  describe('getPlatformInfoSync', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+
+      // Mock Platform properties
+      Object.defineProperty(Platform, 'OS', {
+        value: 'ios',
+        configurable: true,
+      })
+      Object.defineProperty(Platform, 'Version', {
+        value: '17.0',
+        configurable: true,
+      })
+      Object.defineProperty(Platform, 'constants', {
+        value: {
+          reactNativeVersion: {
+            major: 0,
+            minor: 73,
+            patch: 0,
+          },
+        },
+        configurable: true,
+      })
+    })
+
+    it('should combine platform information synchronously with Unknown device', () => {
+      const platformInfo = getPlatformInfoSync()
+      // Device model is always 'Unknown' in sync version
+      expect(platformInfo).toMatch(
+        /^React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown$/
+      )
+    })
+
+    it('should work for Android', () => {
+      Object.defineProperty(Platform, 'OS', {
+        value: 'android',
+        configurable: true,
+      })
+      Object.defineProperty(Platform, 'Version', {
+        value: 33,
+        configurable: true,
+      })
+
+      const platformInfo = getPlatformInfoSync()
+      expect(platformInfo).toMatch(
+        /^React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Android\/33; Unknown$/
+      )
+    })
+
+    it('should handle missing React Native version', () => {
+      Object.defineProperty(Platform, 'constants', {
+        value: {},
+        configurable: true,
+      })
+
+      const platformInfo = getPlatformInfoSync()
+      expect(platformInfo).toMatch(
+        /^React\/\d+\.\d+\.\d+; ReactNative\/unknown; iOS\/17\.0; Unknown$/
       )
     })
   })

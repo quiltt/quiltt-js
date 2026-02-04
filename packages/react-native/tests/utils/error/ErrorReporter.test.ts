@@ -83,4 +83,19 @@ describe('ErrorReporter', () => {
       notifyError
     )
   })
+
+  it('handles case when Honeybadger client is not initialized', async () => {
+    const { default: Honeybadger } = await import('@honeybadger-io/react-native')
+
+    // Mock factory to return null to simulate initialization failure
+    vi.mocked(Honeybadger.factory).mockReturnValueOnce(null as any)
+
+    const uninitializedReporter = new ErrorReporter(testUserAgent)
+    const testError = new Error('Test error')
+
+    await uninitializedReporter.notify(testError)
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith('ErrorReporter: Honeybadger client not initialized')
+    expect(mockHoneybadgerClient.notify).not.toHaveBeenCalled()
+  })
 })
