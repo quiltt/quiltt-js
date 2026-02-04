@@ -32,13 +32,13 @@ class ErrorReporter {
 
       // Notify Honeybadger
       await this.client.notify(error)
-
-      // Clear context after reporting
+    } catch (err) {
+      console.error('ErrorReporter: Failed to send error report', err)
+    } finally {
+      // Clear context after reporting (always runs if context was set)
       if (context) {
         this.client.clear()
       }
-    } catch (err) {
-      console.error('ErrorReporter: Failed to send error report', err)
     }
   }
 }

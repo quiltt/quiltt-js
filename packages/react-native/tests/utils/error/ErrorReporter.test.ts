@@ -84,6 +84,21 @@ describe('ErrorReporter', () => {
     )
   })
 
+  it('clears context even when notify fails', async () => {
+    const notifyError = new Error('Notify failed')
+    mockHoneybadgerClient.notify.mockRejectedValueOnce(notifyError)
+
+    const testError = new Error('Test error')
+    const context = { additional: 'info' }
+
+    await errorReporter.notify(testError, context)
+
+    // Context should be set
+    expect(mockHoneybadgerClient.setContext).toHaveBeenCalledWith(context)
+    // Clear should still be called even though notify failed
+    expect(mockHoneybadgerClient.clear).toHaveBeenCalled()
+  })
+
   it('handles case when Honeybadger client is not initialized', async () => {
     const { default: Honeybadger } = await import('@honeybadger-io/react-native')
 
