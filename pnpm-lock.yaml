@@ -315,9 +315,9 @@ importers:
 
   packages/react-native:
     dependencies:
-      '@honeybadger-io/core':
-        specifier: 6.7.2
-        version: 6.7.2
+      '@honeybadger-io/react-native':
+        specifier: 6.4.7
+        version: 6.4.7(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.2.11)(react@19.2.4))(react@19.2.4)
       '@quiltt/core':
         specifier: workspace:*
         version: link:../core
@@ -1653,6 +1653,14 @@ packages:
   '@honeybadger-io/core@6.7.2':
     resolution: {integrity: sha512-4+hyrFI0S/Eni2cBgO40Lqyft5hyNXjgnuh1EbeH457kty8g4YatJYuHBffmrjwLiZHgFbWXRGv7SlG+NehC5Q==}
     engines: {node: '>=14'}
+
+  '@honeybadger-io/react-native@6.4.7':
+    resolution: {integrity: sha512-+PTFC4X5TnPa2eAPW6sAygXs1fDasDRQ4v+GVxaYIwFj4zGDDdTV3n6mJwzl4/0d6gRwUbOPiL6pgnzw+i8wfg==}
+    engines: {node: '>=14'}
+    hasBin: true
+    peerDependencies:
+      react: '>=16.13.1'
+      react-native: '>=0.60.0-rc.0 <1.0.x'
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -8229,6 +8237,12 @@ snapshots:
     dependencies:
       json-nd: 1.0.0
       stacktrace-parser: 0.1.11
+
+  '@honeybadger-io/react-native@6.4.7(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.2.11)(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@honeybadger-io/core': 6.7.2
+      react: 19.2.4
+      react-native: 0.81.5(@babel/core@7.29.0)(@types/react@19.2.11)(react@19.2.4)
 
   '@img/colour@1.0.0':
     optional: true

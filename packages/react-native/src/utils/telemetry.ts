@@ -2,14 +2,7 @@ import React from 'react'
 import { Platform } from 'react-native'
 
 import { getUserAgent as coreGetUserAgent } from '@quiltt/core'
-
-// Optionally import react-native-device-info if available
-let DeviceInfo: any = null
-try {
-  DeviceInfo = require('react-native-device-info').default
-} catch {
-  // react-native-device-info is not installed - will use fallback
-}
+import DeviceInfo from 'react-native-device-info'
 
 /**
  * Gets the React version from the runtime
@@ -57,13 +50,8 @@ export const getOSInfo = (): string => {
 
 /**
  * Gets device model information
- * Falls back to 'Unknown' if react-native-device-info is not installed
  */
 export const getDeviceModel = async (): Promise<string> => {
-  if (!DeviceInfo) {
-    return 'Unknown'
-  }
-
   try {
     const model = await DeviceInfo.getModel()
     return model || 'Unknown'
