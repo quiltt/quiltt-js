@@ -25,6 +25,31 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./hooks": {
+      "require": "./dist/hooks/index.cjs",
+      "import": "./dist/hooks/index.js",
+      "types": "./dist/hooks/index.d.ts"
+    },
+    "./components": {
+      "require": "./dist/components/index.cjs",
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./providers": {
+      "require": "./dist/providers/index.cjs",
+      "import": "./dist/providers/index.js",
+      "types": "./dist/providers/index.d.ts"
+    },
+    "./contexts": {
+      "require": "./dist/contexts/index.cjs",
+      "import": "./dist/contexts/index.js",
+      "types": "./dist/contexts/index.d.ts"
+    },
+    "./utils": {
+      "require": "./dist/utils/index.cjs",
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
     }
   },
   "types": "./dist/index.d.ts",

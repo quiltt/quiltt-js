@@ -19,6 +19,24 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "require": "./dist/components/index.cjs",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers/index.d.ts",
+      "require": "./dist/providers/index.cjs",
+      "import": "./dist/providers/index.js",
+      "default": "./dist/providers/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "require": "./dist/utils/index.cjs",
+      "import": "./dist/utils/index.js",
+      "default": "./dist/utils/index.js"
     }
   },
   "module": "./dist/index.js",

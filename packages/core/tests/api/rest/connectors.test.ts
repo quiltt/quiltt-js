@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConnectorsAPI } from '@/api/rest/connectors'
 import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
-import { version } from '@/configuration'
+import { version } from '@/config'
 import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 // Mock fetchWithRetry
@@ -12,7 +12,7 @@ vi.mock('@/api/rest/fetchWithRetry', () => ({
 }))
 
 // Mock configuration with complete exports to avoid import errors
-vi.mock('@/configuration', async (importOriginal) => {
+vi.mock('@/config', async (importOriginal) => {
   const actual = (await importOriginal()) as any
   return {
     ...actual,

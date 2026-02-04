@@ -49,11 +49,22 @@ await auth.revoke('{SESSION_TOKEN}')
 
 ## Modules
 
-### JsonWebToken
+You can import from the main entry or use subpath imports for better tree-shaking.
+
+```ts
+import { AuthAPI } from '@quiltt/core'
+import { JsonWebTokenParse } from '@quiltt/core/auth'
+import { Observable } from '@quiltt/core/observables'
+import { Timeoutable } from '@quiltt/core/timing'
+import { Storage } from '@quiltt/core/storage'
+import { endpointAuth } from '@quiltt/core/config'
+```
+
+### Auth (JsonWebToken)
 
 The `JsonWebToken` module provides functionality related to JSON Web Tokens (JWT). It includes methods for generating, signing, and verifying JWTs. With this module, you can easily handle authentication and secure communication in your applications.
 
-### Observable
+### Observables
 
 The `Observable` module implements the Observable pattern, allowing you to create and manage observable streams of data. It provides a powerful toolset for working with asynchronous events and data streams, enabling you to build reactive and event-driven applications.
 
@@ -61,7 +72,7 @@ The `Observable` module implements the Observable pattern, allowing you to creat
 
 The `Storage` module offers convenient wrappers and abstractions for working with different types of storage, such as local storage or session storage. It simplifies the process of storing and retrieving data in a secure and efficient manner.
 
-### Timeoutable
+### Timing
 
 The `Timeoutable` module provides utilities for handling timeouts and delays in your application. It allows you to schedule and manage timeouts, ensuring precise control over time-sensitive operations.
 
@@ -76,15 +87,11 @@ The `types` module provides a collection of TypeScript type definitions and inte
 ## Usage
 
 ```javascript
-import { 
-  AuthAPI,
-  JsonWebToken, 
-  Observable, 
-  Storage,
-  Timeoutable, 
-  ConnectorSDK,
-  ConnectorSDKEventType
-} from '@quiltt/core'
+import { AuthAPI } from '@quiltt/core'
+import { JsonWebTokenParse } from '@quiltt/core/auth'
+import { Observable } from '@quiltt/core/observables'
+import { Storage } from '@quiltt/core/storage'
+import { Timeoutable } from '@quiltt/core/timing'
 
 // Example usage of the library modules
 // ...

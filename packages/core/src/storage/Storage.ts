@@ -1,4 +1,4 @@
-import type { Observer } from '@/Observable'
+import type { Observer } from '@/observables'
 import { LocalStorage } from '@/storage/Local'
 import { MemoryStorage } from '@/storage/Memory'
 import type { Maybe } from '@/types'

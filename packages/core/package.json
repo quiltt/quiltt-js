@@ -23,6 +23,61 @@
       "require": "./dist/index.cjs",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./api": {
+      "require": "./dist/api/index.cjs",
+      "import": "./dist/api/index.js",
+      "types": "./dist/api/index.d.ts"
+    },
+    "./api/browser": {
+      "require": "./dist/api/browser.cjs",
+      "import": "./dist/api/browser.js",
+      "types": "./dist/api/browser.d.ts"
+    },
+    "./api/graphql": {
+      "require": "./dist/api/graphql/index.cjs",
+      "import": "./dist/api/graphql/index.js",
+      "types": "./dist/api/graphql/index.d.ts"
+    },
+    "./api/rest": {
+      "require": "./dist/api/rest/index.cjs",
+      "import": "./dist/api/rest/index.js",
+      "types": "./dist/api/rest/index.d.ts"
+    },
+    "./auth": {
+      "require": "./dist/auth/index.cjs",
+      "import": "./dist/auth/index.js",
+      "types": "./dist/auth/index.d.ts"
+    },
+    "./config": {
+      "require": "./dist/config/index.cjs",
+      "import": "./dist/config/index.js",
+      "types": "./dist/config/index.d.ts"
+    },
+    "./observables": {
+      "require": "./dist/observables/index.cjs",
+      "import": "./dist/observables/index.js",
+      "types": "./dist/observables/index.d.ts"
+    },
+    "./storage": {
+      "require": "./dist/storage/index.cjs",
+      "import": "./dist/storage/index.js",
+      "types": "./dist/storage/index.d.ts"
+    },
+    "./timing": {
+      "require": "./dist/timing/index.cjs",
+      "import": "./dist/timing/index.js",
+      "types": "./dist/timing/index.d.ts"
+    },
+    "./types": {
+      "require": "./dist/types.cjs",
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./utils": {
+      "require": "./dist/utils/index.cjs",
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
     }
   },
   "types": "./dist/index.d.ts",

@@ -1,4 +1,4 @@
-import type { Maybe } from './types'
+import type { Maybe } from '../types'
 
 export type RegisteredClaims = {
   iss: string // (issuer): Issuer of the JWT

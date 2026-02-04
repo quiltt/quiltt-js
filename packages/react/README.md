@@ -37,6 +37,12 @@ The `@quiltt/react` library ships with `@quiltt/core`, which provides an API cli
 
 All components automatically handle Session token management under the hood, using the `useQuilttSession` hook.
 
+For better tree-shaking, you can import components from subpaths:
+
+```tsx
+import { QuilttButton } from '@quiltt/react/components'
+```
+
 To pre-authenticate the Connector for one of your user profiles, make sure to set your token using the `QuilttProvider` provider or the `useQuilttSession` hook. See the [Authentication guides](https://www.quiltt.dev/authentication) for how to generate a Session.
 
 ### QuilttButton
@@ -127,6 +133,12 @@ export default Layout
 ## React Hooks
 
 For maximum control over the lifecycle of Quiltt Connector and Quiltt Sessions, you can also use hooks directly.
+
+For better tree-shaking, you can import hooks from subpaths:
+
+```tsx
+import { useQuilttSession } from '@quiltt/react/hooks'
+```
 
 ### useQuilttConnector
 

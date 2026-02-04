@@ -1,4 +1,4 @@
-import { endpointAuth } from '@/configuration'
+import { endpointAuth } from '@/config'
 
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'

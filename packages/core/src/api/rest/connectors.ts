@@ -1,4 +1,4 @@
-import { endpointRest, version } from '@/configuration'
+import { endpointRest, version } from '@/config'
 import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 import type { FetchResponse } from './fetchWithRetry'

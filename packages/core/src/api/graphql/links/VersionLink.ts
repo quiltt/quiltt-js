@@ -1,6 +1,6 @@
 import { ApolloLink } from '@apollo/client/core'
 
-import { version } from '@/configuration'
+import { version } from '@/config'
 import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 export const createVersionLink = (platformInfo: string) => {

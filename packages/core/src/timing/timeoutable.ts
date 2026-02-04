@@ -1,4 +1,4 @@
-import type { Observer } from './Observable'
+import type { Observer } from '../observables'
 
 /**
  * This is designed to support singletons to timeouts that can broadcast
