@@ -14,7 +14,7 @@ vi.mock('@/storage', () => ({
 }))
 
 // Mock JsonWebTokenParse
-vi.mock('@/JsonWebToken', () => ({
+vi.mock('@/auth/json-web-token', () => ({
   JsonWebTokenParse: vi.fn(),
 }))
 
@@ -99,7 +99,7 @@ describe('validateSessionToken', () => {
 
   describe('when token is expired', () => {
     it('should return invalid result and clear storage when token is expired', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'expired.token.here'
       const expiredTimestamp = Math.floor(Date.now() / 1000) - 3600 // 1 hour ago
 
@@ -137,7 +137,7 @@ describe('validateSessionToken', () => {
     })
 
     it('should clear storage exactly once when token is expired', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'expired.token.here'
       const expiredTimestamp = Math.floor(Date.now() / 1000) - 1 // 1 second ago
 
@@ -156,7 +156,7 @@ describe('validateSessionToken', () => {
     })
 
     it('should handle token expired exactly at current time', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'just.expired.token'
       const currentTimestamp = Math.floor(Date.now() / 1000)
 
@@ -180,7 +180,7 @@ describe('validateSessionToken', () => {
 
   describe('when token is valid', () => {
     it('should return valid result with token when token is not expired', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'valid.token.here'
       const futureTimestamp = Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
 
@@ -214,7 +214,7 @@ describe('validateSessionToken', () => {
     })
 
     it('should return valid result when token has no exp claim', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'token.without.exp'
 
       mockGlobalStorage.get.mockReturnValue(mockToken)
@@ -239,7 +239,7 @@ describe('validateSessionToken', () => {
     })
 
     it('should return valid result when JsonWebTokenParse returns null', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'malformed.token'
 
       mockGlobalStorage.get.mockReturnValue(mockToken)
@@ -255,7 +255,7 @@ describe('validateSessionToken', () => {
     })
 
     it('should not modify storage when token is valid', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'valid.token'
       const futureTimestamp = Math.floor(Date.now() / 1000) + 7200 // 2 hours from now
 
@@ -275,7 +275,7 @@ describe('validateSessionToken', () => {
 
   describe('edge cases', () => {
     it('should handle token that expires in the next second', async () => {
-      const { JsonWebTokenParse } = await import('@/JsonWebToken')
+      const { JsonWebTokenParse } = await import('@/auth/json-web-token')
       const mockToken = 'about.to.expire'
       const nextSecond = Math.floor(Date.now() / 1000) + 1
 

@@ -5,7 +5,7 @@ import { createConsumer } from '@rails/actioncable'
 import { print } from 'graphql'
 import { Observable } from 'rxjs'
 
-import { endpointWebsockets } from '@/configuration'
+import { endpointWebsockets } from '@/config'
 import { validateSessionToken } from '@/utils/token-validation'
 
 type RequestResult = ApolloLink.Result<{ [key: string]: unknown }>

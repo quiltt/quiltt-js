@@ -14,7 +14,7 @@ vi.mock('@/storage', () => ({
   },
 }))
 
-vi.mock('@/JsonWebToken', () => ({
+vi.mock('@/auth/json-web-token', () => ({
   JsonWebTokenParse: vi.fn(),
 }))
 
@@ -1369,7 +1369,7 @@ describe('ActionCableLink', () => {
   })
 
   it('should emit GraphQLError and clear storage when token is expired', async () => {
-    const { JsonWebTokenParse } = await import('@/JsonWebToken')
+    const { JsonWebTokenParse } = await import('@/auth/json-web-token')
     const mockToken = 'expired.token.here'
     const expiredTimestamp = Math.floor(Date.now() / 1000) - 3600 // 1 hour ago
 
@@ -1433,7 +1433,7 @@ describe('ActionCableLink', () => {
   })
 
   it('should allow valid non-expired tokens through', async () => {
-    const { JsonWebTokenParse } = await import('@/JsonWebToken')
+    const { JsonWebTokenParse } = await import('@/auth/json-web-token')
     const mockToken = 'valid.token.here'
     const futureTimestamp = Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
 

@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql'
 
-import { JsonWebTokenParse } from '@/JsonWebToken'
+import { JsonWebTokenParse } from '@/auth/json-web-token'
 import { GlobalStorage } from '@/storage'
 
 /**
