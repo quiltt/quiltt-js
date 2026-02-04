@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-import type { Maybe } from './types'
+import type { Maybe } from '../types'
 
 export type Observer<T> = Dispatch<SetStateAction<Maybe<T> | undefined>>
 

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { name as packageName, version as packageVersion } from '../package.json'
+import { name as packageName, version as packageVersion } from '../../package.json'
 
 // Save the original environment variables
 const originalEnv = process.env
@@ -16,7 +16,7 @@ const loadConfig = async (envConfig: Record<string, string | undefined>) => {
   }
 
   // Dynamic import the configuration module
-  return import('@/configuration')
+  return import('@/config')
 }
 
 // Reset the environment variables before each test

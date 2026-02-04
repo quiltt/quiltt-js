@@ -1,7 +1,7 @@
 import { ApolloClient, ApolloLink } from '@apollo/client/core'
 import type { DefinitionNode, OperationDefinitionNode } from 'graphql'
 
-import { debugging } from '@/configuration'
+import { debugging } from '@/config'
 
 import {
   AuthLink,
