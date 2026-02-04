@@ -55,7 +55,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@honeybadger-io/core": "6.7.2",
+    "@honeybadger-io/react-native": "6.4.7",
     "@quiltt/core": "workspace:*",
     "@quiltt/react": "workspace:*",
     "lodash.debounce": "4.0.8",

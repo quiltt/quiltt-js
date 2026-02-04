@@ -34,4 +34,29 @@ describe('QuilttSettingsProvider', () => {
     const element = getByTestId('test')
     expect(element.textContent).toContain(clientId)
   })
+
+  it('updates context when clientId prop changes', () => {
+    const initialClientId = 'initial-client-id'
+    const updatedClientId = 'updated-client-id'
+
+    const { getByTestId, rerender } = render(
+      <QuilttSettingsProvider clientId={initialClientId}>
+        <TestComponent />
+      </QuilttSettingsProvider>
+    )
+
+    const element = getByTestId('test')
+    expect(element.textContent).toContain(initialClientId)
+
+    // Update the clientId prop
+    rerender(
+      <QuilttSettingsProvider clientId={updatedClientId}>
+        <TestComponent />
+      </QuilttSettingsProvider>
+    )
+
+    // Context should reflect the updated clientId
+    expect(element.textContent).toContain(updatedClientId)
+    expect(element.textContent).not.toContain(initialClientId)
+  })
 })

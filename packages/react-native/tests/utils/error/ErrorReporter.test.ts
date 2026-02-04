@@ -4,143 +4,113 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ErrorReporter } from '@/utils/error/ErrorReporter'
 import { version } from '@/version'
 
-// Mock fetch in the global environment
-global.fetch = vi.fn()
-
-// Helper to create a mock Response
-const createMockResponse = (status: number, body: any): Response => {
-  return new Response(JSON.stringify(body), {
-    status: status,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+// Create mock client object
+const mockHoneybadgerClient = {
+  setContext: vi.fn(),
+  notify: vi.fn().mockResolvedValue(undefined),
+  clear: vi.fn(),
 }
+
+// Mock @honeybadger-io/react-native module
+vi.mock('@honeybadger-io/react-native', () => ({
+  default: {
+    factory: vi.fn(() => mockHoneybadgerClient),
+  },
+}))
 
 describe('ErrorReporter', () => {
   let errorReporter: ErrorReporter
-  let consoleInfoSpy: MockInstance
   let consoleWarnSpy: MockInstance
   let consoleErrorSpy: MockInstance
   const testUserAgent = `Quiltt/${version} (React/18.2.0; ReactNative/0.73.0; iOS/17.0; iPhone14,2)`
 
   beforeEach(() => {
-    vi.resetAllMocks()
+    vi.clearAllMocks()
     errorReporter = new ErrorReporter(testUserAgent)
 
-    consoleInfoSpy = vi.spyOn(console, 'info')
     consoleWarnSpy = vi.spyOn(console, 'warn')
     consoleErrorSpy = vi.spyOn(console, 'error')
   })
 
   afterEach(() => {
-    // Clear spies if needed after each test
-    consoleInfoSpy.mockRestore()
     consoleWarnSpy.mockRestore()
     consoleErrorSpy.mockRestore()
   })
 
-  it('initializes with correct properties', async () => {
-    const error = new Error('Test')
-    const payload = await errorReporter.buildPayload(error)
+  it('initializes with correct Honeybadger configuration', async () => {
+    const { default: Honeybadger } = await import('@honeybadger-io/react-native')
 
-    expect(payload).toMatchObject({
-      notifier: {
-        name: 'Quiltt React Native SDK Reporter',
-        version: version.toString(),
-        url: 'https://www.quiltt.dev/connector/sdk/react-native',
-      },
-      server: {
-        environment_name: testUserAgent,
-      },
+    expect(Honeybadger.factory).toHaveBeenCalledWith({
+      apiKey: '',
+      environment: testUserAgent,
+      revision: version,
+      reportData: true,
+      enableUncaught: false,
+      enableUnhandledRejection: false,
     })
+  })
 
-    const testError = new Error('Test')
-    const mockResponse = createMockResponse(201, { id: '12345' })
-    vi.mocked(global.fetch).mockResolvedValue(mockResponse)
+  it('sends an error report with context correctly', async () => {
+    const testError = new Error('Test error')
+    const context = { additional: 'info', url: 'https://example.com' }
+
+    await errorReporter.notify(testError, context)
+
+    expect(mockHoneybadgerClient.setContext).toHaveBeenCalledWith(context)
+    expect(mockHoneybadgerClient.notify).toHaveBeenCalledWith(testError)
+    expect(mockHoneybadgerClient.clear).toHaveBeenCalled()
+  })
+
+  it('sends an error report without context correctly', async () => {
+    const testError = new Error('Test error')
 
     await errorReporter.notify(testError)
 
-    expect(fetch).toHaveBeenCalledWith(
-      'https://api.honeybadger.io/v1/notices',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'User-Agent': testUserAgent,
-          'X-API-Key': '',
-        }),
-      })
+    expect(mockHoneybadgerClient.setContext).not.toHaveBeenCalled()
+    expect(mockHoneybadgerClient.notify).toHaveBeenCalledWith(testError)
+    expect(mockHoneybadgerClient.clear).not.toHaveBeenCalled()
+  })
+
+  it('handles errors during error reporting gracefully', async () => {
+    const notifyError = new Error('Notify failed')
+    mockHoneybadgerClient.notify.mockRejectedValueOnce(notifyError)
+
+    const testError = new Error('Test error')
+    await errorReporter.notify(testError)
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'ErrorReporter: Failed to send error report',
+      notifyError
     )
   })
 
-  it('builds the correct payload for an error', async () => {
+  it('clears context even when notify fails', async () => {
+    const notifyError = new Error('Notify failed')
+    mockHoneybadgerClient.notify.mockRejectedValueOnce(notifyError)
+
     const testError = new Error('Test error')
     const context = { additional: 'info' }
-    const payload = await errorReporter.buildPayload(testError, context)
 
-    expect(payload?.notifier).toBeDefined()
-    expect(payload?.error?.class).toBe('Error')
-    expect(payload?.error?.message).toBe('Test error')
-    expect(payload?.request?.context).toEqual(context)
+    await errorReporter.notify(testError, context)
+
+    // Context should be set
+    expect(mockHoneybadgerClient.setContext).toHaveBeenCalledWith(context)
+    // Clear should still be called even though notify failed
+    expect(mockHoneybadgerClient.clear).toHaveBeenCalled()
   })
 
-  it('sends an error report correctly', async () => {
-    const mockResponse = createMockResponse(201, { id: '12345' })
+  it('handles case when Honeybadger client is not initialized', async () => {
+    const { default: Honeybadger } = await import('@honeybadger-io/react-native')
 
-    vi.mocked(global.fetch).mockResolvedValue(mockResponse)
+    // Mock factory to return null to simulate initialization failure
+    vi.mocked(Honeybadger.factory).mockReturnValueOnce(null as any)
 
+    const uninitializedReporter = new ErrorReporter(testUserAgent)
     const testError = new Error('Test error')
-    await errorReporter.notify(testError)
 
-    expect(fetch).toHaveBeenCalledWith(
-      'https://api.honeybadger.io/v1/notices',
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.any(Object),
-        body: expect.any(String),
-      })
-    )
-  })
+    await uninitializedReporter.notify(testError)
 
-  it('logs an info message when the error report is successfully sent', async () => {
-    try {
-      const mockResponse = createMockResponse(201, { id: '12345' })
-      vi.mocked(global.fetch).mockResolvedValue(mockResponse)
-
-      const testError = new Error('Test error')
-      await errorReporter.notify(testError) // Ensure this await is effectively waiting for completion
-    } catch (_error) {
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        'Error report sent ⚡ https://app.honeybadger.io/notice/12345'
-      )
-    }
-  })
-
-  it('warns if the error report fails to send', async () => {
-    try {
-      const mockResponse = createMockResponse(500, { error: 'Server Error' })
-      vi.mocked(global.fetch).mockResolvedValue(mockResponse)
-
-      const testError = new Error('Test error')
-      await errorReporter.notify(testError)
-    } catch (_error) {
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Error report failed: unknown response from server. code=500'
-      )
-    }
-  })
-
-  it('handles fetch throwing an exception', async () => {
-    try {
-      const error = new Error('Network failure')
-      vi.mocked(global.fetch).mockRejectedValue(error)
-    } catch (error) {
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Network error occurred while sending error report:',
-        error
-      )
-    }
+    expect(consoleWarnSpy).toHaveBeenCalledWith('ErrorReporter: Honeybadger client not initialized')
+    expect(mockHoneybadgerClient.notify).not.toHaveBeenCalled()
   })
 })

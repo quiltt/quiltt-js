@@ -1,4 +1,5 @@
 import type { FC } from 'react'
+import { useMemo } from 'react'
 
 import { QuilttProviderRender } from '@/contexts/QuilttProviderRender'
 
@@ -20,8 +21,11 @@ export const QuilttProvider: FC<QuilttProviderProps> = ({
   // Will produce false positives for valid patterns like: <QuilttProvider><MyPage /></QuilttProvider>
   // where MyPage renders SDK components (which is correct usage).
   // The flag-based approach is simple but imprecise - a proper solution would require render stack tracking.
+  // Memoize context value to prevent unnecessary re-renders
+  const renderContextValue = useMemo(() => ({ isRenderingProvider: true }), [])
+
   return (
-    <QuilttProviderRender.Provider value={{ isRenderingProvider: true }}>
+    <QuilttProviderRender.Provider value={renderContextValue}>
       <QuilttSettingsProvider clientId={clientId}>
         <QuilttAuthProvider token={token} graphqlClient={graphqlClient}>
           {children}
