@@ -22,34 +22,34 @@
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.cjs",
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.js"
     },
     "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
       "require": "./dist/hooks/index.cjs",
-      "import": "./dist/hooks/index.js",
-      "types": "./dist/hooks/index.d.ts"
+      "import": "./dist/hooks/index.js"
     },
     "./components": {
+      "types": "./dist/components/index.d.ts",
       "require": "./dist/components/index.cjs",
-      "import": "./dist/components/index.js",
-      "types": "./dist/components/index.d.ts"
+      "import": "./dist/components/index.js"
     },
     "./providers": {
+      "types": "./dist/providers/index.d.ts",
       "require": "./dist/providers/index.cjs",
-      "import": "./dist/providers/index.js",
-      "types": "./dist/providers/index.d.ts"
+      "import": "./dist/providers/index.js"
     },
     "./contexts": {
+      "types": "./dist/contexts/index.d.ts",
       "require": "./dist/contexts/index.cjs",
-      "import": "./dist/contexts/index.js",
-      "types": "./dist/contexts/index.d.ts"
+      "import": "./dist/contexts/index.js"
     },
     "./utils": {
+      "types": "./dist/utils/index.d.ts",
       "require": "./dist/utils/index.cjs",
-      "import": "./dist/utils/index.js",
-      "types": "./dist/utils/index.d.ts"
+      "import": "./dist/utils/index.js"
     }
   },
   "types": "./dist/index.d.ts",
