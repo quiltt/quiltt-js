@@ -19,10 +19,10 @@ vi.mock('@/hooks/useQuilttSession', () => ({
 }))
 
 // Mock the useScript hook
-const mockUseScript = vi.fn((_url?: string) => 'ready')
+const mockUseScript = vi.fn((_url?: string, _options?: { nonce?: string }) => 'ready')
 
 vi.mock('@/hooks/useScript', () => ({
-  useScript: (url: string) => mockUseScript(url),
+  useScript: (url: string, options?: { nonce?: string }) => mockUseScript(url, options),
 }))
 
 // Mock the @quiltt/core module
@@ -751,9 +751,10 @@ describe('useQuilttConnector', () => {
         wrapper: Wrapper,
       })
 
-      // useScript is called with just the URL string
+      // useScript is called with the URL string and options
       expect(mockUseScript).toHaveBeenCalledWith(
-        expect.stringContaining('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt')
+        expect.stringContaining('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt'),
+        { nonce: undefined }
       )
 
       unmount()
@@ -765,8 +766,99 @@ describe('useQuilttConnector', () => {
       })
 
       expect(mockUseScript).toHaveBeenCalled()
-      const callArg = mockUseScript.mock.calls[0][0]
-      expect(callArg).toContain('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt')
+      const callArgs = mockUseScript.mock.calls[0]
+      expect(callArgs[0]).toContain('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt')
+      expect(callArgs[1]).toEqual({ nonce: undefined })
+
+      unmount()
+    })
+
+    it('should pass nonce option to useScript when provided', () => {
+      const { unmount } = renderHook(
+        () => useQuilttConnector('mockConnectorId', { nonce: 'test-nonce' }),
+        {
+          wrapper: Wrapper,
+        }
+      )
+
+      expect(mockUseScript).toHaveBeenCalledWith(
+        expect.stringContaining('https://cdn.quiltt.io/v1/connector.js?agent=Quiltt'),
+        { nonce: 'test-nonce' }
+      )
+
+      unmount()
+    })
+  })
+
+  describe('Stable Options', () => {
+    it('should not recreate connector when options stay the same', async () => {
+      const { rerender } = renderHook(
+        ({ connectionId, institution }) =>
+          useQuilttConnector('mockConnectorId', { connectionId, institution }),
+        {
+          wrapper: Wrapper,
+          initialProps: { connectionId: 'conn-123', institution: 'chase' },
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
+          connectionId: 'conn-123',
+        })
+      })
+
+      vi.clearAllMocks()
+
+      rerender({ connectionId: 'conn-123', institution: 'chase' })
+
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(globalQuiltt.connect).not.toHaveBeenCalled()
+      expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Callback Pass-through', () => {
+    it('should call onLoad and exit callbacks with metadata', async () => {
+      const onLoad = vi.fn()
+      const onExitSuccess = vi.fn()
+      const onExitAbort = vi.fn()
+      const onExitError = vi.fn()
+
+      const { unmount } = renderHook(
+        () =>
+          useQuilttConnector('mockConnectorId', {
+            onLoad,
+            onExitSuccess,
+            onExitAbort,
+            onExitError,
+          }),
+        {
+          wrapper: Wrapper,
+        }
+      )
+
+      await waitFor(() => {
+        expect(mockConnector.onLoad).toHaveBeenCalled()
+        expect(mockConnector.onExitSuccess).toHaveBeenCalled()
+        expect(mockConnector.onExitAbort).toHaveBeenCalled()
+        expect(mockConnector.onExitError).toHaveBeenCalled()
+      })
+
+      const internalOnLoad = mockConnector.onLoad.mock.calls[0][0]
+      const internalOnExitSuccess = mockConnector.onExitSuccess.mock.calls[0][0]
+      const internalOnExitAbort = mockConnector.onExitAbort.mock.calls[0][0]
+      const internalOnExitError = mockConnector.onExitError.mock.calls[0][0]
+
+      internalOnLoad({ ready: true })
+      internalOnExitSuccess({ success: true })
+      internalOnExitAbort({ aborted: true })
+      internalOnExitError({ error: 'bad' })
+
+      expect(onLoad).toHaveBeenCalledWith({ ready: true })
+      expect(onExitSuccess).toHaveBeenCalledWith({ success: true })
+      expect(onExitAbort).toHaveBeenCalledWith({ aborted: true })
+      expect(onExitError).toHaveBeenCalledWith({ error: 'bad' })
 
       unmount()
     })
