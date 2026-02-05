@@ -1,5 +1,22 @@
 # @quiltt/react
 
+## 5.0.1
+
+### Patch Changes
+
+- [#403](https://github.com/quiltt/quiltt-js/pull/403) [`b714ff3`](https://github.com/quiltt/quiltt-js/commit/b714ff3b3ee878445ca8e09903153ac0b43d693b) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Prevent Infinite Re-Renders in QuilttProvider
+
+- [#399](https://github.com/quiltt/quiltt-js/pull/399) [`77d11b6`](https://github.com/quiltt/quiltt-js/commit/77d11b69ceb950da9ca500aa73bae7a3abdfb3a2) Thanks [@CarltonHowell](https://github.com/CarltonHowell)! - Output commonJS
+
+- [#402](https://github.com/quiltt/quiltt-js/pull/402) [`97eccbe`](https://github.com/quiltt/quiltt-js/commit/97eccbe6df42843307a11d28a0a8b5a36e43f3d9) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Remove Node.js Dependencies in React Native Builds
+
+- [#401](https://github.com/quiltt/quiltt-js/pull/401) [`2bf07c3`](https://github.com/quiltt/quiltt-js/commit/2bf07c36bf8dc573f01db8f4c69a48e05d313b8b) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Improve expired auth token detection and clearing
+
+- [#404](https://github.com/quiltt/quiltt-js/pull/404) [`45eb8c9`](https://github.com/quiltt/quiltt-js/commit/45eb8c907f51c0c8c5a3c069c35e0f301a4c374f) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add Subpath Exports and Reorganize Core Modules
+
+- Updated dependencies [[`b714ff3`](https://github.com/quiltt/quiltt-js/commit/b714ff3b3ee878445ca8e09903153ac0b43d693b), [`77d11b6`](https://github.com/quiltt/quiltt-js/commit/77d11b69ceb950da9ca500aa73bae7a3abdfb3a2), [`97eccbe`](https://github.com/quiltt/quiltt-js/commit/97eccbe6df42843307a11d28a0a8b5a36e43f3d9), [`2bf07c3`](https://github.com/quiltt/quiltt-js/commit/2bf07c36bf8dc573f01db8f4c69a48e05d313b8b), [`45eb8c9`](https://github.com/quiltt/quiltt-js/commit/45eb8c907f51c0c8c5a3c069c35e0f301a4c374f)]:
+  - @quiltt/core@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
