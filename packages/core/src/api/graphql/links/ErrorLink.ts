@@ -16,6 +16,10 @@ export const ErrorLink = new ApolloErrorLink(({ error, result }) => {
       if (extensions) {
         if (extensions.code) parts.push(`Code: ${extensions.code}`)
         if (extensions.errorId) parts.push(`Error ID: ${extensions.errorId}`)
+        if (extensions.instruction) parts.push(`Instruction: ${extensions.instruction}`)
+        if (extensions.documentationUrl) {
+          parts.push(`Docs: ${extensions.documentationUrl}`)
+        }
       }
 
       console.warn(parts.join(' | '))

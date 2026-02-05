@@ -353,6 +353,53 @@ describe('ErrorLink', () => {
     consoleWarnSpy.mockRestore()
   })
 
+  it('should handle GraphQL errors with extensions.instruction and documentationUrl', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        observer.next({
+          errors: [
+            {
+              message: 'Auth error',
+              locations: [{ line: 1, column: 1 }],
+              path: ['session'],
+              extensions: {
+                instruction: 'Re-authenticate the user',
+                documentationUrl: 'https://www.quiltt.dev/authentication#session-tokens',
+              },
+            },
+          ],
+        })
+        observer.complete()
+      })
+    })
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ErrorLink.concat(mockLink),
+    })
+
+    try {
+      await client.query({
+        query: gql`
+          query Test {
+            data
+          }
+        `,
+      })
+    } catch (_e) {
+      // Expected to throw due to GraphQL errors
+    }
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '[Quiltt][GraphQL Error]: Auth error | Path: session | Instruction: Re-authenticate the user | Docs: https://www.quiltt.dev/authentication#session-tokens'
+      )
+    )
+    consoleWarnSpy.mockRestore()
+  })
+
   it('should handle GraphQL errors with both extensions.code and extensions.errorId', async () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 

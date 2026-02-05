@@ -34,6 +34,7 @@ export function validateSessionToken(errorMessagePrefix = ''): TokenValidationRe
           extensions: {
             code: 'UNAUTHENTICATED',
             reason: 'NO_TOKEN',
+            documentationUrl: 'https://www.quiltt.dev/authentication#session-tokens',
           },
         }
       ),
@@ -55,6 +56,7 @@ export function validateSessionToken(errorMessagePrefix = ''): TokenValidationRe
             code: 'UNAUTHENTICATED',
             reason: 'TOKEN_EXPIRED',
             expiredAt: jwt.claims.exp,
+            documentationUrl: 'https://www.quiltt.dev/authentication#session-tokens',
           },
         }),
       }

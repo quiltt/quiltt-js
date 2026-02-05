@@ -37,6 +37,9 @@ describe('validateSessionToken', () => {
         expect(result.error.message).toBe('No session token available')
         expect(result.error.extensions?.code).toBe('UNAUTHENTICATED')
         expect(result.error.extensions?.reason).toBe('NO_TOKEN')
+        expect(result.error.extensions?.documentationUrl).toBe(
+          'https://www.quiltt.dev/authentication#session-tokens'
+        )
       }
       expect(mockGlobalStorage.get).toHaveBeenCalledWith('session')
     })
@@ -51,6 +54,9 @@ describe('validateSessionToken', () => {
         expect(result.error).toBeInstanceOf(GraphQLError)
         expect(result.error.extensions?.code).toBe('UNAUTHENTICATED')
         expect(result.error.extensions?.reason).toBe('NO_TOKEN')
+        expect(result.error.extensions?.documentationUrl).toBe(
+          'https://www.quiltt.dev/authentication#session-tokens'
+        )
       }
     })
 
@@ -64,6 +70,9 @@ describe('validateSessionToken', () => {
         expect(result.error).toBeInstanceOf(GraphQLError)
         expect(result.error.extensions?.code).toBe('UNAUTHENTICATED')
         expect(result.error.extensions?.reason).toBe('NO_TOKEN')
+        expect(result.error.extensions?.documentationUrl).toBe(
+          'https://www.quiltt.dev/authentication#session-tokens'
+        )
       }
     })
 
@@ -92,6 +101,9 @@ describe('validateSessionToken', () => {
           expect(result.error).toBeInstanceOf(GraphQLError)
           expect(result.error.extensions?.code).toBe('UNAUTHENTICATED')
           expect(result.error.extensions?.reason).toBe('NO_TOKEN')
+          expect(result.error.extensions?.documentationUrl).toBe(
+            'https://www.quiltt.dev/authentication#session-tokens'
+          )
         }
       }
     })
@@ -132,6 +144,9 @@ describe('validateSessionToken', () => {
         expect(result.error.extensions?.code).toBe('UNAUTHENTICATED')
         expect(result.error.extensions?.reason).toBe('TOKEN_EXPIRED')
         expect(result.error.extensions?.expiredAt).toBe(expiredTimestamp)
+        expect(result.error.extensions?.documentationUrl).toBe(
+          'https://www.quiltt.dev/authentication#session-tokens'
+        )
       }
       expect(mockGlobalStorage.set).toHaveBeenCalledWith('session', null)
     })
