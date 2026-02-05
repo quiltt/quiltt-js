@@ -10,32 +10,36 @@ import { GlobalStorage } from '@/storage'
 vi.mock('@/storage', () => ({
   GlobalStorage: {
     get: vi.fn(() => null as string | null),
+    set: vi.fn(),
   },
 }))
 
-vi.mock('@rails/actioncable', () => {
-  const mockSubscription = {
-    perform: vi.fn(),
-    unsubscribe: vi.fn(),
-  }
+vi.mock('@/auth/json-web-token', () => ({
+  JsonWebTokenParse: vi.fn(),
+}))
 
-  const mockConsumer = {
-    subscriptions: {
-      create: vi.fn(() => mockSubscription),
-      subscriptions: [],
-    },
-    connect: vi.fn(),
-    disconnect: vi.fn(),
+vi.mock('@rails/actioncable', () => ({
+  createConsumer: vi.fn(),
+}))
+
+vi.mock('graphql', () => {
+  // Create a custom GraphQLError class for testing
+  class MockGraphQLError extends Error {
+    extensions?: Record<string, any>
+    constructor(message: string, options?: { extensions?: Record<string, any> }) {
+      super(message)
+      this.name = 'GraphQLError'
+      if (options?.extensions) {
+        this.extensions = options.extensions
+      }
+    }
   }
 
   return {
-    createConsumer: vi.fn(() => mockConsumer),
+    GraphQLError: MockGraphQLError,
+    print: vi.fn().mockReturnValue('printed query'),
   }
 })
-
-vi.mock('graphql', () => ({
-  print: vi.fn().mockReturnValue('printed query'),
-}))
 
 describe('ActionCableLink', () => {
   beforeEach(() => {
@@ -43,7 +47,7 @@ describe('ActionCableLink', () => {
     vi.mocked(GlobalStorage.get).mockReturnValue('some_token')
   })
 
-  it('should return null if no token is available', async () => {
+  it('should emit GraphQLError if no token is available', async () => {
     vi.mocked(GlobalStorage.get).mockReturnValue(null)
     const link = new ActionCableLink({})
     const dummyNextLink = (_operation: ApolloLink.Operation) =>
@@ -63,7 +67,10 @@ describe('ActionCableLink', () => {
       observable.subscribe({
         error: (error) => {
           try {
-            expect(error.message).toBe('No authentication token available')
+            expect(error.name).toBe('GraphQLError')
+            expect(error.message).toBe('No session token available for subscription')
+            expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+            expect(error.extensions?.reason).toBe('NO_TOKEN')
             expect(GlobalStorage.get).toHaveBeenCalledWith('session')
             resolve()
           } catch (e) {
@@ -94,21 +101,35 @@ describe('ActionCableLink', () => {
   })
 
   it('should manage subscriptions correctly', async () => {
-    const consumer = createConsumer('ws://example.com')
+    const subscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
 
-    const subscription = consumer.subscriptions.create('TestChannel', {})
+    const consumer = {
+      subscriptions: {
+        create: vi.fn(() => subscription),
+      },
+      disconnect: vi.fn(),
+    }
 
-    subscription.perform('action', { data: 'test' })
+    vi.mocked(createConsumer).mockReturnValue(consumer as any)
 
-    expect(consumer.subscriptions.create).toHaveBeenCalledWith('TestChannel', {})
-    expect(subscription.perform).toHaveBeenCalledWith('action', { data: 'test' })
+    const createdConsumer = createConsumer('ws://example.com')
 
-    subscription.unsubscribe()
+    const createdSubscription = createdConsumer.subscriptions.create('TestChannel', {})
 
-    expect(subscription.unsubscribe).toHaveBeenCalled()
+    createdSubscription.perform('action', { data: 'test' })
 
-    consumer.disconnect()
-    expect(consumer.disconnect).toHaveBeenCalled()
+    expect(createdConsumer.subscriptions.create).toHaveBeenCalledWith('TestChannel', {})
+    expect(createdSubscription.perform).toHaveBeenCalledWith('action', { data: 'test' })
+
+    createdSubscription.unsubscribe()
+
+    expect(createdSubscription.unsubscribe).toHaveBeenCalled()
+
+    createdConsumer.disconnect()
+    expect(createdConsumer.disconnect).toHaveBeenCalled()
   })
 
   it('should execute Observable callback and create ActionCable subscription when subscribed', async () => {
@@ -1307,8 +1328,7 @@ describe('ActionCableLink', () => {
     })
   })
 
-  it('should log warning when attempting subscription without token', async () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+  it('should emit GraphQLError when attempting subscription without token', async () => {
     vi.mocked(GlobalStorage.get).mockReturnValue(null)
 
     const link = new ActionCableLink({})
@@ -1335,11 +1355,10 @@ describe('ActionCableLink', () => {
       observable.subscribe({
         error: (error) => {
           try {
-            expect(error.message).toBe('No authentication token available')
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-              'QuilttClient attempted to send an unauthenticated Subscription'
-            )
-            consoleWarnSpy.mockRestore()
+            expect(error.name).toBe('GraphQLError')
+            expect(error.message).toBe('No session token available for subscription')
+            expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+            expect(error.extensions?.reason).toBe('NO_TOKEN')
             resolve()
           } catch (e) {
             reject(e)
@@ -1347,5 +1366,133 @@ describe('ActionCableLink', () => {
         },
       })
     })
+  })
+
+  it('should emit GraphQLError and clear storage when token is expired', async () => {
+    const { JsonWebTokenParse } = await import('@/auth/json-web-token')
+    const mockToken = 'expired.token.here'
+    const expiredTimestamp = Math.floor(Date.now() / 1000) - 3600 // 1 hour ago
+
+    vi.mocked(GlobalStorage.get).mockReturnValue(mockToken)
+    vi.mocked(JsonWebTokenParse).mockReturnValue({
+      token: mockToken,
+      claims: {
+        exp: expiredTimestamp,
+        iat: expiredTimestamp - 7200,
+        iss: 'test',
+        sub: 'test',
+        aud: 'test',
+        nbf: expiredTimestamp - 7200,
+        jti: 'test',
+        oid: 'test',
+        eid: 'test',
+        cid: 'test',
+        aid: 'test',
+        ver: 1,
+        rol: 'manager',
+      } as any,
+    })
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      subscription TestSubscription {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestSubscription',
+    } as ApolloLink.Operation
+
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    await new Promise<void>((resolve, reject) => {
+      observable.subscribe({
+        error: (error) => {
+          try {
+            expect(error.name).toBe('GraphQLError')
+            expect(error.message).toBe('Session token has expired')
+            expect(error.extensions?.code).toBe('UNAUTHENTICATED')
+            expect(error.extensions?.reason).toBe('TOKEN_EXPIRED')
+            expect(error.extensions?.expiredAt).toBe(expiredTimestamp)
+            expect(GlobalStorage.set).toHaveBeenCalledWith('session', null)
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
+        },
+      })
+    })
+  })
+
+  it('should allow valid non-expired tokens through', async () => {
+    const { JsonWebTokenParse } = await import('@/auth/json-web-token')
+    const mockToken = 'valid.token.here'
+    const futureTimestamp = Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
+
+    vi.mocked(GlobalStorage.get).mockReturnValue(mockToken)
+    vi.mocked(JsonWebTokenParse).mockReturnValue({
+      token: mockToken,
+      claims: {
+        exp: futureTimestamp,
+        iat: Math.floor(Date.now() / 1000),
+        iss: 'test',
+        sub: 'test',
+        aud: 'test',
+        nbf: Math.floor(Date.now() / 1000),
+        jti: 'test',
+        oid: 'test',
+        eid: 'test',
+        cid: 'test',
+        aid: 'test',
+        ver: 1,
+        rol: 'manager',
+      } as any,
+    })
+
+    const mockSubscription = {
+      perform: vi.fn(),
+      unsubscribe: vi.fn(),
+    }
+
+    const mockConsumer = {
+      subscriptions: {
+        create: vi.fn(() => mockSubscription),
+      },
+    }
+
+    const { createConsumer } = await import('@rails/actioncable')
+    vi.mocked(createConsumer).mockReturnValue(mockConsumer as any)
+
+    const link = new ActionCableLink({})
+    const mockQuery = gql`
+      subscription TestSubscription {
+        mockField
+      }
+    `
+    const operation = {
+      query: mockQuery,
+      variables: {},
+      operationName: 'TestSubscription',
+    } as ApolloLink.Operation
+
+    const dummyNextLink = (_operation: ApolloLink.Operation) =>
+      new Observable<ApolloLink.Result>((subscriber) => {
+        subscriber.next({})
+        subscriber.complete()
+      })
+
+    const observable = link.request(operation, dummyNextLink)
+
+    expect(observable).toBeInstanceOf(Observable)
+    expect(GlobalStorage.set).not.toHaveBeenCalled()
+    expect(createConsumer).toHaveBeenCalled()
   })
 })

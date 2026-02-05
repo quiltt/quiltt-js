@@ -6,7 +6,7 @@ import { print } from 'graphql'
 import { Observable } from 'rxjs'
 
 import { endpointWebsockets } from '@/config'
-import { GlobalStorage } from '@/storage'
+import { validateSessionToken } from '@/utils/token-validation'
 
 type RequestResult = ApolloLink.Result<{ [key: string]: unknown }>
 type ConnectionParams = object | ((operation: ApolloLink.Operation) => object)
@@ -43,14 +43,15 @@ class ActionCableLink extends ApolloLink {
     operation: ApolloLink.Operation,
     _next: ApolloLink.ForwardFunction
   ): Observable<RequestResult> {
-    const token = GlobalStorage.get('session')
+    const validation = validateSessionToken('for subscription')
 
-    if (!token) {
-      console.warn('QuilttClient attempted to send an unauthenticated Subscription')
+    if (!validation.valid) {
       return new Observable((observer) => {
-        observer.error(new Error('No authentication token available'))
+        observer.error(validation.error)
       })
     }
+
+    const { token } = validation
 
     if (!this.cables[token]) {
       this.cables[token] = createConsumer(endpointWebsockets + (token ? `?token=${token}` : ''))

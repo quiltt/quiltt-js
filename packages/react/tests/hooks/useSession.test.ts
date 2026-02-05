@@ -9,6 +9,56 @@ vi.mock('@/hooks/useStorage', () => ({
   useStorage: vi.fn(),
 }))
 
+// Helper function to create test JWT tokens
+function createTestToken(
+  claims: {
+    exp?: number
+    iat?: number
+    iss?: string
+    sub?: string
+    rol?: 'manager' | 'member'
+    nbf?: number
+    aud?: string
+    jti?: string
+    cid?: string
+    oid?: string
+    eid?: string
+    aid?: string
+    ver?: number
+  } = {}
+): string {
+  const currentTime = Math.floor(Date.now() / 1000)
+
+  const defaultClaims = {
+    exp: currentTime + 3600,
+    iat: currentTime,
+    iss: 'issuer',
+    sub: 'subject',
+    rol: 'manager' as const,
+    nbf: currentTime,
+    aud: 'audience',
+    jti: 'token-id',
+    cid: 'client-id',
+    oid: 'org-id',
+    eid: 'entity-id',
+    aid: 'app-id',
+    ver: 1,
+    ...claims,
+  }
+
+  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+
+  const payload = btoa(JSON.stringify(defaultClaims))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+
+  return `${header}.${payload}.signature`
+}
+
 describe('useSession', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -77,34 +127,10 @@ describe('useSession', () => {
     const currentTime = 1700000000
     const expirationTime = currentTime + 3600 // 1 hour in future
 
-    // Create URL-safe base64 encoded JWT parts
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '')
-
-    const payload = btoa(
-      JSON.stringify({
-        exp: expirationTime,
-        iat: currentTime,
-        iss: 'issuer',
-        sub: 'subject',
-        rol: 'manager',
-        nbf: currentTime,
-        aud: 'audience',
-        jti: 'token-id',
-        cid: 'client-id',
-        oid: 'org-id',
-        eid: 'entity-id',
-        aid: 'app-id',
-        ver: 1,
-      })
-    )
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '')
-
-    const token = `${header}.${payload}.valid-signature`
+    const token = createTestToken({
+      exp: expirationTime,
+      iat: currentTime,
+    })
 
     // Set current time to be before token expiration
     vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
@@ -128,33 +154,10 @@ describe('useSession', () => {
 
       vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
 
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const payload = btoa(
-        JSON.stringify({
-          exp: expirationTime,
-          iat: currentTime,
-          iss: 'issuer',
-          sub: 'subject',
-          rol: 'manager',
-          nbf: currentTime,
-          aud: 'audience',
-          jti: 'token-id',
-          cid: 'client-id',
-          oid: 'org-id',
-          eid: 'entity-id',
-          aid: 'app-id',
-          ver: 1,
-        })
-      )
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const validToken = `${header}.${payload}.signature`
+      const validToken = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
 
       act(() => {
         result.current[1](validToken)
@@ -242,33 +245,10 @@ describe('useSession', () => {
 
       vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
 
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const payload = btoa(
-        JSON.stringify({
-          exp: expirationTime,
-          iat: currentTime,
-          iss: 'issuer',
-          sub: 'subject',
-          rol: 'manager',
-          nbf: currentTime,
-          aud: 'audience',
-          jti: 'token-id',
-          cid: 'client-id',
-          oid: 'org-id',
-          eid: 'entity-id',
-          aid: 'app-id',
-          ver: 1,
-        })
-      )
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const newToken = `${header}.${payload}.signature`
+      const newToken = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
 
       act(() => {
         result.current[1]((_prev) => newToken)
@@ -342,17 +322,7 @@ describe('useSession', () => {
         ver: 1,
       }
 
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const payload = btoa(JSON.stringify(claims))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const token = `${header}.${payload}.signature`
+      const token = createTestToken(claims)
 
       vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
       vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
@@ -379,33 +349,10 @@ describe('useSession', () => {
       const currentTime = 1700000000
       const expirationTime = currentTime + 3600 // 1 hour in future
 
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const payload = btoa(
-        JSON.stringify({
-          exp: expirationTime,
-          iat: currentTime,
-          iss: 'issuer',
-          sub: 'subject',
-          rol: 'manager',
-          nbf: currentTime,
-          aud: 'audience',
-          jti: 'token-id',
-          cid: 'client-id',
-          oid: 'org-id',
-          eid: 'entity-id',
-          aid: 'app-id',
-          ver: 1,
-        })
-      )
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const token = `${header}.${payload}.signature`
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
 
       vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
       vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
@@ -430,33 +377,10 @@ describe('useSession', () => {
       const currentTime = 1700000000
       const expirationTime = currentTime + 3600
 
-      const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const payload = btoa(
-        JSON.stringify({
-          exp: expirationTime,
-          iat: currentTime,
-          iss: 'issuer',
-          sub: 'subject',
-          rol: 'manager',
-          nbf: currentTime,
-          aud: 'audience',
-          jti: 'token-id',
-          cid: 'client-id',
-          oid: 'org-id',
-          eid: 'entity-id',
-          aid: 'app-id',
-          ver: 1,
-        })
-      )
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '')
-
-      const token = `${header}.${payload}.signature`
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
 
       vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
       vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
@@ -476,38 +400,8 @@ describe('useSession', () => {
       const mockSetStorage = vi.fn()
       const currentTime = 1700000000
 
-      const createToken = (exp: number) => {
-        const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-          .replace(/\+/g, '-')
-          .replace(/\//g, '_')
-          .replace(/=+$/, '')
-
-        const payload = btoa(
-          JSON.stringify({
-            exp,
-            iat: currentTime,
-            iss: 'issuer',
-            sub: 'subject',
-            rol: 'manager',
-            nbf: currentTime,
-            aud: 'audience',
-            jti: 'token-id',
-            cid: 'client-id',
-            oid: 'org-id',
-            eid: 'entity-id',
-            aid: 'app-id',
-            ver: 1,
-          })
-        )
-          .replace(/\+/g, '-')
-          .replace(/\//g, '_')
-          .replace(/=+$/, '')
-
-        return `${header}.${payload}.signature-${exp}`
-      }
-
-      const token1 = createToken(currentTime + 1800) // 30 min
-      const token2 = createToken(currentTime + 7200) // 2 hours
+      const token1 = createTestToken({ exp: currentTime + 1800, iat: currentTime }) // 30 min
+      const token2 = createTestToken({ exp: currentTime + 7200, iat: currentTime }) // 2 hours
 
       vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
       vi.mocked(useStorage).mockReturnValue([token1, mockSetStorage])
@@ -540,6 +434,184 @@ describe('useSession', () => {
       renderHook(() => useSession())
 
       expect(useStorage).toHaveBeenCalledWith('session')
+    })
+  })
+
+  describe('visibility change handling', () => {
+    let mockAddEventListener: ReturnType<typeof vi.fn>
+    let mockRemoveEventListener: ReturnType<typeof vi.fn>
+    let visibilityChangeHandler: ((event?: Event) => void) | null = null
+
+    beforeEach(() => {
+      mockAddEventListener = vi.fn((event, handler) => {
+        if (event === 'visibilitychange') {
+          visibilityChangeHandler = handler
+        }
+      })
+      mockRemoveEventListener = vi.fn()
+
+      Object.defineProperty(document, 'addEventListener', {
+        value: mockAddEventListener,
+        writable: true,
+      })
+      Object.defineProperty(document, 'removeEventListener', {
+        value: mockRemoveEventListener,
+        writable: true,
+      })
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    afterEach(() => {
+      visibilityChangeHandler = null
+    })
+
+    it('registers visibility change listener for valid token', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(mockAddEventListener).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
+    })
+
+    it('clears expired token when tab becomes visible', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(visibilityChangeHandler).toBeDefined()
+
+      // Simulate time passing and token expiring
+      vi.spyOn(Date, 'now').mockImplementation(() => (expirationTime + 100) * 1000)
+
+      // Simulate tab becoming visible
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      })
+
+      act(() => {
+        visibilityChangeHandler?.()
+      })
+
+      expect(mockSetStorage).toHaveBeenCalledWith(null)
+    })
+
+    it('does not clear valid token when tab becomes visible', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(visibilityChangeHandler).toBeDefined()
+
+      // Token is still valid
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      })
+
+      act(() => {
+        visibilityChangeHandler?.()
+      })
+
+      expect(mockSetStorage).not.toHaveBeenCalled()
+    })
+
+    it('does not check expiration when tab is hidden', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      // Simulate time passing and token expiring
+      vi.spyOn(Date, 'now').mockImplementation(() => (expirationTime + 100) * 1000)
+
+      // Tab is hidden
+      Object.defineProperty(document, 'hidden', {
+        value: true,
+        writable: true,
+        configurable: true,
+      })
+
+      act(() => {
+        visibilityChangeHandler?.()
+      })
+
+      // Should not clear even though expired, because tab is hidden
+      expect(mockSetStorage).not.toHaveBeenCalled()
+    })
+
+    it('removes visibility change listener on unmount', () => {
+      const mockSetStorage = vi.fn()
+      const currentTime = 1700000000
+      const expirationTime = currentTime + 3600
+
+      const token = createTestToken({
+        exp: expirationTime,
+        iat: currentTime,
+      })
+
+      vi.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000)
+      vi.mocked(useStorage).mockReturnValue([token, mockSetStorage])
+
+      const { unmount } = renderHook(() => useSession())
+
+      unmount()
+
+      expect(mockRemoveEventListener).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
+    })
+
+    it('does not register listener when no session exists', () => {
+      const mockSetStorage = vi.fn()
+      vi.mocked(useStorage).mockReturnValue([undefined, mockSetStorage])
+
+      renderHook(() => useSession())
+
+      expect(mockAddEventListener).not.toHaveBeenCalled()
     })
   })
 })

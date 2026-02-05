@@ -42,13 +42,39 @@ export const useSession = (storageKey = 'session'): [Maybe<QuilttJWT> | undefine
     const expirationMS = session.claims.exp * 1000
     const expire = () => setToken(null)
 
+    const checkExpiration = () => {
+      if (Date.now() >= expirationMS) {
+        expire()
+        return true
+      }
+      return false
+    }
+
     // Clear immediately if already expired
-    if (Date.now() >= expirationMS) {
-      expire()
-    } else {
-      // Set timer to clear session at expiration time
-      sessionTimer.set(expire, expirationMS - Date.now())
-      return () => sessionTimer.clear(expire)
+    if (checkExpiration()) {
+      return
+    }
+
+    // Set timer to clear session at expiration time
+    sessionTimer.set(expire, expirationMS - Date.now())
+
+    // Also check expiration when tab becomes visible (handles idle sessions)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        checkExpiration()
+      }
+    }
+
+    // Only add listener in browser environment
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibilityChange)
+    }
+
+    return () => {
+      sessionTimer.clear(expire)
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('visibilitychange', handleVisibilityChange)
+      }
     }
   }, [session, setToken])
 
