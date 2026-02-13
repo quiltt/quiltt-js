@@ -14,6 +14,7 @@ type BaseQuilttButtonProps<T extends ElementType> = {
   connectorId: string
   connectionId?: string // For Reconnect Mode
   institution?: string // For Connect Mode
+  oauthRedirectUrl?: string // For OAuth flows in mobile or embedded webviews
 
   /**
    * Forces complete remount when connectionId changes.
@@ -50,6 +51,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   connectorId,
   connectionId,
   institution,
+  oauthRedirectUrl,
   forceRemountOnConnectionChange = false,
   onEvent,
   onOpen,
@@ -109,6 +111,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   const { open } = useQuilttConnector(connectorId, {
     connectionId,
     institution,
+    oauthRedirectUrl,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onOpen,
@@ -152,6 +155,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
       onClick={handleClick}
       onLoad={onHtmlLoad}
       quiltt-connection={connectionId}
+      quiltt-oauth-redirect-url={oauthRedirectUrl}
       {...props}
     >
       {children}

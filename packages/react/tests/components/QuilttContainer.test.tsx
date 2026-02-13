@@ -64,6 +64,39 @@ describe('QuilttContainer', () => {
     )
   })
 
+  it('passes oauthRedirectUrl to useQuilttConnector', () => {
+    render(
+      <QuilttContainer connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+        Container Content
+      </QuilttContainer>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({ oauthRedirectUrl: 'myapp://oauth' })
+    )
+  })
+
+  it('renders quiltt-oauth-redirect-url attribute on the container element', () => {
+    const { container } = render(
+      <QuilttContainer connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+        Container Content
+      </QuilttContainer>
+    )
+
+    const element = container.firstElementChild
+    expect(element?.getAttribute('quiltt-oauth-redirect-url')).toBe('myapp://oauth')
+  })
+
+  it('does not render quiltt-oauth-redirect-url attribute when not provided', () => {
+    const { container } = render(
+      <QuilttContainer connectorId="mockConnectorId">Container Content</QuilttContainer>
+    )
+
+    const element = container.firstElementChild
+    expect(element?.hasAttribute('quiltt-oauth-redirect-url')).toBe(false)
+  })
+
   it('handles nested content correctly', () => {
     const { container } = render(
       <QuilttContainer connectorId="mockConnectorId">

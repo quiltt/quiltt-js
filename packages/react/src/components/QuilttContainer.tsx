@@ -13,6 +13,7 @@ type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
     as?: T
     connectorId: string
     connectionId?: string // For Reconnect Mode
+    oauthRedirectUrl?: string // For OAuth flows in mobile or embedded webviews
 
     /**
      * Forces complete remount when connectionId changes.
@@ -35,6 +36,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   as,
   connectorId,
   connectionId,
+  oauthRedirectUrl,
   forceRemountOnConnectionChange = false,
   onEvent,
   onLoad,
@@ -88,6 +90,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 
   useQuilttConnector(connectorId, {
     connectionId,
+    oauthRedirectUrl,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onLoad,
@@ -116,6 +119,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
       key={containerKey}
       quiltt-container={connectorId}
       quiltt-connection={connectionId}
+      quiltt-oauth-redirect-url={oauthRedirectUrl}
       {...props}
     >
       {children}

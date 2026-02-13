@@ -68,4 +68,37 @@ describe('QuilttButton', () => {
     expect(onHtmlLoad).toHaveBeenCalledTimes(1)
     expect(onHtmlLoad).toHaveBeenCalledWith(expect.any(Event))
   })
+
+  it('passes oauthRedirectUrl to useQuilttConnector', () => {
+    render(
+      <QuilttButton connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+        Test Button
+      </QuilttButton>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({ oauthRedirectUrl: 'myapp://oauth' })
+    )
+  })
+
+  it('renders quiltt-oauth-redirect-url attribute on the button element', () => {
+    const { container } = render(
+      <QuilttButton connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+        Test Button
+      </QuilttButton>
+    )
+
+    const button = container.querySelector('button')
+    expect(button?.getAttribute('quiltt-oauth-redirect-url')).toBe('myapp://oauth')
+  })
+
+  it('does not render quiltt-oauth-redirect-url attribute when not provided', () => {
+    const { container } = render(
+      <QuilttButton connectorId="mockConnectorId">Test Button</QuilttButton>
+    )
+
+    const button = container.querySelector('button')
+    expect(button?.hasAttribute('quiltt-oauth-redirect-url')).toBe(false)
+  })
 })
