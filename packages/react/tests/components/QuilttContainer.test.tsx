@@ -64,6 +64,26 @@ describe('QuilttContainer', () => {
     )
   })
 
+  it('passes connectionId and institution to useQuilttConnector', () => {
+    render(
+      <QuilttContainer
+        connectorId="mockConnectorId"
+        connectionId="test-connection"
+        institution="test-bank"
+      >
+        Container Content
+      </QuilttContainer>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({
+        connectionId: 'test-connection',
+        institution: 'test-bank',
+      })
+    )
+  })
+
   it('handles nested content correctly', () => {
     const { container } = render(
       <QuilttContainer connectorId="mockConnectorId">
