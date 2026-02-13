@@ -13,6 +13,7 @@ type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
     as?: T
     connectorId: string
     connectionId?: string // For Reconnect Mode
+    institution?: string // For Connect Mode
 
     /**
      * Forces complete remount when connectionId changes.
@@ -35,6 +36,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   as,
   connectorId,
   connectionId,
+  institution,
   forceRemountOnConnectionChange = false,
   onEvent,
   onLoad,
@@ -88,6 +90,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 
   useQuilttConnector(connectorId, {
     connectionId,
+    institution,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onLoad,
