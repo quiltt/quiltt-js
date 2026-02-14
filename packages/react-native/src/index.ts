@@ -33,6 +33,8 @@ export {
   useQuery,
   useQuilttClient,
   useQuilttConnector,
+  useQuilttInstitutions,
+  useQuilttResolvable,
   useQuilttSession,
   useQuilttSettings,
   useSession,
