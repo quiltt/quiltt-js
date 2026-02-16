@@ -1,8 +1,29 @@
 // ============================================================================
-// Core Module - Apollo Client core functionality
+// @quiltt/react - React Components and Hooks for Quiltt
 // ============================================================================
+// This package provides React-specific components and hooks for integrating
+// Quiltt's financial data platform into React applications. It re-exports all
+// @quiltt/core functionality plus Apollo Client utilities and React-specific
+// features.
+//
+// Main exports:
+// - All @quiltt/core modules (API clients, auth, config, storage, types)
+// - Apollo Client types, hooks, and components for GraphQL operations
+// - React hooks (useQuilttSession, useQuilttConnector, etc.)
+// - React components (QuilttProvider, QuilttButton, etc.)
+//
+// Note: Utils are NOT exported from the main entry point. Access utils via
+// subpath import: '@quiltt/react/utils'
+// ============================================================================
+
+// ============================================================================
+// Apollo Client - Core functionality
+// ============================================================================
+// Re-export essential Apollo Client types and classes for GraphQL operations.
+// Note: Use ObservableQuery.Result instead of deprecated ApolloQueryResult.
+// For hook options, use Parameters<typeof useQuery>[0] or import directly
+// from @apollo/client.
 export type {
-  ApolloQueryResult,
   DocumentNode,
   ErrorPolicy,
   FetchPolicy,
@@ -19,8 +40,9 @@ export {
   ObservableQuery,
 } from '@apollo/client'
 // ============================================================================
-// Errors Module - Error handling utilities
+// Apollo Client - Error handling
 // ============================================================================
+// GraphQL and protocol error classes for handling API errors.
 export {
   CombinedGraphQLErrors,
   CombinedProtocolErrors,
@@ -31,16 +53,11 @@ export {
   UnconventionalError,
 } from '@apollo/client/errors'
 // ============================================================================
-// React Module - React hooks and components
+// Apollo Client - React hooks and components
 // ============================================================================
-export type {
-  MutationHookOptions,
-  MutationResult,
-  QueryHookOptions,
-  QueryResult,
-  SubscriptionHookOptions,
-  SubscriptionResult,
-} from '@apollo/client/react'
+// React hooks and components for GraphQL operations.
+// Note: For hook options types, use Parameters<typeof useMutation>[0],
+// Parameters<typeof useQuery>[0], etc., or import directly from @apollo/client.
 export {
   ApolloProvider,
   createQueryPreloader,
@@ -60,8 +77,10 @@ export {
 } from '@apollo/client/react'
 export { MockedProvider } from '@apollo/client/testing/react'
 // ============================================================================
-// Core - Re-export all submodules from @quiltt/core
+// Quiltt Core - Re-export all modules from @quiltt/core
 // ============================================================================
+// Re-export all core Quiltt functionality so users only need to install
+// @quiltt/react instead of both @quiltt/core and @quiltt/react.
 export * from '@quiltt/core/api'
 export * from '@quiltt/core/api/browser'
 export * from '@quiltt/core/api/graphql'
@@ -73,6 +92,10 @@ export * from '@quiltt/core/storage'
 export * from '@quiltt/core/timing'
 export * from '@quiltt/core/types'
 
+// ============================================================================
+// React-specific exports
+// ============================================================================
+// Quiltt React components, hooks, and providers for web applications.
 export * from './components'
 export * from './hooks'
 export * from './providers'
