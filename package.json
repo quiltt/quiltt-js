@@ -35,13 +35,13 @@
     "bundlesize": "^0.18.2",
     "check-dependency-version-consistency": "6.0.0",
     "happy-dom": "20.5.0",
-    "turbo": "2.8.3",
+    "turbo": "2.8.9",
     "vite": "7.3.1",
     "vite-tsconfig-paths": "6.0.5",
     "vitest": "4.0.18",
     "vitest-react-native": "0.1.5"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.29.3",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",

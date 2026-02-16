@@ -82,9 +82,6 @@ export { MockedProvider } from '@apollo/client/testing/react'
 // Re-export all core Quiltt functionality so users only need to install
 // @quiltt/react instead of both @quiltt/core and @quiltt/react.
 export * from '@quiltt/core/api'
-export * from '@quiltt/core/api/browser'
-export * from '@quiltt/core/api/graphql'
-export * from '@quiltt/core/api/rest'
 export * from '@quiltt/core/auth'
 export * from '@quiltt/core/config'
 export * from '@quiltt/core/observables'
