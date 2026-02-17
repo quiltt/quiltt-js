@@ -394,11 +394,7 @@ describe('QuilttConnector', () => {
 
       // capturedWebViewRef is the ref object from useRef inside the component
       // We need to set its `current` property to our mock WebView
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -436,11 +432,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -501,11 +493,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -535,11 +523,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -569,11 +553,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -620,11 +600,7 @@ describe('QuilttConnector', () => {
 
       // Mock the WebView ref and injectJavaScript
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -674,11 +650,7 @@ describe('QuilttConnector', () => {
 
       // Mock the WebView ref
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -723,11 +695,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -888,11 +856,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -937,11 +901,7 @@ describe('QuilttConnector', () => {
 
       // Mock the WebView ref
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -973,11 +933,7 @@ describe('QuilttConnector', () => {
 
       // Mock the WebView ref
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 

@@ -93,7 +93,6 @@ describe('useRevokeSession', () => {
         })
       ).rejects.toThrow('Network error')
 
-      // Session should still be cleared despite the error
       expect(mockAuth.revoke).toHaveBeenCalledWith(testSession.token)
     })
   })
