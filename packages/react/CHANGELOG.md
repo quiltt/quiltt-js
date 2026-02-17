@@ -1,5 +1,14 @@
 # @quiltt/react
 
+## 5.0.2
+
+### Patch Changes
+
+- [#407](https://github.com/quiltt/quiltt-js/pull/407) [`0262754`](https://github.com/quiltt/quiltt-js/commit/0262754fa680d39cea1426a09796783488a4f4d6) Thanks [@rubendinho](https://github.com/rubendinho)! - Add Institution Prop to QuilttContainer
+
+- Updated dependencies [[`0262754`](https://github.com/quiltt/quiltt-js/commit/0262754fa680d39cea1426a09796783488a4f4d6)]:
+  - @quiltt/core@5.0.2
+
 ## 5.0.1
 
 ### Patch Changes

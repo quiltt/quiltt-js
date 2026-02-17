@@ -129,3 +129,5 @@ For detailed information on the release process, version management, and trouble
 ## License
 
 This repository and all published packages are licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
+
+&nbsp;

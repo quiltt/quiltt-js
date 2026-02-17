@@ -1,7 +1,7 @@
 import React from 'react'
 import { Platform } from 'react-native'
 
-import { getUserAgent as coreGetUserAgent } from '@quiltt/core'
+import { getUserAgent as coreGetUserAgent } from '@quiltt/core/utils'
 import DeviceInfo from 'react-native-device-info'
 
 /**
