@@ -749,7 +749,6 @@ describe('QuilttConnector', () => {
 
     it('should handle Navigate event with encoded URL', async () => {
       fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
-      const linkingSpy = vi.spyOn(Linking, 'openURL')
 
       render(<QuilttConnector {...defaultProps} />)
 
@@ -767,13 +766,12 @@ describe('QuilttConnector', () => {
       expect(result).toBe(false)
 
       await waitFor(() => {
-        expect(linkingSpy).toHaveBeenCalled()
+        expect(Linking.openURL).toHaveBeenCalled()
       })
     })
 
     it('should handle Navigate event with non-encoded URL', async () => {
       fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
-      const linkingSpy = vi.spyOn(Linking, 'openURL')
 
       render(<QuilttConnector {...defaultProps} />)
 
@@ -790,7 +788,7 @@ describe('QuilttConnector', () => {
       expect(result).toBe(false)
 
       await waitFor(() => {
-        expect(linkingSpy).toHaveBeenCalled()
+        expect(Linking.openURL).toHaveBeenCalled()
       })
     })
 

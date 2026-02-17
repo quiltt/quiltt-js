@@ -116,7 +116,7 @@ describe('QuilttAuthProvider', () => {
     expect(mockGetPlatformInfoSync).toHaveBeenCalledTimes(1)
   })
 
-  it('creates new client on each render when no custom client provided', () => {
+  it('does not recreate client on rerender when no custom client provided', () => {
     const { rerender } = render(
       <QuilttAuthProvider>
         <View testID="test-child" />
