@@ -31,7 +31,7 @@ pnpm add @quiltt/react
 
 ## Core Modules and Types
 
-The `@quiltt/react` library ships with `@quiltt/core`, which provides an API clients and essential functionality for building Javascript-based applications with Quiltt. See the [Core README](../core/README.md) for more information.
+`@quiltt/react` re-exports all functionality from `@quiltt/core`, so you only need to install this one package to access core API clients, authentication utilities, storage, and TypeScript types along with React components and hooks. See the [Core README](../core/README.md) for more information about core functionality.
 
 ## React Components
 
@@ -210,7 +210,7 @@ export default App
 
 ## Typescript support
 
-`@quiltt/react` is written in Typescript and ships with its own type definitions, as well as the type definitions from `@quiltt/core`.
+`@quiltt/react` is written in TypeScript and ships with complete type definitions. Since it re-exports all functionality from `@quiltt/core`, you have access to all core types as well, including utility types, API types, and authentication types.
 
 ## License
 

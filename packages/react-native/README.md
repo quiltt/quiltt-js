@@ -52,9 +52,8 @@ import { QuilttConnector } from '@quiltt/react-native/components'
 #### Example
 
 ```tsx
-import { QuilttProvider } from '@quiltt/react'
-import { QuilttConnector } from '@quiltt/react-native'
-import type { ConnectorSDKCallbackMetadata } from '@quiltt/react'
+import { QuilttProvider, QuilttConnector } from '@quiltt/react-native'
+import type { ConnectorSDKCallbackMetadata } from '@quiltt/react-native'
 
 export const App = () => {
   // See: https://www.quiltt.dev/authentication/issuing-session-tokens
@@ -96,8 +95,7 @@ When users authenticate with financial institutions, they'll be redirected back 
 ```tsx
 import { useEffect, useRef } from 'react'
 import { Linking, View } from 'react-native'
-import { QuilttProvider } from '@quiltt/react'
-import { QuilttConnector } from '@quiltt/react-native'
+import { QuilttProvider, QuilttConnector } from '@quiltt/react-native'
 import type { ConnectorSDKCallbackMetadata, QuilttConnectorHandle } from '@quiltt/react-native'
 
 export const ConnectorScreen = () => {
@@ -152,7 +150,7 @@ export default ConnectorScreen
 
 ## Typescript support
 
-`@quiltt/react-native` is written in Typescript and ships with its own type definitions, as well as the type definitions from `@quiltt/core`.
+`@quiltt/react-native` is written in TypeScript and ships with complete type definitions. Since it re-exports all functionality from `@quiltt/core` and `@quiltt/react`, you have access to all types from those packages as well. This means you only need to import from `@quiltt/react-native` to get full TypeScript support for the entire Quiltt SDK.
 
 ## License
 
