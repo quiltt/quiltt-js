@@ -38,7 +38,7 @@ The Auth API is used by the Quiltt Connector under the hood and can be used to p
 import { AuthAPI } from '@quiltt/core'
 
 // Set up client instance
-const auth = new AuthAPI('{CONNECTOR_ID}')
+const auth = new AuthAPI()
 
 // Check if a Session token is valid
 await auth.ping('{SESSION_TOKEN}')
