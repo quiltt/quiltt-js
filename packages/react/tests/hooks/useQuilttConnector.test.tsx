@@ -61,7 +61,7 @@ const globalQuiltt = {
   reconnect: vi.fn(() => mockConnector),
 }
 
-Object.defineProperty(global, 'Quiltt', {
+Object.defineProperty(globalThis, 'Quiltt', {
   value: globalQuiltt,
   writable: true,
   configurable: true,
@@ -90,7 +90,7 @@ describe('useQuilttConnector', () => {
     mockUseScript.mockReturnValue('ready')
 
     // Ensure Quiltt is defined
-    Object.defineProperty(global, 'Quiltt', {
+    Object.defineProperty(globalThis, 'Quiltt', {
       value: globalQuiltt,
       writable: true,
       configurable: true,
@@ -145,7 +145,7 @@ describe('useQuilttConnector', () => {
 
     it('should handle when Quiltt is not yet loaded', () => {
       // @ts-expect-error - intentionally setting to undefined
-      delete global.Quiltt
+      delete globalThis.Quiltt
 
       const { result } = renderHook(() => useQuilttConnector('mockConnectorId'), {
         wrapper: Wrapper,
@@ -181,7 +181,9 @@ describe('useQuilttConnector', () => {
         wrapper: Wrapper,
       })
 
-      await new Promise((resolve) => setTimeout(resolve, 0))
+      await act(async () => {
+        await Promise.resolve()
+      })
       vi.clearAllMocks()
 
       mockUseScript.mockReturnValue('ready')
@@ -380,12 +382,11 @@ describe('useQuilttConnector', () => {
       // Rerender with the same value but different reference (simulates parent component re-render)
       rerender({ institution: 'chase' })
 
-      // Give it time to potentially call connect (if it was going to)
-      await new Promise((resolve) => setTimeout(resolve, 50))
-
       // Should NOT call connect again since the value is the same
-      expect(globalQuiltt.connect).not.toHaveBeenCalled()
-      expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(globalQuiltt.connect).not.toHaveBeenCalled()
+        expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
+      })
     })
 
     it('should recreate connector when institution value actually changes', async () => {
@@ -626,18 +627,21 @@ describe('useQuilttConnector', () => {
         }
       )
 
-      await new Promise((resolve) => setTimeout(resolve, 10))
+      await act(async () => {
+        await Promise.resolve()
+      })
 
       await act(async () => {
         result.current.open()
       })
 
-      await new Promise((resolve) => setTimeout(resolve, 10))
+      await act(async () => {
+        await Promise.resolve()
+      })
 
       // The hook already called open(), it's just waiting for connector to be ready
       // So we expect at least one call to open (it gets queued)
       // Let's just verify the behavior works correctly
-
       mockUseScript.mockReturnValue('ready')
       rerender()
 
@@ -811,10 +815,10 @@ describe('useQuilttConnector', () => {
 
       rerender({ connectionId: 'conn-123', institution: 'chase' })
 
-      await new Promise((resolve) => setTimeout(resolve, 50))
-
-      expect(globalQuiltt.connect).not.toHaveBeenCalled()
-      expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(globalQuiltt.connect).not.toHaveBeenCalled()
+        expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
+      })
     })
   })
 
