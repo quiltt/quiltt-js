@@ -9,15 +9,16 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
+    # prevent this action from running on forks
+    if: github.repository == 'quiltt/quiltt-js'
+
     name: Release
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup environment
-        uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup
         with:
           build-packages: "false"
 
@@ -43,8 +44,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: pnpm run version
-          publish: pnpm run publish
+          version: pnpm version
+          publish: pnpm publish
           title: Version and Release Packages
           createGithubReleases: true
         env:
