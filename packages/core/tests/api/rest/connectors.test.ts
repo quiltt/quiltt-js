@@ -162,6 +162,7 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(testUserAgent)
       expect(headers.get('User-Agent')).toBe(testUserAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
@@ -184,6 +185,7 @@ describe('ConnectorsAPI', () => {
       const callArgs = mockFetchWithRetry.mock.calls[0][1]
       const headers = callArgs?.headers as Headers
 
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(customUserAgent)
       expect(headers.get('User-Agent')).toBe(customUserAgent)
     })
   })
@@ -436,6 +438,7 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(testUserAgent)
       expect(headers.get('User-Agent')).toBe(testUserAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })

@@ -64,6 +64,30 @@ describe('AuthAPI', () => {
         'Quiltt Client ID is not set. Unable to identify & authenticate'
       )
     })
+
+    it('allows ping without clientId', async () => {
+      const authAPIWithoutClientId = new AuthAPI()
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse({ token: 'new-token' }))
+
+      await authAPIWithoutClientId.ping(token)
+
+      expect(errorSpy).not.toHaveBeenCalled()
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      expect(fetchOptions.method).toBe('GET')
+      expect(fetchOptions.headers.get('Authorization')).toBe(`Bearer ${token}`)
+    })
+
+    it('allows revoke without clientId', async () => {
+      const authAPIWithoutClientId = new AuthAPI()
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse(null, 204, 'No Content'))
+
+      await authAPIWithoutClientId.revoke(token)
+
+      expect(errorSpy).not.toHaveBeenCalled()
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      expect(fetchOptions.method).toBe('DELETE')
+      expect(fetchOptions.headers.get('Authorization')).toBe(`Bearer ${token}`)
+    })
   })
 
   describe('ping', () => {
