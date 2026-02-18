@@ -1,5 +1,13 @@
 # @quiltt/core
 
+## 5.0.3
+
+### Patch Changes
+
+- [#412](https://github.com/quiltt/quiltt-js/pull/412) [`099070b`](https://github.com/quiltt/quiltt-js/commit/099070b984f7375491e1c736bc3fbd35c93c7fd3) Thanks [@rubendinho](https://github.com/rubendinho)! - Improve User Agent telemetry
+
+- [#410](https://github.com/quiltt/quiltt-js/pull/410) [`628887c`](https://github.com/quiltt/quiltt-js/commit/628887cc592b492a1fb38ff5898aeda969140855) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Re-Export Upstream Packages
+
 ## 5.0.2
 
 ### Patch Changes
