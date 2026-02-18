@@ -39,6 +39,7 @@ describe('VersionLink', () => {
     expect(result).toEqual({
       headers: {
         'Quiltt-Client-Version': version,
+        'Quiltt-SDK-Agent': expect.stringContaining('Quiltt/'),
         'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
@@ -80,6 +81,7 @@ describe('VersionLink', () => {
       headers: {
         ...existingHeaders,
         'Quiltt-Client-Version': version,
+        'Quiltt-SDK-Agent': expect.stringContaining('Quiltt/'),
         'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
@@ -114,6 +116,7 @@ describe('VersionLink', () => {
     expect(result).toEqual({
       headers: {
         'Quiltt-Client-Version': version,
+        'Quiltt-SDK-Agent': expect.stringContaining('Quiltt/'),
         'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })

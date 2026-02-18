@@ -92,6 +92,7 @@ export class ConnectorsAPI {
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
     headers.set('User-Agent', this.userAgent)
+    headers.set('Quiltt-SDK-Agent', this.userAgent)
     headers.set('Authorization', `Bearer ${token}`)
 
     return {

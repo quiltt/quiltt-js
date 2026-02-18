@@ -12,6 +12,7 @@ export const createVersionLink = (platformInfo: string) => {
       headers: {
         ...headers,
         'Quiltt-Client-Version': version,
+        'Quiltt-SDK-Agent': userAgent,
         'User-Agent': userAgent,
       },
     }))
