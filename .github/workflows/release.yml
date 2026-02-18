@@ -20,9 +20,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup
+      - name: Setup environment
+        uses: ./.github/actions/setup
         with:
           build-packages: "false"
 
