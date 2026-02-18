@@ -1,11 +1,15 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "moduleDetection": "force",
+    "module": "preserve",
+    "noImplicitOverride": true,
     "strict": true,
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["jest", "detox/globals"]
+    "types": ["jest", "detox/globals"],
+    "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "e2e/**/*.ts"]
 }

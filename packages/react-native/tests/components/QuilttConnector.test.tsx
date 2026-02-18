@@ -5,6 +5,8 @@ import type { MockInstance } from 'vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react-native'
 
+import { ConnectorSDKEventType } from '@quiltt/core'
+
 import {
   checkConnectorUrl,
   handleOAuthUrl,
@@ -42,15 +44,13 @@ vi.mock('react-native-webview', () => ({
 }))
 
 // Mock Quiltt React
-vi.mock('@quiltt/react', () => ({
-  useQuilttSession: () => ({ session: { token: 'test-token' } }),
-  ConnectorSDKEventType: {
-    Load: 'Load',
-    ExitAbort: 'ExitAbort',
-    ExitError: 'ExitError',
-    ExitSuccess: 'ExitSuccess',
-  },
-}))
+vi.mock('@quiltt/react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@quiltt/react')>()
+  return {
+    ...actual,
+    useQuilttSession: () => ({ session: { token: 'test-token' } }),
+  }
+})
 
 // Helper to create a mock Response
 const createMockResponse = (status: number, body: any): Response => {
@@ -394,11 +394,7 @@ describe('QuilttConnector', () => {
 
       // capturedWebViewRef is the ref object from useRef inside the component
       // We need to set its `current` property to our mock WebView
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -436,11 +432,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -501,11 +493,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -535,11 +523,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -569,11 +553,7 @@ describe('QuilttConnector', () => {
       })
 
       const mockWebView = { injectJavaScript: mockInjectJavaScript }
-      if (
-        capturedWebViewRef &&
-        typeof capturedWebViewRef === 'object' &&
-        capturedWebViewRef !== null
-      ) {
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
         ;(capturedWebViewRef as any).current = mockWebView
       }
 
@@ -585,6 +565,381 @@ describe('QuilttConnector', () => {
       expect(injectedScript).toContain("console.log('OAuth callback message sent to connector')")
 
       consoleLogSpy.mockRestore()
+    })
+  })
+
+  describe('Event Handling via requestHandler', () => {
+    let mockInjectJavaScript: any
+
+    beforeEach(() => {
+      capturedWebViewProps = null
+      capturedWebViewRef = null
+      mockInjectJavaScript = vi.fn()
+    })
+
+    it('should handle ExitAbort event', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const onExitAbort = vi.fn()
+      const onExit = vi.fn()
+      const onEvent = vi.fn()
+
+      render(
+        <QuilttConnector
+          {...defaultProps}
+          onExitAbort={onExitAbort}
+          onExit={onExit}
+          onEvent={onEvent}
+        />
+      )
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewProps.onShouldStartLoadWithRequest).toBeDefined()
+      })
+
+      // Mock the WebView ref and injectJavaScript
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      // Simulate ExitAbort event
+      const result = requestHandler({
+        url: 'quilttconnector://ExitAbort?connectorId=test-connector',
+      })
+
+      // Should return false (not render)
+      expect(result).toBe(false)
+
+      // Wait for requestAnimationFrame callback
+      await waitFor(() => {
+        expect(onExitAbort).toHaveBeenCalledWith({ connectorId: 'test-connector' })
+        expect(onExit).toHaveBeenCalledWith(ConnectorSDKEventType.ExitAbort, {
+          connectorId: 'test-connector',
+        })
+        expect(onEvent).toHaveBeenCalledWith(ConnectorSDKEventType.ExitAbort, {
+          connectorId: 'test-connector',
+        })
+        // Should clear localStorage
+        expect(mockInjectJavaScript).toHaveBeenCalledWith('localStorage.clear();')
+      })
+    })
+
+    it('should handle ExitError event', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const onExitError = vi.fn()
+      const onExit = vi.fn()
+      const onEvent = vi.fn()
+
+      render(
+        <QuilttConnector
+          {...defaultProps}
+          onExitError={onExitError}
+          onExit={onExit}
+          onEvent={onEvent}
+        />
+      )
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      // Mock the WebView ref
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://ExitError?connectorId=test-connector',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(onExitError).toHaveBeenCalledWith({ connectorId: 'test-connector' })
+        expect(onExit).toHaveBeenCalledWith(ConnectorSDKEventType.ExitError, {
+          connectorId: 'test-connector',
+        })
+        expect(onEvent).toHaveBeenCalledWith(ConnectorSDKEventType.ExitError, {
+          connectorId: 'test-connector',
+        })
+        expect(mockInjectJavaScript).toHaveBeenCalledWith('localStorage.clear();')
+      })
+    })
+
+    it('should handle ExitSuccess event', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const onExitSuccess = vi.fn()
+      const onExit = vi.fn()
+      const onEvent = vi.fn()
+
+      render(
+        <QuilttConnector
+          {...defaultProps}
+          onExitSuccess={onExitSuccess}
+          onExit={onExit}
+          onEvent={onEvent}
+        />
+      )
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://ExitSuccess?connectionId=conn-123&profileId=prof-456',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(onExitSuccess).toHaveBeenCalledWith({
+          connectorId: 'test-connector',
+          connectionId: 'conn-123',
+          profileId: 'prof-456',
+        })
+        expect(onExit).toHaveBeenCalledWith(ConnectorSDKEventType.ExitSuccess, {
+          connectorId: 'test-connector',
+          connectionId: 'conn-123',
+          profileId: 'prof-456',
+        })
+        expect(mockInjectJavaScript).toHaveBeenCalledWith('localStorage.clear();')
+      })
+    })
+
+    it('should handle Authenticate event', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://Authenticate?connectorId=test-connector',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(consoleLogSpy).toHaveBeenCalledWith('Event: Authenticate')
+      })
+
+      consoleLogSpy.mockRestore()
+    })
+
+    it('should handle Navigate event with encoded URL', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const navigateUrl = encodeURIComponent('https://oauth.example.com/callback?code=test123')
+      const result = requestHandler({
+        url: `quilttconnector://Navigate?url=${navigateUrl}`,
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(Linking.openURL).toHaveBeenCalled()
+      })
+    })
+
+    it('should handle Navigate event with non-encoded URL', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://Navigate?url=https://oauth.example.com/callback',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(Linking.openURL).toHaveBeenCalled()
+      })
+    })
+
+    it('should handle Navigate event with missing URL parameter', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://Navigate',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Navigate URL missing from request')
+      })
+
+      consoleErrorSpy.mockRestore()
+    })
+
+    it('should handle unhandled event types', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://UnknownEvent?connectorId=test-connector',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(consoleLogSpy).toHaveBeenCalledWith('Unhandled event: UnknownEvent')
+      })
+
+      consoleLogSpy.mockRestore()
+    })
+
+    it('should parse metadata with profileId, connectionId, and connectorSession', async () => {
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      const onLoad = vi.fn()
+
+      render(<QuilttConnector {...defaultProps} onLoad={onLoad} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+      })
+
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      const requestHandler = capturedWebViewProps.onShouldStartLoadWithRequest
+
+      const result = requestHandler({
+        url: 'quilttconnector://Load?profileId=prof-123&connectionId=conn-456&connectorSession=session-789',
+      })
+
+      expect(result).toBe(false)
+
+      await waitFor(() => {
+        expect(onLoad).toHaveBeenCalledWith({
+          connectorId: 'test-connector',
+          profileId: 'prof-123',
+          connectionId: 'conn-456',
+          connectorSession: { id: 'session-789' },
+        })
+      })
+    })
+  })
+
+  describe('onLoadEnd callback', () => {
+    let mockInjectJavaScript: any
+
+    beforeEach(() => {
+      capturedWebViewProps = null
+      capturedWebViewRef = null
+      mockInjectJavaScript = vi.fn()
+    })
+
+    it('should inject header scroll disable script on iOS when onLoadEnd is called', async () => {
+      Platform.OS = 'ios'
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewProps.onLoadEnd).toBeDefined()
+      })
+
+      // Mock the WebView ref
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      // Call onLoadEnd
+      capturedWebViewProps.onLoadEnd()
+
+      // Verify that JavaScript was injected to disable header scrolling
+      expect(mockInjectJavaScript).toHaveBeenCalledWith(
+        expect.stringContaining("header.style.position = 'fixed'")
+      )
+      expect(mockInjectJavaScript).toHaveBeenCalledWith(
+        expect.stringContaining("header.style.top = '0'")
+      )
+      expect(mockInjectJavaScript).toHaveBeenCalledWith(
+        expect.stringContaining("header.style.zIndex = '1000'")
+      )
+    })
+
+    it('should not inject header scroll script on Android when onLoadEnd is called', async () => {
+      Platform.OS = 'android'
+      fetchSpy.mockResolvedValue(createMockResponse(200, { ok: true }))
+
+      render(<QuilttConnector {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedWebViewProps).toBeTruthy()
+        expect(capturedWebViewProps.onLoadEnd).toBeDefined()
+      })
+
+      // Mock the WebView ref
+      const mockWebView = { injectJavaScript: mockInjectJavaScript }
+      if (capturedWebViewRef && typeof capturedWebViewRef === 'object') {
+        ;(capturedWebViewRef as any).current = mockWebView
+      }
+
+      // Call onLoadEnd
+      capturedWebViewProps.onLoadEnd()
+
+      // Verify that JavaScript was NOT injected on Android
+      expect(mockInjectJavaScript).not.toHaveBeenCalled()
     })
   })
 })
