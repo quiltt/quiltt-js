@@ -199,7 +199,7 @@ The following secrets must be configured in the GitHub repository:
 
 - `NPM_TOKEN`: npm access token with publish permissions
   - **Important**: As of December 2025, npm requires granular access tokens that expire after 90 days and require 2FA by default. Classic tokens have been revoked. You'll need to rotate this token every 90 days to avoid CI/CD disruption.
-- `GITHUB_TOKEN`: Automatically provided by GitHub Actions
+- `QUILTTY_RELEASE_GITHUB_TOKEN`: Custom token for GitHub API interactions
 
 ### Workflow Triggers
 
