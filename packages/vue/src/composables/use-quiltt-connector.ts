@@ -24,7 +24,13 @@
 
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 
-import type { ConnectorSDK, ConnectorSDKCallbacks, ConnectorSDKConnector } from '@quiltt/core'
+import type {
+  ConnectorSDK,
+  ConnectorSDKCallbacks,
+  ConnectorSDKConnector,
+  Maybe,
+  QuilttJWT,
+} from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
 
 import { version } from '../version'
@@ -92,7 +98,26 @@ export const useQuilttConnector = (
   connectorId?: string,
   options?: UseQuilttConnectorOptions
 ): UseQuilttConnectorReturn => {
-  const { session } = useQuilttSession()
+  const session = ref<Maybe<QuilttJWT | undefined>>()
+
+  try {
+    const quilttSession = useQuilttSession()
+    session.value = quilttSession.session.value
+
+    watch(
+      () => quilttSession.session.value,
+      (nextSession) => {
+        session.value = nextSession
+      },
+      { immediate: true }
+    )
+  } catch (error) {
+    console.warn(
+      '[Quiltt] useQuilttConnector: QuilttPlugin not found in the current app context. ' +
+        'Continuing without session authentication.',
+      error
+    )
+  }
 
   const connector = ref<ConnectorSDKConnector | undefined>()
   const isLoaded = ref(false)

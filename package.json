@@ -45,6 +45,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
+      "@parcel/watcher",
       "@swc/core",
       "detox",
       "dtrace-provider",

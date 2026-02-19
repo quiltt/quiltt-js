@@ -1,13 +1,23 @@
 import { createApp, nextTick, ref } from 'vue'
 
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+const flags = vi.hoisted(() => ({
+  throwMissingPlugin: false,
+}))
 
 const sessionRef = ref<{ token?: string } | null>({ token: 'session_token' })
 
 vi.mock('@/composables/use-quiltt-session', () => ({
-  useQuilttSession: () => ({
-    session: sessionRef,
-  }),
+  useQuilttSession: () => {
+    if (flags.throwMissingPlugin) {
+      throw new Error('missing plugin context')
+    }
+
+    return {
+      session: sessionRef,
+    }
+  },
 }))
 
 import { useQuilttConnector } from '@/composables/use-quiltt-connector'
@@ -36,6 +46,10 @@ const mountComposable = <T>(factory: () => T) => {
 }
 
 describe('useQuilttConnector', () => {
+  afterEach(() => {
+    flags.throwMissingPlugin = false
+  })
+
   it('throws when opening without connectorId', () => {
     ;(globalThis as any).Quiltt = {
       authenticate: vi.fn(),
@@ -148,6 +162,49 @@ describe('useQuilttConnector', () => {
     onExitCallbacks[0]?.('Exit', {})
 
     consoleErrorSpy.mockRestore()
+    delete (globalThis as any).Quiltt
+  })
+
+  it('does not throw when session plugin context is unavailable', async () => {
+    flags.throwMissingPlugin = true
+
+    const connector = {
+      open: vi.fn(),
+      onEvent: vi.fn(),
+      onOpen: vi.fn(),
+      onLoad: vi.fn(),
+      onExit: vi.fn(),
+      onExitSuccess: vi.fn(),
+      onExitAbort: vi.fn(),
+      onExitError: vi.fn(),
+    }
+
+    ;(globalThis as any).Quiltt = {
+      authenticate: vi.fn(),
+      connect: vi.fn(() => connector),
+      reconnect: vi.fn(() => connector),
+    }
+
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const { result, unmount } = mountComposable(() => useQuilttConnector('connector_test'))
+
+    await nextTick()
+    await nextTick()
+
+    result.open()
+    await nextTick()
+    await nextTick()
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('QuilttPlugin not found in the current app context'),
+      expect.any(Error)
+    )
+    expect((globalThis as any).Quiltt.authenticate).toHaveBeenCalledWith(undefined)
+    expect(connector.open).toHaveBeenCalledTimes(1)
+
+    unmount()
+    consoleWarnSpy.mockRestore()
     delete (globalThis as any).Quiltt
   })
 })

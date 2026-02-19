@@ -115,6 +115,15 @@
       "tailwindDirectives": true
     }
   },
+  "html": {
+    "formatter": {
+      "enabled": false
+    },
+    "linter": {
+      "enabled": true
+    },
+    "experimentalFullSupportEnabled": true
+  },
   "javascript": {
     "formatter": {
       "enabled": true,
