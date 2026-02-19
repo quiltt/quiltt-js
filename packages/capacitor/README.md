@@ -5,6 +5,12 @@
 
 Quiltt Connector SDK for Capacitor and Ionic apps on iOS, Android, and web.
 
+| Import | Use Case |
+|--------|----------|
+| `@quiltt/capacitor` | Any framework (Vue, Angular, Svelte, vanilla JS) |
+| `@quiltt/capacitor/vue` | Vue 3 components and composables |
+| `@quiltt/capacitor/react` | React components and hooks |
+
 ## Installation
 
 ```shell
@@ -12,39 +18,11 @@ npm install @quiltt/capacitor
 npx cap sync
 ```
 
-## Quick Start
+## Deep Link Configuration
 
-```tsx
-import { QuilttProvider, QuilttConnector } from '@quiltt/capacitor'
-import type { ConnectorSDKCallbackMetadata } from '@quiltt/capacitor'
+Configure URL schemes for OAuth callbacks from bank authentication.
 
-export const App = () => {
-  const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
-    console.log('Connected:', metadata.connectionId)
-  }
-
-  return (
-    <QuilttProvider token="<SESSION_TOKEN>">
-      <QuilttConnector
-        connectorId="<CONNECTOR_ID>"
-        appLauncherUri="myapp://oauth"
-        onExitSuccess={handleExitSuccess}
-        style={{ flex: 1 }}
-      />
-    </QuilttProvider>
-  )
-}
-```
-
-The `QuilttConnector` component automatically handles OAuth flows—opening bank authentication in the system browser and listening for deep link callbacks when users return.
-
-## Platform Configuration
-
-Configure deep links so your app can receive OAuth callbacks from bank authentication.
-
-### iOS
-
-Add to `ios/App/Info.plist`:
+**iOS** — `ios/App/Info.plist`:
 
 ```xml
 <key>CFBundleURLTypes</key>
@@ -58,9 +36,7 @@ Add to `ios/App/Info.plist`:
 </array>
 ```
 
-### Android
-
-Add to your activity in `android/app/src/main/AndroidManifest.xml`:
+**Android** — `android/app/src/main/AndroidManifest.xml`:
 
 ```xml
 <intent-filter>
@@ -71,106 +47,158 @@ Add to your activity in `android/app/src/main/AndroidManifest.xml`:
 </intent-filter>
 ```
 
-## Usage
+## Vue 3
 
-### QuilttConnector (Recommended)
-
-Full-screen embedded connector with automatic OAuth handling:
-
-```tsx
-import { QuilttConnector } from '@quiltt/capacitor'
-
-<QuilttConnector
-  connectorId="<CONNECTOR_ID>"
-  appLauncherUri="myapp://oauth"
-  onExitSuccess={(metadata) => console.log('Connected:', metadata.connectionId)}
-  onExitAbort={() => navigation.goBack()}
-  style={{ flex: 1 }}
-/>
+```shell
+npm install @quiltt/capacitor @quiltt/vue vue
 ```
 
-### QuilttButton
+```typescript
+// main.ts
+import { createApp } from 'vue'
+import { QuilttPlugin } from '@quiltt/capacitor/vue'
 
-Modal-based connector for quick integration:
+createApp(App).use(QuilttPlugin).mount('#app')
+```
+
+```vue
+<script setup lang="ts">
+import { QuilttConnector, QuilttConnectorPlugin } from '@quiltt/capacitor/vue'
+import { onMounted, onUnmounted, ref } from 'vue'
+
+const connectorRef = ref()
+
+onMounted(() => {
+  QuilttConnectorPlugin.addListener('deepLink', ({ url }) => {
+    connectorRef.value?.handleOAuthCallback(url)
+  })
+})
+onUnmounted(() => QuilttConnectorPlugin.removeAllListeners())
+</script>
+
+<template>
+  <QuilttConnector
+    ref="connectorRef"
+    connector-id="<CONNECTOR_ID>"
+    app-launcher-uri="myapp://oauth"
+    @exit-success="(m) => console.log('Connected:', m.connectionId)"
+    @navigate="(url) => QuilttConnectorPlugin.openUrl({ url })"
+    style="width: 100%; height: 100vh"
+  />
+</template>
+```
+
+For modal-based connection:
+
+```vue
+<QuilttButton connector-id="<CONNECTOR_ID>" @exit-success="handleSuccess">
+  Add Bank Account
+</QuilttButton>
+```
+
+## React
+
+```shell
+npm install @quiltt/capacitor @quiltt/react react react-dom
+```
 
 ```tsx
-import { QuilttButton } from '@quiltt/capacitor'
+import { QuilttProvider, QuilttConnector } from '@quiltt/capacitor/react'
 
+export const App = () => (
+  <QuilttProvider token="<SESSION_TOKEN>">
+    <QuilttConnector
+      connectorId="<CONNECTOR_ID>"
+      appLauncherUri="myapp://oauth"
+      onExitSuccess={(m) => console.log('Connected:', m.connectionId)}
+      style={{ flex: 1 }}
+    />
+  </QuilttProvider>
+)
+```
+
+OAuth is handled automatically—bank auth opens in the system browser and deep link callbacks are captured on return.
+
+For modal-based connection:
+
+```tsx
 <QuilttButton connectorId="<CONNECTOR_ID>" onExitSuccess={handleSuccess}>
   Add Account
 </QuilttButton>
 ```
 
-### Reconnection Flow
+## Other Frameworks
 
-Pass a `connectionId` to reconnect an existing connection:
+Use the native plugin directly with Angular, Svelte, or vanilla JS:
+
+```typescript
+import { QuilttConnector } from '@quiltt/capacitor'
+
+// Open OAuth URL in system browser
+await QuilttConnector.openUrl({ url: 'https://...' })
+
+// Listen for deep link callbacks
+await QuilttConnector.addListener('deepLink', ({ url }) => {
+  console.log('OAuth callback:', url)
+})
+```
+
+## Reconnection
+
+Pass a `connectionId` / `connection-id` to reconnect an existing connection:
 
 ```tsx
-<QuilttConnector
-  connectorId="<CONNECTOR_ID>"
-  connectionId="<EXISTING_CONNECTION_ID>"
-  appLauncherUri="myapp://oauth"
-  onExitSuccess={handleSuccess}
-/>
+<QuilttConnector connectionId="<EXISTING_CONNECTION_ID>" ... />
 ```
 
 ## API Reference
 
-### QuilttConnector Props
+### Native Plugin
+
+```typescript
+import { QuilttConnector } from '@quiltt/capacitor'
+```
+
+| Method | Description |
+|--------|-------------|
+| `openUrl({ url })` | Opens URL in system browser |
+| `getLaunchUrl()` | Returns the URL that launched the app |
+| `addListener('deepLink', callback)` | Listens for deep link callbacks |
+| `removeAllListeners()` | Removes all event listeners |
+
+### Component Props
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `connectorId` | `string` | **Required.** Your Quiltt Connector ID |
+| `connectorId` | `string` | **Required.** Quiltt Connector ID |
 | `connectionId` | `string` | Existing connection ID for reconnection |
-| `institution` | `string` | Pre-select a specific institution |
-| `appLauncherUri` | `string` | Deep link URL for OAuth callbacks (e.g., `myapp://oauth`) |
-| `style` | `CSSProperties` | Inline styles for the container |
-| `className` | `string` | CSS class name |
+| `institution` | `string` | Pre-select an institution |
+| `appLauncherUri` | `string` | Deep link URL for OAuth callbacks |
 | `onLoad` | `(metadata) => void` | Connector loaded |
 | `onExitSuccess` | `(metadata) => void` | Connection successful |
 | `onExitAbort` | `(metadata) => void` | User cancelled |
 | `onExitError` | `(metadata) => void` | Error occurred |
-| `onEvent` | `(event, metadata) => void` | All events |
 
-### QuilttConnectorPlugin
+### Re-exports
 
-Native plugin for advanced use cases:
+`@quiltt/capacitor/react` re-exports everything from `@quiltt/react`:
+- Components: `QuilttProvider`, `QuilttButton`, `QuilttContainer`
+- Hooks: `useQuilttAuth`, `useQuilttSession`, `useQuilttConnector`
+- Apollo Client: `useQuery`, `useMutation`, `gql`
 
-```typescript
-import { QuilttConnectorPlugin } from '@quiltt/capacitor'
-
-// Open URL in system browser
-await QuilttConnectorPlugin.openUrl({ url: 'https://...' })
-
-// Get URL that launched the app
-const { url } = await QuilttConnectorPlugin.getLaunchUrl()
-
-// Listen for deep links
-const listener = await QuilttConnectorPlugin.addListener('deepLink', ({ url }) => {
-  console.log('Deep link:', url)
-})
-```
-
-### Re-exported from @quiltt/react
-
-All `@quiltt/react` exports are available, including:
-
-- `QuilttProvider`, `QuilttButton`, `QuilttContainer`
-- `useQuilttAuth`, `useQuilttSession`, `useQuilttConnector`
-- Apollo Client utilities (`useQuery`, `useMutation`, `gql`)
+`@quiltt/capacitor/vue` re-exports everything from `@quiltt/vue`.
 
 ## Troubleshooting
 
 **OAuth redirects not working**
-- Verify `appLauncherUri` matches your configured URL scheme
-- Ensure platform deep link configuration is correct
+- Verify `appLauncherUri` matches your URL scheme
 - Run `npx cap sync` after configuration changes
 
 **Blank screen after bank auth**
-- Check browser console for CORS or loading errors
-- Verify your Connector ID is correct
+- Check browser console for errors
+- Verify your Connector ID
 
-## Documentation
+## Resources
 
 - [Capacitor SDK Guide](https://www.quiltt.dev/connector/sdk/capacitor)
 - [Issuing Session Tokens](https://www.quiltt.dev/authentication/issuing-session-tokens)
@@ -178,10 +206,4 @@ All `@quiltt/react` exports are available, including:
 
 ## License
 
-MIT. See [LICENSE](LICENSE.md).
-
-## Related Packages
-
-- [`@quiltt/react`](../react#readme) - React components and hooks
-- [`@quiltt/react-native`](../react-native#readme) - React Native SDK
-- [`@quiltt/core`](../core#readme) - Core types and utilities
+MIT

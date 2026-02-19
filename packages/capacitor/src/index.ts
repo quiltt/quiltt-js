@@ -1,11 +1,32 @@
-// Re-export all @quiltt/react functionality for convenience
-// This allows Capacitor users to import everything from @quiltt/capacitor
-export * from '@quiltt/react'
+/**
+ * @quiltt/capacitor - Framework-agnostic Capacitor plugin for Quiltt Connector
+ *
+ * This entry point provides the native Capacitor plugin without any
+ * framework dependencies. Works with Vue, Angular, Svelte, vanilla JS, etc.
+ *
+ * For React apps, import from '@quiltt/capacitor/react' instead.
+ *
+ * @example
+ * ```typescript
+ * import { QuilttConnector } from '@quiltt/capacitor'
+ *
+ * // Open OAuth URL in system browser
+ * await QuilttConnector.openUrl({ url: 'https://...' })
+ *
+ * // Listen for deep link callbacks
+ * await QuilttConnector.addListener('deepLink', ({ url }) => {
+ *   console.log('OAuth callback:', url)
+ * })
+ * ```
+ */
 
-export type { QuilttConnectorHandle } from './components'
-// Export Capacitor-specific QuilttConnector component
-export { QuilttConnector } from './components'
-// Export plugin type definitions
-export * from './definitions'
-// Export native plugin for advanced use cases
-export { QuilttConnector as QuilttConnectorPlugin } from './plugin'
+// Export type definitions
+export type {
+  QuilttConnectorPlugin,
+  OpenUrlOptions,
+  DeepLinkEvent,
+  DeepLinkListener,
+} from './definitions'
+
+// Export native plugin
+export { QuilttConnector } from './plugin'
