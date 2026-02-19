@@ -136,7 +136,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
             break
 
           default:
-            // Unknown event type
+            // console.log(`Unhandled event: ${eventType}`)
             break
         }
       },
