@@ -38,8 +38,5 @@ npm-debug.log
 
 # RN SDK
 
-# API key stored here
-**/ErrorReporterConfig.ts
-
 # Tests
 coverage/**/*
