@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "node16",
+    "moduleResolution": "node16",
+    "verbatimModuleSyntax": false,
+    "isolatedModules": false,
+    "types": ["jest", "detox/globals", "node"]
+  },
+  "include": ["./**/*.ts"]
+}

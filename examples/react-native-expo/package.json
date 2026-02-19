@@ -2,6 +2,7 @@
   "name": "@quiltt/examples-react-native-expo",
   "version": "1.0.0",
   "main": "expo-router/entry",
+  "type": "commonjs",
   "scripts": {
     "prebuild": "CI=1 expo prebuild",
     "prebuild:clean": "CI=1 expo prebuild --clean",
