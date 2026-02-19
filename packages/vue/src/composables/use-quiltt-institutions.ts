@@ -100,5 +100,3 @@ export const useQuilttInstitutions = (
     setSearchTerm,
   }
 }
-
-export default useQuilttInstitutions

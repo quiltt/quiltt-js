@@ -49,5 +49,3 @@ export const useStorage = <T>(key: string, initialState?: Maybe<T>) => {
     setStorage,
   }
 }
-
-export default useStorage

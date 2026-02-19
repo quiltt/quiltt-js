@@ -87,6 +87,52 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       return url.toString()
     }, [connectorId, session?.token, connectionId, institution, appLauncherUri])
 
+    const postOAuthCallbackToIframe = useCallback((callbackUrl: string) => {
+      if (!iframeRef.current?.contentWindow) {
+        return
+      }
+
+      iframeRef.current.contentWindow.postMessage(
+        {
+          type: 'quiltt:connector:oauthCallback',
+          payload: { url: callbackUrl },
+        },
+        '*'
+      )
+
+      try {
+        const callback = new URL(callbackUrl)
+        const params: Record<string, string> = {}
+        callback.searchParams.forEach((value, key) => {
+          params[key] = value
+        })
+
+        iframeRef.current.contentWindow.postMessage(
+          {
+            source: 'quiltt',
+            type: 'OAuthCallback',
+            data: {
+              url: callbackUrl,
+              params,
+            },
+          },
+          '*'
+        )
+      } catch {
+        iframeRef.current.contentWindow.postMessage(
+          {
+            source: 'quiltt',
+            type: 'OAuthCallback',
+            data: {
+              url: callbackUrl,
+              params: {},
+            },
+          },
+          '*'
+        )
+      }
+    }, [])
+
     // Handle messages from the iframe
     const handleMessage = useCallback(
       (event: MessageEvent) => {
@@ -152,53 +198,32 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
     // Listen for OAuth callbacks via deep links
     useEffect(() => {
       const listener = QuilttConnectorPlugin.addListener('deepLink', (event) => {
-        if (event.url && iframeRef.current?.contentWindow) {
-          // Send OAuth callback URL to iframe
-          iframeRef.current.contentWindow.postMessage(
-            {
-              type: 'quiltt:connector:oauthCallback',
-              payload: { url: event.url },
-            },
-            '*'
-          )
+        if (event.url) {
+          postOAuthCallbackToIframe(event.url)
         }
       })
 
       // Check if app was launched with a URL
       QuilttConnectorPlugin.getLaunchUrl().then((result) => {
-        if (result?.url && iframeRef.current?.contentWindow) {
-          iframeRef.current.contentWindow.postMessage(
-            {
-              type: 'quiltt:connector:oauthCallback',
-              payload: { url: result.url },
-            },
-            '*'
-          )
+        if (result?.url) {
+          postOAuthCallbackToIframe(result.url)
         }
       })
 
       return () => {
         listener.then((l) => l.remove())
       }
-    }, [])
+    }, [postOAuthCallbackToIframe])
 
     // Expose method to handle OAuth callbacks from parent component
     useImperativeHandle(
       ref,
       () => ({
         handleOAuthCallback: (callbackUrl: string) => {
-          if (iframeRef.current?.contentWindow) {
-            iframeRef.current.contentWindow.postMessage(
-              {
-                type: 'quiltt:connector:oauthCallback',
-                payload: { url: callbackUrl },
-              },
-              '*'
-            )
-          }
+          postOAuthCallbackToIframe(callbackUrl)
         },
       }),
-      []
+      [postOAuthCallbackToIframe]
     )
 
     return (
@@ -220,5 +245,3 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
 )
 
 QuilttConnector.displayName = 'QuilttConnector'
-
-export default QuilttConnector

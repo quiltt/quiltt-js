@@ -8,7 +8,7 @@ import { ConnectorsAPI } from '@quiltt/core'
 import { getUserAgent } from '@/utils'
 import { version } from '@/version'
 
-import useSession from './useSession'
+import { useSession } from './useSession'
 
 export type UseQuilttResolvable = (
   connectorId: string,
@@ -109,5 +109,3 @@ export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCal
     error,
   }
 }
-
-export default useQuilttResolvable

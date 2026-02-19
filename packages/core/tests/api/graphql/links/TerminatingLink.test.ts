@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { ApolloLink } from '@apollo/client/core'
 import { gql } from '@apollo/client/core'
 
-import TerminatingLink from '@/api/graphql/links/TerminatingLink'
+import { TerminatingLink } from '@/api/graphql/links/TerminatingLink'
 
 describe('TerminatingLink', () => {
   it('should return an Observable that immediately completes', () => {

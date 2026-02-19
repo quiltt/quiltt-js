@@ -6,5 +6,3 @@ export const TerminatingLink = new ApolloLink(() => {
     observer.complete()
   })
 })
-
-export default TerminatingLink

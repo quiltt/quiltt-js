@@ -9,5 +9,3 @@ export const RetryLink = new ApolloRetryLink({
     },
   },
 })
-
-export default RetryLink

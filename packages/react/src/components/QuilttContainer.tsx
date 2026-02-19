@@ -142,5 +142,3 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
     </Container>
   )
 }
-
-export default QuilttContainer

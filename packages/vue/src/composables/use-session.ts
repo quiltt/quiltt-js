@@ -72,5 +72,3 @@ export const useSession = (storageKey = 'session') => {
     setSession,
   }
 }
-
-export default useSession

@@ -16,7 +16,7 @@ type SubscriptionCallbacks = {
   received?: (payload: unknown) => void
 }
 
-class ActionCableLink extends ApolloLink {
+export class ActionCableLink extends ApolloLink {
   cables: { [id: string]: Consumer }
   channelName: string
   actionName: string
@@ -108,5 +108,3 @@ class ActionCableLink extends ApolloLink {
     })
   }
 }
-
-export default ActionCableLink

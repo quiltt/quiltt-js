@@ -87,5 +87,3 @@ export const useQuilttResolvable = (
     error: computed(() => error.value),
   }
 }
-
-export default useQuilttResolvable

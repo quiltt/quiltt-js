@@ -9,7 +9,7 @@ import { useDebounce } from 'use-debounce'
 import { getUserAgent } from '@/utils'
 import { version } from '@/version'
 
-import useSession from './useSession'
+import { useSession } from './useSession'
 
 export type UseQuilttInstitutions = (
   connectorId: string,
@@ -104,5 +104,3 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
     setSearchTerm: startSearch,
   }
 }
-
-export default useQuilttInstitutions

@@ -69,5 +69,3 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
 
   return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
 }
-
-export default QuilttAuthProvider

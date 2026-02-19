@@ -69,5 +69,3 @@ export const useQuilttRenderGuard = (componentName: string) => {
     }
   }, [isRenderingProvider, componentName])
 }
-
-export default useQuilttRenderGuard

@@ -10,5 +10,3 @@ export const BatchHttpLink = new ApolloBatchHttpLink({
   uri: endpointGraphQL,
   fetch: effectiveFetch,
 })
-
-export default BatchHttpLink

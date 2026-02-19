@@ -101,5 +101,3 @@ export const useSession = (storageKey = 'session'): [Maybe<QuilttJWT> | undefine
 
   return [session, setSession]
 }
-
-export default useSession

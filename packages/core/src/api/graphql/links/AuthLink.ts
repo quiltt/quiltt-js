@@ -37,5 +37,3 @@ export class AuthLink extends ApolloLink {
     return forward(operation)
   }
 }
-
-export default AuthLink

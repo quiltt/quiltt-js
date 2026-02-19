@@ -132,6 +132,17 @@ describe('QuilttConnector (capacitor)', () => {
       },
       '*'
     )
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      {
+        source: 'quiltt',
+        type: 'OAuthCallback',
+        data: {
+          url: 'myapp://oauth',
+          params: {},
+        },
+      },
+      '*'
+    )
 
     await Promise.resolve()
     await Promise.resolve()
@@ -143,12 +154,34 @@ describe('QuilttConnector (capacitor)', () => {
       },
       '*'
     )
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      {
+        source: 'quiltt',
+        type: 'OAuthCallback',
+        data: {
+          url: 'myapp://launch',
+          params: {},
+        },
+      },
+      '*'
+    )
 
     connectorRef.current?.handleOAuthCallback('myapp://manual')
     expect(postMessageSpy).toHaveBeenCalledWith(
       {
         type: 'quiltt:connector:oauthCallback',
         payload: { url: 'myapp://manual' },
+      },
+      '*'
+    )
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      {
+        source: 'quiltt',
+        type: 'OAuthCallback',
+        data: {
+          url: 'myapp://manual',
+          params: {},
+        },
       },
       '*'
     )

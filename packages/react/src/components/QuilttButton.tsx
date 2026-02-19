@@ -174,5 +174,3 @@ export const QuilttButton = <T extends ElementType = 'button'>({
     </Button>
   )
 }
-
-export default QuilttButton

@@ -9,5 +9,3 @@ export const useQuilttSettings = () => {
 
   return settings
 }
-
-export default useQuilttSettings

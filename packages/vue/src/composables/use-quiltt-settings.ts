@@ -9,5 +9,3 @@ export const useQuilttSettings = () => {
     clientId: computed(() => clientIdRef?.value),
   }
 }
-
-export default useQuilttSettings
