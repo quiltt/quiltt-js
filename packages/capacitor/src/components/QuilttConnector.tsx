@@ -22,6 +22,24 @@ type QuilttConnectorProps = {
   className?: string
 } & ConnectorSDKCallbacks
 
+const trustedQuilttHostSuffixes = ['quiltt.io', 'quiltt.dev']
+
+const isTrustedQuilttOrigin = (origin: string): boolean => {
+  try {
+    const originUrl = new URL(origin)
+    if (originUrl.protocol !== 'https:') {
+      return false
+    }
+
+    const hostname = originUrl.hostname.toLowerCase()
+    return trustedQuilttHostSuffixes.some(
+      (suffix) => hostname === suffix || hostname.endsWith(`.${suffix}`)
+    )
+  } catch {
+    return false
+  }
+}
+
 /**
  * QuilttConnector component for Capacitor apps
  * Embeds the Quiltt Connector in an iframe and handles OAuth flows via native plugins
@@ -73,7 +91,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
     const handleMessage = useCallback(
       (event: MessageEvent) => {
         // Validate origin
-        if (!event.origin.includes('quiltt.io') && !event.origin.includes('quiltt.dev')) {
+        if (!isTrustedQuilttOrigin(event.origin)) {
           return
         }
 

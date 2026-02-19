@@ -13,6 +13,9 @@
             "groups": [
               ["react", "react/**"],
               ["react-dom", "react-dom/**"],
+              ["vue", "vue/**"],
+              ["svelte", "svelte/**"],
+              ["angular", "angular/**"],
               ["react-native", "react-native/**"],
               ["expo", "expo/**", "expo-*", "expo-*/**"],
               ["next", "next/**"],

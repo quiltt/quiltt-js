@@ -43,7 +43,10 @@ export const QuilttContainer = defineComponent({
       type: String as PropType<string | undefined>,
       default: undefined,
     },
-    /** @deprecated Use appLauncherUri instead */
+    /**
+     * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+     * The OAuth redirect URL for mobile or embedded webview flows.
+     */
     oauthRedirectUrl: {
       type: String as PropType<string | undefined>,
       default: undefined,
@@ -71,9 +74,7 @@ export const QuilttContainer = defineComponent({
   },
 
   setup(props, { emit, slots }) {
-    const effectiveAppLauncherUri = computed(
-      () => props.appLauncherUri ?? props.oauthRedirectUrl
-    )
+    const effectiveAppLauncherUri = computed(() => props.appLauncherUri ?? props.oauthRedirectUrl)
 
     const { open } = useQuilttConnector(props.connectorId, {
       connectionId: props.connectionId,

@@ -24,16 +24,11 @@
 
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 
-import type {
-  ConnectorSDK,
-  ConnectorSDKCallbacks,
-  ConnectorSDKConnector,
-  ConnectorSDKConnectorOptions,
-} from '@quiltt/core'
+import type { ConnectorSDK, ConnectorSDKCallbacks, ConnectorSDKConnector } from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
 
-import { useQuilttSession } from './use-quiltt-session'
 import { version } from '../version'
+import { useQuilttSession } from './use-quiltt-session'
 
 declare const Quiltt: ConnectorSDK
 
@@ -41,7 +36,10 @@ export interface UseQuilttConnectorOptions extends ConnectorSDKCallbacks {
   connectionId?: string
   institution?: string
   appLauncherUri?: string
-  /** @deprecated Use appLauncherUri instead */
+  /**
+   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   * The OAuth redirect URL for mobile or embedded webview flows.
+   */
   oauthRedirectUrl?: string
   nonce?: string
 }

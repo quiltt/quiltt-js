@@ -22,11 +22,10 @@
 
 // Export type definitions
 export type {
-  QuilttConnectorPlugin,
-  OpenUrlOptions,
   DeepLinkEvent,
   DeepLinkListener,
+  OpenUrlOptions,
+  QuilttConnectorPlugin,
 } from './definitions'
-
 // Export native plugin
 export { QuilttConnector } from './plugin'

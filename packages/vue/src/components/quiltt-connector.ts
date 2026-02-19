@@ -13,15 +13,8 @@
  * ```
  */
 
-import {
-  computed,
-  defineComponent,
-  h,
-  onMounted,
-  onUnmounted,
-  ref,
-  type PropType,
-} from 'vue'
+import type { PropType } from 'vue'
+import { computed, defineComponent, h, onMounted, onUnmounted, ref } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
@@ -77,6 +70,9 @@ export const QuilttConnector = defineComponent({
     const iframeRef = ref<HTMLIFrameElement>()
     const { session } = useQuilttSession()
 
+    const allowedOrigins = ['https://quiltt.io', 'https://quiltt.dev']
+    const isAllowedOrigin = (origin: string) => allowedOrigins.includes(origin)
+
     // Build connector URL
     const connectorUrl = computed(() => {
       const url = new URL(`/v1/connectors/${props.connectorId}`, cdnBase)
@@ -100,7 +96,7 @@ export const QuilttConnector = defineComponent({
 
     // Handle messages from the iframe
     const handleMessage = (event: MessageEvent) => {
-      if (!event.origin.includes('quiltt.io') && !event.origin.includes('quiltt.dev')) {
+      if (!isAllowedOrigin(event.origin)) {
         return
       }
 

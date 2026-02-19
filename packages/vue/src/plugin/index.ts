@@ -15,9 +15,9 @@
  */
 
 export {
-  QuilttSessionKey,
-  QuilttSetSessionKey,
   QuilttClientIdKey,
   type QuilttPluginOptions,
+  QuilttSessionKey,
+  QuilttSetSessionKey,
 } from './keys'
 export { QuilttPlugin } from './quiltt-plugin'

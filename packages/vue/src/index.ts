@@ -29,6 +29,6 @@ export * from '@quiltt/core/types'
 // Vue-specific exports
 // ============================================================================
 // Quiltt Vue plugin, composables, and components for Vue 3 applications.
-export * from './plugin'
-export * from './composables'
 export * from './components'
+export * from './composables'
+export * from './plugin'

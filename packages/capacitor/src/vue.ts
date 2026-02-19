@@ -38,6 +38,5 @@ export * from '@quiltt/vue'
 
 // Export plugin type definitions
 export * from './definitions'
-
 // Export native plugin for OAuth handling
 export { QuilttConnector as QuilttConnectorPlugin } from './plugin'
