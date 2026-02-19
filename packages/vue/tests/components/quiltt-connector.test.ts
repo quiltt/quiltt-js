@@ -52,6 +52,27 @@ describe('QuilttConnector', () => {
     app.unmount()
   })
 
+  it('does not include token in iframe src when session token is missing', () => {
+    sessionRef.value = null
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttConnector, { connectorId: 'connector_test' }),
+    })
+
+    app.mount(root)
+
+    const iframe = root.querySelector('iframe') as HTMLIFrameElement | null
+    const src = iframe?.getAttribute('src') || ''
+
+    expect(src).toContain('/v1/connectors/connector_test')
+    expect(src).not.toContain('token=')
+
+    app.unmount()
+  })
+
   it('emits connector events only for allowed origins', () => {
     const onEvent = vi.fn()
     const onExitSuccess = vi.fn()
@@ -115,5 +136,145 @@ describe('QuilttConnector', () => {
     expect(onExitSuccess).toHaveBeenCalledTimes(1)
 
     app.unmount()
+  })
+
+  it('handles load, abort, error and ignores invalid message payloads', () => {
+    const onEvent = vi.fn()
+    const onLoad = vi.fn()
+    const onExitAbort = vi.fn()
+    const onExitError = vi.fn()
+    const onNavigate = vi.fn()
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttConnector, {
+          connectorId: 'connector_test',
+          onEvent,
+          onLoad,
+          onExitAbort,
+          onExitError,
+          onNavigate,
+        }),
+    })
+
+    app.mount(root)
+
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+        data: { type: 'quiltt:connector:load', payload: { connectionId: 'c1' } },
+      })
+    )
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+        data: { type: 'quiltt:connector:exitAbort', payload: { reason: 'user_cancelled' } },
+      })
+    )
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+        data: { type: 'quiltt:connector:exitError', payload: { reason: 'network' } },
+      })
+    )
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+        data: { type: 'quiltt:connector:navigate', payload: {} },
+      })
+    )
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+        data: { type: 'quiltt:connector:unknownEvent', payload: {} },
+      })
+    )
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+        data: {},
+      })
+    )
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: 'https://quiltt.io',
+      })
+    )
+
+    expect(onLoad).toHaveBeenCalledWith(expect.objectContaining({ connectorId: 'connector_test' }))
+    expect(onExitAbort).toHaveBeenCalledWith(
+      expect.objectContaining({ connectorId: 'connector_test' })
+    )
+    expect(onExitError).toHaveBeenCalledWith(
+      expect.objectContaining({ connectorId: 'connector_test' })
+    )
+    expect(onEvent).toHaveBeenCalledWith(
+      'Load',
+      expect.objectContaining({ connectorId: 'connector_test' })
+    )
+    expect(onEvent).toHaveBeenCalledWith(
+      'ExitAbort',
+      expect.objectContaining({ connectorId: 'connector_test' })
+    )
+    expect(onEvent).toHaveBeenCalledWith(
+      'ExitError',
+      expect.objectContaining({ connectorId: 'connector_test' })
+    )
+    expect(onNavigate).not.toHaveBeenCalled()
+
+    app.unmount()
+  })
+
+  it('exposes handleOAuthCallback and forwards URL to iframe', () => {
+    const postMessageSpy = vi.fn()
+    const connectorRef = ref<{ handleOAuthCallback: (url: string) => void } | null>(null)
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttConnector, { ref: connectorRef, connectorId: 'connector_test' }),
+    })
+
+    app.mount(root)
+
+    const iframe = root.querySelector('iframe') as HTMLIFrameElement | null
+    expect(iframe).toBeTruthy()
+
+    Object.defineProperty(iframe as HTMLIFrameElement, 'contentWindow', {
+      value: { postMessage: postMessageSpy },
+      configurable: true,
+    })
+
+    connectorRef.value?.handleOAuthCallback('myapp://oauth-callback')
+
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      {
+        type: 'quiltt:connector:oauthCallback',
+        payload: { url: 'myapp://oauth-callback' },
+      },
+      '*'
+    )
+
+    app.unmount()
+  })
+
+  it('removes message listener on unmount', () => {
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttConnector, { connectorId: 'connector_test' }),
+    })
+
+    app.mount(root)
+    app.unmount()
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('message', expect.any(Function))
   })
 })

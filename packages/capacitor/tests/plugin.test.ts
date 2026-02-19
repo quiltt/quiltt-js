@@ -4,9 +4,13 @@ const mocks = vi.hoisted(() => ({
   registerPlugin: vi.fn(() => ({ name: 'mocked-plugin' })),
 }))
 
-vi.mock('@capacitor/core', () => ({
-  registerPlugin: mocks.registerPlugin,
-}))
+vi.mock('@capacitor/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@capacitor/core')>()
+  return {
+    ...actual,
+    registerPlugin: mocks.registerPlugin,
+  }
+})
 
 import { QuilttConnector } from '../src/plugin'
 
@@ -26,5 +30,12 @@ describe('QuilttConnector plugin registration', () => {
     expect(options).toBeDefined()
     const webFactory = options?.web
     expect(webFactory).toBeTypeOf('function')
+
+    const webPlugin = await webFactory?.()
+    expect(webPlugin).toBeDefined()
+    expect(webPlugin).toMatchObject({
+      openUrl: expect.any(Function),
+      getLaunchUrl: expect.any(Function),
+    })
   })
 })

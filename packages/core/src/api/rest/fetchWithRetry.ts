@@ -6,6 +6,7 @@ const effectiveFetch = typeof fetch === 'undefined' ? crossfetch : fetch
 type FetchWithRetryOptions = RequestInit & {
   retry?: boolean
   retriesRemaining?: number
+  initialRetries?: number
   validateStatus?: (status: number) => boolean
 }
 
@@ -18,7 +19,15 @@ export type FetchResponse<T> = {
 }
 
 const RETRY_DELAY = 150 // ms
-const RETRIES = 10 // 150, 300, 450, 600, 750, 900, 1050, 1200, 1350, 1500 = 8.250s
+const MAX_RETRY_DELAY = 1500 // ms
+const RETRIES = 10
+
+const getRetryDelay = (attemptNumber: number): number => {
+  const exponentialDelay = RETRY_DELAY * 2 ** (attemptNumber - 1)
+  return Math.min(exponentialDelay, MAX_RETRY_DELAY)
+}
+
+type RetryableError = Error & { retryable?: boolean }
 
 /**
  * A wrapper around the native `fetch` function that adds automatic retries on failure, including network errors and HTTP 429 responses.
@@ -31,6 +40,7 @@ export const fetchWithRetry = async <T>(
   const {
     retry,
     retriesRemaining,
+    initialRetries,
     validateStatus = (status) => status >= 200 && status < 300, // Default to success for 2xx responses
     ...fetchOptions
   } = options
@@ -52,19 +62,29 @@ export const fetchWithRetry = async <T>(
 
     // If validateStatus fails, and retry is enabled, prepare to retry for eligible status codes
     if (retry && (response.status >= 500 || response.status === 429)) {
-      throw new Error('Retryable failure')
+      const error = new Error(`HTTP error with status ${response.status}`) as RetryableError
+      error.retryable = true
+      throw error
     }
 
-    throw new Error(`HTTP error with status ${response.status}`)
+    const error = new Error(`HTTP error with status ${response.status}`) as RetryableError
+    error.retryable = false
+    throw error
   } catch (error) {
-    if (retry) {
+    const retryableError = error as RetryableError
+    const shouldRetry = retry && retryableError.retryable !== false
+
+    if (shouldRetry) {
       const currentRetriesRemaining = retriesRemaining !== undefined ? retriesRemaining : RETRIES
+      const totalRetries = initialRetries ?? currentRetriesRemaining
       if (currentRetriesRemaining > 0) {
-        const delayTime = RETRY_DELAY * (RETRIES - currentRetriesRemaining)
+        const attemptNumber = totalRetries - currentRetriesRemaining + 1
+        const delayTime = getRetryDelay(attemptNumber)
         await new Promise((resolve) => setTimeout(resolve, delayTime))
         return fetchWithRetry(url, {
           ...options,
           retriesRemaining: currentRetriesRemaining - 1,
+          initialRetries: totalRetries,
         })
       }
     }
