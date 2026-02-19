@@ -8,7 +8,7 @@ Rename `oauthRedirectUrl` to `appLauncherUri` for mobile OAuth flows
 
 This change introduces `appLauncherUri` as the new preferred property name for specifying the Universal Link (iOS) or App Link (Android) that redirects users back to your app after OAuth authentication.
 
-**Breaking Change:** The `oauthRedirectUrl` property is now deprecated but remains fully functional for backwards compatibility. Existing code using `oauthRedirectUrl` will continue to work without modifications.
+**Deprecation Warning:** The `oauthRedirectUrl` property is now deprecated but remains fully functional for backwards compatibility. Existing code using `oauthRedirectUrl` will continue to work without modifications.
 
 **Migration:**
 - Replace `oauthRedirectUrl` with `appLauncherUri` in your component props
