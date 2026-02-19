@@ -5,11 +5,17 @@
 
 Vue 3 composables and components for Quiltt Connector.
 
+For general project information and contributing guidelines, see the [main repository README](../../README.md).
+
 ## Installation
 
 ```shell
 npm install @quiltt/vue vue
 ```
+
+## Core Modules and Types
+
+`@quiltt/vue` re-exports all functionality from `@quiltt/core`, so you only need to install this one package to access core API clients, authentication utilities, storage, and TypeScript types along with Vue components and composables. See the [Core README](../core/README.md) for more information.
 
 ## Quick Start
 
@@ -45,6 +51,12 @@ const onLogin = async (token: string) => {
 
 ## Components
 
+For better tree-shaking, you can import components from subpaths:
+
+```ts
+import { QuilttButton } from '@quiltt/vue/components'
+```
+
 ### QuilttButton
 
 Opens the connector in a modal overlay.
@@ -78,6 +90,12 @@ Full-page iframe for embedded integration.
 
 ## Composables
 
+For better tree-shaking, you can import composables from subpaths:
+
+```ts
+import { useQuilttSession } from '@quiltt/vue/composables'
+```
+
 ### useQuilttSession
 
 ```typescript
@@ -108,6 +126,24 @@ const { open } = useQuilttConnector('<CONNECTOR_ID>', {
 
 ```vue
 <button @click="open">Add Account</button>
+```
+
+### Additional Composables
+
+`@quiltt/vue` also exports:
+
+- `useQuilttInstitutions` — Search available institutions for a connector.
+- `useQuilttResolvable` — Check if a provider connection can be resolved.
+- `useQuilttSettings` — Access plugin-provided settings such as `clientId`.
+- `useSession` — Low-level reactive session state manager.
+- `useStorage` — Reactive wrapper around Quiltt global storage.
+
+### Plugin Exports
+
+You can import plugin utilities from the dedicated subpath:
+
+```ts
+import { QuilttPlugin, QuilttSessionKey, QuilttSetSessionKey } from '@quiltt/vue/plugin'
 ```
 
 ## Props and Events
@@ -158,3 +194,14 @@ See [@quiltt/capacitor](../capacitor#readme) for full documentation.
 ## License
 
 MIT
+
+## Contributing
+
+For information on how to contribute to this project, please refer to the [repository contributing guidelines](../../CONTRIBUTING.md).
+
+## Related Packages
+
+- [`@quiltt/core`](../core#readme) - Essential functionality and types
+- [`@quiltt/react`](../react#readme) - React components and hooks
+- [`@quiltt/react-native`](../react-native#readme) - React Native and Expo components
+- [`@quiltt/capacitor`](../capacitor#readme) - Capacitor plugin and mobile framework adapters

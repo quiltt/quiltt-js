@@ -2,7 +2,7 @@
 
 [![Maintainability](https://qlty.sh/gh/quiltt/projects/quiltt-js/maintainability.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js) [![Code Coverage](https://qlty.sh/gh/quiltt/projects/quiltt-js/coverage.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js)
 
-This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, React Native, and Node.js environments.
+This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, Vue, React Native, and Node.js environments.
 
 ## About Quiltt
 
@@ -16,7 +16,9 @@ Each package includes detailed setup instructions and examples. See the individu
 
 - [Core Package](packages/core#readme) - Essential functionality and types
 - [React Package](packages/react#readme) - React components and hooks
+- [Vue Package](packages/vue#readme) - Vue 3 components and composables
 - [React Native Package](packages/react-native#readme) - React Native and Expo components
+- [Capacitor Package](packages/capacitor#readme) - Cross-platform mobile integration for React and Vue
 
 ## Packages
 
@@ -32,11 +34,23 @@ The foundational package providing essential functionality for JavaScript-based 
 
 React components and hooks for seamless Quiltt integration, built on a powerful Apollo-based GraphQL client. Includes providers, authentication hooks, and pre-built UI components.
 
+### [@quiltt/vue](packages/vue#readme)
+
+[![npm version](https://badge.fury.io/js/%40quiltt%2Fvue.svg)](https://badge.fury.io/js/%40quiltt%2Fvue)
+
+Vue 3 components and composables for integrating Quiltt Connector, including plugin-based session management and connector lifecycle utilities.
+
 ### [@quiltt/react-native](packages/react-native#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Freact-native.svg)](https://badge.fury.io/js/%40quiltt%2Freact-native)
 
 Native components optimized for React Native and Expo applications, featuring the Quiltt Connector and mobile-specific utilities for financial data integration.
+
+### [@quiltt/capacitor](packages/capacitor#readme)
+
+[![npm version](https://badge.fury.io/js/%40quiltt%2Fcapacitor.svg)](https://badge.fury.io/js/%40quiltt%2Fcapacitor)
+
+Capacitor plugin and framework adapters for integrating Quiltt Connector in iOS and Android apps with native OAuth deep-link handling.
 
 ## Development
 

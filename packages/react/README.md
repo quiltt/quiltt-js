@@ -223,4 +223,5 @@ For information on how to contribute to this project, please refer to the [repos
 ## Related Packages
 
 - [`@quiltt/core`](../core#readme) - Essential functionality and types
+- [`@quiltt/vue`](../vue#readme) - Vue 3 components and composables
 - [`@quiltt/react-native`](../react-native#readme) - React Native and Expo components

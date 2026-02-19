@@ -48,6 +48,18 @@ export default defineConfig({
           },
         }
       ),
+      // vue
+      mergeConfig(
+        { plugins: [tsconfigPaths()] },
+        {
+          test: {
+            extends: true,
+            name: 'vue',
+            include: ['packages/vue/**/*.test.{ts,tsx}'],
+            environment: 'happy-dom',
+          },
+        }
+      ),
     ],
 
     // Shared configurations

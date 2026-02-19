@@ -182,8 +182,9 @@ import { QuilttConnector } from '@quiltt/capacitor'
 ### Re-exports
 
 `@quiltt/capacitor/react` re-exports everything from `@quiltt/react`:
+
 - Components: `QuilttProvider`, `QuilttButton`, `QuilttContainer`
-- Hooks: `useQuilttAuth`, `useQuilttSession`, `useQuilttConnector`
+- Hooks: `useQuilttSession`, `useQuilttConnector`, `useQuilttClient`
 - Apollo Client: `useQuery`, `useMutation`, `gql`
 
 `@quiltt/capacitor/vue` re-exports everything from `@quiltt/vue`.
@@ -191,10 +192,12 @@ import { QuilttConnector } from '@quiltt/capacitor'
 ## Troubleshooting
 
 **OAuth redirects not working**
+
 - Verify `appLauncherUri` matches your URL scheme
 - Run `npx cap sync` after configuration changes
 
 **Blank screen after bank auth**
+
 - Check browser console for errors
 - Verify your Connector ID
 
