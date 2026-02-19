@@ -204,6 +204,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: undefined,
+          oauthRedirectUrl: undefined,
         })
       })
     })
@@ -222,6 +223,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-123',
+          oauthRedirectUrl: undefined,
         })
       })
     })
@@ -240,6 +242,46 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: 'chase',
+          oauthRedirectUrl: undefined,
+        })
+      })
+    })
+
+    it('should pass oauthRedirectUrl to connect when provided', async () => {
+      renderHook(
+        () =>
+          useQuilttConnector('mockConnectorId', {
+            oauthRedirectUrl: 'myapp://oauth',
+          }),
+        {
+          wrapper: Wrapper,
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
+          institution: undefined,
+          oauthRedirectUrl: 'myapp://oauth',
+        })
+      })
+    })
+
+    it('should pass oauthRedirectUrl to reconnect when provided', async () => {
+      renderHook(
+        () =>
+          useQuilttConnector('mockConnectorId', {
+            connectionId: 'conn-123',
+            oauthRedirectUrl: 'myapp://oauth',
+          }),
+        {
+          wrapper: Wrapper,
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
+          connectionId: 'conn-123',
+          oauthRedirectUrl: 'myapp://oauth',
         })
       })
     })
@@ -253,6 +295,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('connector-1', {
           institution: undefined,
+          oauthRedirectUrl: undefined,
         })
       })
 
@@ -263,6 +306,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('connector-2', {
           institution: undefined,
+          oauthRedirectUrl: undefined,
         })
       })
     })
@@ -279,6 +323,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-1',
+          oauthRedirectUrl: undefined,
         })
       })
 
@@ -289,8 +334,60 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-2',
+          oauthRedirectUrl: undefined,
         })
       })
+    })
+
+    it('should recreate connector when oauthRedirectUrl changes', async () => {
+      const { rerender } = renderHook(
+        ({ oauthRedirectUrl }) => useQuilttConnector('mockConnectorId', { oauthRedirectUrl }),
+        {
+          wrapper: Wrapper,
+          initialProps: { oauthRedirectUrl: 'myapp://oauth' },
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
+          institution: undefined,
+          oauthRedirectUrl: 'myapp://oauth',
+        })
+      })
+
+      vi.clearAllMocks()
+
+      rerender({ oauthRedirectUrl: 'otherapp://oauth' })
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
+          institution: undefined,
+          oauthRedirectUrl: 'otherapp://oauth',
+        })
+      })
+    })
+
+    it('should not recreate connector when oauthRedirectUrl value stays the same', async () => {
+      const { rerender } = renderHook(
+        ({ oauthRedirectUrl }) => useQuilttConnector('mockConnectorId', { oauthRedirectUrl }),
+        {
+          wrapper: Wrapper,
+          initialProps: { oauthRedirectUrl: 'myapp://oauth' },
+        }
+      )
+
+      await waitFor(() => {
+        expect(globalQuiltt.connect).toHaveBeenCalled()
+      })
+
+      vi.clearAllMocks()
+
+      rerender({ oauthRedirectUrl: 'myapp://oauth' })
+
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(globalQuiltt.connect).not.toHaveBeenCalled()
+      expect(globalQuiltt.reconnect).not.toHaveBeenCalled()
     })
 
     it('should switch from connect to reconnect when connectionId is added', async () => {
@@ -313,6 +410,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-123',
+          oauthRedirectUrl: undefined,
         })
       })
     })
@@ -329,6 +427,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-123',
+          oauthRedirectUrl: undefined,
         })
       })
 
@@ -339,6 +438,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: undefined,
+          oauthRedirectUrl: undefined,
         })
       })
     })
@@ -358,6 +458,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-123',
+          oauthRedirectUrl: undefined,
         })
       })
     })
@@ -374,6 +475,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: 'chase',
+          oauthRedirectUrl: undefined,
         })
       })
 
@@ -401,6 +503,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: 'chase',
+          oauthRedirectUrl: undefined,
         })
       })
 
@@ -412,6 +515,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: 'bofa',
+          oauthRedirectUrl: undefined,
         })
       })
     })
