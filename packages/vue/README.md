@@ -138,6 +138,12 @@ const { open } = useQuilttConnector('<CONNECTOR_ID>', {
 - `useSession` — Low-level reactive session state manager.
 - `useStorage` — Reactive wrapper around Quiltt global storage.
 
+Composable context behavior:
+
+- `useQuilttSession`, `useQuilttInstitutions`, and `useQuilttResolvable` require `QuilttPlugin` provider context and throw if used without it.
+- `useQuilttConnector` continues without plugin session context and logs a warning.
+- `useQuilttSettings` returns `undefined` values when plugin context is unavailable.
+
 ### Plugin Exports
 
 You can import plugin utilities from the dedicated subpath:

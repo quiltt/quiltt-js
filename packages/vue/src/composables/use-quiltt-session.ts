@@ -93,6 +93,7 @@ export interface UseQuilttSessionReturn {
  *
  * Provides methods for importing, creating, and revoking sessions.
  * Session state is automatically synchronized across components.
+ * Requires QuilttPlugin provider context and throws when used without it.
  */
 export const useQuilttSession = (): UseQuilttSessionReturn => {
   const sessionRef = inject(QuilttSessionKey)

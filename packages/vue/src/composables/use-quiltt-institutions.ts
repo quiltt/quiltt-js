@@ -8,6 +8,10 @@ import { useQuilttSession } from './use-quiltt-session'
 
 const getUserAgent = (): string => `@quiltt/vue@${version}`
 
+/**
+ * Search institutions for a connector.
+ * Requires QuilttPlugin session context and throws when used without it.
+ */
 export const useQuilttInstitutions = (
   connectorId: string,
   onErrorCallback?: (msg: string) => void

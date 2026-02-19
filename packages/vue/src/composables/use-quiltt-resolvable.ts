@@ -16,6 +16,10 @@ type ProviderId = {
   akoya?: string
 }
 
+/**
+ * Check whether a provider link is resolvable for a connector.
+ * Requires QuilttPlugin session context and throws when used without it.
+ */
 export const useQuilttResolvable = (
   connectorId: string,
   onErrorCallback?: (msg: string) => void

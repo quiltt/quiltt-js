@@ -93,6 +93,8 @@ const getUserAgent = (): string => `@quiltt/vue@${version}`
  * Composable for managing Quiltt Connector
  *
  * Loads the Quiltt SDK script and provides methods to open/manage connectors.
+ * This composable can run without QuilttPlugin session context; when unavailable,
+ * it logs a warning and continues without authenticated session state.
  */
 export const useQuilttConnector = (
   connectorId?: string,

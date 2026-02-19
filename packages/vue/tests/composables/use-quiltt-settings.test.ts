@@ -43,4 +43,12 @@ describe('useQuilttSettings', () => {
 
     unmount()
   })
+
+  it('returns undefined clientId when plugin state is unavailable', () => {
+    const { result, unmount } = mountComposable(() => useQuilttSettings())
+
+    expect(result.clientId.value).toBeUndefined()
+
+    unmount()
+  })
 })

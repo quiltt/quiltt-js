@@ -38,9 +38,9 @@ describe('composables modules', () => {
     })
   })
 
-  it('throws when connector composable is used without plugin', () => {
+  it('does not throw when connector composable is used without plugin', () => {
     withSuppressedVueWarnings(() => {
-      expect(() => useQuilttConnector('connector_test')).toThrowError(/QuilttPlugin/)
+      expect(() => useQuilttConnector('connector_test')).not.toThrow()
     })
   })
 
