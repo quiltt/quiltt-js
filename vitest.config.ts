@@ -48,6 +48,18 @@ export default defineConfig({
           },
         }
       ),
+      // capacitor
+      mergeConfig(
+        { plugins: [tsconfigPaths(), react()] },
+        {
+          test: {
+            extends: true,
+            name: 'capacitor',
+            include: ['packages/capacitor/**/*.test.{ts,tsx}'],
+            environment: 'happy-dom',
+          },
+        }
+      ),
       // vue
       mergeConfig(
         { plugins: [tsconfigPaths()] },

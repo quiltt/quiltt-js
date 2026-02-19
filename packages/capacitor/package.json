@@ -57,7 +57,7 @@
     "build": "bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
-    "lint": "TIMING=1 biome check src/ --fix",
+    "lint": "TIMING=1 biome check src/ tests/ --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
     "verify:ios": "xcodebuild build -scheme QuilttConnector -destination generic/platform=iOS",
