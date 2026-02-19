@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
-import { ConnectorSDKEventType, cdnBase, useQuilttSession } from '@quiltt/react'
+import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
 
 import { QuilttConnector as QuilttConnectorPlugin } from '../plugin'
 
@@ -22,7 +22,7 @@ type QuilttConnectorProps = {
   className?: string
 } & ConnectorSDKCallbacks
 
-const trustedQuilttHostSuffixes = ['quiltt.io', 'quiltt.dev']
+const trustedQuilttHostSuffixes = ['quiltt.io', 'quiltt.dev', 'quiltt.app']
 
 const isTrustedQuilttOrigin = (origin: string): boolean => {
   try {
@@ -67,7 +67,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
 
     // Build connector URL
     const connectorUrl = useMemo(() => {
-      const url = new URL(`/v1/connectors/${connectorId}`, cdnBase)
+      const url = new URL(`https://${connectorId}.quiltt.app`)
 
       if (session?.token) {
         url.searchParams.set('token', session.token)
@@ -81,8 +81,8 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       if (appLauncherUri) {
         url.searchParams.set('app_launcher_uri', appLauncherUri)
       }
-      // Set mode to indicate we're in a Capacitor app
-      url.searchParams.set('mode', 'capacitor')
+      // Set mode for inline iframe embedding
+      url.searchParams.set('mode', 'INLINE')
 
       return url.toString()
     }, [connectorId, session?.token, connectionId, institution, appLauncherUri])
@@ -91,14 +91,6 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       if (!iframeRef.current?.contentWindow) {
         return
       }
-
-      iframeRef.current.contentWindow.postMessage(
-        {
-          type: 'quiltt:connector:oauthCallback',
-          payload: { url: callbackUrl },
-        },
-        '*'
-      )
 
       try {
         const callback = new URL(callbackUrl)
@@ -134,6 +126,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
     }, [])
 
     // Handle messages from the iframe
+    // The platform MessageBus sends: { source: 'quiltt', type: 'Load'|'ExitSuccess'|..., ...metadata }
     const handleMessage = useCallback(
       (event: MessageEvent) => {
         // Validate origin
@@ -141,43 +134,48 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
           return
         }
 
-        const { type, payload } = event.data || {}
-        if (!type) return
+        const data = event.data || {}
+        // Validate message is from Quiltt MessageBus
+        if (data.source !== 'quiltt' || !data.type) return
 
-        // Parse metadata from payload
+        const { type, connectionId: msgConnectionId, profileId, connectorSession, url } = data
+
+        // Build metadata from message fields
         const metadata: ConnectorSDKCallbackMetadata = {
           connectorId,
-          ...payload,
+          ...(profileId && { profileId }),
+          ...(msgConnectionId && { connectionId: msgConnectionId }),
+          ...(connectorSession && { connectorSession }),
         }
 
         switch (type) {
-          case 'quiltt:connector:load':
+          case 'Load':
             onEvent?.(ConnectorSDKEventType.Load, metadata)
             onLoad?.(metadata)
             break
 
-          case 'quiltt:connector:exitSuccess':
+          case 'ExitSuccess':
             onEvent?.(ConnectorSDKEventType.ExitSuccess, metadata)
             onExit?.(ConnectorSDKEventType.ExitSuccess, metadata)
             onExitSuccess?.(metadata)
             break
 
-          case 'quiltt:connector:exitAbort':
+          case 'ExitAbort':
             onEvent?.(ConnectorSDKEventType.ExitAbort, metadata)
             onExit?.(ConnectorSDKEventType.ExitAbort, metadata)
             onExitAbort?.(metadata)
             break
 
-          case 'quiltt:connector:exitError':
+          case 'ExitError':
             onEvent?.(ConnectorSDKEventType.ExitError, metadata)
             onExit?.(ConnectorSDKEventType.ExitError, metadata)
             onExitError?.(metadata)
             break
 
-          case 'quiltt:connector:navigate':
+          case 'Navigate':
             // OAuth URL - open in system browser
-            if (payload?.url) {
-              QuilttConnectorPlugin.openUrl({ url: payload.url })
+            if (url) {
+              QuilttConnectorPlugin.openUrl({ url })
             }
             break
 

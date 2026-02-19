@@ -17,7 +17,6 @@ import type { PropType } from 'vue'
 import { computed, defineComponent, h, onMounted, onUnmounted, ref } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
-import { cdnBase } from '@quiltt/core'
 
 import { useQuilttSession } from '../composables/use-quiltt-session'
 
@@ -70,12 +69,26 @@ export const QuilttConnector = defineComponent({
     const iframeRef = ref<HTMLIFrameElement>()
     const { session } = useQuilttSession()
 
-    const allowedOrigins = ['https://quiltt.io', 'https://quiltt.dev']
-    const isAllowedOrigin = (origin: string) => allowedOrigins.includes(origin)
+    const trustedQuilttHostSuffixes = ['quiltt.io', 'quiltt.dev', 'quiltt.app']
+
+    const isTrustedQuilttOrigin = (origin: string): boolean => {
+      try {
+        const originUrl = new URL(origin)
+        if (originUrl.protocol !== 'https:') {
+          return false
+        }
+        const hostname = originUrl.hostname.toLowerCase()
+        return trustedQuilttHostSuffixes.some(
+          (suffix) => hostname === suffix || hostname.endsWith(`.${suffix}`)
+        )
+      } catch {
+        return false
+      }
+    }
 
     // Build connector URL
     const connectorUrl = computed(() => {
-      const url = new URL(`/v1/connectors/${props.connectorId}`, cdnBase)
+      const url = new URL(`https://${props.connectorId}.quiltt.app`)
 
       if (session.value?.token) {
         url.searchParams.set('token', session.value.token)
@@ -89,58 +102,82 @@ export const QuilttConnector = defineComponent({
       if (props.appLauncherUri) {
         url.searchParams.set('app_launcher_uri', props.appLauncherUri)
       }
-      url.searchParams.set('mode', 'webview')
+      // Set mode for inline iframe embedding
+      url.searchParams.set('mode', 'INLINE')
 
       return url.toString()
     })
 
     // Handle messages from the iframe
+    // The platform MessageBus sends: { source: 'quiltt', type: 'Load'|'ExitSuccess'|..., ...metadata }
     const handleMessage = (event: MessageEvent) => {
-      if (!isAllowedOrigin(event.origin)) {
+      if (!isTrustedQuilttOrigin(event.origin)) {
         return
       }
 
-      const { type, payload } = event.data || {}
-      if (!type) return
+      const data = event.data || {}
+      // Validate message is from Quiltt MessageBus
+      if (data.source !== 'quiltt' || !data.type) return
 
+      const { type, connectionId, profileId, connectorSession, url } = data
+
+      // Build metadata from message fields
       const metadata: ConnectorSDKCallbackMetadata = {
         connectorId: props.connectorId,
-        ...payload,
+        ...(profileId && { profileId }),
+        ...(connectionId && { connectionId }),
+        ...(connectorSession && { connectorSession }),
       }
 
       switch (type) {
-        case 'quiltt:connector:load':
+        case 'Load':
           emit('event', 'Load' as ConnectorSDKEventType, metadata)
           emit('load', metadata)
           break
-        case 'quiltt:connector:exitSuccess':
+        case 'ExitSuccess':
           emit('event', 'ExitSuccess' as ConnectorSDKEventType, metadata)
           emit('exit-success', metadata)
           break
-        case 'quiltt:connector:exitAbort':
+        case 'ExitAbort':
           emit('event', 'ExitAbort' as ConnectorSDKEventType, metadata)
           emit('exit-abort', metadata)
           break
-        case 'quiltt:connector:exitError':
+        case 'ExitError':
           emit('event', 'ExitError' as ConnectorSDKEventType, metadata)
           emit('exit-error', metadata)
           break
-        case 'quiltt:connector:navigate':
-          if (payload?.url) {
-            emit('navigate', payload.url)
+        case 'Navigate':
+          if (url) {
+            emit('navigate', url)
           }
           break
       }
     }
 
+    // Build OAuth callback message matching React Native SDK format
+    const buildOAuthCallbackMessage = (callbackUrl: string) => {
+      try {
+        const parsedUrl = new URL(callbackUrl)
+        const params: Record<string, string> = {}
+        parsedUrl.searchParams.forEach((value, key) => {
+          params[key] = value
+        })
+        return {
+          source: 'quiltt',
+          type: 'OAuthCallback',
+          data: { url: callbackUrl, params },
+        }
+      } catch {
+        return {
+          source: 'quiltt',
+          type: 'OAuthCallback',
+          data: { url: callbackUrl, params: {} },
+        }
+      }
+    }
+
     const handleOAuthCallback = (url: string) => {
-      iframeRef.value?.contentWindow?.postMessage(
-        {
-          type: 'quiltt:connector:oauthCallback',
-          payload: { url },
-        },
-        '*'
-      )
+      iframeRef.value?.contentWindow?.postMessage(buildOAuthCallbackMessage(url), '*')
     }
 
     expose({ handleOAuthCallback })

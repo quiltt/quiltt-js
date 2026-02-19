@@ -42,12 +42,12 @@ describe('QuilttConnector', () => {
     expect(iframe).toBeTruthy()
 
     const src = iframe?.getAttribute('src') || ''
-    expect(src).toContain('/v1/connectors/connector_test')
+    expect(src).toContain('connector_test.quiltt.app')
     expect(src).toContain('token=session_token')
     expect(src).toContain('connectionId=connection_test')
     expect(src).toContain('institution=institution_test')
     expect(src).toContain('app_launcher_uri=myapp%3A%2F%2Foauth-callback')
-    expect(src).toContain('mode=webview')
+    expect(src).toContain('mode=INLINE')
 
     app.unmount()
   })
@@ -67,7 +67,7 @@ describe('QuilttConnector', () => {
     const iframe = root.querySelector('iframe') as HTMLIFrameElement | null
     const src = iframe?.getAttribute('src') || ''
 
-    expect(src).toContain('/v1/connectors/connector_test')
+    expect(src).toContain('connector_test.quiltt.app')
     expect(src).not.toContain('token=')
 
     app.unmount()
@@ -95,10 +95,11 @@ describe('QuilttConnector', () => {
 
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.dev',
+        origin: 'https://connector_test.quiltt.app',
         data: {
-          type: 'quiltt:connector:exitSuccess',
-          payload: { connectionId: 'connection_test' },
+          source: 'quiltt',
+          type: 'ExitSuccess',
+          connectionId: 'connection_test',
         },
       })
     )
@@ -113,10 +114,11 @@ describe('QuilttConnector', () => {
 
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.dev',
+        origin: 'https://connector_test.quiltt.app',
         data: {
-          type: 'quiltt:connector:navigate',
-          payload: { url: 'myapp://oauth-callback' },
+          source: 'quiltt',
+          type: 'Navigate',
+          url: 'myapp://oauth-callback',
         },
       })
     )
@@ -127,8 +129,9 @@ describe('QuilttConnector', () => {
       new MessageEvent('message', {
         origin: 'https://example.com',
         data: {
-          type: 'quiltt:connector:exitSuccess',
-          payload: { connectionId: 'blocked_connection' },
+          source: 'quiltt',
+          type: 'ExitSuccess',
+          connectionId: 'blocked_connection',
         },
       })
     )
@@ -164,37 +167,37 @@ describe('QuilttConnector', () => {
 
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.io',
-        data: { type: 'quiltt:connector:load', payload: { connectionId: 'c1' } },
+        origin: 'https://connector_test.quiltt.app',
+        data: { source: 'quiltt', type: 'Load', connectionId: 'c1' },
       })
     )
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.io',
-        data: { type: 'quiltt:connector:exitAbort', payload: { reason: 'user_cancelled' } },
+        origin: 'https://connector_test.quiltt.app',
+        data: { source: 'quiltt', type: 'ExitAbort' },
       })
     )
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.io',
-        data: { type: 'quiltt:connector:exitError', payload: { reason: 'network' } },
+        origin: 'https://connector_test.quiltt.app',
+        data: { source: 'quiltt', type: 'ExitError' },
       })
     )
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.io',
-        data: { type: 'quiltt:connector:navigate', payload: {} },
+        origin: 'https://connector_test.quiltt.app',
+        data: { source: 'quiltt', type: 'Navigate' },
       })
     )
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.io',
-        data: { type: 'quiltt:connector:unknownEvent', payload: {} },
+        origin: 'https://connector_test.quiltt.app',
+        data: { source: 'quiltt', type: 'UnknownEvent' },
       })
     )
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.io',
+        origin: 'https://connector_test.quiltt.app',
         data: {},
       })
     )
@@ -253,8 +256,12 @@ describe('QuilttConnector', () => {
 
     expect(postMessageSpy).toHaveBeenCalledWith(
       {
-        type: 'quiltt:connector:oauthCallback',
-        payload: { url: 'myapp://oauth-callback' },
+        source: 'quiltt',
+        type: 'OAuthCallback',
+        data: {
+          url: 'myapp://oauth-callback',
+          params: {},
+        },
       },
       '*'
     )

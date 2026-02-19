@@ -62,12 +62,12 @@ describe('QuilttConnector (capacitor)', () => {
     expect(iframe).toBeTruthy()
 
     const src = iframe?.getAttribute('src') || ''
-    expect(src).toContain('/v1/connectors/connector_test')
+    expect(src).toContain('connector_test.quiltt.app')
     expect(src).toContain('token=session_token')
     expect(src).toContain('connectionId=connection_test')
     expect(src).toContain('institution=institution_test')
     expect(src).toContain('app_launcher_uri=myapp%3A%2F%2Foauth-callback')
-    expect(src).toContain('mode=capacitor')
+    expect(src).toContain('mode=INLINE')
   })
 
   it('opens system browser on navigate events from trusted origin', () => {
@@ -77,10 +77,11 @@ describe('QuilttConnector (capacitor)', () => {
 
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://quiltt.dev',
+        origin: 'https://connector_test.quiltt.app',
         data: {
-          type: 'quiltt:connector:navigate',
-          payload: { url: 'https://bank.example.com' },
+          source: 'quiltt',
+          type: 'Navigate',
+          url: 'https://bank.example.com',
         },
       })
     )
@@ -91,8 +92,9 @@ describe('QuilttConnector (capacitor)', () => {
       new MessageEvent('message', {
         origin: 'https://evil.example.com',
         data: {
-          type: 'quiltt:connector:navigate',
-          payload: { url: 'https://evil.example.com' },
+          source: 'quiltt',
+          type: 'Navigate',
+          url: 'https://evil.example.com',
         },
       })
     )
@@ -127,13 +129,6 @@ describe('QuilttConnector (capacitor)', () => {
     deepLinkListener?.({ url: 'myapp://oauth' })
     expect(postMessageSpy).toHaveBeenCalledWith(
       {
-        type: 'quiltt:connector:oauthCallback',
-        payload: { url: 'myapp://oauth' },
-      },
-      '*'
-    )
-    expect(postMessageSpy).toHaveBeenCalledWith(
-      {
         source: 'quiltt',
         type: 'OAuthCallback',
         data: {
@@ -149,13 +144,6 @@ describe('QuilttConnector (capacitor)', () => {
 
     expect(postMessageSpy).toHaveBeenCalledWith(
       {
-        type: 'quiltt:connector:oauthCallback',
-        payload: { url: 'myapp://launch' },
-      },
-      '*'
-    )
-    expect(postMessageSpy).toHaveBeenCalledWith(
-      {
         source: 'quiltt',
         type: 'OAuthCallback',
         data: {
@@ -167,13 +155,6 @@ describe('QuilttConnector (capacitor)', () => {
     )
 
     connectorRef.current?.handleOAuthCallback('myapp://manual')
-    expect(postMessageSpy).toHaveBeenCalledWith(
-      {
-        type: 'quiltt:connector:oauthCallback',
-        payload: { url: 'myapp://manual' },
-      },
-      '*'
-    )
     expect(postMessageSpy).toHaveBeenCalledWith(
       {
         source: 'quiltt',
