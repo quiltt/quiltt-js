@@ -13,7 +13,7 @@ import { validateSessionToken } from '@/utils/token-validation'
  * - Emits GraphQL errors for consistent Apollo error handling
  */
 export class AuthLink extends ApolloLink {
-  request(
+  override request(
     operation: ApolloLink.Operation,
     forward: ApolloLink.ForwardFunction
   ): Observable<ApolloLink.Result> {

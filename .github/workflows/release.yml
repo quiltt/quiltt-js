@@ -7,8 +7,15 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   release:
+    # prevent this action from running on forks
+    if: github.repository == 'quiltt/quiltt-js'
+
     name: Release
     runs-on: ubuntu-latest
 
@@ -43,11 +50,11 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: pnpm run version
-          publish: pnpm run publish
+          version: pnpm version
+          publish: pnpm publish
           title: Version and Release Packages
           createGithubReleases: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.QUILTTY_RELEASE_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

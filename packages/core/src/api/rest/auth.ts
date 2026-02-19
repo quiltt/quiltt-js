@@ -33,7 +33,10 @@ export type SessionResponse = FetchResponse<SessionData>
 
 // https://www.quiltt.dev/api-reference/auth
 export class AuthAPI {
+  /** The Connector ID, required for identify & authenticate calls */
   clientId: string | undefined
+
+  // @todo userAgent: string | undefined - allow SDKs and callers to set a userAgent
 
   constructor(clientId?: string | undefined) {
     this.clientId = clientId

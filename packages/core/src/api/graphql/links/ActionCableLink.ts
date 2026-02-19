@@ -39,7 +39,7 @@ class ActionCableLink extends ApolloLink {
 
   // Interestingly, this link does _not_ call through to `next` because
   // instead, it sends the request to ActionCable.
-  request(
+  override request(
     operation: ApolloLink.Operation,
     _next: ApolloLink.ForwardFunction
   ): Observable<RequestResult> {

@@ -139,7 +139,7 @@ This is a pnpm workspace monorepo managed with Turbo:
 ```typescript
 import { AuthAPI } from '@quiltt/core'
 
-const auth = new AuthAPI(connectorId)
+const auth = new AuthAPI()
 await auth.ping(sessionToken)
 await auth.revoke(sessionToken)
 ```
