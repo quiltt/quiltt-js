@@ -59,8 +59,8 @@ export const App = () => {
   // See: https://www.quiltt.dev/authentication/issuing-session-tokens
   const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
 
-  // Use a universal link or deep link to redirect back to your app
-  const oauthRedirectUrl = 'https://myapp.com/my_universal_link'
+  // Use a universal link (iOS) or app link (Android) to redirect back to your app
+  const appLauncherUri = 'https://myapp.com/my_universal_link'
 
   const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
     console.log('Successfully created connection!', {
@@ -72,7 +72,7 @@ export const App = () => {
     <QuilttProvider token={sessionToken}>
       <QuilttConnector
         connectorId="<CONNECTOR_ID>"
-        oauthRedirectUrl={oauthRedirectUrl}
+        appLauncherUri={appLauncherUri}
 
         // See the JavaScript API docs for the full list of available callbacks...
         onExitSuccess={handleExitSuccess}
@@ -100,15 +100,15 @@ import type { ConnectorSDKCallbackMetadata, QuilttConnectorHandle } from '@quilt
 
 export const ConnectorScreen = () => {
   const connectorRef = useRef<QuilttConnectorHandle>(null)
-  
+
   const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
-  const oauthRedirectUrl = 'https://myapp.com/quiltt/callback'
+  const appLauncherUri = 'https://myapp.com/quiltt/callback'
 
   // Listen for deep links and handle OAuth callbacks
   useEffect(() => {
     const subscription = Linking.addEventListener('url', (event) => {
       console.log('Deep link received:', event.url)
-      
+
       // Check if this is an OAuth callback for Quiltt
       if (event.url.includes('quiltt-connect/callback') || event.url.includes('quiltt/callback')) {
         console.log('Processing Quiltt OAuth callback')
@@ -131,7 +131,7 @@ export const ConnectorScreen = () => {
         <QuilttConnector
           ref={connectorRef}
           connectorId="<CONNECTOR_ID>"
-          oauthRedirectUrl={oauthRedirectUrl}
+          appLauncherUri={appLauncherUri}
           onExitSuccess={handleExitSuccess}
         />
       </View>
@@ -145,7 +145,7 @@ export default ConnectorScreen
 **Important Notes:**
 
 - The `ref` prop is required when handling OAuth callbacks
-- The deep link URL pattern should match your `oauthRedirectUrl` configuration
+- The deep link URL pattern should match your `appLauncherUri` configuration
 - Make sure your app is properly configured to handle deep links (see [React Native Linking documentation](https://reactnative.dev/docs/linking))
 
 ## Typescript support

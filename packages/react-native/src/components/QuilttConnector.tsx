@@ -147,7 +147,15 @@ type QuilttConnectorProps = {
   connectorId: string
   connectionId?: string
   institution?: string
-  oauthRedirectUrl: string
+  /**
+   * The app launcher URL for mobile OAuth flows.
+   * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+   */
+  appLauncherUri?: string
+  /**
+   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   */
+  oauthRedirectUrl?: string
   testId?: string
 } & ConnectorSDKCallbacks
 
@@ -157,6 +165,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       connectorId,
       connectionId,
       institution,
+      appLauncherUri,
       oauthRedirectUrl,
       onEvent,
       onLoad,
@@ -173,6 +182,9 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
     const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
     const [userAgent, setUserAgent] = useState<string>('')
+
+    // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+    const effectiveAppLauncherUrl = appLauncherUri ?? oauthRedirectUrl ?? ''
 
     // Initialize error reporter and user agent
     useEffect(() => {
@@ -211,10 +223,10 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       }
     }, [])
 
-    // Ensure oauthRedirectUrl is encoded properly - only once
-    const safeOAuthRedirectUrl = useMemo(() => {
-      return smartEncodeURIComponent(oauthRedirectUrl)
-    }, [oauthRedirectUrl])
+    // Ensure effectiveAppLauncherUrl is encoded properly - only once
+    const safeAppLauncherUrl = useMemo(() => {
+      return smartEncodeURIComponent(effectiveAppLauncherUrl)
+    }, [effectiveAppLauncherUrl])
 
     const connectorUrl = useMemo(() => {
       if (!userAgent) return null
@@ -228,15 +240,15 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       // For the oauth_redirect_url, we need to be careful
       // If it's already encoded, we need to decode it once to prevent
       // the automatic encoding that happens with searchParams.append
-      if (isEncoded(safeOAuthRedirectUrl)) {
-        const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
+      if (isEncoded(safeAppLauncherUrl)) {
+        const decodedOnce = decodeURIComponent(safeAppLauncherUrl)
         url.searchParams.append('oauth_redirect_url', decodedOnce)
       } else {
-        url.searchParams.append('oauth_redirect_url', safeOAuthRedirectUrl)
+        url.searchParams.append('oauth_redirect_url', safeAppLauncherUrl)
       }
 
       return url.toString()
-    }, [connectorId, safeOAuthRedirectUrl, userAgent])
+    }, [connectorId, safeAppLauncherUrl, userAgent])
 
     useEffect(() => {
       if (preFlightCheck.checked || !connectorUrl || !errorReporter) return

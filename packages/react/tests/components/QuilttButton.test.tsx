@@ -69,7 +69,20 @@ describe('QuilttButton', () => {
     expect(onHtmlLoad).toHaveBeenCalledWith(expect.any(Event))
   })
 
-  it('passes oauthRedirectUrl to useQuilttConnector', () => {
+  it('passes appLauncherUri to useQuilttConnector', () => {
+    render(
+      <QuilttButton connectorId="mockConnectorId" appLauncherUri="myapp://oauth">
+        Test Button
+      </QuilttButton>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({ appLauncherUri: 'myapp://oauth' })
+    )
+  })
+
+  it('passes deprecated oauthRedirectUrl to useQuilttConnector for backwards compatibility', () => {
     render(
       <QuilttButton connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
         Test Button
@@ -78,27 +91,44 @@ describe('QuilttButton', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ oauthRedirectUrl: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUri: 'myapp://oauth' })
     )
   })
 
-  it('renders quiltt-oauth-redirect-url attribute on the button element', () => {
+  it('prefers appLauncherUri over deprecated oauthRedirectUrl when both provided', () => {
+    render(
+      <QuilttButton
+        connectorId="mockConnectorId"
+        appLauncherUri="myapp://new"
+        oauthRedirectUrl="myapp://old"
+      >
+        Test Button
+      </QuilttButton>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({ appLauncherUri: 'myapp://new' })
+    )
+  })
+
+  it('renders quiltt-app-launcher-uri attribute on the button element', () => {
     const { container } = render(
-      <QuilttButton connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+      <QuilttButton connectorId="mockConnectorId" appLauncherUri="myapp://oauth">
         Test Button
       </QuilttButton>
     )
 
     const button = container.querySelector('button')
-    expect(button?.getAttribute('quiltt-oauth-redirect-url')).toBe('myapp://oauth')
+    expect(button?.getAttribute('quiltt-app-launcher-uri')).toBe('myapp://oauth')
   })
 
-  it('does not render quiltt-oauth-redirect-url attribute when not provided', () => {
+  it('does not render quiltt-app-launcher-uri attribute when not provided', () => {
     const { container } = render(
       <QuilttButton connectorId="mockConnectorId">Test Button</QuilttButton>
     )
 
     const button = container.querySelector('button')
-    expect(button?.hasAttribute('quiltt-oauth-redirect-url')).toBe(false)
+    expect(button?.hasAttribute('quiltt-app-launcher-uri')).toBe(false)
   })
 })

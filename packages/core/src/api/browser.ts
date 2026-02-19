@@ -125,7 +125,15 @@ export type ConnectorSDKCallbackMetadata = {
 export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
   /** The Institution ID or search term to connect */
   institution?: string
-  /** The OAuth redirect URL for mobile or embedded webview flows */
+  /**
+   * The app launcher URL for mobile OAuth flows.
+   * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+   */
+  appLauncherUri?: string
+  /**
+   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   * The OAuth redirect URL for mobile or embedded webview flows.
+   */
   oauthRedirectUrl?: string
 }
 
@@ -136,7 +144,15 @@ export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
 export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   /** The ID of the Connection to reconnect */
   connectionId: string
-  /** The OAuth redirect URL for mobile or embedded webview flows */
+  /**
+   * The app launcher URL for mobile OAuth flows.
+   * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+   */
+  appLauncherUri?: string
+  /**
+   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   * The OAuth redirect URL for mobile or embedded webview flows.
+   */
   oauthRedirectUrl?: string
 }
 
@@ -152,6 +168,14 @@ export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
   connectionId?: string
   /** The nonce to use for the script tag */
   nonce?: string
-  /** The OAuth redirect URL for mobile or embedded webview flows */
+  /**
+   * The app launcher URL for mobile OAuth flows.
+   * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+   */
+  appLauncherUri?: string
+  /**
+   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   * The OAuth redirect URL for mobile or embedded webview flows.
+   */
   oauthRedirectUrl?: string
 }

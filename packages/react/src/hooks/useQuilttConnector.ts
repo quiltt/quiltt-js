@@ -36,7 +36,10 @@ export const useQuilttConnector = (
   const prevConnectionIdRef = useRef<string | undefined>(options?.connectionId)
   const prevConnectorIdRef = useRef<string | undefined>(connectorId)
   const prevInstitutionRef = useRef<string | undefined>(options?.institution)
-  const prevOauthRedirectUrlRef = useRef<string | undefined>(options?.oauthRedirectUrl)
+  // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+  const prevAppLauncherUriRef = useRef<string | undefined>(
+    options?.appLauncherUri ?? options?.oauthRedirectUrl
+  )
   const connectorCreatedRef = useRef<boolean>(false)
 
   // Track whether the connector is currently open
@@ -63,18 +66,19 @@ export const useQuilttConnector = (
 
     const currentConnectionId = options?.connectionId
     const currentInstitution = options?.institution
-    const currentOauthRedirectUrl = options?.oauthRedirectUrl
+    // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+    const currentAppLauncherUri = options?.appLauncherUri ?? options?.oauthRedirectUrl
 
     // Check for changes - use deep equality for institution object
     const connectionIdChanged = prevConnectionIdRef.current !== currentConnectionId
     const connectorIdChanged = prevConnectorIdRef.current !== connectorId
     const institutionChanged = !isDeepEqual(prevInstitutionRef.current, currentInstitution)
-    const oauthRedirectUrlChanged = prevOauthRedirectUrlRef.current !== currentOauthRedirectUrl
+    const appLauncherUriChanged = prevAppLauncherUriRef.current !== currentAppLauncherUri
     const hasChanges =
       connectionIdChanged ||
       connectorIdChanged ||
       institutionChanged ||
-      oauthRedirectUrlChanged ||
+      appLauncherUriChanged ||
       !connectorCreatedRef.current
 
     // Update if there are changes, regardless of what the changes are
@@ -84,7 +88,7 @@ export const useQuilttConnector = (
         setConnector(
           Quiltt.reconnect(connectorId, {
             connectionId: currentConnectionId,
-            oauthRedirectUrl: currentOauthRedirectUrl,
+            appLauncherUri: currentAppLauncherUri,
           })
         )
       } else {
@@ -92,7 +96,7 @@ export const useQuilttConnector = (
         setConnector(
           Quiltt.connect(connectorId, {
             institution: currentInstitution,
-            oauthRedirectUrl: currentOauthRedirectUrl,
+            appLauncherUri: currentAppLauncherUri,
           })
         )
       }
@@ -102,9 +106,16 @@ export const useQuilttConnector = (
       prevConnectionIdRef.current = currentConnectionId
       prevConnectorIdRef.current = connectorId
       prevInstitutionRef.current = currentInstitution
-      prevOauthRedirectUrlRef.current = currentOauthRedirectUrl
+      prevAppLauncherUriRef.current = currentAppLauncherUri
     }
-  }, [connectorId, options?.connectionId, options?.institution, options?.oauthRedirectUrl, status])
+  }, [
+    connectorId,
+    options?.connectionId,
+    options?.institution,
+    options?.appLauncherUri,
+    options?.oauthRedirectUrl,
+    status,
+  ])
 
   // Internal handlers to track connector state (stable references)
   const handleOpen = useCallback((metadata: any) => {

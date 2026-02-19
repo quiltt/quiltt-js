@@ -14,7 +14,15 @@ type BaseQuilttButtonProps<T extends ElementType> = {
   connectorId: string
   connectionId?: string // For Reconnect Mode
   institution?: string // For Connect Mode
-  oauthRedirectUrl?: string // For OAuth flows in mobile or embedded webviews
+  /**
+   * The app launcher URL for mobile OAuth flows.
+   * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+   */
+  appLauncherUri?: string
+  /**
+   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   */
+  oauthRedirectUrl?: string
 
   /**
    * Forces complete remount when connectionId changes.
@@ -51,6 +59,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   connectorId,
   connectionId,
   institution,
+  appLauncherUri,
   oauthRedirectUrl,
   forceRemountOnConnectionChange = false,
   onEvent,
@@ -67,6 +76,9 @@ export const QuilttButton = <T extends ElementType = 'button'>({
 }: QuilttButtonProps<T> & PropsOf<T>) => {
   // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
   useQuilttRenderGuard('QuilttButton')
+
+  // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+  const effectiveAppLauncherUri = appLauncherUri ?? oauthRedirectUrl
 
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
@@ -111,7 +123,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   const { open } = useQuilttConnector(connectorId, {
     connectionId,
     institution,
-    oauthRedirectUrl,
+    appLauncherUri: effectiveAppLauncherUri,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onOpen,
@@ -155,7 +167,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
       onClick={handleClick}
       onLoad={onHtmlLoad}
       quiltt-connection={connectionId}
-      quiltt-oauth-redirect-url={oauthRedirectUrl}
+      quiltt-app-launcher-uri={effectiveAppLauncherUri}
       {...props}
     >
       {children}
