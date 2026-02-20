@@ -136,7 +136,7 @@ describe('QuilttConnector (capacitor)', () => {
           params: {},
         },
       },
-      '*'
+      'https://connector_test.quiltt.app'
     )
 
     await Promise.resolve()
@@ -151,7 +151,7 @@ describe('QuilttConnector (capacitor)', () => {
           params: {},
         },
       },
-      '*'
+      'https://connector_test.quiltt.app'
     )
 
     connectorRef.current?.handleOAuthCallback('myapp://manual')
@@ -164,7 +164,7 @@ describe('QuilttConnector (capacitor)', () => {
           params: {},
         },
       },
-      '*'
+      'https://connector_test.quiltt.app'
     )
   })
 })

@@ -263,7 +263,7 @@ describe('QuilttConnector', () => {
           params: {},
         },
       },
-      '*'
+      'https://connector_test.quiltt.app'
     )
 
     app.unmount()

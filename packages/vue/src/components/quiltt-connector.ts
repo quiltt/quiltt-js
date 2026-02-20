@@ -86,9 +86,12 @@ export const QuilttConnector = defineComponent({
       }
     }
 
+    // Connector origin for secure postMessage targeting
+    const connectorOrigin = computed(() => `https://${props.connectorId}.quiltt.app`)
+
     // Build connector URL
     const connectorUrl = computed(() => {
-      const url = new URL(`https://${props.connectorId}.quiltt.app`)
+      const url = new URL(connectorOrigin.value)
 
       if (session.value?.token) {
         url.searchParams.set('token', session.value.token)
@@ -177,7 +180,10 @@ export const QuilttConnector = defineComponent({
     }
 
     const handleOAuthCallback = (url: string) => {
-      iframeRef.value?.contentWindow?.postMessage(buildOAuthCallbackMessage(url), '*')
+      iframeRef.value?.contentWindow?.postMessage(
+        buildOAuthCallbackMessage(url),
+        connectorOrigin.value
+      )
     }
 
     expose({ handleOAuthCallback })

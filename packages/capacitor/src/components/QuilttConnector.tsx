@@ -65,9 +65,15 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
     const iframeRef = useRef<HTMLIFrameElement>(null)
     const { session } = useQuilttSession()
 
+    // Connector origin for secure postMessage targeting
+    const connectorOrigin = useMemo(
+      () => `https://${connectorId}.quiltt.app`,
+      [connectorId]
+    )
+
     // Build connector URL
     const connectorUrl = useMemo(() => {
-      const url = new URL(`https://${connectorId}.quiltt.app`)
+      const url = new URL(connectorOrigin)
 
       if (session?.token) {
         url.searchParams.set('token', session.token)
@@ -85,7 +91,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       url.searchParams.set('mode', 'INLINE')
 
       return url.toString()
-    }, [connectorId, session?.token, connectionId, institution, appLauncherUri])
+    }, [connectorOrigin, session?.token, connectionId, institution, appLauncherUri])
 
     const postOAuthCallbackToIframe = useCallback((callbackUrl: string) => {
       if (!iframeRef.current?.contentWindow) {
@@ -108,7 +114,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
               params,
             },
           },
-          '*'
+          connectorOrigin
         )
       } catch {
         iframeRef.current.contentWindow.postMessage(
@@ -120,10 +126,10 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
               params: {},
             },
           },
-          '*'
+          connectorOrigin
         )
       }
-    }, [])
+    }, [connectorOrigin])
 
     // Handle messages from the iframe
     // The platform MessageBus sends: { source: 'quiltt', type: 'Load'|'ExitSuccess'|..., ...metadata }
