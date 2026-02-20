@@ -1,1 +1,7 @@
-export { getBrowserInfo, getPlatformInfo, getUserAgent, getVueVersion } from './telemetry'
+export {
+  getBrowserInfo,
+  getCapacitorInfo,
+  getPlatformInfo,
+  getUserAgent,
+  getVueVersion,
+} from './telemetry'
