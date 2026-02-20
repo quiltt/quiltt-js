@@ -2,7 +2,7 @@ import { createApp, nextTick } from 'vue'
 
 import { describe, expect, it } from 'vitest'
 
-import { useSession } from '@/composables/use-session'
+import { useSession } from '@/composables/useSession'
 
 const createToken = (expOffsetSeconds = 3600) => {
   const now = Math.floor(Date.now() / 1000)

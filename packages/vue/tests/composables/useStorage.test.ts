@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 import { GlobalStorage } from '@quiltt/core'
 
-import { useStorage } from '@/composables/use-storage'
+import { useStorage } from '@/composables/useStorage'
 
 const mountComposable = <T>(factory: () => T) => {
   let result!: T

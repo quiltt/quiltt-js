@@ -6,7 +6,7 @@ import { extractVersionNumber } from '@quiltt/core/utils'
 
 import { getUserAgent } from '../utils'
 import { version } from '../version'
-import { useQuilttSession } from './use-quiltt-session'
+import { useQuilttSession } from './useQuilttSession'
 
 type ProviderId = {
   plaid?: string

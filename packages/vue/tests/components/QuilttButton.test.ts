@@ -17,15 +17,14 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/composables/use-quiltt-connector', () => ({
+vi.mock('@/composables/useQuilttConnector', () => ({
   useQuilttConnector: mocks.useQuilttConnectorMock,
 }))
 
-import { QuilttContainer } from '@/components/quiltt-container'
+import { QuilttButton } from '@/components/QuilttButton'
 
-describe('QuilttContainer', () => {
+describe('QuilttButton', () => {
   afterEach(() => {
-    vi.useRealTimers()
     mocks.openSpy.mockReset()
     mocks.useQuilttConnectorMock.mockClear()
     document.body.innerHTML = ''
@@ -37,10 +36,14 @@ describe('QuilttContainer', () => {
 
     const app = createApp({
       render: () =>
-        h(QuilttContainer, {
-          connectorId: 'connector_test',
-          oauthRedirectUrl: 'https://example.com/oauth/callback',
-        }),
+        h(
+          QuilttButton,
+          {
+            connectorId: 'connector_test',
+            oauthRedirectUrl: 'https://example.com/oauth/callback',
+          },
+          () => 'Open Connector'
+        ),
     })
 
     app.mount(root)
@@ -61,7 +64,7 @@ describe('QuilttContainer', () => {
 
     const app = createApp({
       render: () =>
-        h(QuilttContainer, {
+        h(QuilttButton, {
           connectorId: 'connector_test',
           appLauncherUri: 'myapp://preferred',
           oauthRedirectUrl: 'https://example.com/fallback',
@@ -80,21 +83,27 @@ describe('QuilttContainer', () => {
     app.unmount()
   })
 
-  it('opens connector on mounted lifecycle after delay', () => {
-    vi.useFakeTimers()
-
+  it('opens connector when rendered element is clicked', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
 
     const app = createApp({
-      render: () => h(QuilttContainer, { connectorId: 'connector_test' }),
+      render: () =>
+        h(
+          QuilttButton,
+          {
+            connectorId: 'connector_test',
+          },
+          () => 'Open Connector'
+        ),
     })
 
     app.mount(root)
 
-    expect(mocks.openSpy).not.toHaveBeenCalled()
+    const button = root.querySelector('.quiltt-button') as HTMLButtonElement | null
+    expect(button).toBeTruthy()
 
-    vi.advanceTimersByTime(100)
+    button?.click()
 
     expect(mocks.openSpy).toHaveBeenCalledTimes(1)
 
@@ -103,6 +112,7 @@ describe('QuilttContainer', () => {
 
   it('renders custom element and wires connector callbacks to emits', () => {
     const onEvent = vi.fn()
+    const onOpen = vi.fn()
     const onLoad = vi.fn()
     const onExit = vi.fn()
     const onExitSuccess = vi.fn()
@@ -115,40 +125,43 @@ describe('QuilttContainer', () => {
     const app = createApp({
       render: () =>
         h(
-          QuilttContainer,
+          QuilttButton,
           {
             connectorId: 'connector_test',
-            as: 'section',
+            as: 'a',
             onEvent,
+            onOpen,
             onLoad,
             onExit,
             onExitSuccess,
             onExitAbort,
             onExitError,
           },
-          () => 'Inline Connector'
+          () => 'Open Connector'
         ),
     })
 
     app.mount(root)
 
-    const section = root.querySelector('section.quiltt-container')
-    expect(section).toBeTruthy()
+    const anchor = root.querySelector('a.quiltt-button')
+    expect(anchor).toBeTruthy()
 
     const options = mocks.getLatestOptions()
     expect(options).toBeDefined()
 
     const metadata = { connectorId: 'connector_test' }
     ;(options?.onEvent as (type: string, metadata: unknown) => void)?.('Load', metadata)
+    ;(options?.onOpen as (metadata: unknown) => void)?.(metadata)
     ;(options?.onLoad as (metadata: unknown) => void)?.(metadata)
-    ;(options?.onExit as (type: string, metadata: unknown) => void)?.('ExitAbort', metadata)
+    ;(options?.onExit as (type: string, metadata: unknown) => void)?.('ExitSuccess', metadata)
     ;(options?.onExitSuccess as (metadata: unknown) => void)?.(metadata)
     ;(options?.onExitAbort as (metadata: unknown) => void)?.(metadata)
     ;(options?.onExitError as (metadata: unknown) => void)?.(metadata)
 
     expect(onEvent).toHaveBeenCalledWith('Load', metadata)
+    expect(onOpen).toHaveBeenCalledWith(metadata)
     expect(onLoad).toHaveBeenCalledWith(metadata)
-    expect(onExit).toHaveBeenCalledWith('ExitAbort', metadata)
+    expect(onExit).toHaveBeenCalledWith('ExitSuccess', metadata)
     expect(onExitSuccess).toHaveBeenCalledWith(metadata)
     expect(onExitAbort).toHaveBeenCalledWith(metadata)
     expect(onExitError).toHaveBeenCalledWith(metadata)

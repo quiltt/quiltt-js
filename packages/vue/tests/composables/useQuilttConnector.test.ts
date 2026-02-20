@@ -8,7 +8,7 @@ const flags = vi.hoisted(() => ({
 
 const sessionRef = ref<{ token?: string } | null>({ token: 'session_token' })
 
-vi.mock('@/composables/use-quiltt-session', () => ({
+vi.mock('@/composables/useQuilttSession', () => ({
   useQuilttSession: () => {
     if (flags.throwMissingPlugin) {
       throw new Error('missing plugin context')
@@ -20,7 +20,7 @@ vi.mock('@/composables/use-quiltt-session', () => ({
   },
 }))
 
-import { useQuilttConnector } from '@/composables/use-quiltt-connector'
+import { useQuilttConnector } from '@/composables/useQuilttConnector'
 
 const mountComposable = <T>(factory: () => T) => {
   let result!: T

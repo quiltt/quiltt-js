@@ -1,28 +1,26 @@
 /**
- * QuilttButton - Button component that opens Quiltt Connector modal
+ * QuilttContainer - Container component that renders Quiltt Connector inline
  *
- * Wraps a button (or custom element) that opens the Quiltt Connector
- * in a modal overlay when clicked.
+ * Renders a container element where the Quiltt Connector will be displayed.
+ * The connector opens automatically when the component mounts.
  *
  * @example
  * ```vue
- * <QuilttButton
+ * <QuilttContainer
  *   :connector-id="connectorId"
  *   @exit-success="handleSuccess"
- * >
- *   Add Bank Account
- * </QuilttButton>
+ * />
  * ```
  */
 
-import { computed, defineComponent, h, type PropType } from 'vue'
+import { computed, defineComponent, h, onMounted, type PropType } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 
-import { useQuilttConnector } from '../composables/use-quiltt-connector'
+import { useQuilttConnector } from '../composables/useQuilttConnector'
 
-export const QuilttButton = defineComponent({
-  name: 'QuilttButton',
+export const QuilttContainer = defineComponent({
+  name: 'QuilttContainer',
 
   props: {
     /** Quiltt Connector ID */
@@ -56,15 +54,13 @@ export const QuilttButton = defineComponent({
     /** Render as a different element */
     as: {
       type: String,
-      default: 'button',
+      default: 'div',
     },
   },
 
   emits: {
     /** Connector loaded */
     load: (_metadata: ConnectorSDKCallbackMetadata) => true,
-    /** Connector opened */
-    open: (_metadata: ConnectorSDKCallbackMetadata) => true,
     /** Connection successful */
     'exit-success': (_metadata: ConnectorSDKCallbackMetadata) => true,
     /** User cancelled */
@@ -85,7 +81,6 @@ export const QuilttButton = defineComponent({
       institution: props.institution,
       appLauncherUri: effectiveAppLauncherUri.value,
       onEvent: (type, metadata) => emit('event', type, metadata),
-      onOpen: (metadata) => emit('open', metadata),
       onLoad: (metadata) => emit('load', metadata),
       onExit: (type, metadata) => emit('exit', type, metadata),
       onExitSuccess: (metadata) => emit('exit-success', metadata),
@@ -93,16 +88,22 @@ export const QuilttButton = defineComponent({
       onExitError: (metadata) => emit('exit-error', metadata),
     })
 
-    const handleClick = () => {
-      open()
-    }
+    onMounted(() => {
+      // Short delay to ensure SDK is loaded
+      setTimeout(() => {
+        open()
+      }, 100)
+    })
 
     return () =>
       h(
         props.as,
         {
-          class: 'quiltt-button',
-          onClick: handleClick,
+          class: 'quiltt-container',
+          style: {
+            width: '100%',
+            height: '100%',
+          },
         },
         slots.default?.()
       )

@@ -2,7 +2,7 @@ import { createApp, ref } from 'vue'
 
 import { describe, expect, it } from 'vitest'
 
-import { useQuilttSettings } from '@/composables/use-quiltt-settings'
+import { useQuilttSettings } from '@/composables/useQuilttSettings'
 import { QuilttClientIdKey } from '@/plugin/keys'
 
 const mountComposable = <T>(factory: () => T, provide?: Array<[symbol, unknown]>) => {

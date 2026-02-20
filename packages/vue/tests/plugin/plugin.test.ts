@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { QuilttClientIdKey, QuilttSessionKey, QuilttSetSessionKey } from '@/plugin/keys'
-import { QuilttPlugin } from '@/plugin/quiltt-plugin'
+import { QuilttPlugin } from '@/plugin/QuilttPlugin'
 
 const createToken = (expOffsetSeconds = 3600) => {
   const now = Math.floor(Date.now() / 1000)

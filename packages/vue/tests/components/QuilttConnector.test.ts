@@ -4,13 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const sessionRef = ref<{ token: string } | null>({ token: 'session_token' })
 
-vi.mock('@/composables/use-quiltt-session', () => ({
+vi.mock('@/composables/useQuilttSession', () => ({
   useQuilttSession: () => ({
     session: sessionRef,
   }),
 }))
 
-import { QuilttConnector } from '@/components/quiltt-connector'
+import { QuilttConnector } from '@/components/QuilttConnector'
 
 describe('QuilttConnector', () => {
   beforeEach(() => {

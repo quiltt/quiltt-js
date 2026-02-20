@@ -3,7 +3,7 @@ import { computed, onUnmounted, ref, watch } from 'vue'
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
 import { JsonWebTokenParse, Timeoutable } from '@quiltt/core'
 
-import { useStorage } from './use-storage'
+import { useStorage } from './useStorage'
 
 const parse = JsonWebTokenParse<PrivateClaims>
 const sessionTimer = new Timeoutable()

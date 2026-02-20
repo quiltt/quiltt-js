@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
 import * as ComponentsIndex from '@/components/index'
-import { QuilttButton } from '@/components/quiltt-button'
-import { QuilttConnector } from '@/components/quiltt-connector'
-import { QuilttContainer } from '@/components/quiltt-container'
+import { QuilttButton } from '@/components/QuilttButton'
+import { QuilttConnector } from '@/components/QuilttConnector'
+import { QuilttContainer } from '@/components/QuilttContainer'
 
 const hasEmit = (component: { emits?: unknown }, eventName: string) => {
   if (!component.emits) return false

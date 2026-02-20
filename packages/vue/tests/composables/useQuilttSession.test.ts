@@ -25,7 +25,7 @@ vi.mock('@quiltt/core', async () => {
   }
 })
 
-import { useQuilttSession } from '@/composables/use-quiltt-session'
+import { useQuilttSession } from '@/composables/useQuilttSession'
 import { QuilttClientIdKey, QuilttSessionKey, QuilttSetSessionKey } from '@/plugin/keys'
 
 const createToken = (expOffsetSeconds = 3600, eid = 'entity-id') => {

@@ -20,4 +20,4 @@ export {
   QuilttSessionKey,
   QuilttSetSessionKey,
 } from './keys'
-export { QuilttPlugin } from './quiltt-plugin'
+export { QuilttPlugin } from './QuilttPlugin'

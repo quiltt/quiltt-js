@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import * as ComposablesIndex from '@/composables/index'
-import { useQuilttConnector } from '@/composables/use-quiltt-connector'
-import { useQuilttInstitutions } from '@/composables/use-quiltt-institutions'
-import { useQuilttResolvable } from '@/composables/use-quiltt-resolvable'
-import { useQuilttSession } from '@/composables/use-quiltt-session'
-import { useQuilttSettings } from '@/composables/use-quiltt-settings'
-import { useSession } from '@/composables/use-session'
-import { useStorage } from '@/composables/use-storage'
+import { useQuilttConnector } from '@/composables/useQuilttConnector'
+import { useQuilttInstitutions } from '@/composables/useQuilttInstitutions'
+import { useQuilttResolvable } from '@/composables/useQuilttResolvable'
+import { useQuilttSession } from '@/composables/useQuilttSession'
+import { useQuilttSettings } from '@/composables/useQuilttSettings'
+import { useSession } from '@/composables/useSession'
+import { useStorage } from '@/composables/useStorage'
 
 let warnSpy: ReturnType<typeof vi.spyOn> | undefined
 

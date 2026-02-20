@@ -21,13 +21,13 @@ vi.mock('@quiltt/core', async () => {
 
 const sessionRef = ref<{ token?: string } | null>({ token: 'session_token' })
 
-vi.mock('@/composables/use-quiltt-session', () => ({
+vi.mock('@/composables/useQuilttSession', () => ({
   useQuilttSession: () => ({
     session: sessionRef,
   }),
 }))
 
-import { useQuilttInstitutions } from '@/composables/use-quiltt-institutions'
+import { useQuilttInstitutions } from '@/composables/useQuilttInstitutions'
 
 const mountComposable = <T>(factory: () => T) => {
   let result!: T

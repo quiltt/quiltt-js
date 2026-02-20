@@ -18,7 +18,7 @@ import { computed, defineComponent, h, onMounted, onUnmounted, ref } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 
-import { useQuilttSession } from '../composables/use-quiltt-session'
+import { useQuilttSession } from '../composables/useQuilttSession'
 
 export interface QuilttConnectorHandle {
   handleOAuthCallback: (url: string) => void

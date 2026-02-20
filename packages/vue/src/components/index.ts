@@ -1,3 +1,3 @@
-export { QuilttButton } from './quiltt-button'
-export { QuilttConnector, type QuilttConnectorHandle } from './quiltt-connector'
-export { QuilttContainer } from './quiltt-container'
+export { QuilttButton } from './QuilttButton'
+export { QuilttConnector, type QuilttConnectorHandle } from './QuilttConnector'
+export { QuilttContainer } from './QuilttContainer'
