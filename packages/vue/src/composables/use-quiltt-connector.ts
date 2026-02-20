@@ -32,7 +32,9 @@ import type {
   QuilttJWT,
 } from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
+import { extractVersionNumber } from '@quiltt/core/utils'
 
+import { getUserAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './use-quiltt-session'
 
@@ -85,11 +87,6 @@ const loadScript = (src: string, nonce?: string): Promise<void> => {
 }
 
 /**
- * Generate user agent string
- */
-const getUserAgent = (): string => `@quiltt/vue@${version}`
-
-/**
  * Composable for managing Quiltt Connector
  *
  * Loads the Quiltt SDK script and provides methods to open/manage connectors.
@@ -135,7 +132,8 @@ export const useQuilttConnector = (
 
   // Load SDK script on mount
   onMounted(async () => {
-    const userAgent = getUserAgent()
+    const sdkVersion = extractVersionNumber(version)
+    const userAgent = getUserAgent(sdkVersion)
     const scriptUrl = `${cdnBase}/v1/connector.js?agent=${encodeURIComponent(userAgent)}`
 
     try {

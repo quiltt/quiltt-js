@@ -2,11 +2,11 @@ import { computed, ref } from 'vue'
 
 import type { ErrorData, ResolvableData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
+import { extractVersionNumber } from '@quiltt/core/utils'
 
+import { getUserAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './use-quiltt-session'
-
-const getUserAgent = (): string => `@quiltt/vue@${version}`
 
 type ProviderId = {
   plaid?: string
@@ -25,7 +25,8 @@ export const useQuilttResolvable = (
   onErrorCallback?: (msg: string) => void
 ) => {
   const { session } = useQuilttSession()
-  const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent())
+  const sdkVersion = extractVersionNumber(version)
+  const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent(sdkVersion))
 
   const isLoading = ref(false)
   const isResolvable = ref<boolean | null>(null)

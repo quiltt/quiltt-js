@@ -2,11 +2,11 @@ import { computed, onUnmounted, ref, watch } from 'vue'
 
 import type { ErrorData, InstitutionsData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
+import { extractVersionNumber } from '@quiltt/core/utils'
 
+import { getUserAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './use-quiltt-session'
-
-const getUserAgent = (): string => `@quiltt/vue@${version}`
 
 /**
  * Search institutions for a connector.
@@ -26,7 +26,8 @@ export const useQuilttInstitutions = (
   const debounceTimer = ref<ReturnType<typeof setTimeout> | undefined>()
   const abortController = ref<AbortController | undefined>()
 
-  const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent())
+  const sdkVersion = extractVersionNumber(version)
+  const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent(sdkVersion))
 
   const handleError = (message: string) => {
     const errorMessage = message || 'Unknown error occurred while searching institutions'
