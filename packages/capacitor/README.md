@@ -206,6 +206,8 @@ import { QuilttConnector } from '@quiltt/capacitor'
 - [Capacitor SDK Guide](https://www.quiltt.dev/connector/sdk/capacitor)
 - [Issuing Session Tokens](https://www.quiltt.dev/authentication/issuing-session-tokens)
 - [Connector Configuration](https://www.quiltt.dev/connector)
+- [Capacitor React Example](../../examples/capacitor-react/README.md)
+- [Capacitor Vue Example](../../examples/capacitor-vue/README.md)
 
 ## License
 

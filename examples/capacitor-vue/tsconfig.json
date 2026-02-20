@@ -3,6 +3,7 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -12,6 +13,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "vite.config.ts",
+    "playwright.config.ts",
     "capacitor.config.ts"
   ]
 }

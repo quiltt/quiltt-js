@@ -20,6 +20,14 @@ Each package includes detailed setup instructions and examples. See the individu
 - [React Native Package](packages/react-native#readme) - React Native and Expo components
 - [Capacitor Package](packages/capacitor#readme) - Cross-platform mobile integration for React and Vue
 
+## Examples
+
+- [React + Next.js](examples/react-nextjs/README.md)
+- [React Native + Expo](examples/react-native-expo/README.md)
+- [Vue + Nuxt](examples/vue-nuxt/README.md)
+- [Capacitor + React](examples/capacitor-react/README.md)
+- [Capacitor + Vue](examples/capacitor-vue/README.md)
+
 ## Packages
 
 ### [@quiltt/core](packages/core#readme)
@@ -83,10 +91,10 @@ This project uses Vitest for unit testing and Playwright for component and end-t
 pnpm run test:unit
 
 # Run unit tests for specific package
-pnpm run test:unit packages/react
+pnpm run test:unit -- --project react
 
 # Run unit tests for specific file/pattern
-pnpm run test:unit packages/core/src/api
+pnpm run test:unit -- packages/core/src/api
 
 # Run end-to-end tests
 pnpm run test:e2e
@@ -98,13 +106,15 @@ pnpm run test
 #### Test Structure
 
 - **Unit Tests**: Located alongside source files with `.test.ts/.tsx` extensions
-- **Component/E2E Tests**: Playwright tests in `examples/react-nextjs/playwright/`
+- **Web Component/E2E Tests**: Playwright tests in `examples/react-nextjs/e2e/` and `examples/vue-nuxt/e2e/`
+- **Mobile E2E Tests**: Detox tests in `examples/react-native-expo/e2e/`
 - **Coverage**: Istanbul coverage reports generated in `coverage/` directory
 
 #### Testing Stack
 
 - **Vitest**: Fast unit test runner with native TypeScript support
-- **Playwright**: Component and end-to-end testing for React applications
+- **Playwright**: Component and end-to-end testing for web examples
+- **Detox**: End-to-end testing for React Native example apps
 - **Testing Library**: React and React Native testing utilities
 - **Happy DOM**: Lightweight DOM implementation for faster tests
 

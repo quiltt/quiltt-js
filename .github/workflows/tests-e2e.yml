@@ -22,6 +22,8 @@ jobs:
     outputs:
       nextjs: ${{ steps.filter.outputs.nextjs }}
       nuxt: ${{ steps.filter.outputs.nuxt }}
+      capacitor-react: ${{ steps.filter.outputs.capacitor-react }}
+      capacitor-vue: ${{ steps.filter.outputs.capacitor-vue }}
       react-native: ${{ steps.filter.outputs.react-native }}
       core: ${{ steps.filter.outputs.core }}
     steps:
@@ -35,6 +37,14 @@ jobs:
               - 'packages/react/**'
             nuxt:
               - 'examples/vue-nuxt/**'
+              - 'packages/vue/**'
+            capacitor-react:
+              - 'examples/capacitor-react/**'
+              - 'packages/capacitor/**'
+              - 'packages/react/**'
+            capacitor-vue:
+              - 'examples/capacitor-vue/**'
+              - 'packages/capacitor/**'
               - 'packages/vue/**'
             react-native:
               - 'examples/react-native-expo/**'
@@ -380,3 +390,89 @@ jobs:
         with:
           name: nuxt_test_artifacts_${{ github.sha }}
           path: ./examples/vue-nuxt/playwright-report
+
+  test-capacitor-react:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: needs.changes.outputs.capacitor-react == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./examples/capacitor-react
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: pnpm run playwright:install
+        working-directory: ./examples/capacitor-react
+
+      - name: Build app
+        run: pnpm run build
+        working-directory: ./examples/capacitor-react
+
+      - name: Run smoke test
+        run: pnpm run test:e2e
+        working-directory: ./examples/capacitor-react
+
+      - if: failure()
+        name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacitor_react_test_artifacts_${{ github.sha }}
+          path: ./examples/capacitor-react/playwright-report
+
+  test-capacitor-vue:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: needs.changes.outputs.capacitor-vue == 'true' || needs.changes.outputs.core == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: ./examples/capacitor-vue
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: pnpm run playwright:install
+        working-directory: ./examples/capacitor-vue
+
+      - name: Build app
+        run: pnpm run build
+        working-directory: ./examples/capacitor-vue
+
+      - name: Run smoke test
+        run: pnpm run test:e2e
+        working-directory: ./examples/capacitor-vue
+
+      - if: failure()
+        name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacitor_vue_test_artifacts_${{ github.sha }}
+          path: ./examples/capacitor-vue/playwright-report
