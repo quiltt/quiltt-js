@@ -5,7 +5,7 @@
  * Handles token parsing, storage synchronization, and automatic expiration.
  */
 
-import type { Plugin } from 'vue'
+import type { App, Plugin } from 'vue'
 import { ref, watch } from 'vue'
 
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
@@ -19,19 +19,6 @@ const parse = JsonWebTokenParse<PrivateClaims>
 
 // Storage key for session persistence
 const STORAGE_KEY = 'quiltt:session'
-
-// Global timeout for session expiration
-let sessionTimeout: ReturnType<typeof setTimeout> | undefined
-
-/**
- * Clear the session timeout
- */
-const clearSessionTimeout = () => {
-  if (sessionTimeout) {
-    clearTimeout(sessionTimeout)
-    sessionTimeout = undefined
-  }
-}
 
 /**
  * Get stored token from localStorage (browser only)
@@ -81,8 +68,21 @@ const setStoredToken = (token: string | null): void => {
  * app.mount('#app')
  * ```
  */
-export const QuilttPlugin: Plugin<QuilttPluginOptions[]> = {
-  install(app, options?: QuilttPluginOptions) {
+export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
+  install(app: App, options?: QuilttPluginOptions) {
+    // Instance-scoped timeout for session expiration
+    let sessionTimeout: ReturnType<typeof setTimeout> | undefined
+
+    /**
+     * Clear the session timeout for this app instance
+     */
+    const clearSessionTimeout = () => {
+      if (sessionTimeout) {
+        clearTimeout(sessionTimeout)
+        sessionTimeout = undefined
+      }
+    }
+
     // Initialize with provided token or stored token
     const initialToken = options?.token ?? getStoredToken()
     const initialSession = parse(initialToken)
@@ -121,14 +121,32 @@ export const QuilttPlugin: Plugin<QuilttPluginOptions[]> = {
       }
     }
 
+    // Storage event handler for cross-tab synchronization
+    let storageHandler: ((event: StorageEvent) => void) | undefined
+
     // Listen for storage changes from other tabs/windows
     if (typeof window !== 'undefined') {
-      window.addEventListener('storage', (event) => {
+      storageHandler = (event: StorageEvent) => {
         if (event.key === STORAGE_KEY) {
           const newSession = parse(event.newValue)
           session.value = newSession
         }
-      })
+      }
+      window.addEventListener('storage', storageHandler)
+    }
+
+    // Cleanup function for when the app is unmounted
+    const cleanup = () => {
+      clearSessionTimeout()
+      if (typeof window !== 'undefined' && storageHandler) {
+        window.removeEventListener('storage', storageHandler)
+        storageHandler = undefined
+      }
+    }
+
+    // Register cleanup on app unmount (Vue 3.5+)
+    if (typeof app.onUnmount === 'function') {
+      app.onUnmount(cleanup)
     }
 
     // Watch for session changes to update expiration timer
@@ -149,6 +167,7 @@ export const QuilttPlugin: Plugin<QuilttPluginOptions[]> = {
           return
         }
 
+        clearSessionTimeout()
         sessionTimeout = setTimeout(() => {
           session.value = null
           setStoredToken(null)

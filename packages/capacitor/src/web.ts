@@ -16,7 +16,7 @@ export class QuilttConnectorWeb extends WebPlugin implements QuilttConnectorPlug
    * On web, this simply opens the URL in a new tab using window.open.
    */
   async openUrl(options: OpenUrlOptions): Promise<{ completed: boolean }> {
-    window.open(options.url, '_blank')
+    window.open(options.url, '_blank', 'noopener,noreferrer')
     return { completed: true }
   }
 
@@ -26,7 +26,7 @@ export class QuilttConnectorWeb extends WebPlugin implements QuilttConnectorPlug
    * On web, we check the current URL for any OAuth callback parameters.
    * This is useful when the user is redirected back to the app after OAuth.
    */
-  async getLaunchUrl(): Promise<DeepLinkEvent | undefined> {
+  async getLaunchUrl(): Promise<DeepLinkEvent> {
     const currentUrl = window.location.href
 
     // Check if the current URL contains OAuth callback parameters
@@ -39,6 +39,6 @@ export class QuilttConnectorWeb extends WebPlugin implements QuilttConnectorPlug
       return { url: currentUrl }
     }
 
-    return undefined
+    return { url: null }
   }
 }

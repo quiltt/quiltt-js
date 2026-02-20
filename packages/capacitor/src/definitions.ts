@@ -15,9 +15,9 @@ export interface OpenUrlOptions {
  */
 export interface DeepLinkEvent {
   /**
-   * The full URL that was used to open the app
+   * The full URL that was used to open the app, or null if no URL was present
    */
-  url: string
+  url: string | null
 }
 
 /**
@@ -56,7 +56,7 @@ export interface QuilttConnectorPlugin {
    *
    * @since 5.0.3
    */
-  getLaunchUrl(): Promise<DeepLinkEvent | undefined>
+  getLaunchUrl(): Promise<DeepLinkEvent>
 
   /**
    * Listen for deep link events.

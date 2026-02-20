@@ -14,7 +14,7 @@ describe('QuilttConnectorWeb', () => {
     await expect(plugin.openUrl({ url: 'https://example.com' })).resolves.toEqual({
       completed: true,
     })
-    expect(openSpy).toHaveBeenCalledWith('https://example.com', '_blank')
+    expect(openSpy).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
   })
 
   it('returns launch URL when OAuth params exist', async () => {
@@ -26,10 +26,10 @@ describe('QuilttConnectorWeb', () => {
     })
   })
 
-  it('returns undefined when no OAuth params exist', async () => {
+  it('returns null url when no OAuth params exist', async () => {
     window.history.replaceState({}, '', '/')
 
     const plugin = new QuilttConnectorWeb()
-    await expect(plugin.getLaunchUrl()).resolves.toBeUndefined()
+    await expect(plugin.getLaunchUrl()).resolves.toEqual({ url: null })
   })
 })

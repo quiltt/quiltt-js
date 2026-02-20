@@ -42,7 +42,7 @@ afterEach(() => {
 
 const primePluginMocks = () => {
   pluginMocks.addListener.mockResolvedValue({ remove: vi.fn() })
-  pluginMocks.getLaunchUrl.mockResolvedValue(undefined)
+  pluginMocks.getLaunchUrl.mockResolvedValue({ url: null })
 }
 
 describe('QuilttConnector (capacitor)', () => {

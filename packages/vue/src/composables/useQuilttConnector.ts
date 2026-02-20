@@ -211,9 +211,19 @@ export const useQuilttConnector = (
   }
 
   // Watch for changes that require connector update
-  watch([isLoaded, () => options?.connectionId, () => options?.institution], updateConnector, {
-    immediate: true,
-  })
+  watch(
+    [
+      isLoaded,
+      () => options?.connectionId,
+      () => options?.institution,
+      () => options?.appLauncherUri,
+      () => options?.oauthRedirectUrl,
+    ],
+    updateConnector,
+    {
+      immediate: true,
+    }
+  )
 
   // Register event handlers when connector changes
   watch(

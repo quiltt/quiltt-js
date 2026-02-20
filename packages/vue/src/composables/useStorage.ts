@@ -1,4 +1,4 @@
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, getCurrentScope, onScopeDispose, ref } from 'vue'
 
 import type { Maybe } from '@quiltt/core'
 import { GlobalStorage } from '@quiltt/core'
@@ -26,23 +26,19 @@ export const useStorage = <T>(key: string, initialState?: Maybe<T>) => {
     }
   }
 
-  watch(
-    () => key,
-    () => {
-      state.value = readStorage()
-    },
-    { immediate: false }
-  )
-
   const handleStorageChange = (newValue: Maybe<T> | undefined) => {
     state.value = newValue
   }
 
   GlobalStorage.subscribe(key, handleStorageChange)
 
-  onUnmounted(() => {
-    GlobalStorage.unsubscribe(key, handleStorageChange)
-  })
+  // Use onScopeDispose for cleanup in any effect scope (components, effectScope(), etc.)
+  // This safely handles cases where composable is called outside a scope
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      GlobalStorage.unsubscribe(key, handleStorageChange)
+    })
+  }
 
   return {
     storage: computed(() => state.value),
