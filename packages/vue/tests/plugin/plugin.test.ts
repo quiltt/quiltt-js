@@ -263,4 +263,55 @@ describe('QuilttPlugin', () => {
       configurable: true,
     })
   })
+
+  it('cleans up listeners and timers via onUnmount callback', () => {
+    vi.useFakeTimers()
+
+    const provide = vi.fn()
+    const onUnmount = vi.fn<(cb: () => void) => void>()
+    const addEventSpy = vi.spyOn(window, 'addEventListener')
+    const removeEventSpy = vi.spyOn(window, 'removeEventListener')
+
+    const app = { provide, onUnmount } as any
+
+    QuilttPlugin.install?.(app, { clientId: 'cid_test' })
+
+    const onUnmountCallback = onUnmount.mock.calls[0]?.[0] as (() => void) | undefined
+    expect(onUnmountCallback).toBeTypeOf('function')
+
+    const setSessionCall = provide.mock.calls.find((call) => call[0] === QuilttSetSessionKey)
+    const setSession = setSessionCall?.[1] as (token: string | null) => void
+
+    setSession(createToken(60))
+
+    onUnmountCallback?.()
+    onUnmountCallback?.()
+
+    expect(addEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
+    expect(removeEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
+    expect(removeEventSpy).toHaveBeenCalledTimes(1)
+
+    vi.useRealTimers()
+  })
+
+  it('wraps app.unmount to run cleanup when onUnmount is unavailable', () => {
+    const provide = vi.fn()
+    const addEventSpy = vi.spyOn(window, 'addEventListener')
+    const removeEventSpy = vi.spyOn(window, 'removeEventListener')
+    const originalUnmount = vi.fn(() => 'unmounted')
+
+    const app = {
+      provide,
+      unmount: originalUnmount,
+    } as any
+
+    QuilttPlugin.install?.(app, { clientId: 'cid_test' })
+
+    const result = app.unmount('arg1')
+
+    expect(result).toBe('unmounted')
+    expect(originalUnmount).toHaveBeenCalledWith('arg1')
+    expect(addEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
+    expect(removeEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
+  })
 })

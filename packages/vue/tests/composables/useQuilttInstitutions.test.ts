@@ -1,4 +1,4 @@
-import { createApp, ref } from 'vue'
+import { createApp, nextTick, ref } from 'vue'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -70,9 +70,13 @@ describe('useQuilttInstitutions', () => {
 
     result.setSearchTerm('de')
 
-    vi.advanceTimersByTime(350)
+    await vi.advanceTimersByTimeAsync(350)
+    await nextTick()
     await Promise.resolve()
     await Promise.resolve()
+    await nextTick()
+
+    expect(mocks.searchInstitutionsMock).toHaveBeenCalledTimes(1)
 
     expect(result.searchTerm.value).toBe('de')
     expect(result.isSearching.value).toBe(false)
@@ -107,9 +111,13 @@ describe('useQuilttInstitutions', () => {
     )
 
     result.setSearchTerm('de')
-    vi.advanceTimersByTime(350)
+    await vi.advanceTimersByTimeAsync(350)
+    await nextTick()
     await Promise.resolve()
     await Promise.resolve()
+    await nextTick()
+
+    expect(mocks.searchInstitutionsMock).toHaveBeenCalledTimes(1)
 
     expect(onError).toHaveBeenCalledWith('request failed')
     expect(result.isSearching.value).toBe(false)
@@ -117,9 +125,13 @@ describe('useQuilttInstitutions', () => {
     mocks.searchInstitutionsMock.mockRejectedValueOnce(new Error('network down'))
 
     result.setSearchTerm('bank')
-    vi.advanceTimersByTime(350)
+    await vi.advanceTimersByTimeAsync(350)
+    await nextTick()
     await Promise.resolve()
     await Promise.resolve()
+    await nextTick()
+
+    expect(mocks.searchInstitutionsMock).toHaveBeenCalledTimes(2)
 
     expect(onError).toHaveBeenCalledWith('network down')
     expect(result.isSearching.value).toBe(false)

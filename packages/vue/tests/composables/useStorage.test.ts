@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { GlobalStorage } from '@quiltt/core'
 
@@ -57,5 +57,34 @@ describe('useStorage', () => {
     expect(GlobalStorage.get(missingKey)).toBe(5)
 
     unmount()
+  })
+
+  it('does not write when setting to the same value', () => {
+    const key = `test:same:${Date.now()}:${Math.random()}`
+    GlobalStorage.set(key, 'same')
+
+    const setSpy = vi.spyOn(GlobalStorage, 'set')
+    const { result, unmount } = mountComposable(() => useStorage<string>(key))
+
+    expect(result.storage.value).toBe('same')
+    result.setStorage('same')
+
+    expect(setSpy).not.toHaveBeenCalled()
+
+    setSpy.mockRestore()
+    unmount()
+  })
+
+  it('unsubscribes from GlobalStorage on unmount', () => {
+    const key = `test:unsubscribe:${Date.now()}:${Math.random()}`
+    const unsubscribeSpy = vi.spyOn(GlobalStorage, 'unsubscribe')
+
+    const { unmount } = mountComposable(() => useStorage<string>(key))
+    unmount()
+
+    expect(unsubscribeSpy).toHaveBeenCalledTimes(1)
+    expect(unsubscribeSpy.mock.calls[0]?.[0]).toBe(key)
+
+    unsubscribeSpy.mockRestore()
   })
 })

@@ -13,7 +13,7 @@
  * ```
  */
 
-import { computed, defineComponent, h, onMounted, type PropType } from 'vue'
+import { computed, defineComponent, h, onMounted, onUnmounted, type PropType } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 
@@ -75,11 +75,12 @@ export const QuilttContainer = defineComponent({
 
   setup(props, { emit, slots }) {
     const effectiveAppLauncherUri = computed(() => props.appLauncherUri ?? props.oauthRedirectUrl)
+    let openTimeout: ReturnType<typeof setTimeout> | undefined
 
-    const { open } = useQuilttConnector(props.connectorId, {
-      connectionId: props.connectionId,
-      institution: props.institution,
-      appLauncherUri: effectiveAppLauncherUri.value,
+    const { open } = useQuilttConnector(() => props.connectorId, {
+      connectionId: () => props.connectionId,
+      institution: () => props.institution,
+      appLauncherUri: effectiveAppLauncherUri,
       onEvent: (type, metadata) => emit('event', type, metadata),
       onLoad: (metadata) => emit('load', metadata),
       onExit: (type, metadata) => emit('exit', type, metadata),
@@ -90,9 +91,16 @@ export const QuilttContainer = defineComponent({
 
     onMounted(() => {
       // Short delay to ensure SDK is loaded
-      setTimeout(() => {
+      openTimeout = setTimeout(() => {
         open()
       }, 100)
+    })
+
+    onUnmounted(() => {
+      if (openTimeout) {
+        clearTimeout(openTimeout)
+        openTimeout = undefined
+      }
     })
 
     return () =>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { getBrowserInfo, getUserAgent as coreGetUserAgent } from '@quiltt/core/utils'
+import { getUserAgent as coreGetUserAgent, getBrowserInfo } from '@quiltt/core/utils'
 
 // Re-export getBrowserInfo
 export { getBrowserInfo }

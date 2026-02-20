@@ -22,7 +22,8 @@
  * ```
  */
 
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import { onMounted, onUnmounted, ref, toValue, watch } from 'vue'
 
 import type {
   ConnectorSDK,
@@ -41,14 +42,14 @@ import { useQuilttSession } from './useQuilttSession'
 declare const Quiltt: ConnectorSDK
 
 export interface UseQuilttConnectorOptions extends ConnectorSDKCallbacks {
-  connectionId?: string
-  institution?: string
-  appLauncherUri?: string
+  connectionId?: MaybeRefOrGetter<string | undefined>
+  institution?: MaybeRefOrGetter<string | undefined>
+  appLauncherUri?: MaybeRefOrGetter<string | undefined>
   /**
    * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
    * The OAuth redirect URL for mobile or embedded webview flows.
    */
-  oauthRedirectUrl?: string
+  oauthRedirectUrl?: MaybeRefOrGetter<string | undefined>
   nonce?: string
 }
 
@@ -94,9 +95,15 @@ const loadScript = (src: string, nonce?: string): Promise<void> => {
  * it logs a warning and continues without authenticated session state.
  */
 export const useQuilttConnector = (
-  connectorId?: string,
+  connectorId?: MaybeRefOrGetter<string | undefined>,
   options?: UseQuilttConnectorOptions
 ): UseQuilttConnectorReturn => {
+  const getConnectorId = (): string | undefined => toValue(connectorId)
+  const getConnectionId = (): string | undefined => toValue(options?.connectionId)
+  const getInstitution = (): string | undefined => toValue(options?.institution)
+  const getAppLauncherUri = (): string | undefined =>
+    toValue(options?.appLauncherUri) ?? toValue(options?.oauthRedirectUrl)
+
   const session = ref<Maybe<QuilttJWT | undefined>>()
 
   try {
@@ -124,10 +131,10 @@ export const useQuilttConnector = (
   const isConnectorOpen = ref(false)
 
   // Track previous values
-  let prevConnectionId = options?.connectionId
-  let prevConnectorId = connectorId
-  let prevInstitution = options?.institution
-  let prevAppLauncherUri = options?.appLauncherUri ?? options?.oauthRedirectUrl
+  let prevConnectionId = getConnectionId()
+  let prevConnectorId = getConnectorId()
+  let prevInstitution = getInstitution()
+  let prevAppLauncherUri = getAppLauncherUri()
   let connectorCreated = false
 
   // Load SDK script on mount
@@ -169,15 +176,16 @@ export const useQuilttConnector = (
 
   // Create/update connector when needed
   const updateConnector = () => {
-    if (!isLoaded.value || typeof Quiltt === 'undefined' || !connectorId) return
+    const currentConnectorId = getConnectorId()
+    if (!isLoaded.value || typeof Quiltt === 'undefined' || !currentConnectorId) return
 
-    const currentConnectionId = options?.connectionId
-    const currentInstitution = options?.institution
-    const currentAppLauncherUri = options?.appLauncherUri ?? options?.oauthRedirectUrl
+    const currentConnectionId = getConnectionId()
+    const currentInstitution = getInstitution()
+    const currentAppLauncherUri = getAppLauncherUri()
 
     // Check for changes
     const connectionIdChanged = prevConnectionId !== currentConnectionId
-    const connectorIdChanged = prevConnectorId !== connectorId
+    const connectorIdChanged = prevConnectorId !== currentConnectorId
     const institutionChanged = prevInstitution !== currentInstitution
     const appLauncherUriChanged = prevAppLauncherUri !== currentAppLauncherUri
     const hasChanges =
@@ -190,13 +198,13 @@ export const useQuilttConnector = (
     if (hasChanges) {
       if (currentConnectionId) {
         // Reconnect mode
-        connector.value = Quiltt.reconnect(connectorId, {
+        connector.value = Quiltt.reconnect(currentConnectorId, {
           connectionId: currentConnectionId,
           appLauncherUri: currentAppLauncherUri,
         })
       } else {
         // Connect mode
-        connector.value = Quiltt.connect(connectorId, {
+        connector.value = Quiltt.connect(currentConnectorId, {
           institution: currentInstitution,
           appLauncherUri: currentAppLauncherUri,
         })
@@ -204,7 +212,7 @@ export const useQuilttConnector = (
 
       connectorCreated = true
       prevConnectionId = currentConnectionId
-      prevConnectorId = connectorId
+      prevConnectorId = currentConnectorId
       prevInstitution = currentInstitution
       prevAppLauncherUri = currentAppLauncherUri
     }
@@ -212,13 +220,7 @@ export const useQuilttConnector = (
 
   // Watch for changes that require connector update
   watch(
-    [
-      isLoaded,
-      () => options?.connectionId,
-      () => options?.institution,
-      () => options?.appLauncherUri,
-      () => options?.oauthRedirectUrl,
-    ],
+    [isLoaded, getConnectorId, getConnectionId, getInstitution, getAppLauncherUri],
     updateConnector,
     {
       immediate: true,
@@ -240,21 +242,17 @@ export const useQuilttConnector = (
       if (options?.onEvent) {
         newConnector.onEvent(options.onEvent)
       }
-      if (options?.onOpen) {
-        newConnector.onOpen((metadata) => {
-          isConnectorOpen.value = true
-          options.onOpen?.(metadata)
-        })
-      }
+      newConnector.onOpen((metadata) => {
+        isConnectorOpen.value = true
+        options?.onOpen?.(metadata)
+      })
       if (options?.onLoad) {
         newConnector.onLoad(options.onLoad)
       }
-      if (options?.onExit) {
-        newConnector.onExit((type, metadata) => {
-          isConnectorOpen.value = false
-          options.onExit?.(type, metadata)
-        })
-      }
+      newConnector.onExit((type, metadata) => {
+        isConnectorOpen.value = false
+        options?.onExit?.(type, metadata)
+      })
       if (options?.onExitSuccess) {
         newConnector.onExitSuccess(options.onExitSuccess)
       }
@@ -290,7 +288,7 @@ export const useQuilttConnector = (
    * Open the connector modal
    */
   const open = (): void => {
-    if (connectorId) {
+    if (getConnectorId()) {
       isOpening.value = true
       updateConnector()
     } else {

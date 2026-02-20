@@ -2,10 +2,16 @@
   "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "quiltt/quiltt-js" }],
   "commit": false,
-  "fixed": [["@quiltt/core", "@quiltt/react", "@quiltt/react-native", "@quiltt/capacitor"]],
+  "fixed": [
+    ["@quiltt/core", "@quiltt/react", "@quiltt/react-native", "@quiltt/capacitor", "@quiltt/vue"]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@quiltt/examples-nextjs", "@quiltt/examples-react-native-expo"]
+  "ignore": [
+    "@quiltt/examples-nextjs",
+    "@quiltt/examples-react-native-expo",
+    "@quiltt/examples-vue-nuxt"
+  ]
 }

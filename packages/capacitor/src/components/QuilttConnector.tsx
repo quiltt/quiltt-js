@@ -66,10 +66,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
     const { session } = useQuilttSession()
 
     // Connector origin for secure postMessage targeting
-    const connectorOrigin = useMemo(
-      () => `https://${connectorId}.quiltt.app`,
-      [connectorId]
-    )
+    const connectorOrigin = useMemo(() => `https://${connectorId}.quiltt.app`, [connectorId])
 
     // Build connector URL
     const connectorUrl = useMemo(() => {
@@ -93,43 +90,46 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       return url.toString()
     }, [connectorOrigin, session?.token, connectionId, institution, appLauncherUri])
 
-    const postOAuthCallbackToIframe = useCallback((callbackUrl: string) => {
-      if (!iframeRef.current?.contentWindow) {
-        return
-      }
+    const postOAuthCallbackToIframe = useCallback(
+      (callbackUrl: string) => {
+        if (!iframeRef.current?.contentWindow) {
+          return
+        }
 
-      try {
-        const callback = new URL(callbackUrl)
-        const params: Record<string, string> = {}
-        callback.searchParams.forEach((value, key) => {
-          params[key] = value
-        })
+        try {
+          const callback = new URL(callbackUrl)
+          const params: Record<string, string> = {}
+          callback.searchParams.forEach((value, key) => {
+            params[key] = value
+          })
 
-        iframeRef.current.contentWindow.postMessage(
-          {
-            source: 'quiltt',
-            type: 'OAuthCallback',
-            data: {
-              url: callbackUrl,
-              params,
+          iframeRef.current.contentWindow.postMessage(
+            {
+              source: 'quiltt',
+              type: 'OAuthCallback',
+              data: {
+                url: callbackUrl,
+                params,
+              },
             },
-          },
-          connectorOrigin
-        )
-      } catch {
-        iframeRef.current.contentWindow.postMessage(
-          {
-            source: 'quiltt',
-            type: 'OAuthCallback',
-            data: {
-              url: callbackUrl,
-              params: {},
+            connectorOrigin
+          )
+        } catch {
+          iframeRef.current.contentWindow.postMessage(
+            {
+              source: 'quiltt',
+              type: 'OAuthCallback',
+              data: {
+                url: callbackUrl,
+                params: {},
+              },
             },
-          },
-          connectorOrigin
-        )
-      }
-    }, [connectorOrigin])
+            connectorOrigin
+          )
+        }
+      },
+      [connectorOrigin]
+    )
 
     // Handle messages from the iframe
     // The platform MessageBus sends: { source: 'quiltt', type: 'Load'|'ExitSuccess'|..., ...metadata }

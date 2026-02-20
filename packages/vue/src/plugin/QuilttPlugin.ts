@@ -72,6 +72,8 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
   install(app: App, options?: QuilttPluginOptions) {
     // Instance-scoped timeout for session expiration
     let sessionTimeout: ReturnType<typeof setTimeout> | undefined
+    let isCleanedUp = false
+    let stopSessionWatcher: (() => void) | undefined
 
     /**
      * Clear the session timeout for this app instance
@@ -137,7 +139,16 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
 
     // Cleanup function for when the app is unmounted
     const cleanup = () => {
+      if (isCleanedUp) {
+        return
+      }
+      isCleanedUp = true
+
       clearSessionTimeout()
+      if (stopSessionWatcher) {
+        stopSessionWatcher()
+        stopSessionWatcher = undefined
+      }
       if (typeof window !== 'undefined' && storageHandler) {
         window.removeEventListener('storage', storageHandler)
         storageHandler = undefined
@@ -149,8 +160,17 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
       app.onUnmount(cleanup)
     }
 
+    // Ensure cleanup runs on all supported Vue versions (3.3+)
+    if (typeof app.unmount === 'function') {
+      const originalUnmount = app.unmount.bind(app)
+      app.unmount = (...args: Parameters<typeof originalUnmount>) => {
+        cleanup()
+        return originalUnmount(...args)
+      }
+    }
+
     // Watch for session changes to update expiration timer
-    watch(
+    stopSessionWatcher = watch(
       () => session.value,
       (newSession) => {
         if (!newSession) {

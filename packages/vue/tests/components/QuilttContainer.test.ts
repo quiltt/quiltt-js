@@ -45,11 +45,14 @@ describe('QuilttContainer', () => {
 
     app.mount(root)
 
-    expect(mocks.useQuilttConnectorMock).toHaveBeenCalledWith(
-      'connector_test',
-      expect.objectContaining({
-        appLauncherUri: 'https://example.com/oauth/callback',
-      })
+    const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+
+    expect(connectorId()).toBe('connector_test')
+    expect((options.appLauncherUri as { value: string }).value).toBe(
+      'https://example.com/oauth/callback'
     )
 
     app.unmount()
@@ -70,12 +73,13 @@ describe('QuilttContainer', () => {
 
     app.mount(root)
 
-    expect(mocks.useQuilttConnectorMock).toHaveBeenCalledWith(
-      'connector_test',
-      expect.objectContaining({
-        appLauncherUri: 'myapp://preferred',
-      })
-    )
+    const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+
+    expect(connectorId()).toBe('connector_test')
+    expect((options.appLauncherUri as { value: string }).value).toBe('myapp://preferred')
 
     app.unmount()
   })

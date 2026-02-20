@@ -1,4 +1,4 @@
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref, shallowRef, watch } from 'vue'
 
 import type { ErrorData, InstitutionsData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
@@ -24,7 +24,7 @@ export const useQuilttInstitutions = (
   const isSearching = ref(false)
 
   const debounceTimer = ref<ReturnType<typeof setTimeout> | undefined>()
-  const abortController = ref<AbortController | undefined>()
+  const abortController = shallowRef<AbortController | undefined>()
 
   const sdkVersion = extractVersionNumber(version)
   const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent(sdkVersion))
@@ -43,6 +43,8 @@ export const useQuilttInstitutions = (
     }
 
     if (term.trim().length < 2) {
+      abortController.value?.abort()
+      abortController.value = undefined
       searchTerm.value = ''
       searchResults.value = []
       isSearching.value = false
@@ -63,15 +65,20 @@ export const useQuilttInstitutions = (
       }
 
       abortController.value?.abort()
-      abortController.value = new AbortController()
+      const controller = new AbortController()
+      abortController.value = controller
 
       try {
         const response = await connectorsAPI.searchInstitutions(
           token,
           connectorId,
           term,
-          abortController.value.signal
+          controller.signal
         )
+
+        if (abortController.value !== controller || controller.signal.aborted) {
+          return
+        }
 
         if (response.status === 200) {
           searchResults.value = response.data as InstitutionsData
@@ -79,11 +86,11 @@ export const useQuilttInstitutions = (
           handleError((response.data as ErrorData).message || 'Failed to fetch institutions')
         }
       } catch (error: any) {
-        if (!abortController.value.signal.aborted) {
+        if (abortController.value === controller && !controller.signal.aborted) {
           handleError(error?.message)
         }
       } finally {
-        if (!abortController.value.signal.aborted) {
+        if (abortController.value === controller && !controller.signal.aborted) {
           isSearching.value = false
         }
       }

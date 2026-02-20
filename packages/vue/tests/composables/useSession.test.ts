@@ -1,6 +1,6 @@
 import { createApp, nextTick } from 'vue'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { useSession } from '@/composables/useSession'
 
@@ -93,5 +93,49 @@ describe('useSession', () => {
     expect(result.session.value).toBeNull()
 
     unmount()
+  })
+
+  it('clears already expired tokens immediately', async () => {
+    const { result, unmount } = mountComposable(() => useSession('session:test:expired'))
+
+    result.setSession(createToken(-60))
+    await nextTick()
+
+    expect(result.session.value).toBeNull()
+
+    unmount()
+  })
+
+  it('does not update when updater returns the same token', async () => {
+    const { result, unmount } = mountComposable(() => useSession('session:test:same'))
+    const token = createToken()
+
+    result.setSession(token)
+    await nextTick()
+    expect(result.session.value?.token).toBe(token)
+
+    const previousSession = result.session.value
+    result.setSession((prev) => prev)
+    await nextTick()
+
+    expect(result.session.value).toBe(previousSession)
+
+    unmount()
+  })
+
+  it('clears active timeout on unmount', async () => {
+    vi.useFakeTimers()
+
+    const { result, unmount } = mountComposable(() => useSession('session:test:unmount'))
+    const token = createToken(1)
+
+    result.setSession(token)
+    await nextTick()
+    expect(result.session.value?.token).toBe(token)
+
+    unmount()
+    vi.advanceTimersByTime(1100)
+
+    vi.useRealTimers()
   })
 })

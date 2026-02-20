@@ -2,7 +2,13 @@ import React from 'react'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getBrowserInfo, getPlatformInfo, getReactVersion, getUserAgent } from '@/utils/telemetry'
+import {
+  getBrowserInfo,
+  getCapacitorInfo,
+  getPlatformInfo,
+  getReactVersion,
+  getUserAgent,
+} from '@/utils/telemetry'
 
 describe('React Telemetry', () => {
   describe('getReactVersion', () => {
@@ -13,7 +19,6 @@ describe('React Telemetry', () => {
 
     it('should return actual React version', () => {
       const version = getReactVersion()
-      // Should be a version string like "19.2.4"
       expect(version).toMatch(/^\d+\.\d+\.\d+/)
     })
   })
@@ -24,7 +29,7 @@ describe('React Telemetry', () => {
     })
 
     it('should detect Chrome browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         writable: true,
@@ -36,7 +41,7 @@ describe('React Telemetry', () => {
     })
 
     it('should detect Safari browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
         writable: true,
@@ -48,7 +53,7 @@ describe('React Telemetry', () => {
     })
 
     it('should detect Firefox browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0',
         writable: true,
@@ -60,7 +65,7 @@ describe('React Telemetry', () => {
     })
 
     it('should detect Edge browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
         writable: true,
@@ -72,7 +77,7 @@ describe('React Telemetry', () => {
     })
 
     it('should return Unknown for unrecognized browsers', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value: 'Some Custom Browser/1.0',
         writable: true,
         configurable: true,
@@ -85,7 +90,7 @@ describe('React Telemetry', () => {
 
   describe('getPlatformInfo', () => {
     it('should combine React version and browser info', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         writable: true,
@@ -97,7 +102,7 @@ describe('React Telemetry', () => {
     })
 
     it('should handle Unknown browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value: undefined,
         writable: true,
         configurable: true,
@@ -106,11 +111,92 @@ describe('React Telemetry', () => {
       const platformInfo = getPlatformInfo()
       expect(platformInfo).toMatch(/^React\/\d+\.\d+\.\d+; Unknown$/)
     })
+
+    it('should include Capacitor platform details when in native environment', () => {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        writable: true,
+        configurable: true,
+      })
+
+      window.Capacitor = {
+        isNativePlatform: () => true,
+        getPlatform: () => 'ios',
+      }
+
+      const platformInfo = getPlatformInfo()
+      expect(platformInfo).toMatch(/^React\/\d+\.\d+\.\d+; Capacitor\/iOS; Chrome\/120$/)
+
+      delete window.Capacitor
+    })
+  })
+
+  describe('getCapacitorInfo', () => {
+    it('should return null when not in native environment', () => {
+      window.Capacitor = {
+        isNativePlatform: () => false,
+        getPlatform: () => 'ios',
+      }
+
+      expect(getCapacitorInfo()).toBeNull()
+      delete window.Capacitor
+    })
+
+    it('should map known platforms and fallback to native when getPlatform is missing', () => {
+      window.Capacitor = {
+        isNativePlatform: () => true,
+        getPlatform: () => 'android',
+      }
+      expect(getCapacitorInfo()).toBe('Capacitor/Android')
+
+      window.Capacitor = {
+        isNativePlatform: () => true,
+        getPlatform: undefined as unknown as () => string,
+      }
+      expect(getCapacitorInfo()).toBe('Capacitor/native')
+
+      window.Capacitor = {
+        isNativePlatform: () => true,
+        getPlatform: () => 'desktop',
+      }
+      expect(getCapacitorInfo()).toBe('Capacitor/desktop')
+
+      delete window.Capacitor
+    })
+
+    it('should return null when Capacitor APIs throw', () => {
+      window.Capacitor = {
+        isNativePlatform: () => {
+          throw new Error('boom')
+        },
+        getPlatform: () => 'ios',
+      }
+
+      expect(getCapacitorInfo()).toBeNull()
+      delete window.Capacitor
+    })
+
+    it('should return null when window is unavailable', () => {
+      const originalWindow = globalThis.window
+
+      Object.defineProperty(globalThis, 'window', {
+        value: undefined,
+        configurable: true,
+      })
+
+      expect(getCapacitorInfo()).toBeNull()
+
+      Object.defineProperty(globalThis, 'window', {
+        value: originalWindow,
+        configurable: true,
+      })
+    })
   })
 
   describe('getUserAgent', () => {
     beforeEach(() => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         writable: true,
@@ -129,7 +215,7 @@ describe('React Telemetry', () => {
     })
 
     it('should work with Safari browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
         writable: true,

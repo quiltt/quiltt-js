@@ -80,10 +80,10 @@ export const QuilttButton = defineComponent({
   setup(props, { emit, slots }) {
     const effectiveAppLauncherUri = computed(() => props.appLauncherUri ?? props.oauthRedirectUrl)
 
-    const { open } = useQuilttConnector(props.connectorId, {
-      connectionId: props.connectionId,
-      institution: props.institution,
-      appLauncherUri: effectiveAppLauncherUri.value,
+    const { open } = useQuilttConnector(() => props.connectorId, {
+      connectionId: () => props.connectionId,
+      institution: () => props.institution,
+      appLauncherUri: effectiveAppLauncherUri,
       onEvent: (type, metadata) => emit('event', type, metadata),
       onOpen: (metadata) => emit('open', metadata),
       onLoad: (metadata) => emit('load', metadata),
