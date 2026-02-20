@@ -1,0 +1,41 @@
+{
+  "name": "@quiltt/examples-capacitor-react",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiltt Capacitor React example app",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "lint": "TIMING=1 biome check src/ capacitor.config.ts vite.config.ts --fix",
+    "preview": "vite preview",
+    "start": "vite preview",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "cap:sync": "cap sync",
+    "cap:add:ios": "cap add ios",
+    "cap:add:android": "cap add android",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.1.0",
+    "@capacitor/core": "8.1.0",
+    "@capacitor/ios": "8.1.0",
+    "@quiltt/capacitor": "workspace:*",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.3",
+    "@capacitor/cli": "^8.0.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.4",
+    "typescript": "5.9.3",
+    "vite": "7.3.1"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

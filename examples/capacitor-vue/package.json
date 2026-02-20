@@ -1,0 +1,39 @@
+{
+  "name": "@quiltt/examples-capacitor-vue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiltt Capacitor Vue example app",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "lint": "TIMING=1 biome check src/ capacitor.config.ts vite.config.ts --fix",
+    "preview": "vite preview",
+    "start": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "cap:sync": "cap sync",
+    "cap:add:ios": "cap add ios",
+    "cap:add:android": "cap add android",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.1.0",
+    "@capacitor/core": "8.1.0",
+    "@capacitor/ios": "8.1.0",
+    "@quiltt/capacitor": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.3",
+    "@capacitor/cli": "^8.0.0",
+    "@vitejs/plugin-vue": "5.2.4",
+    "typescript": "5.9.3",
+    "vite": "7.3.1",
+    "vue-tsc": "3.2.4"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

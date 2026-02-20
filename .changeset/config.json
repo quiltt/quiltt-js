@@ -10,6 +10,8 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
+    "@quiltt/examples-capacitor-react",
+    "@quiltt/examples-capacitor-vue",
     "@quiltt/examples-nextjs",
     "@quiltt/examples-react-native-expo",
     "@quiltt/examples-vue-nuxt"
