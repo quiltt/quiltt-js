@@ -109,7 +109,7 @@ export const App = () => (
   <QuilttProvider token="<SESSION_TOKEN>">
     <QuilttConnector
       connectorId="<CONNECTOR_ID>"
-      appLauncherUri="myapp://oauth"
+      appLauncherUrl="myapp://oauth"
       onExitSuccess={(m) => console.log('Connected:', m.connectionId)}
       style={{ flex: 1 }}
     />
@@ -173,7 +173,7 @@ import { QuilttConnector } from '@quiltt/capacitor'
 | `connectorId` | `string` | **Required.** Quiltt Connector ID |
 | `connectionId` | `string` | Existing connection ID for reconnection |
 | `institution` | `string` | Pre-select an institution |
-| `appLauncherUri` | `string` | Deep link URL for OAuth callbacks |
+| `appLauncherUrl` | `string` | Deep link URL for OAuth callbacks |
 | `onLoad` | `(metadata) => void` | Connector loaded |
 | `onExitSuccess` | `(metadata) => void` | Connection successful |
 | `onExitAbort` | `(metadata) => void` | User cancelled |
@@ -193,7 +193,7 @@ import { QuilttConnector } from '@quiltt/capacitor'
 
 **OAuth redirects not working**
 
-- Verify `appLauncherUri` matches your URL scheme
+- Verify `appLauncherUrl` matches your URL scheme
 - Run `npx cap sync` after configuration changes
 
 **Blank screen after bank auth**

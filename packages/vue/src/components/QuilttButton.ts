@@ -41,12 +41,12 @@ export const QuilttButton = defineComponent({
       default: undefined,
     },
     /** Deep link URL for OAuth callbacks (mobile apps) */
-    appLauncherUri: {
+    appLauncherUrl: {
       type: String as PropType<string | undefined>,
       default: undefined,
     },
     /**
-     * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+     * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
      * The OAuth redirect URL for mobile or embedded webview flows.
      */
     oauthRedirectUrl: {
@@ -78,12 +78,12 @@ export const QuilttButton = defineComponent({
   },
 
   setup(props, { emit, slots }) {
-    const effectiveAppLauncherUri = computed(() => props.appLauncherUri ?? props.oauthRedirectUrl)
+    const effectiveAppLauncherUri = computed(() => props.appLauncherUrl ?? props.oauthRedirectUrl)
 
     const { open } = useQuilttConnector(() => props.connectorId, {
       connectionId: () => props.connectionId,
       institution: () => props.institution,
-      appLauncherUri: effectiveAppLauncherUri,
+      appLauncherUrl: effectiveAppLauncherUri,
       onEvent: (type, metadata) => emit('event', type, metadata),
       onOpen: (metadata) => emit('open', metadata),
       onLoad: (metadata) => emit('load', metadata),

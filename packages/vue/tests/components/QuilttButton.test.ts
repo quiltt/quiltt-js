@@ -30,7 +30,7 @@ describe('QuilttButton', () => {
     document.body.innerHTML = ''
   })
 
-  it('passes fallback oauthRedirectUrl as appLauncherUri to connector composable', () => {
+  it('passes fallback oauthRedirectUrl as appLauncherUrl to connector composable', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
 
@@ -54,14 +54,14 @@ describe('QuilttButton', () => {
     ]
 
     expect(connectorId()).toBe('connector_test')
-    expect((options.appLauncherUri as { value: string }).value).toBe(
+    expect((options.appLauncherUrl as { value: string }).value).toBe(
       'https://example.com/oauth/callback'
     )
 
     app.unmount()
   })
 
-  it('prefers appLauncherUri over oauthRedirectUrl when both are provided', () => {
+  it('prefers appLauncherUrl over oauthRedirectUrl when both are provided', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
 
@@ -69,7 +69,7 @@ describe('QuilttButton', () => {
       render: () =>
         h(QuilttButton, {
           connectorId: 'connector_test',
-          appLauncherUri: 'myapp://preferred',
+          appLauncherUrl: 'myapp://preferred',
           oauthRedirectUrl: 'https://example.com/fallback',
         }),
     })
@@ -82,7 +82,7 @@ describe('QuilttButton', () => {
     ]
 
     expect(connectorId()).toBe('connector_test')
-    expect((options.appLauncherUri as { value: string }).value).toBe('myapp://preferred')
+    expect((options.appLauncherUrl as { value: string }).value).toBe('myapp://preferred')
 
     app.unmount()
   })

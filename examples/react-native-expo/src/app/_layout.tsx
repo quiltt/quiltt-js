@@ -21,15 +21,15 @@ SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   /**
-   * Use this value for your QuilttConnector.appLauncherUri
+   * Use this value for your QuilttConnector.appLauncherUrl
    *
    * @example
-   * <QuilttConnector appLauncherUri={url} />
+   * <QuilttConnector appLauncherUrl={url} />
    */
   const url = Linking.useURL()
 
   useEffect(() => {
-    // Grab this URL for the QuilttConnector.appLauncherUri
+    // Grab this URL for the QuilttConnector.appLauncherUrl
     console.log({ url })
   }, [url])
 

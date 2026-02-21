@@ -20,7 +20,7 @@ The app reads these variables (with safe defaults in `src/App.vue`):
 
 - `VITE_QUILTT_AUTH_TOKEN`
 - `VITE_QUILTT_CONNECTOR_ID`
-- `VITE_APP_LAUNCHER_URI`
+- `VITE_APP_LAUNCHER_URL`
 
 Create a `.env` file in this directory for local testing with real values:
 

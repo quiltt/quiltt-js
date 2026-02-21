@@ -69,16 +69,16 @@ describe('QuilttButton', () => {
     expect(onHtmlLoad).toHaveBeenCalledWith(expect.any(Event))
   })
 
-  it('passes appLauncherUri to useQuilttConnector', () => {
+  it('passes appLauncherUrl to useQuilttConnector', () => {
     render(
-      <QuilttButton connectorId="mockConnectorId" appLauncherUri="myapp://oauth">
+      <QuilttButton connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
         Test Button
       </QuilttButton>
     )
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUri: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
     )
   })
 
@@ -91,15 +91,15 @@ describe('QuilttButton', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUri: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
     )
   })
 
-  it('prefers appLauncherUri over deprecated oauthRedirectUrl when both provided', () => {
+  it('prefers appLauncherUrl over deprecated oauthRedirectUrl when both provided', () => {
     render(
       <QuilttButton
         connectorId="mockConnectorId"
-        appLauncherUri="myapp://new"
+        appLauncherUrl="myapp://new"
         oauthRedirectUrl="myapp://old"
       >
         Test Button
@@ -108,13 +108,13 @@ describe('QuilttButton', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUri: 'myapp://new' })
+      expect.objectContaining({ appLauncherUrl: 'myapp://new' })
     )
   })
 
   it('renders quiltt-app-launcher-uri attribute on the button element', () => {
     const { container } = render(
-      <QuilttButton connectorId="mockConnectorId" appLauncherUri="myapp://oauth">
+      <QuilttButton connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
         Test Button
       </QuilttButton>
     )

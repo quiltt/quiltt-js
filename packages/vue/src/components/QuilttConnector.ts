@@ -44,7 +44,7 @@ export const QuilttConnector = defineComponent({
       default: undefined,
     },
     /** Deep link URL for OAuth callbacks (mobile apps) */
-    appLauncherUri: {
+    appLauncherUrl: {
       type: String as PropType<string | undefined>,
       default: undefined,
     },
@@ -102,8 +102,8 @@ export const QuilttConnector = defineComponent({
       if (props.institution) {
         url.searchParams.set('institution', props.institution)
       }
-      if (props.appLauncherUri) {
-        url.searchParams.set('app_launcher_uri', props.appLauncherUri)
+      if (props.appLauncherUrl) {
+        url.searchParams.set('app_launcher_url', props.appLauncherUrl)
       }
       // Set mode for inline iframe embedding
       url.searchParams.set('mode', 'INLINE')

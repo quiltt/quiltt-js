@@ -54,7 +54,7 @@ describe('QuilttConnector (capacitor)', () => {
         connectorId="connector_test"
         connectionId="connection_test"
         institution="institution_test"
-        appLauncherUri="myapp://oauth-callback"
+        appLauncherUrl="myapp://oauth-callback"
       />
     )
 
@@ -66,7 +66,7 @@ describe('QuilttConnector (capacitor)', () => {
     expect(src).toContain('token=session_token')
     expect(src).toContain('connectionId=connection_test')
     expect(src).toContain('institution=institution_test')
-    expect(src).toContain('app_launcher_uri=myapp%3A%2F%2Foauth-callback')
+    expect(src).toContain('app_launcher_url=myapp%3A%2F%2Foauth-callback')
     expect(src).toContain('mode=INLINE')
   })
 

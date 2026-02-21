@@ -17,9 +17,9 @@ type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
      * The app launcher URL for mobile OAuth flows.
      * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
      */
-    appLauncherUri?: string
+    appLauncherUrl?: string
     /**
-     * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+     * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
      */
     oauthRedirectUrl?: string
     institution?: string // For Connect Mode
@@ -45,7 +45,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   as,
   connectorId,
   connectionId,
-  appLauncherUri,
+  appLauncherUrl,
   oauthRedirectUrl,
   institution,
   forceRemountOnConnectionChange = false,
@@ -61,8 +61,8 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
   useQuilttRenderGuard('QuilttContainer')
 
-  // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-  const effectiveAppLauncherUri = appLauncherUri ?? oauthRedirectUrl
+  // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+  const effectiveAppLauncherUri = appLauncherUrl ?? oauthRedirectUrl
 
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
@@ -104,7 +104,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 
   useQuilttConnector(connectorId, {
     connectionId,
-    appLauncherUri: effectiveAppLauncherUri,
+    appLauncherUrl: effectiveAppLauncherUri,
     institution,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,

@@ -4,7 +4,7 @@ import { QuilttButton, QuilttConnector, QuilttProvider } from '@quiltt/capacitor
 
 const defaultToken = import.meta.env.VITE_QUILTT_AUTH_TOKEN ?? 'test-auth-token'
 const defaultConnectorId = import.meta.env.VITE_QUILTT_CONNECTOR_ID ?? 'connector'
-const defaultAppLauncherUri = import.meta.env.VITE_APP_LAUNCHER_URI ?? 'myapp://oauth'
+const defaultAppLauncherUri = import.meta.env.VITE_APP_LAUNCHER_URL ?? 'myapp://oauth'
 
 export const App = () => {
   const [events, setEvents] = useState<string[]>([])
@@ -26,7 +26,7 @@ export const App = () => {
             <h2>Modal Connector</h2>
             <QuilttButton
               connectorId={defaultConnectorId}
-              appLauncherUri={defaultAppLauncherUri}
+              appLauncherUrl={defaultAppLauncherUri}
               onExitSuccess={(metadata) =>
                 addEvent(`ExitSuccess: ${metadata.connectionId ?? 'n/a'}`)
               }
@@ -42,7 +42,7 @@ export const App = () => {
             <h2>Inline Connector</h2>
             <QuilttConnector
               connectorId={defaultConnectorId}
-              appLauncherUri={defaultAppLauncherUri}
+              appLauncherUrl={defaultAppLauncherUri}
               onLoad={() => addEvent('Load')}
               onExitSuccess={(metadata) =>
                 addEvent(`Inline ExitSuccess: ${metadata.connectionId ?? 'n/a'}`)

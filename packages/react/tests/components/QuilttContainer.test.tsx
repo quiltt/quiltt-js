@@ -64,16 +64,16 @@ describe('QuilttContainer', () => {
     )
   })
 
-  it('passes appLauncherUri to useQuilttConnector', () => {
+  it('passes appLauncherUrl to useQuilttConnector', () => {
     render(
-      <QuilttContainer connectorId="mockConnectorId" appLauncherUri="myapp://oauth">
+      <QuilttContainer connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
         Container Content
       </QuilttContainer>
     )
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUri: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
     )
   })
 
@@ -86,15 +86,15 @@ describe('QuilttContainer', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUri: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
     )
   })
 
-  it('prefers appLauncherUri over deprecated oauthRedirectUrl when both provided', () => {
+  it('prefers appLauncherUrl over deprecated oauthRedirectUrl when both provided', () => {
     render(
       <QuilttContainer
         connectorId="mockConnectorId"
-        appLauncherUri="myapp://new"
+        appLauncherUrl="myapp://new"
         oauthRedirectUrl="myapp://old"
       >
         Container Content
@@ -103,7 +103,7 @@ describe('QuilttContainer', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUri: 'myapp://new' })
+      expect.objectContaining({ appLauncherUrl: 'myapp://new' })
     )
   })
 
@@ -129,7 +129,7 @@ describe('QuilttContainer', () => {
 
   it('renders quiltt-app-launcher-uri attribute on the container element', () => {
     const { container } = render(
-      <QuilttContainer connectorId="mockConnectorId" appLauncherUri="myapp://oauth">
+      <QuilttContainer connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
         Container Content
       </QuilttContainer>
     )

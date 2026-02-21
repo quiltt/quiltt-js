@@ -60,7 +60,7 @@ export const App = () => {
   const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
 
   // Use a universal link (iOS) or app link (Android) to redirect back to your app
-  const appLauncherUri = 'https://myapp.com/my_universal_link'
+  const appLauncherUrl = 'https://myapp.com/my_universal_link'
 
   const handleExitSuccess = (metadata: ConnectorSDKCallbackMetadata) => {
     console.log('Successfully created connection!', {
@@ -72,7 +72,7 @@ export const App = () => {
     <QuilttProvider token={sessionToken}>
       <QuilttConnector
         connectorId="<CONNECTOR_ID>"
-        appLauncherUri={appLauncherUri}
+        appLauncherUrl={appLauncherUrl}
 
         // See the JavaScript API docs for the full list of available callbacks...
         onExitSuccess={handleExitSuccess}
@@ -102,7 +102,7 @@ export const ConnectorScreen = () => {
   const connectorRef = useRef<QuilttConnectorHandle>(null)
 
   const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
-  const appLauncherUri = 'https://myapp.com/quiltt/callback'
+  const appLauncherUrl = 'https://myapp.com/quiltt/callback'
 
   // Listen for deep links and handle OAuth callbacks
   useEffect(() => {
@@ -131,7 +131,7 @@ export const ConnectorScreen = () => {
         <QuilttConnector
           ref={connectorRef}
           connectorId="<CONNECTOR_ID>"
-          appLauncherUri={appLauncherUri}
+          appLauncherUrl={appLauncherUrl}
           onExitSuccess={handleExitSuccess}
         />
       </View>
@@ -145,7 +145,7 @@ export default ConnectorScreen
 **Important Notes:**
 
 - The `ref` prop is required when handling OAuth callbacks
-- The deep link URL pattern should match your `appLauncherUri` configuration
+- The deep link URL pattern should match your `appLauncherUrl` configuration
 - Make sure your app is properly configured to handle deep links (see [React Native Linking documentation](https://reactnative.dev/docs/linking))
 
 ## Typescript support

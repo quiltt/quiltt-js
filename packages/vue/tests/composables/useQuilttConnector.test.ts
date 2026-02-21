@@ -148,7 +148,7 @@ describe('useQuilttConnector', () => {
       'connector_test',
       expect.objectContaining({
         connectionId: 'connection_test',
-        appLauncherUri: 'myapp://oauth-callback',
+        appLauncherUrl: 'myapp://oauth-callback',
       })
     )
 

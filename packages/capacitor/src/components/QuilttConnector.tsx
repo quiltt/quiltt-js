@@ -17,7 +17,7 @@ type QuilttConnectorProps = {
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
-  appLauncherUri?: string
+  appLauncherUrl?: string
   style?: React.CSSProperties
   className?: string
 } & ConnectorSDKCallbacks
@@ -50,7 +50,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       connectorId,
       connectionId,
       institution,
-      appLauncherUri,
+      appLauncherUrl,
       style,
       className,
       onEvent,
@@ -81,14 +81,14 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       if (institution) {
         url.searchParams.set('institution', institution)
       }
-      if (appLauncherUri) {
-        url.searchParams.set('app_launcher_uri', appLauncherUri)
+      if (appLauncherUrl) {
+        url.searchParams.set('app_launcher_url', appLauncherUrl)
       }
       // Set mode for inline iframe embedding
       url.searchParams.set('mode', 'INLINE')
 
       return url.toString()
-    }, [connectorOrigin, session?.token, connectionId, institution, appLauncherUri])
+    }, [connectorOrigin, session?.token, connectionId, institution, appLauncherUrl])
 
     const postOAuthCallbackToIframe = useCallback(
       (callbackUrl: string) => {

@@ -36,9 +36,9 @@ export const useQuilttConnector = (
   const prevConnectionIdRef = useRef<string | undefined>(options?.connectionId)
   const prevConnectorIdRef = useRef<string | undefined>(connectorId)
   const prevInstitutionRef = useRef<string | undefined>(options?.institution)
-  // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+  // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
   const prevAppLauncherUriRef = useRef<string | undefined>(
-    options?.appLauncherUri ?? options?.oauthRedirectUrl
+    options?.appLauncherUrl ?? options?.oauthRedirectUrl
   )
   const connectorCreatedRef = useRef<boolean>(false)
 
@@ -66,19 +66,19 @@ export const useQuilttConnector = (
 
     const currentConnectionId = options?.connectionId
     const currentInstitution = options?.institution
-    // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-    const currentAppLauncherUri = options?.appLauncherUri ?? options?.oauthRedirectUrl
+    // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+    const currentAppLauncherUri = options?.appLauncherUrl ?? options?.oauthRedirectUrl
 
     // Check for changes - use deep equality for institution object
     const connectionIdChanged = prevConnectionIdRef.current !== currentConnectionId
     const connectorIdChanged = prevConnectorIdRef.current !== connectorId
     const institutionChanged = !isDeepEqual(prevInstitutionRef.current, currentInstitution)
-    const appLauncherUriChanged = prevAppLauncherUriRef.current !== currentAppLauncherUri
+    const appLauncherUrlChanged = prevAppLauncherUriRef.current !== currentAppLauncherUri
     const hasChanges =
       connectionIdChanged ||
       connectorIdChanged ||
       institutionChanged ||
-      appLauncherUriChanged ||
+      appLauncherUrlChanged ||
       !connectorCreatedRef.current
 
     // Update if there are changes, regardless of what the changes are
@@ -88,7 +88,7 @@ export const useQuilttConnector = (
         setConnector(
           Quiltt.reconnect(connectorId, {
             connectionId: currentConnectionId,
-            appLauncherUri: currentAppLauncherUri,
+            appLauncherUrl: currentAppLauncherUri,
           })
         )
       } else {
@@ -96,7 +96,7 @@ export const useQuilttConnector = (
         setConnector(
           Quiltt.connect(connectorId, {
             institution: currentInstitution,
-            appLauncherUri: currentAppLauncherUri,
+            appLauncherUrl: currentAppLauncherUri,
           })
         )
       }
@@ -112,7 +112,7 @@ export const useQuilttConnector = (
     connectorId,
     options?.connectionId,
     options?.institution,
-    options?.appLauncherUri,
+    options?.appLauncherUrl,
     options?.oauthRedirectUrl,
     status,
   ])

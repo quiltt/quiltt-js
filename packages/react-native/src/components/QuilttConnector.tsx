@@ -151,9 +151,9 @@ type QuilttConnectorProps = {
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
-  appLauncherUri?: string
+  appLauncherUrl?: string
   /**
-   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
    */
   oauthRedirectUrl?: string
   testId?: string
@@ -165,7 +165,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       connectorId,
       connectionId,
       institution,
-      appLauncherUri,
+      appLauncherUrl,
       oauthRedirectUrl,
       onEvent,
       onLoad,
@@ -183,8 +183,8 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
     const [userAgent, setUserAgent] = useState<string>('')
 
-    // Support both appLauncherUri (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-    const effectiveAppLauncherUrl = appLauncherUri ?? oauthRedirectUrl ?? ''
+    // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+    const effectiveAppLauncherUrl = appLauncherUrl ?? oauthRedirectUrl ?? ''
 
     // Initialize error reporter and user agent
     useEffect(() => {

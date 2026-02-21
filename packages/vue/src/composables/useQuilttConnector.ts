@@ -44,9 +44,9 @@ declare const Quiltt: ConnectorSDK
 export interface UseQuilttConnectorOptions extends ConnectorSDKCallbacks {
   connectionId?: MaybeRefOrGetter<string | undefined>
   institution?: MaybeRefOrGetter<string | undefined>
-  appLauncherUri?: MaybeRefOrGetter<string | undefined>
+  appLauncherUrl?: MaybeRefOrGetter<string | undefined>
   /**
-   * @deprecated Use `appLauncherUri` instead. This property will be removed in a future version.
+   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
    * The OAuth redirect URL for mobile or embedded webview flows.
    */
   oauthRedirectUrl?: MaybeRefOrGetter<string | undefined>
@@ -102,7 +102,7 @@ export const useQuilttConnector = (
   const getConnectionId = (): string | undefined => toValue(options?.connectionId)
   const getInstitution = (): string | undefined => toValue(options?.institution)
   const getAppLauncherUri = (): string | undefined =>
-    toValue(options?.appLauncherUri) ?? toValue(options?.oauthRedirectUrl)
+    toValue(options?.appLauncherUrl) ?? toValue(options?.oauthRedirectUrl)
 
   const session = ref<Maybe<QuilttJWT | undefined>>()
 
@@ -187,12 +187,12 @@ export const useQuilttConnector = (
     const connectionIdChanged = prevConnectionId !== currentConnectionId
     const connectorIdChanged = prevConnectorId !== currentConnectorId
     const institutionChanged = prevInstitution !== currentInstitution
-    const appLauncherUriChanged = prevAppLauncherUri !== currentAppLauncherUri
+    const appLauncherUrlChanged = prevAppLauncherUri !== currentAppLauncherUri
     const hasChanges =
       connectionIdChanged ||
       connectorIdChanged ||
       institutionChanged ||
-      appLauncherUriChanged ||
+      appLauncherUrlChanged ||
       !connectorCreated
 
     if (hasChanges) {
@@ -200,13 +200,13 @@ export const useQuilttConnector = (
         // Reconnect mode
         connector.value = Quiltt.reconnect(currentConnectorId, {
           connectionId: currentConnectionId,
-          appLauncherUri: currentAppLauncherUri,
+          appLauncherUrl: currentAppLauncherUri,
         })
       } else {
         // Connect mode
         connector.value = Quiltt.connect(currentConnectorId, {
           institution: currentInstitution,
-          appLauncherUri: currentAppLauncherUri,
+          appLauncherUrl: currentAppLauncherUri,
         })
       }
 
