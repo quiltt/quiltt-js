@@ -13,6 +13,7 @@ type QuilttProviderProps = QuilttSettingsProviderProps & QuilttAuthProviderProps
 export const QuilttProvider: FC<QuilttProviderProps> = ({
   clientId,
   graphqlClient,
+  headers,
   token,
   children,
 }) => {
@@ -27,7 +28,7 @@ export const QuilttProvider: FC<QuilttProviderProps> = ({
   return (
     <QuilttProviderRender.Provider value={renderContextValue}>
       <QuilttSettingsProvider clientId={clientId}>
-        <QuilttAuthProvider token={token} graphqlClient={graphqlClient}>
+        <QuilttAuthProvider token={token} headers={headers} graphqlClient={graphqlClient}>
           {children}
         </QuilttAuthProvider>
       </QuilttSettingsProvider>

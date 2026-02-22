@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "verbatimModuleSyntax": false,
+    "module": "commonjs",
+    "moduleResolution": "node"
+  },
+  "include": ["./**/*.ts"]
+}

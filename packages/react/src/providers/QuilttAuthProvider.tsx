@@ -4,14 +4,26 @@ import type { FC, PropsWithChildren } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { ApolloProvider } from '@apollo/client/react'
-import { createVersionLink, InMemoryCache, QuilttClient } from '@quiltt/core'
+import { createVersionLink, HeadersLink, InMemoryCache, QuilttClient } from '@quiltt/core'
 
 import { useQuilttSession } from '@/hooks'
 import { getPlatformInfo, isDeepEqual } from '@/utils'
 
 export type QuilttAuthProviderProps = PropsWithChildren & {
-  /** A custom QuilttClient instance to use instead of the default */
+  /**
+   * A custom QuilttClient instance to use instead of the default.
+   * Note: When provided, the `headers` prop is ignored since the custom client
+   * manages its own link chain. To add custom headers with a custom client,
+   * include a HeadersLink in your client's customLinks option.
+   */
   graphqlClient?: QuilttClient
+  /**
+   * Custom headers to include with every GraphQL request.
+   * Only applies when using the default client (i.e., when `graphqlClient` is not provided).
+   * For Quiltt internal usage. Not intended for public use.
+   * @internal
+   */
+  headers?: Record<string, string>
   /** The Quiltt Session token obtained from the server */
   token?: string
 }
@@ -24,12 +36,14 @@ export type QuilttAuthProviderProps = PropsWithChildren & {
  */
 export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
   graphqlClient,
+  headers,
   token,
   children,
 }) => {
   const { session, importSession } = useQuilttSession()
   const previousSessionRef = useRef(session)
   const previousTokenRef = useRef<string | undefined>(undefined)
+  const previousHeadersRef = useRef<Record<string, string> | undefined>(undefined)
   const importSessionRef = useRef(importSession)
 
   // Keep importSession ref up to date
@@ -37,16 +51,28 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
     importSessionRef.current = importSession
   }, [importSession])
 
+  // Stabilize headers using deep comparison to prevent unnecessary client recreation
+  // when consumers pass inline object literals
+  const stableHeaders = useMemo(() => {
+    if (isDeepEqual(headers, previousHeadersRef.current)) {
+      return previousHeadersRef.current
+    }
+    previousHeadersRef.current = headers
+    return headers
+  }, [headers])
+
   // Memoize the client to avoid unnecessary re-renders
-  const apolloClient = useMemo(
-    () =>
-      graphqlClient ||
-      new QuilttClient({
-        cache: new InMemoryCache(),
-        versionLink: createVersionLink(getPlatformInfo()),
-      }),
-    [graphqlClient]
-  )
+  const apolloClient = useMemo(() => {
+    if (graphqlClient) return graphqlClient
+
+    const customLinks = stableHeaders ? [new HeadersLink({ headers: stableHeaders })] : undefined
+
+    return new QuilttClient({
+      cache: new InMemoryCache(),
+      versionLink: createVersionLink(getPlatformInfo()),
+      customLinks,
+    })
+  }, [graphqlClient, stableHeaders])
 
   // Import passed in token (only if value has changed)
   useEffect(() => {
