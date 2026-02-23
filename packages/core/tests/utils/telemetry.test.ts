@@ -62,7 +62,7 @@ describe('Core Telemetry', () => {
   })
 
   describe('getSDKAgent', () => {
-    it('should generate correct User-Agent string', () => {
+    it('should generate correct Quiltt-SDK-Agent value', () => {
       const sdkAgent = getSDKAgent('4.5.1', 'React/19.2.3; Chrome/120')
       expect(sdkAgent).toBe('Quiltt/4.5.1 (React/19.2.3; Chrome/120)')
     })

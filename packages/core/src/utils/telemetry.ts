@@ -37,11 +37,15 @@ export const getSDKAgent = (sdkVersion: string, platformInfo: string): string =>
 /**
  * @deprecated Renamed to `getSDKAgent`. Will be removed in v6.
  */
-export const getUserAgent = (...args: Parameters<typeof getSDKAgent>): ReturnType<typeof getSDKAgent> => {
+export const getUserAgent = (
+  ...args: Parameters<typeof getSDKAgent>
+): ReturnType<typeof getSDKAgent> => {
   if (Number(PACKAGE_VERSION.split('.')[0]) >= 6) {
     throw new Error('[Quiltt] `getUserAgent` was removed in v6. Use `getSDKAgent` instead.')
   }
-  console.warn('[Quiltt] `getUserAgent` is deprecated. Use `getSDKAgent` instead. This will be removed in v6.')
+  console.warn(
+    '[Quiltt] `getUserAgent` is deprecated. Use `getSDKAgent` instead. This will be removed in v6.'
+  )
   return getSDKAgent(...args)
 }
 

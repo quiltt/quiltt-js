@@ -1,4 +1,4 @@
-import { name as packageName, version as packageVersion } from '../../package.json'
+import { name as PACKAGE_NAME, version as PACKAGE_VERSION } from '../../package.json'
 
 const QUILTT_API_INSECURE = (() => {
   try {
@@ -29,7 +29,7 @@ const protocolHttp = `http${QUILTT_API_INSECURE ? '' : 's'}`
 const protocolWebsockets = `ws${QUILTT_API_INSECURE ? '' : 's'}`
 
 export const debugging = QUILTT_DEBUG
-export const version = `${packageName}: v${packageVersion}`
+export const version = `${PACKAGE_NAME}: v${PACKAGE_VERSION}`
 
 export const cdnBase = `${protocolHttp}://cdn.${domain}`
 export const endpointAuth = `${protocolHttp}://auth.${domain}/v1/users/session`
