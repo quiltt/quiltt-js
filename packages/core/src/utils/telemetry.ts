@@ -1,3 +1,5 @@
+import { version as PACKAGE_VERSION } from '../../package.json'
+
 /**
  * Extracts version number from formatted version string
  * @param formattedVersion - Formatted version like "@quiltt/core: v4.5.1"
@@ -33,10 +35,13 @@ export const getSDKAgent = (sdkVersion: string, platformInfo: string): string =>
 }
 
 /**
- * @deprecated Renamed to `getSDKAgent`. Will be removed in the next major version.
+ * @deprecated Renamed to `getSDKAgent`. Will be removed in v6.
  */
 export const getUserAgent = (...args: Parameters<typeof getSDKAgent>): ReturnType<typeof getSDKAgent> => {
-  console.warn('[Quiltt] `getUserAgent` is deprecated. Use `getSDKAgent` instead. This will be removed in the next major version.')
+  if (Number(PACKAGE_VERSION.split('.')[0]) >= 6) {
+    throw new Error('[Quiltt] `getUserAgent` was removed in v6. Use `getSDKAgent` instead.')
+  }
+  console.warn('[Quiltt] `getUserAgent` is deprecated. Use `getSDKAgent` instead. This will be removed in v6.')
   return getSDKAgent(...args)
 }
 

@@ -1,3 +1,5 @@
+import { version as PACKAGE_VERSION } from '../../../package.json'
+
 import { endpointRest, version } from '@/config'
 import { extractVersionNumber, getSDKAgent } from '@/utils/telemetry'
 
@@ -27,10 +29,13 @@ export class ConnectorsAPI {
   customHeaders: Record<string, string> | undefined
 
   /**
-   * @deprecated Use `sdkAgent` instead. Will be removed in the next major version.
+   * @deprecated Use `sdkAgent` instead. Will be removed in v6.
    */
   get userAgent(): string {
-    console.warn('[Quiltt] `ConnectorsAPI.userAgent` is deprecated. Use `sdkAgent` instead. This will be removed in the next major version.')
+    if (Number(PACKAGE_VERSION.split('.')[0]) >= 6) {
+      throw new Error('[Quiltt] `ConnectorsAPI.userAgent` was removed in v6. Use `sdkAgent` instead.')
+    }
+    console.warn('[Quiltt] `ConnectorsAPI.userAgent` is deprecated. Use `sdkAgent` instead. This will be removed in v6.')
     return this.sdkAgent
   }
 
