@@ -1,5 +1,17 @@
 # @quiltt/react-native
 
+## 5.1.0
+
+### Minor Changes
+
+- [#406](https://github.com/quiltt/quiltt-js/pull/406) [`177a4fc`](https://github.com/quiltt/quiltt-js/commit/177a4fc3d70fa3f313f6586396719dae9763cf4b) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add OAuth redirect URL support to React SDK
+
+### Patch Changes
+
+- Updated dependencies [[`2d918a0`](https://github.com/quiltt/quiltt-js/commit/2d918a089f8546bb7d20db1eefd958beca296ee0), [`177a4fc`](https://github.com/quiltt/quiltt-js/commit/177a4fc3d70fa3f313f6586396719dae9763cf4b)]:
+  - @quiltt/core@5.1.0
+  - @quiltt/react@5.1.0
+
 ## 5.0.3
 
 ### Patch Changes
