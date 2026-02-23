@@ -33,6 +33,9 @@ export const getSDKAgent = (sdkVersion: string): string => {
 }
 
 /**
- * @deprecated Renamed to `getSDKAgent`. This alias will be removed in a future major version.
+ * @deprecated Renamed to `getSDKAgent`. Will be removed in the next major version.
  */
-export const getUserAgent = getSDKAgent
+export const getUserAgent = (...args: Parameters<typeof getSDKAgent>): ReturnType<typeof getSDKAgent> => {
+  console.warn('[Quiltt] `getUserAgent` is deprecated. Use `getSDKAgent` instead. This will be removed in the next major version.')
+  return getSDKAgent(...args)
+}

@@ -27,9 +27,10 @@ export class ConnectorsAPI {
   customHeaders: Record<string, string> | undefined
 
   /**
-   * @deprecated Use `sdkAgent` instead. This alias will be removed in a future major version.
+   * @deprecated Use `sdkAgent` instead. Will be removed in the next major version.
    */
   get userAgent(): string {
+    console.warn('[Quiltt] `ConnectorsAPI.userAgent` is deprecated. Use `sdkAgent` instead. This will be removed in the next major version.')
     return this.sdkAgent
   }
 
