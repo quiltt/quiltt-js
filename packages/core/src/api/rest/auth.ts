@@ -115,7 +115,6 @@ export class AuthAPI {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
-    headers.set('User-Agent', this.userAgent)
     headers.set('Quiltt-SDK-Agent', this.userAgent)
 
     // Apply custom headers

@@ -40,7 +40,6 @@ describe('VersionLink', () => {
       headers: {
         'Quiltt-Client-Version': version,
         'Quiltt-SDK-Agent': expect.stringContaining('Quiltt/'),
-        'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
     expect(mockForward).toHaveBeenCalledWith(operation)
@@ -82,7 +81,6 @@ describe('VersionLink', () => {
         ...existingHeaders,
         'Quiltt-Client-Version': version,
         'Quiltt-SDK-Agent': expect.stringContaining('Quiltt/'),
-        'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
   })
@@ -117,7 +115,6 @@ describe('VersionLink', () => {
       headers: {
         'Quiltt-Client-Version': version,
         'Quiltt-SDK-Agent': expect.stringContaining('Quiltt/'),
-        'User-Agent': expect.stringContaining('Quiltt/'),
       },
     })
   })

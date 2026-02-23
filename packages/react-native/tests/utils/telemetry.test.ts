@@ -19,7 +19,7 @@ import {
   getPlatformInfoSync,
   getReactNativeVersion,
   getReactVersion,
-  getUserAgent,
+  getSDKAgent,
 } from '@/utils/telemetry'
 
 describe('React Native Telemetry', () => {
@@ -260,7 +260,7 @@ describe('React Native Telemetry', () => {
     })
   })
 
-  describe('getUserAgent', () => {
+  describe('getSDKAgent', () => {
     beforeEach(() => {
       vi.clearAllMocks()
 
@@ -285,15 +285,15 @@ describe('React Native Telemetry', () => {
       })
     })
 
-    it('should generate correct User-Agent string for iOS', async () => {
-      const userAgent = await getUserAgent('4.5.1')
+    it('should generate correct Quiltt-SDK-Agent string for iOS', async () => {
+      const sdkAgent = await getSDKAgent('4.5.1')
       // Device model comes from mocked DeviceInfo
-      expect(userAgent).toMatch(
+      expect(sdkAgent).toMatch(
         /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; iPhone14,2\)$/
       )
     })
 
-    it('should generate correct User-Agent string for Android', async () => {
+    it('should generate correct Quiltt-SDK-Agent string for Android', async () => {
       Object.defineProperty(Platform, 'OS', {
         value: 'android',
         configurable: true,
@@ -306,15 +306,15 @@ describe('React Native Telemetry', () => {
       // Override mock to return Android device model
       vi.mocked(DeviceInfo.getModel).mockResolvedValueOnce('SM-G998B')
 
-      const userAgent = await getUserAgent('4.5.1')
-      expect(userAgent).toMatch(
+      const sdkAgent = await getSDKAgent('4.5.1')
+      expect(sdkAgent).toMatch(
         /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; Android\/33; SM-G998B\)$/
       )
     })
 
     it('should handle different SDK versions', async () => {
-      const userAgent = await getUserAgent('5.0.0-beta.1')
-      expect(userAgent).toMatch(
+      const sdkAgent = await getSDKAgent('5.0.0-beta.1')
+      expect(sdkAgent).toMatch(
         /^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; iPhone14,2\)$/
       )
     })
@@ -323,8 +323,8 @@ describe('React Native Telemetry', () => {
       vi.mocked(DeviceInfo.getModel).mockRejectedValueOnce(new Error('Mock error'))
       vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-      const userAgent = await getUserAgent('4.5.1')
-      expect(userAgent).toMatch(
+      const sdkAgent = await getSDKAgent('4.5.1')
+      expect(sdkAgent).toMatch(
         /^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; ReactNative\/0\.73\.0; iOS\/17\.0; Unknown\)$/
       )
     })

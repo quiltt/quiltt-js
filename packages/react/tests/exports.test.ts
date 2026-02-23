@@ -133,7 +133,7 @@ describe('@quiltt/react exports', () => {
   describe('Utils exclusion', () => {
     it('does NOT export utils from main entry point', () => {
       // Utils functions should not be in the default exports
-      expect(ReactExports).not.toHaveProperty('getUserAgent')
+      expect(ReactExports).not.toHaveProperty('getSDKAgent')
       expect(ReactExports).not.toHaveProperty('getBrowserInfo')
       expect(ReactExports).not.toHaveProperty('isDeepEqual')
     })
@@ -141,9 +141,9 @@ describe('@quiltt/react exports', () => {
     it('exports utils via subpath import', async () => {
       // Utils should still be available via subpath import
       const utils = await import('@quiltt/react/utils')
-      expect(utils.getUserAgent).toBeDefined()
+      expect(utils.getSDKAgent).toBeDefined()
       expect(utils.isDeepEqual).toBeDefined()
-      expect(typeof utils.getUserAgent).toBe('function')
+      expect(typeof utils.getSDKAgent).toBe('function')
       expect(typeof utils.isDeepEqual).toBe('function')
     })
   })

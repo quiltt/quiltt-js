@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConnectorsAPI } from '@/api/rest/connectors'
 import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
 import { version } from '@/config'
-import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getSDKAgent } from '@/utils/telemetry'
 
 // Mock fetchWithRetry
 vi.mock('@/api/rest/fetchWithRetry', () => ({
@@ -25,37 +25,37 @@ const mockFetchWithRetry = vi.mocked(fetchWithRetry) as MockedFunction<typeof fe
 
 describe('ConnectorsAPI', () => {
   let connectorsAPI: ConnectorsAPI
-  const testUserAgent = getUserAgent(version, 'React/18.2.0; Chrome/120')
+  const testSDKAgent = getSDKAgent(version, 'React/18.2.0; Chrome/120')
 
   beforeEach(() => {
     vi.clearAllMocks()
-    connectorsAPI = new ConnectorsAPI('test-client-id', testUserAgent)
+    connectorsAPI = new ConnectorsAPI('test-client-id', testSDKAgent)
   })
 
   describe('constructor', () => {
-    it('should initialize with clientId and userAgent', () => {
-      const userAgent = getUserAgent(version, 'React/18.2.0; Chrome/120')
-      const api = new ConnectorsAPI('client-123', userAgent)
+    it('should initialize with clientId and sdkAgent', () => {
+      const sdkAgent = getSDKAgent(version, 'React/18.2.0; Chrome/120')
+      const api = new ConnectorsAPI('client-123', sdkAgent)
 
       expect(api.clientId).toBe('client-123')
-      expect(api.userAgent).toBe(userAgent)
+      expect(api.sdkAgent).toBe(sdkAgent)
     })
 
-    it('should initialize with custom userAgent', () => {
-      const userAgent = getUserAgent(version, 'React/18.2.0; Safari/17')
-      const api = new ConnectorsAPI('client-123', userAgent)
+    it('should initialize with custom sdkAgent', () => {
+      const sdkAgent = getSDKAgent(version, 'React/18.2.0; Safari/17')
+      const api = new ConnectorsAPI('client-123', sdkAgent)
 
       expect(api.clientId).toBe('client-123')
-      expect(api.userAgent).toBe(userAgent)
+      expect(api.sdkAgent).toBe(sdkAgent)
     })
 
-    it('should use default Unknown user-agent when userAgent is not provided', () => {
+    it('should use default Unknown sdkAgent when sdkAgent is not provided', () => {
       const api = new ConnectorsAPI('client-123')
       const versionNumber = extractVersionNumber(version)
-      const expectedUserAgent = getUserAgent(versionNumber, 'Unknown')
+      const expectedSdkAgent = getSDKAgent(versionNumber, 'Unknown')
 
       expect(api.clientId).toBe('client-123')
-      expect(api.userAgent).toBe(expectedUserAgent)
+      expect(api.sdkAgent).toBe(expectedSdkAgent)
     })
   })
 
@@ -162,14 +162,13 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('Quiltt-SDK-Agent')).toBe(testUserAgent)
-      expect(headers.get('User-Agent')).toBe(testUserAgent)
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(testSDKAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 
-    it('should use custom userAgent in headers', async () => {
-      const customUserAgent = getUserAgent(version, 'ReactNative/0.73.0; iOS/17.0; iPhone14,2')
-      const customAPI = new ConnectorsAPI('client-123', customUserAgent)
+    it('should use custom sdkAgent in headers', async () => {
+      const customSDKAgent = getSDKAgent(version, 'ReactNative/0.73.0; iOS/17.0; iPhone14,2')
+      const customAPI = new ConnectorsAPI('client-123', customSDKAgent)
       const mockResponse = {
         data: [],
         status: 200,
@@ -185,8 +184,7 @@ describe('ConnectorsAPI', () => {
       const callArgs = mockFetchWithRetry.mock.calls[0][1]
       const headers = callArgs?.headers as Headers
 
-      expect(headers.get('Quiltt-SDK-Agent')).toBe(customUserAgent)
-      expect(headers.get('User-Agent')).toBe(customUserAgent)
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(customSDKAgent)
     })
   })
 
@@ -538,8 +536,7 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('Quiltt-SDK-Agent')).toBe(testUserAgent)
-      expect(headers.get('User-Agent')).toBe(testUserAgent)
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(testSDKAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 

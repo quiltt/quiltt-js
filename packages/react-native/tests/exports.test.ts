@@ -166,7 +166,7 @@ describe('@quiltt/react-native exports', () => {
   describe('Utils exclusion', () => {
     it('does NOT export utils from main entry point', () => {
       // Utils functions should not be in the default exports
-      expect(ReactNativeExports).not.toHaveProperty('getUserAgent')
+      expect(ReactNativeExports).not.toHaveProperty('getSDKAgent')
       expect(ReactNativeExports).not.toHaveProperty('getBrowserInfo')
       expect(ReactNativeExports).not.toHaveProperty('isDeepEqual')
       expect(ReactNativeExports).not.toHaveProperty('getPlatformInfo')
@@ -175,9 +175,9 @@ describe('@quiltt/react-native exports', () => {
     it('exports utils via subpath import', async () => {
       // Utils should still be available via subpath import
       const utils = await import('@quiltt/react-native/utils')
-      expect(utils.getUserAgent).toBeDefined()
+      expect(utils.getSDKAgent).toBeDefined()
       expect(utils.getPlatformInfo).toBeDefined()
-      expect(typeof utils.getUserAgent).toBe('function')
+      expect(typeof utils.getSDKAgent).toBe('function')
       expect(typeof utils.getPlatformInfo).toBe('function')
     })
   })
