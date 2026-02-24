@@ -131,6 +131,7 @@ describe('useQuilttConnector', () => {
     }
 
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     const { unmount } = mountComposable(() =>
       useQuilttConnector('connector_test', {
@@ -151,6 +152,9 @@ describe('useQuilttConnector', () => {
         appLauncherUrl: 'myapp://oauth-callback',
       })
     )
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('`oauthRedirectUrl` is deprecated')
+    )
 
     onOpenCallbacks[0]?.({})
     unmount()
@@ -162,6 +166,7 @@ describe('useQuilttConnector', () => {
     onExitCallbacks[0]?.('Exit', {})
 
     consoleErrorSpy.mockRestore()
+    consoleWarnSpy.mockRestore()
     delete (globalThis as any).Quiltt
   })
 

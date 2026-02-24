@@ -83,6 +83,8 @@ describe('QuilttButton', () => {
   })
 
   it('passes deprecated oauthRedirectUrl to useQuilttConnector for backwards compatibility', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     render(
       <QuilttButton connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
         Test Button
@@ -93,9 +95,16 @@ describe('QuilttButton', () => {
       'mockConnectorId',
       expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
     )
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('`oauthRedirectUrl` is deprecated')
+    )
+    consoleWarnSpy.mockRestore()
   })
 
   it('prefers appLauncherUrl over deprecated oauthRedirectUrl when both provided', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     render(
       <QuilttButton
         connectorId="mockConnectorId"
@@ -110,6 +119,11 @@ describe('QuilttButton', () => {
       'mockConnectorId',
       expect.objectContaining({ appLauncherUrl: 'myapp://new' })
     )
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('`oauthRedirectUrl` is deprecated')
+    )
+    consoleWarnSpy.mockRestore()
   })
 
   it('renders quiltt-app-launcher-uri attribute on the button element', () => {

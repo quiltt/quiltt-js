@@ -35,6 +35,7 @@ import type {
 import { cdnBase } from '@quiltt/core'
 import { extractVersionNumber } from '@quiltt/core/utils'
 
+import { oauthRedirectUrlDeprecationWarning } from '../constants/deprecation-warnings'
 import { getUserAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './useQuilttSession'
@@ -101,8 +102,9 @@ export const useQuilttConnector = (
   const getConnectorId = (): string | undefined => toValue(connectorId)
   const getConnectionId = (): string | undefined => toValue(options?.connectionId)
   const getInstitution = (): string | undefined => toValue(options?.institution)
+  const getOauthRedirectUrl = (): string | undefined => toValue(options?.oauthRedirectUrl)
   const getAppLauncherUri = (): string | undefined =>
-    toValue(options?.appLauncherUrl) ?? toValue(options?.oauthRedirectUrl)
+    toValue(options?.appLauncherUrl) ?? getOauthRedirectUrl()
 
   const session = ref<Maybe<QuilttJWT | undefined>>()
 
@@ -170,6 +172,16 @@ export const useQuilttConnector = (
 
       // Authenticate with current session
       Quiltt.authenticate(session.value?.token)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    getOauthRedirectUrl,
+    (oauthRedirectUrl) => {
+      if (oauthRedirectUrl !== undefined) {
+        console.warn(oauthRedirectUrlDeprecationWarning)
+      }
     },
     { immediate: true }
   )

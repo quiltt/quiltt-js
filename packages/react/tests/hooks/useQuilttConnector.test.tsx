@@ -287,6 +287,8 @@ describe('useQuilttConnector', () => {
     })
 
     it('should support deprecated oauthRedirectUrl for backwards compatibility', async () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
       renderHook(
         () =>
           useQuilttConnector('mockConnectorId', {
@@ -303,9 +305,16 @@ describe('useQuilttConnector', () => {
           appLauncherUrl: 'myapp://oauth-deprecated',
         })
       })
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('`oauthRedirectUrl` is deprecated')
+      )
+      consoleWarnSpy.mockRestore()
     })
 
     it('should prefer appLauncherUrl over deprecated oauthRedirectUrl', async () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
       renderHook(
         () =>
           useQuilttConnector('mockConnectorId', {
@@ -323,6 +332,11 @@ describe('useQuilttConnector', () => {
           appLauncherUrl: 'myapp://new',
         })
       })
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('`oauthRedirectUrl` is deprecated')
+      )
+      consoleWarnSpy.mockRestore()
     })
 
     it('should recreate connector when connectorId changes', async () => {

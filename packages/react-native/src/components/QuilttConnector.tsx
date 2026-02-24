@@ -15,6 +15,7 @@ import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/r
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 
+import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import {
   ErrorReporter,
   getErrorMessage,
@@ -182,6 +183,12 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
     const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
     const [userAgent, setUserAgent] = useState<string>('')
+
+    useEffect(() => {
+      if (oauthRedirectUrl !== undefined) {
+        console.warn(oauthRedirectUrlDeprecationWarning)
+      }
+    }, [oauthRedirectUrl])
 
     // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
     const effectiveAppLauncherUrl = appLauncherUrl ?? oauthRedirectUrl ?? ''

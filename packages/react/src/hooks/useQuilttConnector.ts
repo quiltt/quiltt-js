@@ -9,6 +9,7 @@ import type {
 } from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
 
+import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useScript } from '@/hooks/useScript'
 import { getUserAgent, isDeepEqual } from '@/utils'
@@ -50,6 +51,12 @@ export const useQuilttConnector = (
   useEffect(() => {
     callbacksRef.current = options || {}
   })
+
+  useEffect(() => {
+    if (options?.oauthRedirectUrl !== undefined) {
+      console.warn(oauthRedirectUrlDeprecationWarning)
+    }
+  }, [options?.oauthRedirectUrl])
 
   // Set Session
   // biome-ignore lint/correctness/useExhaustiveDependencies: trigger effects when script status changes too

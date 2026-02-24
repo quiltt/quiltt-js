@@ -15,11 +15,12 @@
  * ```
  */
 
-import { computed, defineComponent, h, type PropType } from 'vue'
+import { computed, defineComponent, h, type PropType, watch } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 
 import { useQuilttConnector } from '../composables/useQuilttConnector'
+import { oauthRedirectUrlDeprecationWarning } from '../constants/deprecation-warnings'
 
 export const QuilttButton = defineComponent({
   name: 'QuilttButton',
@@ -78,6 +79,16 @@ export const QuilttButton = defineComponent({
   },
 
   setup(props, { emit, slots }) {
+    watch(
+      () => props.oauthRedirectUrl,
+      (value) => {
+        if (value !== undefined) {
+          console.warn(oauthRedirectUrlDeprecationWarning)
+        }
+      },
+      { immediate: true }
+    )
+
     const effectiveAppLauncherUri = computed(() => props.appLauncherUrl ?? props.oauthRedirectUrl)
 
     const { open } = useQuilttConnector(() => props.connectorId, {

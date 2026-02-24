@@ -32,6 +32,8 @@ describe('QuilttContainer', () => {
   })
 
   it('passes fallback oauthRedirectUrl as appLauncherUrl to connector composable', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     const root = document.createElement('div')
     document.body.appendChild(root)
 
@@ -54,11 +56,17 @@ describe('QuilttContainer', () => {
     expect((options.appLauncherUrl as { value: string }).value).toBe(
       'https://example.com/oauth/callback'
     )
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('`oauthRedirectUrl` is deprecated')
+    )
 
     app.unmount()
+    consoleWarnSpy.mockRestore()
   })
 
   it('prefers appLauncherUrl over oauthRedirectUrl when both are provided', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     const root = document.createElement('div')
     document.body.appendChild(root)
 
@@ -80,8 +88,12 @@ describe('QuilttContainer', () => {
 
     expect(connectorId()).toBe('connector_test')
     expect((options.appLauncherUrl as { value: string }).value).toBe('myapp://preferred')
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('`oauthRedirectUrl` is deprecated')
+    )
 
     app.unmount()
+    consoleWarnSpy.mockRestore()
   })
 
   it('opens connector on mounted lifecycle after delay', () => {

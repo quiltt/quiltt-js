@@ -13,11 +13,12 @@
  * ```
  */
 
-import { computed, defineComponent, h, onMounted, onUnmounted, type PropType } from 'vue'
+import { computed, defineComponent, h, onMounted, onUnmounted, type PropType, watch } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 
 import { useQuilttConnector } from '../composables/useQuilttConnector'
+import { oauthRedirectUrlDeprecationWarning } from '../constants/deprecation-warnings'
 
 export const QuilttContainer = defineComponent({
   name: 'QuilttContainer',
@@ -74,6 +75,16 @@ export const QuilttContainer = defineComponent({
   },
 
   setup(props, { emit, slots }) {
+    watch(
+      () => props.oauthRedirectUrl,
+      (value) => {
+        if (value !== undefined) {
+          console.warn(oauthRedirectUrlDeprecationWarning)
+        }
+      },
+      { immediate: true }
+    )
+
     const effectiveAppLauncherUri = computed(() => props.appLauncherUrl ?? props.oauthRedirectUrl)
     let openTimeout: ReturnType<typeof setTimeout> | undefined
 
