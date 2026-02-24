@@ -2,7 +2,7 @@
 
 [![Maintainability](https://qlty.sh/gh/quiltt/projects/quiltt-js/maintainability.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js) [![Code Coverage](https://qlty.sh/gh/quiltt/projects/quiltt-js/coverage.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js)
 
-This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, Vue, React Native, and Node.js environments.
+This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, Vue, React Native, CapacitorJS, and Node.js environments.
 
 ## About Quiltt
 
