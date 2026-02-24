@@ -58,6 +58,7 @@ export class ActionCableLink extends ApolloLink {
     }
 
     return new Observable((observer) => {
+      let cancelled = false
       const channelId = Math.round(Date.now() + Math.random() * 100000).toString(16)
       const actionName = this.actionName
       const connectionParams =
@@ -77,6 +78,7 @@ export class ActionCableLink extends ApolloLink {
         ),
         {
           connected: (args?: { reconnected: boolean }) => {
+            if (cancelled) return
             channel.perform(actionName, {
               query: operation.query ? print(operation.query) : null,
               variables: operation.variables,
@@ -88,6 +90,8 @@ export class ActionCableLink extends ApolloLink {
           },
 
           received: (payload: { result: RequestResult; more: any }) => {
+            if (cancelled) return
+
             if (payload?.result?.data || payload?.result?.errors) {
               observer.next(payload.result)
             }
@@ -98,13 +102,20 @@ export class ActionCableLink extends ApolloLink {
 
             callbacks.received?.(payload)
           },
+          // Intentionally not guarded by `cancelled` - disconnected represents
+          // the WebSocket connection state which users may want to know about
+          // for cleanup/status purposes, even after the observable completes.
           disconnected: () => {
             callbacks.disconnected?.()
           },
         }
       )
-      // Make the ActionCable subscription behave like an Apollo subscription
-      return Object.assign(channel, { closed: false })
+
+      // Return teardown logic
+      return () => {
+        cancelled = true
+        channel.unsubscribe()
+      }
     })
   }
 }
