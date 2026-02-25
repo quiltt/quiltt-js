@@ -251,7 +251,7 @@ describe('useQuilttConnector', () => {
       renderHook(
         () =>
           useQuilttConnector('mockConnectorId', {
-            appLauncherUrl: 'myapp://oauth',
+            appLauncherUrl: 'https://app.example.com/quiltt/callback',
           }),
         {
           wrapper: Wrapper,
@@ -261,7 +261,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: undefined,
-          appLauncherUrl: 'myapp://oauth',
+          appLauncherUrl: 'https://app.example.com/quiltt/callback',
         })
       })
     })
@@ -271,7 +271,7 @@ describe('useQuilttConnector', () => {
         () =>
           useQuilttConnector('mockConnectorId', {
             connectionId: 'conn-123',
-            appLauncherUrl: 'myapp://oauth',
+            appLauncherUrl: 'https://app.example.com/quiltt/callback',
           }),
         {
           wrapper: Wrapper,
@@ -281,7 +281,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.reconnect).toHaveBeenCalledWith('mockConnectorId', {
           connectionId: 'conn-123',
-          appLauncherUrl: 'myapp://oauth',
+          appLauncherUrl: 'https://app.example.com/quiltt/callback',
         })
       })
     })
@@ -292,7 +292,7 @@ describe('useQuilttConnector', () => {
       renderHook(
         () =>
           useQuilttConnector('mockConnectorId', {
-            oauthRedirectUrl: 'myapp://oauth-deprecated',
+            oauthRedirectUrl: 'https://app.example.com/quiltt/callback-deprecated',
           }),
         {
           wrapper: Wrapper,
@@ -302,7 +302,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: undefined,
-          appLauncherUrl: 'myapp://oauth-deprecated',
+          appLauncherUrl: 'https://app.example.com/quiltt/callback-deprecated',
         })
       })
 
@@ -318,8 +318,8 @@ describe('useQuilttConnector', () => {
       renderHook(
         () =>
           useQuilttConnector('mockConnectorId', {
-            appLauncherUrl: 'myapp://new',
-            oauthRedirectUrl: 'myapp://old',
+            appLauncherUrl: 'https://app.example.com/quiltt/callback/new',
+            oauthRedirectUrl: 'https://app.example.com/quiltt/callback/old',
           }),
         {
           wrapper: Wrapper,
@@ -329,7 +329,7 @@ describe('useQuilttConnector', () => {
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: undefined,
-          appLauncherUrl: 'myapp://new',
+          appLauncherUrl: 'https://app.example.com/quiltt/callback/new',
         })
       })
 
@@ -397,14 +397,14 @@ describe('useQuilttConnector', () => {
         ({ appLauncherUrl }) => useQuilttConnector('mockConnectorId', { appLauncherUrl }),
         {
           wrapper: Wrapper,
-          initialProps: { appLauncherUrl: 'myapp://oauth' },
+          initialProps: { appLauncherUrl: 'https://app.example.com/quiltt/callback' },
         }
       )
 
       await waitFor(() => {
         expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
           institution: undefined,
-          appLauncherUrl: 'myapp://oauth',
+          appLauncherUrl: 'https://app.example.com/quiltt/callback',
         })
       })
 
@@ -425,7 +425,7 @@ describe('useQuilttConnector', () => {
         ({ appLauncherUrl }) => useQuilttConnector('mockConnectorId', { appLauncherUrl }),
         {
           wrapper: Wrapper,
-          initialProps: { appLauncherUrl: 'myapp://oauth' },
+          initialProps: { appLauncherUrl: 'https://app.example.com/quiltt/callback' },
         }
       )
 
@@ -435,7 +435,7 @@ describe('useQuilttConnector', () => {
 
       vi.clearAllMocks()
 
-      rerender({ appLauncherUrl: 'myapp://oauth' })
+      rerender({ appLauncherUrl: 'https://app.example.com/quiltt/callback' })
 
       await new Promise((resolve) => setTimeout(resolve, 50))
 

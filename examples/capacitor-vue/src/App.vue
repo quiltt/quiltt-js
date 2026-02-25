@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { QuilttButton, QuilttConnector } from '@quiltt/capacitor/vue'
 
 const connectorId = import.meta.env.VITE_QUILTT_CONNECTOR_ID ?? 'connector'
-const appLauncherUrl = import.meta.env.VITE_APP_LAUNCHER_URL ?? 'myapp://oauth'
+const appLauncherUrl = import.meta.env.VITE_APP_LAUNCHER_URL ?? 'https://app.example.com/quiltt/callback'
 
 const events = ref<string[]>([])
 

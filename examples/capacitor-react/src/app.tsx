@@ -4,7 +4,8 @@ import { QuilttButton, QuilttConnector, QuilttProvider } from '@quiltt/capacitor
 
 const defaultToken = import.meta.env.VITE_QUILTT_AUTH_TOKEN ?? 'test-auth-token'
 const defaultConnectorId = import.meta.env.VITE_QUILTT_CONNECTOR_ID ?? 'connector'
-const defaultAppLauncherUri = import.meta.env.VITE_APP_LAUNCHER_URL ?? 'myapp://oauth'
+const defaultAppLauncherUri =
+  import.meta.env.VITE_APP_LAUNCHER_URL ?? 'https://app.example.com/quiltt/callback'
 
 export const App = () => {
   const [events, setEvents] = useState<string[]>([])

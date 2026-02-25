@@ -5,11 +5,11 @@
 
 Quiltt Connector SDK for Capacitor and Ionic apps on iOS, Android, and web.
 
-| Import | Use Case |
-|--------|----------|
-| `@quiltt/capacitor` | Any framework (Vue, Angular, Svelte, vanilla JS) |
-| `@quiltt/capacitor/vue` | Vue 3 components and composables |
-| `@quiltt/capacitor/react` | React components and hooks |
+| Import                    | Use Case                                         |
+| ------------------------- | ------------------------------------------------ |
+| `@quiltt/capacitor`       | Any framework (Vue, Angular, Svelte, vanilla JS) |
+| `@quiltt/capacitor/vue`   | Vue 3 components and composables                 |
+| `@quiltt/capacitor/react` | React components and hooks                       |
 
 ## Installation
 
@@ -80,7 +80,7 @@ onUnmounted(() => QuilttConnectorPlugin.removeAllListeners())
   <QuilttConnector
     ref="connectorRef"
     connector-id="<CONNECTOR_ID>"
-    app-launcher-uri="myapp://oauth"
+    app-launcher-uri="https://app.example.com/quiltt/callback"
     @exit-success="(m) => console.log('Connected:', m.connectionId)"
     @navigate="(url) => QuilttConnectorPlugin.openUrl({ url })"
     style="width: 100%; height: 100vh"
@@ -109,7 +109,7 @@ export const App = () => (
   <QuilttProvider token="<SESSION_TOKEN>">
     <QuilttConnector
       connectorId="<CONNECTOR_ID>"
-      appLauncherUrl="myapp://oauth"
+      appLauncherUrl="https://app.example.com/quiltt/callback"
       onExitSuccess={(m) => console.log('Connected:', m.connectionId)}
       style={{ flex: 1 }}
     />
@@ -159,25 +159,25 @@ Pass a `connectionId` / `connection-id` to reconnect an existing connection:
 import { QuilttConnector } from '@quiltt/capacitor'
 ```
 
-| Method | Description |
-|--------|-------------|
-| `openUrl({ url })` | Opens URL in system browser |
-| `getLaunchUrl()` | Returns the URL that launched the app |
-| `addListener('deepLink', callback)` | Listens for deep link callbacks |
-| `removeAllListeners()` | Removes all event listeners |
+| Method                              | Description                           |
+| ----------------------------------- | ------------------------------------- |
+| `openUrl({ url })`                  | Opens URL in system browser           |
+| `getLaunchUrl()`                    | Returns the URL that launched the app |
+| `addListener('deepLink', callback)` | Listens for deep link callbacks       |
+| `removeAllListeners()`              | Removes all event listeners           |
 
 ### Component Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `connectorId` | `string` | **Required.** Quiltt Connector ID |
-| `connectionId` | `string` | Existing connection ID for reconnection |
-| `institution` | `string` | Pre-select an institution |
-| `appLauncherUrl` | `string` | Deep link URL for OAuth callbacks |
-| `onLoad` | `(metadata) => void` | Connector loaded |
-| `onExitSuccess` | `(metadata) => void` | Connection successful |
-| `onExitAbort` | `(metadata) => void` | User cancelled |
-| `onExitError` | `(metadata) => void` | Error occurred |
+| Prop             | Type                 | Description                             |
+| ---------------- | -------------------- | --------------------------------------- |
+| `connectorId`    | `string`             | **Required.** Quiltt Connector ID       |
+| `connectionId`   | `string`             | Existing connection ID for reconnection |
+| `institution`    | `string`             | Pre-select an institution               |
+| `appLauncherUrl` | `string`             | Deep link URL for OAuth callbacks       |
+| `onLoad`         | `(metadata) => void` | Connector loaded                        |
+| `onExitSuccess`  | `(metadata) => void` | Connection successful                   |
+| `onExitAbort`    | `(metadata) => void` | User cancelled                          |
+| `onExitError`    | `(metadata) => void` | Error occurred                          |
 
 ### Re-exports
 
