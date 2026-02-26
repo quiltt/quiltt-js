@@ -9,6 +9,7 @@ import { useDebounce } from 'use-debounce'
 import { getUserAgent } from '@/utils'
 import { version } from '@/version'
 
+import { useQuilttSettings } from './useQuilttSettings'
 import useSession from './useSession'
 
 export type UseQuilttInstitutions = (
@@ -22,10 +23,11 @@ export type UseQuilttInstitutions = (
 }
 
 export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErrorCallback) => {
+  const { headers } = useQuilttSettings()
   const userAgent = useMemo(() => getUserAgent(version), [])
   const connectorsAPI = useMemo(
-    () => new ConnectorsAPI(connectorId, userAgent),
-    [connectorId, userAgent]
+    () => new ConnectorsAPI(connectorId, userAgent, headers),
+    [connectorId, userAgent, headers]
   )
   const [session] = useSession()
 

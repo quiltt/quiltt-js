@@ -5,6 +5,9 @@ import { useCallback, useMemo } from 'react'
 import type { Maybe, QuilttJWT } from '@quiltt/core'
 import { AuthAPI } from '@quiltt/core'
 
+import { getUserAgent } from '@/utils'
+import { version } from '@/version'
+
 import type { AuthenticateSession, IdentifySession, ImportSession, RevokeSession } from './session'
 import {
   useAuthenticateSession,
@@ -25,10 +28,14 @@ export type UseQuilttSession = (environmentId?: string) => {
 }
 
 export const useQuilttSession: UseQuilttSession = (environmentId) => {
-  const { clientId } = useQuilttSettings()
+  const { clientId, headers } = useQuilttSettings()
   const [session, setSession] = useSession()
 
-  const auth = useMemo(() => new AuthAPI(clientId), [clientId])
+  const userAgent = useMemo(() => getUserAgent(version), [])
+  const auth = useMemo(
+    () => new AuthAPI(clientId, headers, userAgent),
+    [clientId, headers, userAgent]
+  )
   const importSession = useImportSession(auth, session, setSession, environmentId)
   const identifySession = useIdentifySession(auth, setSession)
   const authenticateSession = useAuthenticateSession(auth, setSession)
