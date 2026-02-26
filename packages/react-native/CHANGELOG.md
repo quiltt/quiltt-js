@@ -1,5 +1,17 @@
 # @quiltt/react-native
 
+## 5.1.1
+
+### Patch Changes
+
+- [#419](https://github.com/quiltt/quiltt-js/pull/419) [`5f5846a`](https://github.com/quiltt/quiltt-js/commit/5f5846a1d807f517c156bbebe60d639256a7db1e) Thanks [@rubendinho](https://github.com/rubendinho)! - Update telemetry headers
+
+- [#421](https://github.com/quiltt/quiltt-js/pull/421) [`0756cb5`](https://github.com/quiltt/quiltt-js/commit/0756cb59d3fb55208cc2d1bdc10a2a8d5b66b595) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Ensure custom Headers are passed to all API calls
+
+- Updated dependencies [[`5f5846a`](https://github.com/quiltt/quiltt-js/commit/5f5846a1d807f517c156bbebe60d639256a7db1e), [`0756cb5`](https://github.com/quiltt/quiltt-js/commit/0756cb59d3fb55208cc2d1bdc10a2a8d5b66b595)]:
+  - @quiltt/react@5.1.1
+  - @quiltt/core@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
