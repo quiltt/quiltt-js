@@ -71,14 +71,17 @@ describe('QuilttButton', () => {
 
   it('passes appLauncherUrl to useQuilttConnector', () => {
     render(
-      <QuilttButton connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
+      <QuilttButton
+        connectorId="mockConnectorId"
+        appLauncherUrl="https://app.example.com/quiltt/callback"
+      >
         Test Button
       </QuilttButton>
     )
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback' })
     )
   })
 
@@ -86,14 +89,17 @@ describe('QuilttButton', () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     render(
-      <QuilttButton connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+      <QuilttButton
+        connectorId="mockConnectorId"
+        oauthRedirectUrl="https://app.example.com/quiltt/callback"
+      >
         Test Button
       </QuilttButton>
     )
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback' })
     )
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
@@ -108,8 +114,8 @@ describe('QuilttButton', () => {
     render(
       <QuilttButton
         connectorId="mockConnectorId"
-        appLauncherUrl="myapp://new"
-        oauthRedirectUrl="myapp://old"
+        appLauncherUrl="https://app.example.com/quiltt/callback/new"
+        oauthRedirectUrl="https://app.example.com/quiltt/callback/old"
       >
         Test Button
       </QuilttButton>
@@ -117,7 +123,7 @@ describe('QuilttButton', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'myapp://new' })
+      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback/new' })
     )
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
@@ -128,13 +134,18 @@ describe('QuilttButton', () => {
 
   it('renders quiltt-app-launcher-uri attribute on the button element', () => {
     const { container } = render(
-      <QuilttButton connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
+      <QuilttButton
+        connectorId="mockConnectorId"
+        appLauncherUrl="https://app.example.com/quiltt/callback"
+      >
         Test Button
       </QuilttButton>
     )
 
     const button = container.querySelector('button')
-    expect(button?.getAttribute('quiltt-app-launcher-uri')).toBe('myapp://oauth')
+    expect(button?.getAttribute('quiltt-app-launcher-uri')).toBe(
+      'https://app.example.com/quiltt/callback'
+    )
   })
 
   it('does not render quiltt-app-launcher-uri attribute when not provided', () => {

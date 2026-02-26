@@ -66,14 +66,17 @@ describe('QuilttContainer', () => {
 
   it('passes appLauncherUrl to useQuilttConnector', () => {
     render(
-      <QuilttContainer connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
+      <QuilttContainer
+        connectorId="mockConnectorId"
+        appLauncherUrl="https://app.example.com/quiltt/callback"
+      >
         Container Content
       </QuilttContainer>
     )
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback' })
     )
   })
 
@@ -81,14 +84,17 @@ describe('QuilttContainer', () => {
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     render(
-      <QuilttContainer connectorId="mockConnectorId" oauthRedirectUrl="myapp://oauth">
+      <QuilttContainer
+        connectorId="mockConnectorId"
+        oauthRedirectUrl="https://app.example.com/quiltt/callback"
+      >
         Container Content
       </QuilttContainer>
     )
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'myapp://oauth' })
+      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback' })
     )
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
@@ -103,8 +109,8 @@ describe('QuilttContainer', () => {
     render(
       <QuilttContainer
         connectorId="mockConnectorId"
-        appLauncherUrl="myapp://new"
-        oauthRedirectUrl="myapp://old"
+        appLauncherUrl="https://app.example.com/quiltt/callback/new"
+        oauthRedirectUrl="https://app.example.com/quiltt/callback/old"
       >
         Container Content
       </QuilttContainer>
@@ -112,7 +118,7 @@ describe('QuilttContainer', () => {
 
     expect(useQuilttConnector).toHaveBeenCalledWith(
       'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'myapp://new' })
+      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback/new' })
     )
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
@@ -143,13 +149,18 @@ describe('QuilttContainer', () => {
 
   it('renders quiltt-app-launcher-uri attribute on the container element', () => {
     const { container } = render(
-      <QuilttContainer connectorId="mockConnectorId" appLauncherUrl="myapp://oauth">
+      <QuilttContainer
+        connectorId="mockConnectorId"
+        appLauncherUrl="https://app.example.com/quiltt/callback"
+      >
         Container Content
       </QuilttContainer>
     )
 
     const element = container.firstElementChild
-    expect(element?.getAttribute('quiltt-app-launcher-uri')).toBe('myapp://oauth')
+    expect(element?.getAttribute('quiltt-app-launcher-uri')).toBe(
+      'https://app.example.com/quiltt/callback'
+    )
   })
 
   it('renders quiltt-institution attribute on the container element', () => {

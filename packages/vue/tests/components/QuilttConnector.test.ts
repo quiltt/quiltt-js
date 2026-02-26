@@ -32,7 +32,7 @@ describe('QuilttConnector', () => {
           connectorId: 'connector_test',
           connectionId: 'connection_test',
           institution: 'institution_test',
-          appLauncherUrl: 'myapp://oauth-callback',
+          appLauncherUrl: 'https://app.example.com/quiltt/callback',
         }),
     })
 
@@ -46,7 +46,7 @@ describe('QuilttConnector', () => {
     expect(src).toContain('token=session_token')
     expect(src).toContain('connectionId=connection_test')
     expect(src).toContain('institution=institution_test')
-    expect(src).toContain('app_launcher_url=myapp%3A%2F%2Foauth-callback')
+    expect(src).toContain('app_launcher_url=https%3A%2F%2Fapp.example.com%2Fquiltt%2Fcallback')
     expect(src).toContain('mode=INLINE')
 
     app.unmount()
@@ -118,12 +118,12 @@ describe('QuilttConnector', () => {
         data: {
           source: 'quiltt',
           type: 'Navigate',
-          url: 'myapp://oauth-callback',
+          url: 'https://app.example.com/quiltt/callback',
         },
       })
     )
 
-    expect(onNavigate).toHaveBeenCalledWith('myapp://oauth-callback')
+    expect(onNavigate).toHaveBeenCalledWith('https://app.example.com/quiltt/callback')
 
     window.dispatchEvent(
       new MessageEvent('message', {
@@ -252,14 +252,14 @@ describe('QuilttConnector', () => {
       configurable: true,
     })
 
-    connectorRef.value?.handleOAuthCallback('myapp://oauth-callback')
+    connectorRef.value?.handleOAuthCallback('https://app.example.com/quiltt/callback')
 
     expect(postMessageSpy).toHaveBeenCalledWith(
       {
         source: 'quiltt',
         type: 'OAuthCallback',
         data: {
-          url: 'myapp://oauth-callback',
+          url: 'https://app.example.com/quiltt/callback',
           params: {},
         },
       },

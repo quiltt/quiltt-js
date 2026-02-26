@@ -77,7 +77,7 @@ describe('QuilttButton', () => {
       render: () =>
         h(QuilttButton, {
           connectorId: 'connector_test',
-          appLauncherUrl: 'myapp://preferred',
+          appLauncherUrl: 'https://example.com/preferred',
           oauthRedirectUrl: 'https://example.com/fallback',
         }),
     })
@@ -90,7 +90,9 @@ describe('QuilttButton', () => {
     ]
 
     expect(connectorId()).toBe('connector_test')
-    expect((options.appLauncherUrl as { value: string }).value).toBe('myapp://preferred')
+    expect((options.appLauncherUrl as { value: string }).value).toBe(
+      'https://example.com/preferred'
+    )
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       expect.stringContaining('`oauthRedirectUrl` is deprecated')
     )
