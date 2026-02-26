@@ -1,5 +1,5 @@
 import { endpointAuth, version } from '@/config'
-import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getSDKAgent } from '@/utils/telemetry'
 
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
@@ -36,8 +36,8 @@ export type SessionResponse = FetchResponse<SessionData>
 export class AuthAPI {
   /** The Connector ID, required for identify & authenticate calls */
   clientId: string | undefined
-  /** The User-Agent string for telemetry */
-  userAgent: string
+  /** The SDK Agent string for telemetry */
+  sdkAgent: string
   /**
    * Custom headers to include with every request.
    * For Quiltt internal usage. Not intended for public use.
@@ -48,11 +48,11 @@ export class AuthAPI {
   constructor(
     clientId?: string | undefined,
     customHeaders?: Record<string, string>,
-    userAgent: string = getUserAgent(extractVersionNumber(version), 'Unknown')
+    sdkAgent: string = getSDKAgent(extractVersionNumber(version), 'Unknown')
   ) {
     this.clientId = clientId
     this.customHeaders = customHeaders
-    this.userAgent = userAgent
+    this.sdkAgent = sdkAgent
   }
 
   /**
@@ -115,7 +115,7 @@ export class AuthAPI {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
-    headers.set('Quiltt-SDK-Agent', this.userAgent)
+    headers.set('Quiltt-SDK-Agent', this.sdkAgent)
 
     // Apply custom headers
     if (this.customHeaders) {

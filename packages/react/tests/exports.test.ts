@@ -145,10 +145,6 @@ describe('@quiltt/react exports', () => {
       expect(utils.isDeepEqual).toBeDefined()
       expect(typeof utils.getSDKAgent).toBe('function')
       expect(typeof utils.isDeepEqual).toBe('function')
-
-      // Deprecated alias should still be exported until v6
-      expect(utils.getUserAgent).toBeDefined()
-      expect(typeof utils.getUserAgent).toBe('function')
     })
   })
 })

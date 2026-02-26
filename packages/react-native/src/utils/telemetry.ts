@@ -4,8 +4,6 @@ import { Platform } from 'react-native'
 import { getSDKAgent as coreGetSDKAgent } from '@quiltt/core/utils'
 import DeviceInfo from 'react-native-device-info'
 
-import { version as PACKAGE_VERSION } from '../../package.json'
-
 /**
  * Gets the React version from the runtime
  */
@@ -96,19 +94,4 @@ export const getPlatformInfoSync = (): string => {
 export const getSDKAgent = async (sdkVersion: string): Promise<string> => {
   const platformInfo = await getPlatformInfo()
   return coreGetSDKAgent(sdkVersion, platformInfo)
-}
-
-/**
- * @deprecated Renamed to `getSDKAgent`. Will be removed in v6.
- */
-export const getUserAgent = (
-  ...args: Parameters<typeof getSDKAgent>
-): ReturnType<typeof getSDKAgent> => {
-  if (Number(PACKAGE_VERSION.split('.')[0]) >= 6) {
-    throw new Error('[Quiltt] `getUserAgent` was removed in v6. Use `getSDKAgent` instead.')
-  }
-  console.warn(
-    '[Quiltt] `getUserAgent` is deprecated. Use `getSDKAgent` instead. This will be removed in v6.'
-  )
-  return getSDKAgent(...args)
 }

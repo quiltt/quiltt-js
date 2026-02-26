@@ -87,10 +87,6 @@ describe('@quiltt/core exports', () => {
       const utils = await import('@quiltt/core/utils')
       expect(utils.getSDKAgent).toBeDefined()
       expect(typeof utils.getSDKAgent).toBe('function')
-
-      // Deprecated alias should still be exported until v6
-      expect(utils.getUserAgent).toBeDefined()
-      expect(typeof utils.getUserAgent).toBe('function')
     })
   })
 })

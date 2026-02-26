@@ -179,10 +179,6 @@ describe('@quiltt/react-native exports', () => {
       expect(utils.getPlatformInfo).toBeDefined()
       expect(typeof utils.getSDKAgent).toBe('function')
       expect(typeof utils.getPlatformInfo).toBe('function')
-
-      // Deprecated alias should still be exported until v6
-      expect(utils.getUserAgent).toBeDefined()
-      expect(typeof utils.getUserAgent).toBe('function')
     })
   })
 })

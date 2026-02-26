@@ -246,13 +246,13 @@ describe('ConnectorsAPI', () => {
     }
 
     it('should store custom headers in constructor', () => {
-      const apiWithHeaders = new ConnectorsAPI('client-123', testUserAgent, customHeaders)
+      const apiWithHeaders = new ConnectorsAPI('client-123', testSDKAgent, customHeaders)
 
       expect(apiWithHeaders.customHeaders).toEqual(customHeaders)
     })
 
     it('should include custom headers in searchInstitutions request', async () => {
-      const apiWithHeaders = new ConnectorsAPI('client-123', testUserAgent, customHeaders)
+      const apiWithHeaders = new ConnectorsAPI('client-123', testSDKAgent, customHeaders)
       const mockResponse = {
         data: [],
         status: 200,
@@ -273,7 +273,7 @@ describe('ConnectorsAPI', () => {
     })
 
     it('should include custom headers in checkResolvable request', async () => {
-      const apiWithHeaders = new ConnectorsAPI('client-123', testUserAgent, customHeaders)
+      const apiWithHeaders = new ConnectorsAPI('client-123', testSDKAgent, customHeaders)
       const mockResponse = {
         data: { resolvable: true },
         status: 200,
@@ -294,7 +294,7 @@ describe('ConnectorsAPI', () => {
     })
 
     it('should not add custom headers when customHeaders is undefined', async () => {
-      const apiWithoutHeaders = new ConnectorsAPI('client-123', testUserAgent)
+      const apiWithoutHeaders = new ConnectorsAPI('client-123', testSDKAgent)
       const mockResponse = {
         data: [],
         status: 200,
@@ -317,7 +317,7 @@ describe('ConnectorsAPI', () => {
       const overrideHeaders = {
         Accept: 'text/plain',
       }
-      const apiWithOverrides = new ConnectorsAPI('client-123', testUserAgent, overrideHeaders)
+      const apiWithOverrides = new ConnectorsAPI('client-123', testSDKAgent, overrideHeaders)
       const mockResponse = {
         data: [],
         status: 200,
