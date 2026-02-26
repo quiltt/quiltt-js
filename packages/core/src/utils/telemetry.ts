@@ -25,15 +25,15 @@ export const extractVersionNumber = (formattedVersion: string): string => {
 }
 
 /**
- * Generates a User-Agent string following standard format
+ * Generates a custom SDK Agent string following standard format
  * Format: Quiltt/<version> (<platform-info>)
  */
-export const getUserAgent = (sdkVersion: string, platformInfo: string): string => {
+export const getSDKAgent = (sdkVersion: string, platformInfo: string): string => {
   return `Quiltt/${sdkVersion} (${platformInfo})`
 }
 
 /**
- * Detects browser information from user agent string
+ * Detects browser information from Browser's user agent string
  * Returns browser name and version, or 'Unknown' if not detected
  */
 export const getBrowserInfo = (): string => {

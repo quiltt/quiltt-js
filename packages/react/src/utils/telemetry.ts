@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { getUserAgent as coreGetUserAgent, getBrowserInfo } from '@quiltt/core/utils'
+import { getSDKAgent as coreGetSDKAgent, getBrowserInfo } from '@quiltt/core/utils'
 
 // Re-export getBrowserInfo
 export { getBrowserInfo }
@@ -24,10 +24,10 @@ export const getPlatformInfo = (): string => {
 }
 
 /**
- * Generates User-Agent string for React SDK
+ * Generates Quiltt-SDK-Agent string for React SDK
  * Format: Quiltt/<sdk-version> (React/<react-version>; <browser>/<version>)
  */
-export const getUserAgent = (sdkVersion: string): string => {
+export const getSDKAgent = (sdkVersion: string): string => {
   const platformInfo = getPlatformInfo()
-  return coreGetUserAgent(sdkVersion, platformInfo)
+  return coreGetSDKAgent(sdkVersion, platformInfo)
 }

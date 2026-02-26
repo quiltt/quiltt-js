@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { extractVersionNumber, getBrowserInfo, getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getBrowserInfo, getSDKAgent } from '@/utils/telemetry'
 
 describe('Core Telemetry', () => {
   describe('extractVersionNumber', () => {
@@ -61,25 +61,23 @@ describe('Core Telemetry', () => {
     })
   })
 
-  describe('getUserAgent', () => {
-    it('should generate correct User-Agent string', () => {
-      const userAgent = getUserAgent('4.5.1', 'React/19.2.3; Chrome/120')
-      expect(userAgent).toBe('Quiltt/4.5.1 (React/19.2.3; Chrome/120)')
+  describe('getSDKAgent', () => {
+    it('should generate correct Quiltt-SDK-Agent value', () => {
+      const sdkAgent = getSDKAgent('4.5.1', 'React/19.2.3; Chrome/120')
+      expect(sdkAgent).toBe('Quiltt/4.5.1 (React/19.2.3; Chrome/120)')
     })
 
     it('should handle version with different formats', () => {
-      const userAgent = getUserAgent('5.0.0-beta.1', 'Web')
-      expect(userAgent).toBe('Quiltt/5.0.0-beta.1 (Web)')
+      const sdkAgent = getSDKAgent('5.0.0-beta.1', 'Web')
+      expect(sdkAgent).toBe('Quiltt/5.0.0-beta.1 (Web)')
     })
 
     it('should handle complex platform info', () => {
-      const userAgent = getUserAgent(
+      const sdkAgent = getSDKAgent(
         '4.5.1',
         'React/19.2.3; ReactNative/0.73.0; iOS/17.0; iPhone14,2'
       )
-      expect(userAgent).toBe(
-        'Quiltt/4.5.1 (React/19.2.3; ReactNative/0.73.0; iOS/17.0; iPhone14,2)'
-      )
+      expect(sdkAgent).toBe('Quiltt/4.5.1 (React/19.2.3; ReactNative/0.73.0; iOS/17.0; iPhone14,2)')
     })
   })
 

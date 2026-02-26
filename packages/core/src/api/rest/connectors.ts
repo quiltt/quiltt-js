@@ -1,5 +1,5 @@
 import { endpointRest, version } from '@/config'
-import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getSDKAgent } from '@/utils/telemetry'
 
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
@@ -18,7 +18,7 @@ export type ResolvableResponse = FetchResponse<ResolvableData>
 
 export class ConnectorsAPI {
   clientId: string
-  userAgent: string
+  sdkAgent: string
   /**
    * Custom headers to include with every request.
    * For Quiltt internal usage. Not intended for public use.
@@ -28,11 +28,11 @@ export class ConnectorsAPI {
 
   constructor(
     clientId: string,
-    userAgent: string = getUserAgent(extractVersionNumber(version), 'Unknown'),
+    sdkAgent: string = getSDKAgent(extractVersionNumber(version), 'Unknown'),
     customHeaders?: Record<string, string>
   ) {
     this.clientId = clientId
-    this.userAgent = userAgent
+    this.sdkAgent = sdkAgent
     this.customHeaders = customHeaders
   }
 
@@ -99,8 +99,7 @@ export class ConnectorsAPI {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
-    headers.set('User-Agent', this.userAgent)
-    headers.set('Quiltt-SDK-Agent', this.userAgent)
+    headers.set('Quiltt-SDK-Agent', this.sdkAgent)
 
     // Apply custom headers
     if (this.customHeaders) {

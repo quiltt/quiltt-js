@@ -1,7 +1,7 @@
 import React from 'react'
 import { Platform } from 'react-native'
 
-import { getUserAgent as coreGetUserAgent } from '@quiltt/core/utils'
+import { getSDKAgent as coreGetSDKAgent } from '@quiltt/core/utils'
 import DeviceInfo from 'react-native-device-info'
 
 /**
@@ -88,10 +88,10 @@ export const getPlatformInfoSync = (): string => {
 }
 
 /**
- * Generates User-Agent string for React Native SDK
+ * Generates Quiltt-SDK-Agent string for React Native SDK
  * Format: Quiltt/<sdk-version> (React/<version>; ReactNative/<version>; <OS>/<version>; <device-model>)
  */
-export const getUserAgent = async (sdkVersion: string): Promise<string> => {
+export const getSDKAgent = async (sdkVersion: string): Promise<string> => {
   const platformInfo = await getPlatformInfo()
-  return coreGetUserAgent(sdkVersion, platformInfo)
+  return coreGetSDKAgent(sdkVersion, platformInfo)
 }

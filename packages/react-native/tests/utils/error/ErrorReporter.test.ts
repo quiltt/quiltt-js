@@ -22,11 +22,11 @@ describe('ErrorReporter', () => {
   let errorReporter: ErrorReporter
   let consoleWarnSpy: MockInstance
   let consoleErrorSpy: MockInstance
-  const testUserAgent = `Quiltt/${version} (React/18.2.0; ReactNative/0.73.0; iOS/17.0; iPhone14,2)`
+  const testSDKAgent = `Quiltt/${version} (React/18.2.0; ReactNative/0.73.0; iOS/17.0; iPhone14,2)`
 
   beforeEach(() => {
     vi.clearAllMocks()
-    errorReporter = new ErrorReporter(testUserAgent)
+    errorReporter = new ErrorReporter(testSDKAgent)
 
     consoleWarnSpy = vi.spyOn(console, 'warn')
     consoleErrorSpy = vi.spyOn(console, 'error')
@@ -42,7 +42,7 @@ describe('ErrorReporter', () => {
 
     expect(Honeybadger.factory).toHaveBeenCalledWith({
       apiKey: '',
-      environment: testUserAgent,
+      environment: testSDKAgent,
       revision: version,
       reportData: true,
       enableUncaught: false,
@@ -105,7 +105,7 @@ describe('ErrorReporter', () => {
     // Mock factory to return null to simulate initialization failure
     vi.mocked(Honeybadger.factory).mockReturnValueOnce(null as any)
 
-    const uninitializedReporter = new ErrorReporter(testUserAgent)
+    const uninitializedReporter = new ErrorReporter(testSDKAgent)
     const testError = new Error('Test error')
 
     await uninitializedReporter.notify(testError)
