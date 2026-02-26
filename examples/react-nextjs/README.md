@@ -1,6 +1,6 @@
 # Quiltt Next.js Example
 
-This app demonstrates `@quiltt/react` in a Next.js environment and includes Playwright coverage for connector launch flows.
+This Next.js app demonstrates how to integrate `@quiltt/react` and provides Playwright e2e coverage for React SDK behavior.
 
 ## Getting Started
 
@@ -14,24 +14,26 @@ pnpm run dev
 
 Open <http://localhost:3000>.
 
-## Project Scripts
+## Environment
 
-```bash
-pnpm run dev
-pnpm run build
-pnpm run start
-pnpm run lint
-pnpm run typecheck
-```
+The app reads these public runtime values from environment variables (with local defaults in `app/quiltt-provider.tsx` and `app/_components/quiltt-config.ts`):
 
-## Playwright Tests
+- `NEXT_PUBLIC_QUILTT_CLIENT_ID`
+- `NEXT_PUBLIC_QUILTT_AUTH_TOKEN`
+- `NEXT_PUBLIC_CONNECTOR_ID`
+- `NEXT_PUBLIC_CONTAINER_CONNECTOR_ID`
+- `NEXT_PUBLIC_INSTITUTION_SEARCH_TERM`
+
+Set real values in a `.env` file in this directory when testing against a real Quiltt environment.
+
+## E2E Tests
 
 ```bash
 pnpm run playwright:install
 pnpm run test:e2e
 ```
 
-Use `pnpm run test:component` for component test projects and `pnpm run test` to run all configured Playwright projects.
+This runs the Playwright project configured in `playwright.config.ts` and starts Next.js on port `3000`.
 
 ## Related Docs
 

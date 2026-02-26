@@ -40,3 +40,5 @@ npm-debug.log
 
 # Tests
 coverage/**/*
+**/test-results/**/*
+**/playwright-report/**/*

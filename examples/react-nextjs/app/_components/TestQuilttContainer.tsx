@@ -2,13 +2,10 @@
 
 import { QuilttContainer } from '@quiltt/react'
 
+import { connectorId } from './quiltt-config'
+
 export const TestQuilttContainer = () => {
-  return (
-    <QuilttContainer
-      connectorId="container-connector"
-      className="h-full border-4 border-purple-500 hover:border-blue-500"
-    />
-  )
+  return <QuilttContainer connectorId={connectorId} className="container-frame" as="div" />
 }
 
 export default TestQuilttContainer

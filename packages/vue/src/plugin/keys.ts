@@ -8,10 +8,11 @@ import type { Maybe, QuilttJWT } from '@quiltt/core'
 
 // Injection keys for Quiltt state
 export const QuilttSessionKey: InjectionKey<Ref<Maybe<QuilttJWT> | undefined>> =
-  Symbol('quiltt-session')
+  Symbol.for('quiltt-session')
 export const QuilttSetSessionKey: InjectionKey<(token: Maybe<string>) => void> =
-  Symbol('quiltt-set-session')
-export const QuilttClientIdKey: InjectionKey<Ref<string | undefined>> = Symbol('quiltt-client-id')
+  Symbol.for('quiltt-set-session')
+export const QuilttClientIdKey: InjectionKey<Ref<string | undefined>> =
+  Symbol.for('quiltt-client-id')
 
 export interface QuilttPluginOptions {
   /**

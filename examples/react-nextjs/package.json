@@ -13,7 +13,6 @@
     "start": "next start",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:component": "playwright test --project=component-chromium",
     "test:e2e": "playwright test --project=e2e-chromium",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
@@ -25,7 +24,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.3",
-    "@playwright/experimental-ct-react": "1.57.0",
     "@playwright/test": "1.57.0",
     "@tailwindcss/postcss": "4.2.0",
     "@types/node": "24.10.13",

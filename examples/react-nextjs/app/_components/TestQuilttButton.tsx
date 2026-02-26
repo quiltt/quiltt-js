@@ -2,12 +2,11 @@
 
 import { QuilttButton } from '@quiltt/react'
 
+import { connectorId } from './quiltt-config'
+
 export const TestQuilttButton = () => {
   return (
-    <QuilttButton
-      connectorId="connector"
-      className="rounded-md bg-purple-500 px-4 py-2 text-white hover:bg-purple-900"
-    >
+    <QuilttButton connectorId={connectorId} className="component-button">
       Launch with Component
     </QuilttButton>
   )

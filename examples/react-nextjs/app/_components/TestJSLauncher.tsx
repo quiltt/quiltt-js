@@ -2,18 +2,15 @@
 
 import { useQuilttConnector } from '@quiltt/react'
 
+import { connectorId } from './quiltt-config'
+
 export const TestJSLauncher = () => {
-  // Load the script
-  const { open } = useQuilttConnector('connector', {
+  const { open } = useQuilttConnector(connectorId, {
     onEvent: (type) => console.log(`Event: ${type}`),
   })
 
   return (
-    <button
-      type="button"
-      onClick={open}
-      className="cursor-pointer rounded-full border-2 border-purple-500 px-4 py-2 text-white hover:bg-purple-500"
-    >
+    <button type="button" className="launcher-button" onClick={open}>
       Launch with Javascript
     </button>
   )

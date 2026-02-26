@@ -1,31 +1,18 @@
 'use client'
 
-import type { ComponentPropsWithoutRef } from 'react'
+import { useQuilttConnector } from '@quiltt/react'
 
-import { QuilttButton } from '@quiltt/react'
-
-type CustomButtonProps = ComponentPropsWithoutRef<'button'>
-
-const CustomButton = ({ children, ...props }: CustomButtonProps) => {
-  return (
-    <button
-      className="rounded-md bg-purple-500 px-4 py-2 text-white hover:bg-purple-900"
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
+import { connectorId } from './quiltt-config'
 
 export const TestCustomButton = () => {
+  const { open } = useQuilttConnector(connectorId, {
+    onExitSuccess: () => console.log('onExitSuccess'),
+  })
+
   return (
-    <QuilttButton
-      as={CustomButton}
-      connectorId="connector"
-      onExitSuccess={() => console.log('onExitSuccess')}
-    >
+    <button type="button" className="component-button" onClick={open}>
       Launch with Custom Component
-    </QuilttButton>
+    </button>
   )
 }
 export default TestCustomButton

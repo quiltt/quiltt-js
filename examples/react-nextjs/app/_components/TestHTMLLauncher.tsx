@@ -2,16 +2,13 @@
 
 import { useQuilttConnector } from '@quiltt/react'
 
+import { connectorId } from './quiltt-config'
+
 export const TestHTMLLauncher = () => {
-  // Load the script
   useQuilttConnector()
 
   return (
-    <button
-      type="button"
-      quiltt-button="connector"
-      className="cursor-pointer rounded-full border-2 border-purple-500 px-4 py-2 text-white hover:bg-purple-500"
-    >
+    <button type="button" quiltt-button={connectorId} className="launcher-button">
       Launch with HTML
     </button>
   )
