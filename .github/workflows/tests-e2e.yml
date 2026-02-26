@@ -139,7 +139,7 @@ jobs:
         env:
           EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
-          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z
           EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
       - name: Build for testing
@@ -148,7 +148,7 @@ jobs:
         env:
           EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
-          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z
           EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
       - name: Run E2E tests
@@ -242,7 +242,7 @@ jobs:
         env:
           EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
-          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z
           EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
       - name: Build for testing
@@ -251,7 +251,7 @@ jobs:
         env:
           EXPO_PUBLIC_QUILTT_CLIENT_ID: test-client-id
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: test-auth-token
-          EXPO_PUBLIC_CONNECTOR_ID: test-connector-id
+          EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z
           EXPO_PUBLIC_INSTITUTION_SEARCH_TERM: test
 
       - name: Verify APK files exist
@@ -337,7 +337,7 @@ jobs:
         run: pnpm run build
         working-directory: ./examples/react-nextjs
 
-      - name: Run E2E tests (component + e2e)
+      - name: Run E2E tests
         run: pnpm run test
         working-directory: ./examples/react-nextjs
 
