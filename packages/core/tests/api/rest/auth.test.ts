@@ -179,4 +179,104 @@ describe('AuthAPI', () => {
       assertHeaders(fetchOptions.headers)
     })
   })
+
+  describe('custom headers', () => {
+    const customHeaders = {
+      'Quiltt-Session-ID': 'session-123',
+      'Quiltt-Anonymous-ID': 'anon-456',
+      'X-Custom-Header': 'custom-value',
+    }
+
+    it('should store custom headers in constructor', () => {
+      const apiWithHeaders = new AuthAPI(clientId, customHeaders)
+
+      expect(apiWithHeaders.customHeaders).toEqual(customHeaders)
+    })
+
+    it('should include custom headers in ping request', async () => {
+      const apiWithHeaders = new AuthAPI(clientId, customHeaders)
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse({ token: 'new-token' }))
+
+      await apiWithHeaders.ping(token)
+
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      const headers = fetchOptions.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should include custom headers in identify request', async () => {
+      const apiWithHeaders = new AuthAPI(clientId, customHeaders)
+      const payload: UsernamePayload = { email: 'test@example.com' }
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse({ token: 'new-token' }))
+
+      await apiWithHeaders.identify(payload)
+
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      const headers = fetchOptions.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should include custom headers in authenticate request', async () => {
+      const apiWithHeaders = new AuthAPI(clientId, customHeaders)
+      const payload: PasscodePayload = { email: 'test@example.com', passcode: '123456' }
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse({ token: 'new-token' }))
+
+      await apiWithHeaders.authenticate(payload)
+
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      const headers = fetchOptions.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should include custom headers in revoke request', async () => {
+      const apiWithHeaders = new AuthAPI(clientId, customHeaders)
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse(null, 204, 'No Content'))
+
+      await apiWithHeaders.revoke(token)
+
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      const headers = fetchOptions.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should not add custom headers when customHeaders is undefined', async () => {
+      const apiWithoutHeaders = new AuthAPI(clientId)
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse({ token: 'new-token' }))
+
+      await apiWithoutHeaders.ping(token)
+
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      const headers = fetchOptions.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBeNull()
+      expect(headers.get('Quiltt-Anonymous-ID')).toBeNull()
+    })
+
+    it('should allow custom headers to override default headers', async () => {
+      const overrideHeaders = {
+        Accept: 'text/plain',
+      }
+      const apiWithOverrides = new AuthAPI(clientId, overrideHeaders)
+      ;(fetchWithRetry as Mock).mockResolvedValue(mockResponse({ token: 'new-token' }))
+
+      await apiWithOverrides.ping(token)
+
+      const fetchOptions = (fetchWithRetry as Mock).mock.calls[0][1]
+      const headers = fetchOptions.headers as Headers
+
+      expect(headers.get('Accept')).toBe('text/plain')
+    })
+  })
 })

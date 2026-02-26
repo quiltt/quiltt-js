@@ -1,4 +1,5 @@
-import { endpointAuth } from '@/config'
+import { endpointAuth, version } from '@/config'
+import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
 
 import type { FetchResponse } from './fetchWithRetry'
 import { fetchWithRetry } from './fetchWithRetry'
@@ -35,11 +36,23 @@ export type SessionResponse = FetchResponse<SessionData>
 export class AuthAPI {
   /** The Connector ID, required for identify & authenticate calls */
   clientId: string | undefined
+  /** The User-Agent string for telemetry */
+  userAgent: string
+  /**
+   * Custom headers to include with every request.
+   * For Quiltt internal usage. Not intended for public use.
+   * @internal
+   */
+  customHeaders: Record<string, string> | undefined
 
-  // @todo userAgent: string | undefined - allow SDKs and callers to set a userAgent
-
-  constructor(clientId?: string | undefined) {
+  constructor(
+    clientId?: string | undefined,
+    customHeaders?: Record<string, string>,
+    userAgent: string = getUserAgent(extractVersionNumber(version), 'Unknown')
+  ) {
     this.clientId = clientId
+    this.customHeaders = customHeaders
+    this.userAgent = userAgent
   }
 
   /**
@@ -102,6 +115,15 @@ export class AuthAPI {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
+    headers.set('User-Agent', this.userAgent)
+    headers.set('Quiltt-SDK-Agent', this.userAgent)
+
+    // Apply custom headers
+    if (this.customHeaders) {
+      Object.entries(this.customHeaders).forEach(([key, value]) => {
+        headers.set(key, value)
+      })
+    }
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)

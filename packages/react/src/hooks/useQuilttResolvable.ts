@@ -8,6 +8,7 @@ import { ConnectorsAPI } from '@quiltt/core'
 import { getUserAgent } from '@/utils'
 import { version } from '@/version'
 
+import { useQuilttSettings } from './useQuilttSettings'
 import useSession from './useSession'
 
 export type UseQuilttResolvable = (
@@ -27,10 +28,11 @@ export type UseQuilttResolvable = (
 }
 
 export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCallback) => {
+  const { headers } = useQuilttSettings()
   const userAgent = useMemo(() => getUserAgent(version), [])
   const connectorsAPI = useMemo(
-    () => new ConnectorsAPI(connectorId, userAgent),
-    [connectorId, userAgent]
+    () => new ConnectorsAPI(connectorId, userAgent, headers),
+    [connectorId, userAgent, headers]
   )
   const [session] = useSession()
 

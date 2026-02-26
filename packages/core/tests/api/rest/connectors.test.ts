@@ -227,14 +227,114 @@ describe('ConnectorsAPI', () => {
       const config = (connectorsAPI as any).config()
 
       const headers = config.headers as Headers
-      expect(headers.get('Authorization')).toBe('Bearer undefined')
+      // Authorization header should not be set when token is not provided
+      expect(headers.get('Authorization')).toBeNull()
     })
 
     it('should create config with undefined token', () => {
       const config = (connectorsAPI as any).config(undefined)
 
       const headers = config.headers as Headers
-      expect(headers.get('Authorization')).toBe('Bearer undefined')
+      // Authorization header should not be set when token is undefined
+      expect(headers.get('Authorization')).toBeNull()
+    })
+  })
+
+  describe('custom headers', () => {
+    const customHeaders = {
+      'Quiltt-Session-ID': 'session-123',
+      'Quiltt-Anonymous-ID': 'anon-456',
+      'X-Custom-Header': 'custom-value',
+    }
+
+    it('should store custom headers in constructor', () => {
+      const apiWithHeaders = new ConnectorsAPI('client-123', testUserAgent, customHeaders)
+
+      expect(apiWithHeaders.customHeaders).toEqual(customHeaders)
+    })
+
+    it('should include custom headers in searchInstitutions request', async () => {
+      const apiWithHeaders = new ConnectorsAPI('client-123', testUserAgent, customHeaders)
+      const mockResponse = {
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithHeaders.searchInstitutions('token', 'connector-id', 'Chase')
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should include custom headers in checkResolvable request', async () => {
+      const apiWithHeaders = new ConnectorsAPI('client-123', testUserAgent, customHeaders)
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithHeaders.checkResolvable('token', 'connector-id', { plaid: 'ins_123' })
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should not add custom headers when customHeaders is undefined', async () => {
+      const apiWithoutHeaders = new ConnectorsAPI('client-123', testUserAgent)
+      const mockResponse = {
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithoutHeaders.searchInstitutions('token', 'connector-id', 'Chase')
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBeNull()
+      expect(headers.get('Quiltt-Anonymous-ID')).toBeNull()
+    })
+
+    it('should allow custom headers to override default headers', async () => {
+      const overrideHeaders = {
+        Accept: 'text/plain',
+      }
+      const apiWithOverrides = new ConnectorsAPI('client-123', testUserAgent, overrideHeaders)
+      const mockResponse = {
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithOverrides.searchInstitutions('token', 'connector-id', 'Chase')
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Accept')).toBe('text/plain')
     })
   })
 
