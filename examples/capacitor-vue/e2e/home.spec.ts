@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test'
 
+const connectorId = process.env.VITE_QUILTT_CONNECTOR_ID ?? 'connector'
+const connectorOrigin = `https://${connectorId}.quiltt.app`
+
 test('renders Quiltt button and inline connector', async ({ page }) => {
   const response = await page.goto('/')
 
@@ -11,17 +14,17 @@ test('renders Quiltt button and inline connector', async ({ page }) => {
   await expect(connectorFrame).toHaveAttribute('src', /^https:\/\/[^/]+\.quiltt\.app\/?/)
   await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)mode=INLINE(?:&|$)/)
 
-  await page.evaluate(() => {
+  await page.evaluate((origin) => {
     window.dispatchEvent(
       new MessageEvent('message', {
-        origin: 'https://connector.quiltt.app',
+        origin,
         data: {
           source: 'quiltt',
           type: 'Load',
         },
       })
     )
-  })
+  }, connectorOrigin)
 
   await expect(page.getByText('Load')).toBeVisible()
 })

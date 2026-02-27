@@ -12,6 +12,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
+    "e2e/**/*.ts",
     "vite.config.ts",
     "playwright.config.ts",
     "capacitor.config.ts"
