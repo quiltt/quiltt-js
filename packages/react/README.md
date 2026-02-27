@@ -5,7 +5,7 @@
 
 `@quiltt/react` provides React Components and Hooks for integrating Quiltt into React-based applications.
 
-See the guides [here](https://www.quiltt.dev/connector/sdks/react).
+See the [React SDK guides](https://www.quiltt.dev/connector/sdks/react).
 
 For general project information and contributing guidelines, see the [main repository README](../../README.md).
 
@@ -66,7 +66,7 @@ export const App = () => {
 
   return (
     <QuilttButton
-      connectorId="<CONNECTOR_ID>"
+      connectorId="YOUR_CONNECTOR_ID"
       onExitSuccess={handleExitSuccess}
       className="my-css-class"
       style={{ borderWidth: '2px' }}
@@ -85,7 +85,7 @@ Launch the [Quiltt Connector](https://www.quiltt.dev/connector) inside a contain
 
 By default, the rendered component will be a `<div>` element, but you can supply your own component via the `as` prop. You can also pass forward any props to the rendered component.
 
-##### Example
+#### QuilttContainer Example
 
 ```tsx
 import { useState } from 'react'
@@ -100,7 +100,7 @@ export const App = () => {
 
   return (
     <QuilttContainer
-      connectorId="<CONNECTOR_ID>"
+      connectorId="YOUR_CONNECTOR_ID"
       onExitSuccess={handleExitSuccess}
       className="my-css-class"
       style={{ height: '100%' }}
@@ -116,13 +116,13 @@ export default App
 
 A provider component for passing Session and settings down to the rest of your application.
 
-#### Example
+#### QuilttProvider Example
 
 ```tsx
 import { QuilttProvider } from '@quiltt/react'
 
 const Layout = ({ children }) => {
-  const sessionToken = "<SESSION_TOKEN_FROM_SERVER>"
+  const sessionToken = 'YOUR_SESSION_TOKEN_FROM_SERVER'
 
   return <QuilttProvider token={sessionToken}>{children}</QuilttProvider>
 }
@@ -144,13 +144,13 @@ import { useQuilttSession } from '@quiltt/react/hooks'
 
 A hook to manage the lifecycle of [Quiltt Connector](https://www.quiltt.dev/connector).
 
-#### Example
+#### useQuilttConnector Example
 
 ```tsx
 import { useQuilttConnector } from '@quiltt/react'
 
 const App = () => {
-  const { open } = useQuilttConnector('<CONNECTOR_ID>', {
+  const { open } = useQuilttConnector('YOUR_CONNECTOR_ID', {
     onEvent: (type) => console.log(`Received Quiltt Event: ${type}`),
     onExitSuccess: (metadata) => console.log("Connector onExitSuccess", metadata.connectionId),
   })
@@ -169,7 +169,7 @@ A hook to manage the lifecycle of Quiltt Sessions.
 
 See the [Authentication guides](https://www.quiltt.dev/authentication) for more information.
 
-#### Example
+#### useQuilttSession Example
 
 ```tsx
 import { useCallback, useEffect } from 'react'

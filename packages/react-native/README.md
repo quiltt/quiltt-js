@@ -57,7 +57,7 @@ import type { ConnectorSDKCallbackMetadata } from '@quiltt/react-native'
 
 export const App = () => {
   // See: https://www.quiltt.dev/authentication/issuing-session-tokens
-  const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
+  const sessionToken = 'YOUR_SESSION_TOKEN_FROM_SERVER'
 
   // Use a universal link (iOS) or app link (Android) to redirect back to your app
   const appLauncherUrl = 'https://myapp.com/my_universal_link'
@@ -71,7 +71,7 @@ export const App = () => {
   return (
     <QuilttProvider token={sessionToken}>
       <QuilttConnector
-        connectorId="<CONNECTOR_ID>"
+        connectorId="YOUR_CONNECTOR_ID"
         appLauncherUrl={appLauncherUrl}
 
         // See the JavaScript API docs for the full list of available callbacks...
@@ -101,7 +101,7 @@ import type { ConnectorSDKCallbackMetadata, QuilttConnectorHandle } from '@quilt
 export const ConnectorScreen = () => {
   const connectorRef = useRef<QuilttConnectorHandle>(null)
 
-  const sessionToken = '<TOKEN_OBTAINED_FROM_THE_SERVER>'
+  const sessionToken = 'YOUR_SESSION_TOKEN_FROM_SERVER'
   const appLauncherUrl = 'https://myapp.com/quiltt/callback'
 
   // Listen for deep links and handle OAuth callbacks
@@ -130,7 +130,7 @@ export const ConnectorScreen = () => {
       <View style={{ flex: 1 }}>
         <QuilttConnector
           ref={connectorRef}
-          connectorId="<CONNECTOR_ID>"
+          connectorId="YOUR_CONNECTOR_ID"
           appLauncherUrl={appLauncherUrl}
           onExitSuccess={handleExitSuccess}
         />
@@ -154,7 +154,7 @@ export default ConnectorScreen
 
 ## License
 
-This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE.md) file for more information.
+This project is licensed under the terms of the MIT license. See the [repository LICENSE](../../LICENSE.md) file for more information.
 
 ## Contributing
 

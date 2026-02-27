@@ -79,8 +79,8 @@ onUnmounted(() => QuilttConnectorPlugin.removeAllListeners())
 <template>
   <QuilttConnector
     ref="connectorRef"
-    connector-id="<CONNECTOR_ID>"
-    app-launcher-uri="https://app.example.com/quiltt/callback"
+    connector-id="YOUR_CONNECTOR_ID"
+    app-launcher-url="https://app.example.com/quiltt/callback"
     @exit-success="(m) => console.log('Connected:', m.connectionId)"
     @navigate="(url) => QuilttConnectorPlugin.openUrl({ url })"
     style="width: 100%; height: 100vh"
@@ -91,7 +91,7 @@ onUnmounted(() => QuilttConnectorPlugin.removeAllListeners())
 For modal-based connection:
 
 ```vue
-<QuilttButton connector-id="<CONNECTOR_ID>" @exit-success="handleSuccess">
+<QuilttButton connector-id="YOUR_CONNECTOR_ID" @exit-success="handleSuccess">
   Add Bank Account
 </QuilttButton>
 ```
@@ -106,9 +106,9 @@ npm install @quiltt/capacitor @quiltt/react react react-dom
 import { QuilttProvider, QuilttConnector } from '@quiltt/capacitor/react'
 
 export const App = () => (
-  <QuilttProvider token="<SESSION_TOKEN>">
+  <QuilttProvider token="YOUR_SESSION_TOKEN">
     <QuilttConnector
-      connectorId="<CONNECTOR_ID>"
+      connectorId="YOUR_CONNECTOR_ID"
       appLauncherUrl="https://app.example.com/quiltt/callback"
       onExitSuccess={(m) => console.log('Connected:', m.connectionId)}
       style={{ flex: 1 }}
@@ -122,7 +122,7 @@ OAuth is handled automatically—bank auth opens in the system browser and deep 
 For modal-based connection:
 
 ```tsx
-<QuilttButton connectorId="<CONNECTOR_ID>" onExitSuccess={handleSuccess}>
+<QuilttButton connectorId="YOUR_CONNECTOR_ID" onExitSuccess={handleSuccess}>
   Add Account
 </QuilttButton>
 ```
@@ -148,7 +148,7 @@ await QuilttConnector.addListener('deepLink', ({ url }) => {
 Pass a `connectionId` / `connection-id` to reconnect an existing connection:
 
 ```tsx
-<QuilttConnector connectionId="<EXISTING_CONNECTION_ID>" ... />
+<QuilttConnector connectionId="YOUR_EXISTING_CONNECTION_ID" ... />
 ```
 
 ## API Reference
@@ -191,12 +191,12 @@ import { QuilttConnector } from '@quiltt/capacitor'
 
 ## Troubleshooting
 
-**OAuth redirects not working**
+### OAuth redirects not working
 
 - Verify `appLauncherUrl` matches your URL scheme
 - Run `npx cap sync` after configuration changes
 
-**Blank screen after bank auth**
+### Blank screen after bank auth
 
 - Check browser console for errors
 - Verify your Connector ID

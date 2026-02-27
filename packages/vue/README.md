@@ -41,7 +41,7 @@ const onLogin = async (token: string) => {
 
 <template>
   <QuilttButton
-    connector-id="<CONNECTOR_ID>"
+    connector-id="YOUR_CONNECTOR_ID"
     @exit-success="(m) => console.log('Connected:', m.connectionId)"
   >
     Add Bank Account
@@ -62,7 +62,7 @@ import { QuilttButton } from '@quiltt/vue/components'
 Opens the connector in a modal overlay.
 
 ```vue
-<QuilttButton connector-id="<CONNECTOR_ID>" @exit-success="handleSuccess">
+<QuilttButton connector-id="YOUR_CONNECTOR_ID" @exit-success="handleSuccess">
   Connect Account
 </QuilttButton>
 ```
@@ -72,7 +72,7 @@ Opens the connector in a modal overlay.
 Renders the connector inline.
 
 ```vue
-<QuilttContainer connector-id="<CONNECTOR_ID>" @exit-success="handleSuccess" />
+<QuilttContainer connector-id="YOUR_CONNECTOR_ID" @exit-success="handleSuccess" />
 ```
 
 ### QuilttConnector
@@ -81,11 +81,10 @@ Full-page iframe for embedded integration.
 
 ```vue
 <QuilttConnector
-  connector-id="<CONNECTOR_ID>"
+  connector-id="YOUR_CONNECTOR_ID"
   @exit-success="handleSuccess"
   @navigate="handleNavigate"
-  style="width: 100%; height: 100vh"
-/>
+  style="width: 100%; height: 100vh" />
 ```
 
 ## Composables
@@ -110,7 +109,7 @@ const {
   forgetSession,       // Clear session locally
 } = useQuilttSession()
 
-await importSession('<SESSION_TOKEN>')
+await importSession('YOUR_SESSION_TOKEN')
 console.log(session.value?.token)
 ```
 
@@ -119,7 +118,7 @@ console.log(session.value?.token)
 ```typescript
 import { useQuilttConnector } from '@quiltt/vue'
 
-const { open } = useQuilttConnector('<CONNECTOR_ID>', {
+const { open } = useQuilttConnector('YOUR_CONNECTOR_ID', {
   onExitSuccess: (m) => console.log('Connected:', m.connectionId),
 })
 ```
@@ -155,14 +154,14 @@ import { QuilttPlugin, QuilttSessionKey, QuilttSetSessionKey } from '@quiltt/vue
 ## Props and Events
 
 | Prop | Type | Description |
-|------|------|-------------|
+| ------ | ------ | ------------- |
 | `connector-id` | `string` | **Required.** Quiltt Connector ID |
 | `connection-id` | `string` | Existing connection ID for reconnection |
 | `institution` | `string` | Pre-select an institution |
-| `app-launcher-uri` | `string` | Deep link URL for OAuth callbacks |
+| `app-launcher-url` | `string` | Deep link URL for OAuth callbacks |
 
 | Event | Payload | Description |
-|-------|---------|-------------|
+| ------- | --------- | ------------- |
 | `@load` | `metadata` | Connector loaded |
 | `@exit-success` | `metadata` | Connection successful |
 | `@exit-abort` | `metadata` | User cancelled |
@@ -173,7 +172,7 @@ import { QuilttPlugin, QuilttSessionKey, QuilttSetSessionKey } from '@quiltt/vue
 Pass `connection-id` to reconnect an existing connection:
 
 ```vue
-<QuilttButton connection-id="<EXISTING_CONNECTION_ID>" ... />
+<QuilttButton connection-id="YOUR_EXISTING_CONNECTION_ID" ... />
 ```
 
 ## Capacitor / Ionic
