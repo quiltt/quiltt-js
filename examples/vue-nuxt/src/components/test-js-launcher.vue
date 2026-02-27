@@ -2,7 +2,10 @@
 
 import { useQuilttConnector } from '@quiltt/vue'
 
-const { open } = useQuilttConnector('connector', {
+const config = useRuntimeConfig()
+const connectorId = config.public.quilttConnectorId
+
+const { open } = useQuilttConnector(connectorId, {
   onEvent: (type) => console.log(`Event: ${type}`),
 })
 </script>

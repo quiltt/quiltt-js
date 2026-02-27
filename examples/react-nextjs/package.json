@@ -8,7 +8,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "TIMING=1 biome check app/ e2e/ playwright/ --fix",
+    "lint": "TIMING=1 biome check src/ e2e/ playwright/ --fix",
     "playwright:install": "playwright install --with-deps chromium",
     "start": "next start",
     "test": "playwright test",

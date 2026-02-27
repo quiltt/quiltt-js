@@ -1,18 +1,38 @@
 import { expect, test } from '@playwright/test'
 
-test('renders Quiltt Vue components', async ({ page }) => {
-  const response = await page.goto('/')
+const connectorId = process.env.NUXT_PUBLIC_CONNECTOR_ID ?? 'connector'
 
-  expect(response?.ok()).toBeTruthy()
-  await expect(page).toHaveTitle(/Quiltt Nuxt Example/)
+test.describe('Home Page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/')
+  })
 
-  const quilttButton = page.getByRole('button', { name: 'Launch with Component' })
+  test('should load the home page successfully', async ({ page }) => {
+    await expect(page).toHaveTitle(/Quiltt Nuxt Example/)
 
-  await expect(quilttButton).toBeVisible()
-  await expect(quilttButton).toHaveClass(/quiltt-button/)
-  await expect(quilttButton).toHaveClass(/component-button/)
+    await expect(page.getByRole('heading', { name: 'Modal launchers' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Container' })).toBeVisible()
+  })
 
-  await expect(page.locator('.container-frame.quiltt-container')).toHaveCount(2)
-  await expect(page.locator('div.container-frame.quiltt-container')).toHaveCount(1)
-  await expect(page.locator('section.container-frame.quiltt-container')).toHaveCount(1)
+  test('should render all launcher buttons', async ({ page }) => {
+    await expect(page.getByRole('button', { name: 'Launch with HTML' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Launch with Javascript' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Launch with Component' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Launch with Custom Component' })).toBeVisible()
+  })
+
+  test('should render container components', async ({ page }) => {
+    await expect(page.locator('.container-frame.quiltt-container')).toHaveCount(2)
+    await expect(page.locator('div.container-frame.quiltt-container')).toHaveCount(1)
+    await expect(page.locator('section.container-frame.quiltt-container')).toHaveCount(1)
+  })
+
+  test('should have proper layout structure', async ({ page }) => {
+    const main = page.locator('main')
+    await expect(main).toBeVisible()
+
+    await expect(page.locator('.launchers')).toHaveCount(1)
+    await expect(page.locator('.containers')).toHaveCount(1)
+    await expect(page.locator('.heading')).toHaveCount(2)
+  })
 })

@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "lint": "TIMING=1 biome check src/app.vue src/pages/ src/components/ src/plugins/ e2e/ playwright.config.ts nuxt.config.ts --fix",
+    "lint": "TIMING=1 biome check src/ e2e/ playwright.config.ts nuxt.config.ts --fix",
     "playwright:install": "playwright install --with-deps chromium",
     "start": "nuxt start",
     "test": "playwright test",

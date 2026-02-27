@@ -16,7 +16,7 @@ Open <http://localhost:3000>.
 
 ## Environment
 
-The app reads these public runtime values from environment variables (with local defaults in `app/quiltt-provider.tsx` and `app/_components/quiltt-config.ts`):
+The app reads these public runtime values from environment variables (with local defaults in `src/app/quiltt-provider.tsx` and `src/app/_components/quiltt-config.ts`):
 
 - `NEXT_PUBLIC_QUILTT_CLIENT_ID`
 - `NEXT_PUBLIC_QUILTT_AUTH_TOKEN`
