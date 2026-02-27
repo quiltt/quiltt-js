@@ -1,5 +1,9 @@
 ---
 "@quiltt/capacitor": minor
+"@quiltt/core": minor
+"@quiltt/react": minor
+"@quiltt/react-native": minor
+"@quiltt/vue": minor
 ---
 
 Add @quiltt/capacitor package for Ionic and Capacitor apps
@@ -9,4 +13,3 @@ Add @quiltt/capacitor package for Ionic and Capacitor apps
 - React components via `@quiltt/capacitor/react` subpath
 - Native iOS (Swift) and Android (Kotlin) plugins for OAuth deep linking
 - Supports Capacitor 6, 7, and 8
-

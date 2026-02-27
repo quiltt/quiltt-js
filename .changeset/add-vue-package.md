@@ -1,6 +1,9 @@
 ---
+"@quiltt/capacitor": minor
+"@quiltt/core": minor
+"@quiltt/react": minor
+"@quiltt/react-native": minor
 "@quiltt/vue": minor
-"@quiltt/capacitor": patch
 ---
 
 Add @quiltt/vue package for Vue 3 applications

@@ -1,7 +1,9 @@
 ---
-"@quiltt/react-native": minor
-"@quiltt/react": minor
+"@quiltt/capacitor": minor
 "@quiltt/core": minor
+"@quiltt/react": minor
+"@quiltt/react-native": minor
+"@quiltt/vue": minor
 ---
 
 Rename `oauthRedirectUrl` to `appLauncherUrl` for mobile OAuth flows
