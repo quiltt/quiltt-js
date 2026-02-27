@@ -65,4 +65,17 @@ describe('useEventListener', () => {
     expect(handler).toHaveBeenCalledTimes(1)
     expect(handler).toHaveBeenCalledWith(expect.any(Event))
   })
+
+  it('should safely no-op when target does not support addEventListener', () => {
+    const handler = vi.fn()
+
+    expect(() => {
+      const { unmount } = renderHook(() =>
+        useEventListener('click', handler, { current: {} as unknown as HTMLElement })
+      )
+      unmount()
+    }).not.toThrow()
+
+    expect(handler).not.toHaveBeenCalled()
+  })
 })

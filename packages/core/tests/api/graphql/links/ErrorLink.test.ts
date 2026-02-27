@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApolloClient, ApolloLink, gql, InMemoryCache } from '@apollo/client/core'
 import { Observable } from 'rxjs'
 
-import ErrorLink from '@/api/graphql/links/ErrorLink'
+import { ErrorLink } from '@/api/graphql/links/ErrorLink'
 import { GlobalStorage } from '@/storage'
 
 vi.mock('@/storage', () => ({

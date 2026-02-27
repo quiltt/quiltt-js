@@ -64,5 +64,3 @@ export const useStorage = <T>(
 
   return [hookState, setStorage]
 }
-
-export default useStorage

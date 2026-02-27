@@ -63,5 +63,3 @@ export const useQuilttSession: UseQuilttSession = (environmentId) => {
     forgetSession,
   }
 }
-
-export default useQuilttSession

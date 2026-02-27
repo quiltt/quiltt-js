@@ -1,0 +1,33 @@
+{
+  "name": "@quiltt/examples-vue-nuxt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiltt's Vue SDK integrated into Nuxt",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "lint": "TIMING=1 biome check src/ e2e/ playwright.config.ts nuxt.config.ts --fix",
+    "playwright:install": "playwright install --with-deps chromium",
+    "start": "nuxt start",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:e2e": "playwright test --project=e2e-chromium",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@quiltt/vue": "workspace:*",
+    "nuxt": "4.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.3",
+    "@playwright/test": "1.57.0",
+    "@types/node": "24.10.13",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.2.4"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

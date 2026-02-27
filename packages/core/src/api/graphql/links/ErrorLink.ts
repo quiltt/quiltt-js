@@ -38,5 +38,3 @@ export const ErrorLink = new ApolloErrorLink(({ error, result }) => {
     }
   }
 })
-
-export default ErrorLink

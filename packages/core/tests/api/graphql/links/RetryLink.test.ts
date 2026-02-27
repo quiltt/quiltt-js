@@ -4,7 +4,7 @@ import type { ServerError } from '@apollo/client/core'
 import { ApolloLink, gql } from '@apollo/client/core'
 import { Observable } from 'rxjs'
 
-import RetryLink from '@/api/graphql/links/RetryLink'
+import { RetryLink } from '@/api/graphql/links/RetryLink'
 
 describe('RetryLink', () => {
   it('should retry requests that fail with 500+ status codes', async () => {

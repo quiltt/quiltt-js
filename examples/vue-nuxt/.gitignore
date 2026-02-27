@@ -1,0 +1,19 @@
+# dependencies
+node_modules
+
+# build output
+.nuxt
+.output
+
+# logs
+*.log
+
+# local env files
+.env*.local
+
+# macOS
+.DS_Store
+
+# playwright
+playwright-report/
+test-results/

@@ -53,5 +53,3 @@ export const useImportSession: UseImportSession = (auth, session, setSession, en
 
   return importSession
 }
-
-export default useImportSession

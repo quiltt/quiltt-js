@@ -10,7 +10,7 @@ vi.mock('@/hooks/useQuilttSettings', () => ({
 }))
 
 vi.mock('@/hooks/useSession', () => ({
-  default: vi.fn(),
+  useSession: vi.fn(),
 }))
 
 vi.mock('@/hooks/session', () => ({
@@ -39,7 +39,7 @@ vi.mock('use-debounce', () => ({
 const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
 describe('useQuilttInstitutions', async () => {
-  const { default: useSession } = await import('@/hooks/useSession')
+  const { useSession } = await import('@/hooks/useSession')
   const mockUseSession = vi.mocked(useSession)
 
   const mockSession = {

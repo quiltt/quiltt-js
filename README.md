@@ -2,7 +2,7 @@
 
 [![Maintainability](https://qlty.sh/gh/quiltt/projects/quiltt-js/maintainability.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js) [![Code Coverage](https://qlty.sh/gh/quiltt/projects/quiltt-js/coverage.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js)
 
-This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, React Native, and Node.js environments.
+This repository is the home of Quiltt's JavaScript projects, featuring a comprehensive suite of tools and libraries designed for ECMAScript runtimes. Built with full TypeScript support, our packages provide seamless integration for React, Vue, React Native, CapacitorJS, and Node.js environments.
 
 ## About Quiltt
 
@@ -16,7 +16,17 @@ Each package includes detailed setup instructions and examples. See the individu
 
 - [Core Package](packages/core#readme) - Essential functionality and types
 - [React Package](packages/react#readme) - React components and hooks
+- [Vue Package](packages/vue#readme) - Vue 3 components and composables
 - [React Native Package](packages/react-native#readme) - React Native and Expo components
+- [Capacitor Package](packages/capacitor#readme) - Cross-platform mobile integration for React and Vue
+
+## Examples
+
+- [React + Next.js](examples/react-nextjs/README.md)
+- [React Native + Expo](examples/react-native-expo/README.md)
+- [Vue + Nuxt](examples/vue-nuxt/README.md)
+- [Capacitor + React](examples/capacitor-react/README.md)
+- [Capacitor + Vue](examples/capacitor-vue/README.md)
 
 ## Packages
 
@@ -32,11 +42,23 @@ The foundational package providing essential functionality for JavaScript-based 
 
 React components and hooks for seamless Quiltt integration, built on a powerful Apollo-based GraphQL client. Includes providers, authentication hooks, and pre-built UI components.
 
+### [@quiltt/vue](packages/vue#readme)
+
+[![npm version](https://badge.fury.io/js/%40quiltt%2Fvue.svg)](https://badge.fury.io/js/%40quiltt%2Fvue)
+
+Vue 3 components and composables for integrating Quiltt Connector, including plugin-based session management and connector lifecycle utilities.
+
 ### [@quiltt/react-native](packages/react-native#readme)
 
 [![npm version](https://badge.fury.io/js/%40quiltt%2Freact-native.svg)](https://badge.fury.io/js/%40quiltt%2Freact-native)
 
 Native components optimized for React Native and Expo applications, featuring the Quiltt Connector and mobile-specific utilities for financial data integration.
+
+### [@quiltt/capacitor](packages/capacitor#readme)
+
+[![npm version](https://badge.fury.io/js/%40quiltt%2Fcapacitor.svg)](https://badge.fury.io/js/%40quiltt%2Fcapacitor)
+
+Capacitor plugin and framework adapters for integrating Quiltt Connector in iOS and Android apps with native OAuth deep-link handling.
 
 ## Development
 
@@ -69,10 +91,10 @@ This project uses Vitest for unit testing and Playwright for component and end-t
 pnpm run test:unit
 
 # Run unit tests for specific package
-pnpm run test:unit packages/react
+pnpm run test:unit -- --project react
 
 # Run unit tests for specific file/pattern
-pnpm run test:unit packages/core/src/api
+pnpm run test:unit -- packages/core/src/api
 
 # Run end-to-end tests
 pnpm run test:e2e
@@ -84,13 +106,15 @@ pnpm run test
 #### Test Structure
 
 - **Unit Tests**: Located alongside source files with `.test.ts/.tsx` extensions
-- **Component/E2E Tests**: Playwright tests in `examples/react-nextjs/playwright/`
+- **Web Component/E2E Tests**: Playwright tests in `examples/react-nextjs/e2e/` and `examples/vue-nuxt/e2e/`
+- **Mobile E2E Tests**: Detox tests in `examples/react-native-expo/e2e/`
 - **Coverage**: Istanbul coverage reports generated in `coverage/` directory
 
 #### Testing Stack
 
 - **Vitest**: Fast unit test runner with native TypeScript support
-- **Playwright**: Component and end-to-end testing for React applications
+- **Playwright**: Component and end-to-end testing for web examples
+- **Detox**: End-to-end testing for React Native example apps
 - **Testing Library**: React and React Native testing utilities
 - **Happy DOM**: Lightweight DOM implementation for faster tests
 

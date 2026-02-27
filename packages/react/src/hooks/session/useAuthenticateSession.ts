@@ -50,5 +50,3 @@ export const useAuthenticateSession: UseAuthenticateSession = (auth, setSession)
 
   return authenticateSession
 }
-
-export default useAuthenticateSession

@@ -5,7 +5,7 @@ import type { ApolloLink } from '@apollo/client/core'
 import { GraphQLError } from 'graphql'
 import { Observable } from 'rxjs'
 
-import AuthLink from '@/api/graphql/links/AuthLink'
+import { AuthLink } from '@/api/graphql/links/AuthLink'
 import { GlobalStorage } from '@/storage'
 
 // Mock GlobalStorage

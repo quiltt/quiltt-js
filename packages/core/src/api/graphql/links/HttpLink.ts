@@ -10,5 +10,3 @@ export const HttpLink = new ApolloHttpLink({
   uri: endpointGraphQL,
   fetch: effectiveFetch,
 })
-
-export default HttpLink

@@ -3,7 +3,9 @@
   "compilerOptions": {
     "verbatimModuleSyntax": false,
     "module": "commonjs",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "types": ["jest", "detox/globals", "node"]
   },
   "include": ["./**/*.ts"]
 }
