@@ -21,7 +21,6 @@ The app reads these public runtime values from environment variables (with local
 - `NEXT_PUBLIC_QUILTT_CLIENT_ID`
 - `NEXT_PUBLIC_QUILTT_AUTH_TOKEN`
 - `NEXT_PUBLIC_CONNECTOR_ID`
-- `NEXT_PUBLIC_CONTAINER_CONNECTOR_ID`
 - `NEXT_PUBLIC_INSTITUTION_SEARCH_TERM`
 
 Set real values in a `.env` file in this directory when testing against a real Quiltt environment.

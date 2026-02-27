@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test'
 
-const connectorId = process.env.NUXT_PUBLIC_CONNECTOR_ID ?? 'connector'
-
 test.describe('Home Page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')

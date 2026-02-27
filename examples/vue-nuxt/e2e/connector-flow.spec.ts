@@ -1,14 +1,25 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 const connectorId = process.env.NUXT_PUBLIC_CONNECTOR_ID ?? 'connector'
+const modalWrapperSelector = '.quiltt--frame-modal-wrapper'
+
+const dismissOpenConnectorModal = async (page: Page) => {
+  const modalWrapper = page.locator(modalWrapperSelector)
+
+  if ((await modalWrapper.count()) === 0) {
+    return
+  }
+
+  await page.keyboard.press('Escape')
+  await expect(modalWrapper).toHaveCount(0, { timeout: 5_000 })
+}
 
 test.describe('Connector Flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
 
-    // Wait for script to become interactive
-    // This is almost instantaneous locally but takes time in CI
-    await page.waitForTimeout(1250)
+    await expect(page.getByRole('button', { name: 'Launch with HTML' })).toBeVisible()
+    await dismissOpenConnectorModal(page)
   })
 
   test('should launch connector with HTML launcher', async ({ page }) => {
@@ -23,6 +34,8 @@ test.describe('Connector Flow', () => {
   test('should launch connector with JavaScript launcher', async ({ page }) => {
     const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
 
+    await dismissOpenConnectorModal(page)
+
     const button = page.getByRole('button', { name: 'Launch with Javascript' })
     await button.click()
 
@@ -32,6 +45,8 @@ test.describe('Connector Flow', () => {
   test('should launch connector with QuilttButton component', async ({ page }) => {
     const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
 
+    await dismissOpenConnectorModal(page)
+
     const button = page.getByRole('button', { name: 'Launch with Component' })
     await button.click()
 
@@ -40,6 +55,8 @@ test.describe('Connector Flow', () => {
 
   test('should launch connector with custom button component', async ({ page }) => {
     const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
+
+    await dismissOpenConnectorModal(page)
 
     const button = page.getByRole('button', { name: 'Launch with Custom Component' })
     await button.click()

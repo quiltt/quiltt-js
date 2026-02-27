@@ -9,8 +9,8 @@ export { getBrowserInfo }
 declare global {
   interface Window {
     Capacitor?: {
-      isNativePlatform: () => boolean
-      getPlatform: () => string
+      isNativePlatform?: () => boolean
+      getPlatform?: () => string
     }
   }
 }

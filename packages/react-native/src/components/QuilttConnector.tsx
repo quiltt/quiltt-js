@@ -235,6 +235,10 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       return smartEncodeURIComponent(effectiveAppLauncherUrl)
     }, [effectiveAppLauncherUrl])
 
+    const hasConfiguredAppLauncherUrl = useMemo(() => {
+      return effectiveAppLauncherUrl.trim().length > 0
+    }, [effectiveAppLauncherUrl])
+
     const connectorUrl = useMemo(() => {
       if (!sdkAgent) return null
 
@@ -244,18 +248,20 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       url.searchParams.append('mode', 'webview')
       url.searchParams.append('agent', sdkAgent)
 
-      // For the oauth_redirect_url, we need to be careful
-      // If it's already encoded, we need to decode it once to prevent
-      // the automatic encoding that happens with searchParams.append
-      if (isEncoded(safeAppLauncherUrl)) {
-        const decodedOnce = decodeURIComponent(safeAppLauncherUrl)
-        url.searchParams.append('oauth_redirect_url', decodedOnce)
-      } else {
-        url.searchParams.append('oauth_redirect_url', safeAppLauncherUrl)
+      if (hasConfiguredAppLauncherUrl) {
+        // For the oauth_redirect_url, we need to be careful
+        // If it's already encoded, we need to decode it once to prevent
+        // the automatic encoding that happens with searchParams.append
+        if (isEncoded(safeAppLauncherUrl)) {
+          const decodedOnce = decodeURIComponent(safeAppLauncherUrl)
+          url.searchParams.append('oauth_redirect_url', decodedOnce)
+        } else {
+          url.searchParams.append('oauth_redirect_url', safeAppLauncherUrl)
+        }
       }
 
       return url.toString()
-    }, [connectorId, safeAppLauncherUrl, sdkAgent])
+    }, [connectorId, hasConfiguredAppLauncherUrl, safeAppLauncherUrl, sdkAgent])
 
     useEffect(() => {
       if (preFlightCheck.checked || !connectorUrl || !errorReporter) return
@@ -340,6 +346,16 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
               console.log('Event: Navigate')
               const navigateUrl = url.searchParams.get('url')
 
+              if (!hasConfiguredAppLauncherUrl) {
+                const errorMessage =
+                  'OAuth redirect requires `appLauncherUrl` (or deprecated `oauthRedirectUrl`) to be configured.'
+                console.error(errorMessage)
+                onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+                onExit?.(ConnectorSDKEventType.ExitError, metadata)
+                onExitError?.(metadata)
+                break
+              }
+
               if (navigateUrl) {
                 if (isEncoded(navigateUrl)) {
                   try {
@@ -373,6 +389,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
         onExitAbort,
         onExitError,
         onExitSuccess,
+        hasConfiguredAppLauncherUrl,
         onLoad,
       ]
     )
