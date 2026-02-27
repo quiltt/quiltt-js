@@ -19,7 +19,7 @@
     "test:ios": "pnpm run build && pnpm run test:ios:build && pnpm run test:ios:run",
     "test:android:build": "detox build --configuration android.emulator.debug",
     "test:android:run": "detox test -c android.emulator.debug",
-    "test:android:run:ci": "detox test --configuration android.emulator.debug --cleanup --headless --record-logs all",
+    "test:android:run:ci": "detox test --configuration android.emulator.debug --cleanup --headless --record-logs all --retries 1",
     "test:android": "pnpm run build && pnpm run test:android:build && pnpm run test:android:run",
     "test:e2e": "pnpm run build && (pnpm run test:ios:build & pnpm run test:android:build & wait) && (pnpm run test:ios:run & pnpm run test:android:run & wait)",
     "test": "node scripts/test.js",
