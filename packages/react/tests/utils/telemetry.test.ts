@@ -7,7 +7,7 @@ import {
   getCapacitorInfo,
   getPlatformInfo,
   getReactVersion,
-  getUserAgent,
+  getSDKAgent,
 } from '@/utils/telemetry'
 
 describe('React Telemetry', () => {
@@ -194,7 +194,7 @@ describe('React Telemetry', () => {
     })
   })
 
-  describe('getUserAgent', () => {
+  describe('getSDKAgent', () => {
     beforeEach(() => {
       Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
@@ -204,14 +204,14 @@ describe('React Telemetry', () => {
       })
     })
 
-    it('should generate correct User-Agent string', () => {
-      const userAgent = getUserAgent('4.5.1')
-      expect(userAgent).toMatch(/^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; Chrome\/120\)$/)
+    it('should generate correct SDK Agent string', () => {
+      const sdkAgent = getSDKAgent('4.5.1')
+      expect(sdkAgent).toMatch(/^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; Chrome\/120\)$/)
     })
 
     it('should handle different SDK versions', () => {
-      const userAgent = getUserAgent('5.0.0-beta.1')
-      expect(userAgent).toMatch(/^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; Chrome\/120\)$/)
+      const sdkAgent = getSDKAgent('5.0.0-beta.1')
+      expect(sdkAgent).toMatch(/^Quiltt\/5\.0\.0-beta\.1 \(React\/\d+\.\d+\.\d+; Chrome\/120\)$/)
     })
 
     it('should work with Safari browser', () => {
@@ -222,8 +222,8 @@ describe('React Telemetry', () => {
         configurable: true,
       })
 
-      const userAgent = getUserAgent('4.5.1')
-      expect(userAgent).toMatch(/^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; Safari\/17\)$/)
+      const sdkAgent = getSDKAgent('4.5.1')
+      expect(sdkAgent).toMatch(/^Quiltt\/4\.5\.1 \(React\/\d+\.\d+\.\d+; Safari\/17\)$/)
     })
   })
 })

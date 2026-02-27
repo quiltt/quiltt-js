@@ -4,7 +4,7 @@ import type { ErrorData, InstitutionsData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
 import { extractVersionNumber } from '@quiltt/core/utils'
 
-import { getUserAgent } from '../utils'
+import { getSDKAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './useQuilttSession'
 
@@ -27,7 +27,7 @@ export const useQuilttInstitutions = (
   const abortController = shallowRef<AbortController | undefined>()
 
   const sdkVersion = extractVersionNumber(version)
-  const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent(sdkVersion))
+  const connectorsAPI = new ConnectorsAPI(connectorId, getSDKAgent(sdkVersion))
 
   const handleError = (message: string) => {
     const errorMessage = message || 'Unknown error occurred while searching institutions'

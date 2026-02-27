@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConnectorsAPI } from '@/api/rest/connectors'
 import { fetchWithRetry } from '@/api/rest/fetchWithRetry'
 import { version } from '@/config'
-import { extractVersionNumber, getUserAgent } from '@/utils/telemetry'
+import { extractVersionNumber, getSDKAgent } from '@/utils/telemetry'
 
 // Mock fetchWithRetry
 vi.mock('@/api/rest/fetchWithRetry', () => ({
@@ -25,37 +25,37 @@ const mockFetchWithRetry = vi.mocked(fetchWithRetry) as MockedFunction<typeof fe
 
 describe('ConnectorsAPI', () => {
   let connectorsAPI: ConnectorsAPI
-  const testUserAgent = getUserAgent(version, 'React/18.2.0; Chrome/120')
+  const testSDKAgent = getSDKAgent(version, 'React/18.2.0; Chrome/120')
 
   beforeEach(() => {
     vi.clearAllMocks()
-    connectorsAPI = new ConnectorsAPI('test-client-id', testUserAgent)
+    connectorsAPI = new ConnectorsAPI('test-client-id', testSDKAgent)
   })
 
   describe('constructor', () => {
-    it('should initialize with clientId and userAgent', () => {
-      const userAgent = getUserAgent(version, 'React/18.2.0; Chrome/120')
-      const api = new ConnectorsAPI('client-123', userAgent)
+    it('should initialize with clientId and sdkAgent', () => {
+      const sdkAgent = getSDKAgent(version, 'React/18.2.0; Chrome/120')
+      const api = new ConnectorsAPI('client-123', sdkAgent)
 
       expect(api.clientId).toBe('client-123')
-      expect(api.userAgent).toBe(userAgent)
+      expect(api.sdkAgent).toBe(sdkAgent)
     })
 
-    it('should initialize with custom userAgent', () => {
-      const userAgent = getUserAgent(version, 'React/18.2.0; Safari/17')
-      const api = new ConnectorsAPI('client-123', userAgent)
+    it('should initialize with custom sdkAgent', () => {
+      const sdkAgent = getSDKAgent(version, 'React/18.2.0; Safari/17')
+      const api = new ConnectorsAPI('client-123', sdkAgent)
 
       expect(api.clientId).toBe('client-123')
-      expect(api.userAgent).toBe(userAgent)
+      expect(api.sdkAgent).toBe(sdkAgent)
     })
 
-    it('should use default Unknown user-agent when userAgent is not provided', () => {
+    it('should use default Unknown sdkAgent when sdkAgent is not provided', () => {
       const api = new ConnectorsAPI('client-123')
       const versionNumber = extractVersionNumber(version)
-      const expectedUserAgent = getUserAgent(versionNumber, 'Unknown')
+      const expectedSdkAgent = getSDKAgent(versionNumber, 'Unknown')
 
       expect(api.clientId).toBe('client-123')
-      expect(api.userAgent).toBe(expectedUserAgent)
+      expect(api.sdkAgent).toBe(expectedSdkAgent)
     })
   })
 
@@ -162,14 +162,13 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('Quiltt-SDK-Agent')).toBe(testUserAgent)
-      expect(headers.get('User-Agent')).toBe(testUserAgent)
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(testSDKAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 
-    it('should use custom userAgent in headers', async () => {
-      const customUserAgent = getUserAgent(version, 'ReactNative/0.73.0; iOS/17.0; iPhone14,2')
-      const customAPI = new ConnectorsAPI('client-123', customUserAgent)
+    it('should use custom sdkAgent in headers', async () => {
+      const customSDKAgent = getSDKAgent(version, 'ReactNative/0.73.0; iOS/17.0; iPhone14,2')
+      const customAPI = new ConnectorsAPI('client-123', customSDKAgent)
       const mockResponse = {
         data: [],
         status: 200,
@@ -185,8 +184,7 @@ describe('ConnectorsAPI', () => {
       const callArgs = mockFetchWithRetry.mock.calls[0][1]
       const headers = callArgs?.headers as Headers
 
-      expect(headers.get('Quiltt-SDK-Agent')).toBe(customUserAgent)
-      expect(headers.get('User-Agent')).toBe(customUserAgent)
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(customSDKAgent)
     })
   })
 
@@ -227,14 +225,114 @@ describe('ConnectorsAPI', () => {
       const config = (connectorsAPI as any).config()
 
       const headers = config.headers as Headers
-      expect(headers.get('Authorization')).toBe('Bearer undefined')
+      // Authorization header should not be set when token is not provided
+      expect(headers.get('Authorization')).toBeNull()
     })
 
     it('should create config with undefined token', () => {
       const config = (connectorsAPI as any).config(undefined)
 
       const headers = config.headers as Headers
-      expect(headers.get('Authorization')).toBe('Bearer undefined')
+      // Authorization header should not be set when token is undefined
+      expect(headers.get('Authorization')).toBeNull()
+    })
+  })
+
+  describe('custom headers', () => {
+    const customHeaders = {
+      'Quiltt-Session-ID': 'session-123',
+      'Quiltt-Anonymous-ID': 'anon-456',
+      'X-Custom-Header': 'custom-value',
+    }
+
+    it('should store custom headers in constructor', () => {
+      const apiWithHeaders = new ConnectorsAPI('client-123', testSDKAgent, customHeaders)
+
+      expect(apiWithHeaders.customHeaders).toEqual(customHeaders)
+    })
+
+    it('should include custom headers in searchInstitutions request', async () => {
+      const apiWithHeaders = new ConnectorsAPI('client-123', testSDKAgent, customHeaders)
+      const mockResponse = {
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithHeaders.searchInstitutions('token', 'connector-id', 'Chase')
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should include custom headers in checkResolvable request', async () => {
+      const apiWithHeaders = new ConnectorsAPI('client-123', testSDKAgent, customHeaders)
+      const mockResponse = {
+        data: { resolvable: true },
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithHeaders.checkResolvable('token', 'connector-id', { plaid: 'ins_123' })
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBe('session-123')
+      expect(headers.get('Quiltt-Anonymous-ID')).toBe('anon-456')
+      expect(headers.get('X-Custom-Header')).toBe('custom-value')
+    })
+
+    it('should not add custom headers when customHeaders is undefined', async () => {
+      const apiWithoutHeaders = new ConnectorsAPI('client-123', testSDKAgent)
+      const mockResponse = {
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithoutHeaders.searchInstitutions('token', 'connector-id', 'Chase')
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Quiltt-Session-ID')).toBeNull()
+      expect(headers.get('Quiltt-Anonymous-ID')).toBeNull()
+    })
+
+    it('should allow custom headers to override default headers', async () => {
+      const overrideHeaders = {
+        Accept: 'text/plain',
+      }
+      const apiWithOverrides = new ConnectorsAPI('client-123', testSDKAgent, overrideHeaders)
+      const mockResponse = {
+        data: [],
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        ok: true,
+      }
+      mockFetchWithRetry.mockResolvedValueOnce(mockResponse)
+
+      await apiWithOverrides.searchInstitutions('token', 'connector-id', 'Chase')
+
+      const callArgs = mockFetchWithRetry.mock.calls[0][1]
+      const headers = callArgs?.headers as Headers
+
+      expect(headers.get('Accept')).toBe('text/plain')
     })
   })
 
@@ -438,8 +536,7 @@ describe('ConnectorsAPI', () => {
 
       expect(headers.get('Content-Type')).toBe('application/json')
       expect(headers.get('Accept')).toBe('application/json')
-      expect(headers.get('Quiltt-SDK-Agent')).toBe(testUserAgent)
-      expect(headers.get('User-Agent')).toBe(testUserAgent)
+      expect(headers.get('Quiltt-SDK-Agent')).toBe(testSDKAgent)
       expect(headers.get('Authorization')).toBe('Bearer test-token-123')
     })
 

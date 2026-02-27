@@ -12,7 +12,7 @@ import { cdnBase } from '@quiltt/core'
 import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useScript } from '@/hooks/useScript'
-import { getUserAgent, isDeepEqual } from '@/utils'
+import { getSDKAgent, isDeepEqual } from '@/utils'
 import { version } from '@/version'
 
 declare const Quiltt: ConnectorSDK
@@ -21,8 +21,8 @@ export const useQuilttConnector = (
   connectorId?: string,
   options?: ConnectorSDKConnectorOptions
 ) => {
-  const userAgent = getUserAgent(version)
-  const status = useScript(`${cdnBase}/v1/connector.js?agent=${encodeURIComponent(userAgent)}`, {
+  const sdkAgent = getSDKAgent(version)
+  const status = useScript(`${cdnBase}/v1/connector.js?agent=${encodeURIComponent(sdkAgent)}`, {
     nonce: options?.nonce,
   })
 

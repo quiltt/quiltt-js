@@ -2,6 +2,6 @@ export {
   getBrowserInfo,
   getCapacitorInfo,
   getPlatformInfo,
-  getUserAgent,
+  getSDKAgent,
   getVueVersion,
 } from './telemetry'

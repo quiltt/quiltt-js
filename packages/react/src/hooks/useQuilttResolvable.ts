@@ -5,9 +5,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ErrorData, ResolvableData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
 
-import { getUserAgent } from '@/utils'
+import { getSDKAgent } from '@/utils'
 import { version } from '@/version'
 
+import { useQuilttSettings } from './useQuilttSettings'
 import { useSession } from './useSession'
 
 export type UseQuilttResolvable = (
@@ -27,10 +28,11 @@ export type UseQuilttResolvable = (
 }
 
 export const useQuilttResolvable: UseQuilttResolvable = (connectorId, onErrorCallback) => {
-  const userAgent = useMemo(() => getUserAgent(version), [])
+  const { headers } = useQuilttSettings()
+  const sdkAgent = useMemo(() => getSDKAgent(version), [])
   const connectorsAPI = useMemo(
-    () => new ConnectorsAPI(connectorId, userAgent),
-    [connectorId, userAgent]
+    () => new ConnectorsAPI(connectorId, sdkAgent, headers),
+    [connectorId, sdkAgent, headers]
   )
   const [session] = useSession()
 

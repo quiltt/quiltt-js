@@ -36,7 +36,7 @@ import { cdnBase } from '@quiltt/core'
 import { extractVersionNumber } from '@quiltt/core/utils'
 
 import { oauthRedirectUrlDeprecationWarning } from '../constants/deprecation-warnings'
-import { getUserAgent } from '../utils'
+import { getSDKAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './useQuilttSession'
 
@@ -142,7 +142,7 @@ export const useQuilttConnector = (
   // Load SDK script on mount
   onMounted(async () => {
     const sdkVersion = extractVersionNumber(version)
-    const userAgent = getUserAgent(sdkVersion)
+    const userAgent = getSDKAgent(sdkVersion)
     const scriptUrl = `${cdnBase}/v1/connector.js?agent=${encodeURIComponent(userAgent)}`
 
     try {

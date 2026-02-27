@@ -4,7 +4,7 @@ import type { ErrorData, ResolvableData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
 import { extractVersionNumber } from '@quiltt/core/utils'
 
-import { getUserAgent } from '../utils'
+import { getSDKAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './useQuilttSession'
 
@@ -26,7 +26,7 @@ export const useQuilttResolvable = (
 ) => {
   const { session } = useQuilttSession()
   const sdkVersion = extractVersionNumber(version)
-  const connectorsAPI = new ConnectorsAPI(connectorId, getUserAgent(sdkVersion))
+  const connectorsAPI = new ConnectorsAPI(connectorId, getSDKAgent(sdkVersion))
 
   const isLoading = ref(false)
   const isResolvable = ref<boolean | null>(null)

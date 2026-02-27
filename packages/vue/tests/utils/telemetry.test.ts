@@ -2,14 +2,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@quiltt/core/utils', () => ({
   getBrowserInfo: vi.fn(() => 'MockBrowser/1.0'),
-  getUserAgent: vi.fn(
+  getSDKAgent: vi.fn(
     (sdkVersion: string, platformInfo: string) => `Quiltt/${sdkVersion} (${platformInfo})`
   ),
 }))
 
-import { getUserAgent as coreGetUserAgent } from '@quiltt/core/utils'
+import { getSDKAgent as coreGetSDKAgent } from '@quiltt/core/utils'
 
-import { getCapacitorInfo, getPlatformInfo, getUserAgent, getVueVersion } from '@/utils/telemetry'
+import { getCapacitorInfo, getPlatformInfo, getSDKAgent, getVueVersion } from '@/utils/telemetry'
 
 afterEach(() => {
   delete window.Capacitor
@@ -98,9 +98,9 @@ describe('vue telemetry utils', () => {
   })
 
   it('builds user-agent string using core helper', () => {
-    const value = getUserAgent('5.0.3')
+    const value = getSDKAgent('5.0.3')
 
     expect(value).toContain('Quiltt/5.0.3')
-    expect(coreGetUserAgent).toHaveBeenCalledWith('5.0.3', expect.stringContaining('Vue/'))
+    expect(coreGetSDKAgent).toHaveBeenCalledWith('5.0.3', expect.stringContaining('Vue/'))
   })
 })

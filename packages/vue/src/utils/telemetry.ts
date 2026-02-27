@@ -1,6 +1,6 @@
 import { version as vueVersion } from 'vue'
 
-import { getUserAgent as coreGetUserAgent, getBrowserInfo } from '@quiltt/core/utils'
+import { getSDKAgent as coreGetSDKAgent, getBrowserInfo } from '@quiltt/core/utils'
 
 // Re-export getBrowserInfo
 export { getBrowserInfo }
@@ -67,7 +67,7 @@ export const getPlatformInfo = (): string => {
  * Generates User-Agent string for Vue SDK
  * Format: Quiltt/<sdk-version> (Vue/<vue-version>; <browser>/<version>)
  */
-export const getUserAgent = (sdkVersion: string): string => {
+export const getSDKAgent = (sdkVersion: string): string => {
   const platformInfo = getPlatformInfo()
-  return coreGetUserAgent(sdkVersion, platformInfo)
+  return coreGetSDKAgent(sdkVersion, platformInfo)
 }

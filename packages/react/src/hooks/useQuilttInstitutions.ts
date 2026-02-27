@@ -6,9 +6,10 @@ import type { ErrorData, InstitutionsData } from '@quiltt/core'
 import { ConnectorsAPI } from '@quiltt/core'
 import { useDebounce } from 'use-debounce'
 
-import { getUserAgent } from '@/utils'
+import { getSDKAgent } from '@/utils'
 import { version } from '@/version'
 
+import { useQuilttSettings } from './useQuilttSettings'
 import { useSession } from './useSession'
 
 export type UseQuilttInstitutions = (
@@ -22,10 +23,11 @@ export type UseQuilttInstitutions = (
 }
 
 export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErrorCallback) => {
-  const userAgent = useMemo(() => getUserAgent(version), [])
+  const { headers } = useQuilttSettings()
+  const sdkAgent = useMemo(() => getSDKAgent(version), [])
   const connectorsAPI = useMemo(
-    () => new ConnectorsAPI(connectorId, userAgent),
-    [connectorId, userAgent]
+    () => new ConnectorsAPI(connectorId, sdkAgent, headers),
+    [connectorId, sdkAgent, headers]
   )
   const [session] = useSession()
 

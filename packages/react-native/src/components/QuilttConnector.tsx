@@ -19,7 +19,7 @@ import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warn
 import {
   ErrorReporter,
   getErrorMessage,
-  getUserAgent,
+  getSDKAgent,
   isEncoded,
   normalizeUrlEncoding,
   smartEncodeURIComponent,
@@ -182,7 +182,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const { session } = useQuilttSession()
     const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
     const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
-    const [userAgent, setUserAgent] = useState<string>('')
+    const [sdkAgent, setSDKAgent] = useState<string>('')
 
     useEffect(() => {
       if (oauthRedirectUrl !== undefined) {
@@ -193,14 +193,14 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
     const effectiveAppLauncherUrl = appLauncherUrl ?? oauthRedirectUrl ?? ''
 
-    // Initialize error reporter and user agent
+    // Initialize error reporter and SDK Agent
     useEffect(() => {
       let mounted = true
       const init = async () => {
-        const agent = await getUserAgent(version)
+        const sdkAgent = await getSDKAgent(version)
         if (mounted) {
-          setUserAgent(agent)
-          setErrorReporter(new ErrorReporter(agent))
+          setSDKAgent(sdkAgent)
+          setErrorReporter(new ErrorReporter(sdkAgent))
         }
       }
       init()
@@ -236,13 +236,13 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     }, [effectiveAppLauncherUrl])
 
     const connectorUrl = useMemo(() => {
-      if (!userAgent) return null
+      if (!sdkAgent) return null
 
       const url = new URL(`https://${connectorId}.quiltt.app`)
 
       // For normal parameters, just append them directly
       url.searchParams.append('mode', 'webview')
-      url.searchParams.append('agent', userAgent)
+      url.searchParams.append('agent', sdkAgent)
 
       // For the oauth_redirect_url, we need to be careful
       // If it's already encoded, we need to decode it once to prevent
@@ -255,7 +255,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       }
 
       return url.toString()
-    }, [connectorId, safeAppLauncherUrl, userAgent])
+    }, [connectorId, safeAppLauncherUrl, sdkAgent])
 
     useEffect(() => {
       if (preFlightCheck.checked || !connectorUrl || !errorReporter) return

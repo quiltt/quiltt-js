@@ -6,11 +6,11 @@ import { version } from '@/version'
 class ErrorReporter {
   private client: typeof Honeybadger
 
-  constructor(userAgent: string) {
+  constructor(sdkAgent: string) {
     // Create an isolated Honeybadger instance to avoid colliding with client's singleton
     this.client = Honeybadger.factory({
       apiKey: process.env.HONEYBADGER_API_KEY_REACT_NATIVE || '',
-      environment: userAgent,
+      environment: sdkAgent,
       revision: version,
       reportData: true,
       enableUncaught: false, // Don't hook into global error handlers

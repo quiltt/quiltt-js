@@ -11,7 +11,7 @@ export type QuilttAuthProviderProps = ReactQuilttAuthProviderProps
 
 /**
  * React Native-specific QuilttAuthProvider that injects platform information
- * into the GraphQL client's User-Agent header.
+ * into the GraphQL client's Quiltt-SDK-Agent header.
  *
  * If a token is provided, will validate the token against the api and then import
  * it into trusted storage. While this process is happening, the component is put
