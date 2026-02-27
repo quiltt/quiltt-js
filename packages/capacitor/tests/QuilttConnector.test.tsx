@@ -1,7 +1,7 @@
 import { createRef } from 'react'
 
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, render, screen, waitFor } from '@testing-library/react'
 
 const pluginMocks = vi.hoisted(() => ({
   openUrl: vi.fn(),
@@ -38,6 +38,17 @@ import { QuilttConnector } from '../src/components/QuilttConnector'
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
+  vi.unstubAllGlobals()
+})
+
+beforeEach(() => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async () => ({
+      ok: true,
+      status: 200,
+    }))
+  )
 })
 
 const primePluginMocks = () => {
@@ -67,7 +78,34 @@ describe('QuilttConnector (capacitor)', () => {
     expect(src).toContain('connectionId=connection_test')
     expect(src).toContain('institution=institution_test')
     expect(src).toContain('app_launcher_url=https%3A%2F%2Fapp.example.com%2Fquiltt%2Fcallback')
+    expect(src).toContain('embed_location=')
     expect(src).toContain('mode=INLINE')
+
+    expect(fetch).toHaveBeenCalledWith(
+      src,
+      expect.objectContaining({
+        method: 'GET',
+        mode: 'no-cors',
+        credentials: 'omit',
+      })
+    )
+  })
+
+  it('normalizes app launcher URLs to avoid double-encoding', () => {
+    primePluginMocks()
+
+    const encodedLauncher = encodeURIComponent('https://app.example.com/quiltt/callback')
+
+    const { container } = render(
+      <QuilttConnector connectorId="connector_test" appLauncherUrl={encodedLauncher} />
+    )
+
+    const iframe = container.querySelector('iframe') as HTMLIFrameElement | null
+    expect(iframe).toBeTruthy()
+
+    const src = iframe?.getAttribute('src') || ''
+    expect(src).toContain('app_launcher_url=https%3A%2F%2Fapp.example.com%2Fquiltt%2Fcallback')
+    expect(src).not.toContain('app_launcher_url=https%253A%252F%252Fapp.example.com')
   })
 
   it('opens system browser on navigate events from trusted origin', () => {
@@ -301,6 +339,37 @@ describe('QuilttConnector (capacitor)', () => {
       },
       'https://connector_test.quiltt.app'
     )
+
+    const encodedManualCallback = encodeURIComponent('https://example.com/manual?token=789')
+    connectorRef.current?.handleOAuthCallback(encodedManualCallback)
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      {
+        source: 'quiltt',
+        type: 'OAuthCallback',
+        data: {
+          url: 'https://example.com/manual?token=789',
+          params: { token: '789' },
+        },
+      },
+      'https://connector_test.quiltt.app'
+    )
+  })
+
+  it('shows a basic error state when preflight cannot reach connector', async () => {
+    primePluginMocks()
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Promise.reject(new Error('network down')))
+    )
+
+    render(<QuilttConnector connectorId="connector_test" />)
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Unable to reach Quiltt Connector. Check network and connector settings.')
+      ).toBeTruthy()
+    })
   })
 
   it('handles OAuth callback when iframe contentWindow is unavailable', () => {

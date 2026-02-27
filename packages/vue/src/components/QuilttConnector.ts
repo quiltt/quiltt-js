@@ -105,6 +105,9 @@ export const QuilttConnector = defineComponent({
       if (props.appLauncherUrl) {
         url.searchParams.set('app_launcher_url', props.appLauncherUrl)
       }
+      if (typeof window !== 'undefined') {
+        url.searchParams.set('embed_location', window.location.href)
+      }
       // Set mode for inline iframe embedding
       url.searchParams.set('mode', 'INLINE')
 

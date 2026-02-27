@@ -47,6 +47,7 @@ describe('QuilttConnector', () => {
     expect(src).toContain('connectionId=connection_test')
     expect(src).toContain('institution=institution_test')
     expect(src).toContain('app_launcher_url=https%3A%2F%2Fapp.example.com%2Fquiltt%2Fcallback')
+    expect(src).toContain('embed_location=')
     expect(src).toContain('mode=INLINE')
 
     app.unmount()

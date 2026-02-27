@@ -1,4 +1,12 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
@@ -40,6 +48,17 @@ const isTrustedQuilttOrigin = (origin: string): boolean => {
   }
 }
 
+const decodeIfEncoded = (value: string): string => {
+  try {
+    const decoded = decodeURIComponent(value)
+    return decoded === value ? value : decoded
+  } catch {
+    return value
+  }
+}
+
+const normalizeUrlValue = (value: string): string => decodeIfEncoded(value.trim())
+
 /**
  * QuilttConnector component for Capacitor apps
  * Embeds the Quiltt Connector in an iframe and handles OAuth flows via native plugins
@@ -64,6 +83,8 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
   ) => {
     const iframeRef = useRef<HTMLIFrameElement>(null)
     const { session } = useQuilttSession()
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [loadError, setLoadError] = useState<string | null>(null)
 
     // Connector origin for secure postMessage targeting
     const connectorOrigin = useMemo(() => `https://${connectorId}.quiltt.app`, [connectorId])
@@ -82,13 +103,58 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
         url.searchParams.set('institution', institution)
       }
       if (appLauncherUrl) {
-        url.searchParams.set('app_launcher_url', appLauncherUrl)
+        url.searchParams.set('app_launcher_url', normalizeUrlValue(appLauncherUrl))
       }
+
+      if (typeof window !== 'undefined') {
+        url.searchParams.set('embed_location', window.location.href)
+      }
+
       // Set mode for inline iframe embedding
       url.searchParams.set('mode', 'INLINE')
 
       return url.toString()
     }, [connectorOrigin, session?.token, connectionId, institution, appLauncherUrl])
+
+    useEffect(() => {
+      setIsLoaded(false)
+      setLoadError(null)
+
+      const abortController = new AbortController()
+
+      const runPreflight = async () => {
+        try {
+          await fetch(connectorUrl, {
+            method: 'GET',
+            mode: 'no-cors',
+            credentials: 'omit',
+            signal: abortController.signal,
+          })
+        } catch {
+          setLoadError('Unable to reach Quiltt Connector. Check network and connector settings.')
+        }
+      }
+
+      void runPreflight()
+
+      return () => {
+        abortController.abort()
+      }
+    }, [connectorUrl])
+
+    useEffect(() => {
+      if (isLoaded || loadError) {
+        return
+      }
+
+      const timeoutId = window.setTimeout(() => {
+        setLoadError('Connector took too long to load. Please retry.')
+      }, 15000)
+
+      return () => {
+        window.clearTimeout(timeoutId)
+      }
+    }, [isLoaded, loadError])
 
     const postOAuthCallbackToIframe = useCallback(
       (callbackUrl: string) => {
@@ -96,8 +162,10 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
           return
         }
 
+        const normalizedCallbackUrl = normalizeUrlValue(callbackUrl)
+
         try {
-          const callback = new URL(callbackUrl)
+          const callback = new URL(normalizedCallbackUrl)
           const params: Record<string, string> = {}
           callback.searchParams.forEach((value, key) => {
             params[key] = value
@@ -108,7 +176,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
               source: 'quiltt',
               type: 'OAuthCallback',
               data: {
-                url: callbackUrl,
+                url: normalizedCallbackUrl,
                 params,
               },
             },
@@ -120,7 +188,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
               source: 'quiltt',
               type: 'OAuthCallback',
               data: {
-                url: callbackUrl,
+                url: normalizedCallbackUrl,
                 params: {},
               },
             },
@@ -156,6 +224,8 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
 
         switch (type) {
           case 'Load':
+            setIsLoaded(true)
+            setLoadError(null)
             onEvent?.(ConnectorSDKEventType.Load, metadata)
             onLoad?.(metadata)
             break
@@ -231,19 +301,47 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
     )
 
     return (
-      <iframe
-        ref={iframeRef}
-        src={connectorUrl}
-        title="Quiltt Connector"
-        allow="publickey-credentials-get *"
+      <div
         className={className}
         style={{
-          border: 'none',
           width: '100%',
           height: '100%',
+          position: 'relative',
           ...style,
         }}
-      />
+      >
+        <iframe
+          ref={iframeRef}
+          src={connectorUrl}
+          title="Quiltt Connector"
+          allow="publickey-credentials-get *"
+          style={{
+            border: 'none',
+            width: '100%',
+            height: '100%',
+          }}
+          onError={() => {
+            setLoadError('Unable to load Quiltt Connector iframe.')
+          }}
+        />
+
+        {loadError ? (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px',
+              textAlign: 'center',
+              backgroundColor: '#fff',
+            }}
+          >
+            {loadError}
+          </div>
+        ) : null}
+      </div>
     )
   }
 )

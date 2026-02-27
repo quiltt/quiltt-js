@@ -16,6 +16,7 @@ test('renders Quiltt button and inline connector', async ({ page }) => {
   const connectorFrame = page.locator('iframe[title="Quiltt Connector"]')
   await expect(connectorFrame).toHaveCount(1)
   await expect(connectorFrame).toHaveAttribute('src', /^https:\/\/[^/]+\.quiltt\.app\/?/)
+  await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)embed_location=(?:[^&]+)(?:&|$)/)
   await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)mode=INLINE(?:&|$)/)
 
   await page.evaluate((origin) => {
