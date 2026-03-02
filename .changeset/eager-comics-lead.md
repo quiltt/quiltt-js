@@ -1,8 +1,8 @@
 ---
-"@quiltt/react-native": minor
 "@quiltt/capacitor": minor
-"@quiltt/react": minor
 "@quiltt/core": minor
+"@quiltt/react": minor
+"@quiltt/react-native": minor
 "@quiltt/vue": minor
 ---
 
