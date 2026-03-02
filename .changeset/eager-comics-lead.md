@@ -1,9 +1,9 @@
 ---
-"@quiltt/capacitor": minor
-"@quiltt/core": minor
-"@quiltt/react": minor
-"@quiltt/react-native": minor
-"@quiltt/vue": minor
+"@quiltt/capacitor": patch
+"@quiltt/core": patch
+"@quiltt/react": patch
+"@quiltt/react-native": patch
+"@quiltt/vue": patch
 ---
 
 Add @quiltt/capacitor package for Ionic and Capacitor apps
