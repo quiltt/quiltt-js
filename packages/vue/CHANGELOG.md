@@ -1,5 +1,16 @@
 # @quiltt/vue
 
+## 5.2.0
+
+### Minor Changes
+
+- [#427](https://github.com/quiltt/quiltt-js/pull/427) [`6d4b768`](https://github.com/quiltt/quiltt-js/commit/6d4b7683f49d0a6e649a4bdfaff0398669102a63) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Bump minor version to be consistent with SemVer standards
+
+### Patch Changes
+
+- Updated dependencies [[`6d4b768`](https://github.com/quiltt/quiltt-js/commit/6d4b7683f49d0a6e649a4bdfaff0398669102a63)]:
+  - @quiltt/core@5.2.0
+
 ## 5.1.3
 
 ### Patch Changes
