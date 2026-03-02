@@ -61,7 +61,7 @@
     "@quiltt/core": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.3",
+    "@biomejs/biome": "2.4.5",
     "@types/node": "24.11.0",
     "bunchee": "6.9.4",
     "rimraf": "6.1.3",
