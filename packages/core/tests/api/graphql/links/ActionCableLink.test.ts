@@ -4,7 +4,7 @@ import { type ApolloLink, gql } from '@apollo/client/core'
 import { createConsumer } from '@rails/actioncable'
 import { Observable } from 'rxjs'
 
-import ActionCableLink from '@/api/graphql/links/ActionCableLink'
+import { ActionCableLink } from '@/api/graphql/links/ActionCableLink'
 import { GlobalStorage } from '@/storage'
 
 vi.mock('@/storage', () => ({

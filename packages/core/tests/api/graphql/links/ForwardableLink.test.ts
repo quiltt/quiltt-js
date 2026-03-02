@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { ApolloLink, gql } from '@apollo/client/core'
 import { Observable } from 'rxjs'
 
-import ForwardableLink from '@/api/graphql/links/ForwardableLink'
+import { ForwardableLink } from '@/api/graphql/links/ForwardableLink'
 
 describe('ForwardableLink', () => {
   it('should forward operations to the next link', async () => {

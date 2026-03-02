@@ -55,5 +55,3 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
 
   return identifySession
 }
-
-export default useIdentifySession

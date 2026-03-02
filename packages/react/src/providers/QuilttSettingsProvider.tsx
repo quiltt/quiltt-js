@@ -45,5 +45,3 @@ export const QuilttSettingsProvider: FC<QuilttSettingsProviderProps> = ({
 
   return <QuilttSettings.Provider value={contextValue}>{children}</QuilttSettings.Provider>
 }
-
-export default QuilttSettingsProvider

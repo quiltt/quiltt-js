@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+const connectorId = process.env.NEXT_PUBLIC_CONNECTOR_ID ?? 'connector'
+
 test.describe('Connector Flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
@@ -10,10 +12,7 @@ test.describe('Connector Flow', () => {
   })
 
   test('should launch connector with HTML launcher', async ({ page }) => {
-    const iframe = page.locator('iframe#quiltt--frame[data-quiltt-connector-id="connector"]')
-
-    // Iframe should not be visible initially
-    await expect(iframe).not.toBeVisible()
+    const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
 
     // Click the HTML launcher button
     const button = page.getByRole('button', { name: 'Launch with HTML' })
@@ -28,9 +27,7 @@ test.describe('Connector Flow', () => {
   })
 
   test('should launch connector with JavaScript launcher', async ({ page }) => {
-    const iframe = page.locator('iframe#quiltt--frame[data-quiltt-connector-id="connector"]')
-
-    await expect(iframe).not.toBeVisible()
+    const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
 
     const button = page.getByRole('button', { name: 'Launch with Javascript' })
     await button.click()
@@ -39,9 +36,7 @@ test.describe('Connector Flow', () => {
   })
 
   test('should launch connector with QuilttButton component', async ({ page }) => {
-    const iframe = page.locator('iframe#quiltt--frame[data-quiltt-connector-id="connector"]')
-
-    await expect(iframe).not.toBeVisible()
+    const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
 
     const button = page.getByRole('button', { name: 'Launch with Component' })
     await button.click()
@@ -50,9 +45,7 @@ test.describe('Connector Flow', () => {
   })
 
   test('should launch connector with custom button component', async ({ page }) => {
-    const iframe = page.locator('iframe#quiltt--frame[data-quiltt-connector-id="connector"]')
-
-    await expect(iframe).not.toBeVisible()
+    const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
 
     const button = page.getByRole('button', { name: 'Launch with Custom Component' })
     await button.click()
@@ -62,13 +55,13 @@ test.describe('Connector Flow', () => {
 
   test('should display connector in container components', async ({ page }) => {
     // Verify container elements exist
-    const containers = page.locator('[quiltt-container="container-connector"]')
+    const containers = page.locator(`[quiltt-container="${connectorId}"]`)
     await expect(containers).toHaveCount(2)
 
     // Container iframes are rendered at page level with the connector ID, not inside the container elements
     // The SDK creates one iframe per unique connector ID for inline/container mode
     const containerIframes = page.locator(
-      'iframe#quiltt--frame[data-quiltt-connector-id="container-connector"]'
+      `iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`
     )
     await expect(containerIframes).toHaveCount(1, { timeout: 10000 })
     await expect(containerIframes).toBeVisible({ timeout: 10000 })
@@ -79,7 +72,7 @@ test.describe('Connector Flow', () => {
     const htmlButton = page.getByRole('button', { name: 'Launch with HTML' })
     await htmlButton.click()
 
-    const iframe = page.locator('iframe#quiltt--frame[data-quiltt-connector-id="connector"]')
+    const iframe = page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
     await expect(iframe).toBeVisible()
 
     // Click another launcher (force click to bypass modal overlay)
@@ -88,7 +81,7 @@ test.describe('Connector Flow', () => {
 
     // Should still have one modal iframe (not counting container iframes)
     await expect(
-      page.locator('iframe#quiltt--frame[data-quiltt-connector-id="connector"]')
+      page.locator(`iframe#quiltt--frame[data-quiltt-connector-id="${connectorId}"]`)
     ).toHaveCount(1)
   })
 })

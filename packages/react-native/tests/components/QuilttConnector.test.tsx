@@ -68,7 +68,7 @@ describe('QuilttConnector', () => {
     connectorId: 'test-connector',
     connectionId: 'test-connection',
     institution: 'test-bank',
-    oauthRedirectUrl: 'https://oauth.test.com/',
+    appLauncherUrl: 'https://oauth.test.com/',
     onEvent: vi.fn(),
     onLoad: vi.fn(),
     onExit: vi.fn(),

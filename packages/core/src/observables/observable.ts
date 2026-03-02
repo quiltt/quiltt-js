@@ -38,5 +38,3 @@ export class Observable<T> {
     this.observers = this.observers.filter((update) => update !== observer)
   }
 }
-
-export default Observable

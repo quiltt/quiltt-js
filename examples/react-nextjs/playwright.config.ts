@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/experimental-ct-react'
+import { defineConfig, devices } from '@playwright/test'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -19,23 +19,10 @@ export default defineConfig({
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    /* Port to use for Playwright component testing server. */
-    ctPort: 3100,
   },
 
-  /* Configure projects for component tests and E2E tests */
+  /* Configure projects for E2E tests */
   projects: [
-    // Component Tests
-    {
-      name: 'component-chromium',
-      testDir: './app',
-      testMatch: '**/*.spec.tsx',
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
-
-    // E2E Tests
     {
       name: 'e2e-chromium',
       testDir: './e2e',

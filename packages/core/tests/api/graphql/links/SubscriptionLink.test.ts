@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import SubscriptionLink from '@/api/graphql/links/SubscriptionLink'
+import { SubscriptionLink } from '@/api/graphql/links/SubscriptionLink'
 
 describe('SubscriptionLink', () => {
   it('should extend ActionCableLink properly', () => {

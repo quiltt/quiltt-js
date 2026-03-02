@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
+import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 import { useQuilttRenderGuard } from '@/hooks/useQuilttRenderGuard'
 import type { PropsOf } from '@/types'
@@ -13,7 +14,15 @@ type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
     as?: T
     connectorId: string
     connectionId?: string // For Reconnect Mode
-    oauthRedirectUrl?: string // For OAuth flows in mobile or embedded webviews
+    /**
+     * The app launcher URL for mobile OAuth flows.
+     * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+     */
+    appLauncherUrl?: string
+    /**
+     * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
+     */
+    oauthRedirectUrl?: string
     institution?: string // For Connect Mode
 
     /**
@@ -37,6 +46,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   as,
   connectorId,
   connectionId,
+  appLauncherUrl,
   oauthRedirectUrl,
   institution,
   forceRemountOnConnectionChange = false,
@@ -51,6 +61,15 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 }: QuilttContainerProps<T> & PropsOf<T>) => {
   // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
   useQuilttRenderGuard('QuilttContainer')
+
+  useEffect(() => {
+    if (oauthRedirectUrl !== undefined) {
+      console.warn(oauthRedirectUrlDeprecationWarning)
+    }
+  }, [oauthRedirectUrl])
+
+  // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+  const effectiveAppLauncherUri = appLauncherUrl ?? oauthRedirectUrl
 
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
@@ -92,7 +111,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 
   useQuilttConnector(connectorId, {
     connectionId,
-    oauthRedirectUrl,
+    appLauncherUrl: effectiveAppLauncherUri,
     institution,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
@@ -122,7 +141,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
       key={containerKey}
       quiltt-container={connectorId}
       quiltt-connection={connectionId}
-      quiltt-oauth-redirect-url={oauthRedirectUrl}
+      quiltt-app-launcher-uri={effectiveAppLauncherUri}
       quiltt-institution={institution}
       {...props}
     >
@@ -130,5 +149,3 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
     </Container>
   )
 }
-
-export default QuilttContainer

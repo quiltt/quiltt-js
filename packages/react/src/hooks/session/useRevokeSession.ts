@@ -23,5 +23,3 @@ export const useRevokeSession: UseRevokeSession = (auth, session, setSession) =>
 
   return revokeSession
 }
-
-export default useRevokeSession

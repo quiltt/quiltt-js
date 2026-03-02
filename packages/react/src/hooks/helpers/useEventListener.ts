@@ -3,7 +3,7 @@
 import type { RefObject } from 'react'
 import { useEffect, useRef } from 'react'
 
-import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 
 // Helper type for elements that support event listeners
 type EventTarget = HTMLElement | MediaQueryList | Document | Window
@@ -84,5 +84,3 @@ export function useEventListener<
     }
   }, [eventName, element, options])
 }
-
-export default useEventListener

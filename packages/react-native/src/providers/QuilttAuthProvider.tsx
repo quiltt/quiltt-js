@@ -42,5 +42,3 @@ export const QuilttAuthProvider: FC<QuilttAuthProviderProps> = ({
     </ReactQuilttAuthProvider>
   )
 }
-
-export default QuilttAuthProvider

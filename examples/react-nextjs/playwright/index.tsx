@@ -1,5 +1,5 @@
 // Import styles, configure app
-import '../app/globals.css'
+import '../src/app/globals.css'
 
 // Make sure Next.js environment variables are available
 if (typeof window !== 'undefined') {

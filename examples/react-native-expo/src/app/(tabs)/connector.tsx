@@ -53,7 +53,7 @@ export default function ConnectorScreen() {
       <QuilttConnector
         ref={connectorRef}
         connectorId={CONNECTOR_ID!}
-        oauthRedirectUrl="https://www.example.com"
+        appLauncherUrl="https://www.example.com"
         institution={INSTITUTION_SEARCH_TERM}
         onExitSuccess={(metadata: ConnectorSDKCallbackMetadata) => {
           console.log(metadata.connectionId)

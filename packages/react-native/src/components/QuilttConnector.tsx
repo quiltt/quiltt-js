@@ -15,6 +15,7 @@ import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/r
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 
+import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import {
   ErrorReporter,
   getErrorMessage,
@@ -147,7 +148,15 @@ type QuilttConnectorProps = {
   connectorId: string
   connectionId?: string
   institution?: string
-  oauthRedirectUrl: string
+  /**
+   * The app launcher URL for mobile OAuth flows.
+   * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
+   */
+  appLauncherUrl?: string
+  /**
+   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
+   */
+  oauthRedirectUrl?: string
   testId?: string
 } & ConnectorSDKCallbacks
 
@@ -157,6 +166,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       connectorId,
       connectionId,
       institution,
+      appLauncherUrl,
       oauthRedirectUrl,
       onEvent,
       onLoad,
@@ -173,6 +183,15 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const [preFlightCheck, setPreFlightCheck] = useState<PreFlightCheck>({ checked: false })
     const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
     const [sdkAgent, setSDKAgent] = useState<string>('')
+
+    useEffect(() => {
+      if (oauthRedirectUrl !== undefined) {
+        console.warn(oauthRedirectUrlDeprecationWarning)
+      }
+    }, [oauthRedirectUrl])
+
+    // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
+    const effectiveAppLauncherUrl = appLauncherUrl ?? oauthRedirectUrl ?? ''
 
     // Initialize error reporter and SDK Agent
     useEffect(() => {
@@ -211,10 +230,14 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       }
     }, [])
 
-    // Ensure oauthRedirectUrl is encoded properly - only once
-    const safeOAuthRedirectUrl = useMemo(() => {
-      return smartEncodeURIComponent(oauthRedirectUrl)
-    }, [oauthRedirectUrl])
+    // Ensure effectiveAppLauncherUrl is encoded properly - only once
+    const safeAppLauncherUrl = useMemo(() => {
+      return smartEncodeURIComponent(effectiveAppLauncherUrl)
+    }, [effectiveAppLauncherUrl])
+
+    const hasConfiguredAppLauncherUrl = useMemo(() => {
+      return effectiveAppLauncherUrl.trim().length > 0
+    }, [effectiveAppLauncherUrl])
 
     const connectorUrl = useMemo(() => {
       if (!sdkAgent) return null
@@ -225,18 +248,20 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       url.searchParams.append('mode', 'webview')
       url.searchParams.append('agent', sdkAgent)
 
-      // For the oauth_redirect_url, we need to be careful
-      // If it's already encoded, we need to decode it once to prevent
-      // the automatic encoding that happens with searchParams.append
-      if (isEncoded(safeOAuthRedirectUrl)) {
-        const decodedOnce = decodeURIComponent(safeOAuthRedirectUrl)
-        url.searchParams.append('oauth_redirect_url', decodedOnce)
-      } else {
-        url.searchParams.append('oauth_redirect_url', safeOAuthRedirectUrl)
+      if (hasConfiguredAppLauncherUrl) {
+        // For the oauth_redirect_url, we need to be careful
+        // If it's already encoded, we need to decode it once to prevent
+        // the automatic encoding that happens with searchParams.append
+        if (isEncoded(safeAppLauncherUrl)) {
+          const decodedOnce = decodeURIComponent(safeAppLauncherUrl)
+          url.searchParams.append('oauth_redirect_url', decodedOnce)
+        } else {
+          url.searchParams.append('oauth_redirect_url', safeAppLauncherUrl)
+        }
       }
 
       return url.toString()
-    }, [connectorId, safeOAuthRedirectUrl, sdkAgent])
+    }, [connectorId, hasConfiguredAppLauncherUrl, safeAppLauncherUrl, sdkAgent])
 
     useEffect(() => {
       if (preFlightCheck.checked || !connectorUrl || !errorReporter) return
@@ -321,6 +346,16 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
               console.log('Event: Navigate')
               const navigateUrl = url.searchParams.get('url')
 
+              if (!hasConfiguredAppLauncherUrl) {
+                const errorMessage =
+                  'OAuth redirect requires `appLauncherUrl` (or deprecated `oauthRedirectUrl`) to be configured.'
+                console.error(errorMessage)
+                onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+                onExit?.(ConnectorSDKEventType.ExitError, metadata)
+                onExitError?.(metadata)
+                break
+              }
+
               if (navigateUrl) {
                 if (isEncoded(navigateUrl)) {
                   try {
@@ -354,6 +389,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
         onExitAbort,
         onExitError,
         onExitSuccess,
+        hasConfiguredAppLauncherUrl,
         onLoad,
       ]
     )

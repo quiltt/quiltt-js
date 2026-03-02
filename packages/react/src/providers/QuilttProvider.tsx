@@ -35,5 +35,3 @@ export const QuilttProvider: FC<QuilttProviderProps> = ({
     </QuilttProviderRender.Provider>
   )
 }
-
-export default QuilttProvider

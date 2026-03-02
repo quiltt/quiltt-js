@@ -29,5 +29,3 @@ export class Timeoutable {
     this.observers[0](undefined)
   }
 }
-
-export default Timeoutable

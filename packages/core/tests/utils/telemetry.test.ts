@@ -87,7 +87,7 @@ describe('Core Telemetry', () => {
     })
 
     it('should detect Chrome browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         writable: true,
@@ -99,7 +99,7 @@ describe('Core Telemetry', () => {
     })
 
     it('should detect Safari browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
         writable: true,
@@ -111,7 +111,7 @@ describe('Core Telemetry', () => {
     })
 
     it('should detect Firefox browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0',
         writable: true,
@@ -123,7 +123,7 @@ describe('Core Telemetry', () => {
     })
 
     it('should detect Edge browser', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value:
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
         writable: true,
@@ -135,7 +135,7 @@ describe('Core Telemetry', () => {
     })
 
     it('should return Unknown for unrecognized browsers', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value: 'Some Custom Browser/1.0',
         writable: true,
         configurable: true,
@@ -146,18 +146,18 @@ describe('Core Telemetry', () => {
     })
 
     it('should return Unknown when navigator is undefined', () => {
-      const originalNavigator = global.navigator
+      const originalNavigator = globalThis.navigator
       // @ts-expect-error - testing undefined navigator
-      delete global.navigator
+      delete globalThis.navigator
 
       const browserInfo = getBrowserInfo()
       expect(browserInfo).toBe('Unknown')
 
-      global.navigator = originalNavigator
+      globalThis.navigator = originalNavigator
     })
 
     it('should return Unknown when userAgent is not available', () => {
-      Object.defineProperty(global.navigator, 'userAgent', {
+      Object.defineProperty(globalThis.navigator, 'userAgent', {
         value: undefined,
         writable: true,
         configurable: true,
