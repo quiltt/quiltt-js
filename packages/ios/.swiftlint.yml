@@ -1,0 +1,41 @@
+included:
+  - Sources
+  - Tests
+
+excluded:
+  - ExampleSwiftUI
+  - .build
+
+disabled_rules:
+  - todo # TODO comments are managed by the root check-todos.yml workflow
+  - unneeded_break_in_switch # TODO: Remove explicit breaks from switch cases in QuilttConnectorWebview
+
+opt_in_rules:
+  - empty_count # Prefer isEmpty over count == 0
+  - closure_spacing # Require space inside { }
+  - operator_whitespace # Require whitespace around operators
+  - redundant_nil_coalescing # Flag ?? nil
+  - yoda_condition # Require variable on left side of comparisons
+
+identifier_name:
+  min_length: 2
+  excluded:
+    - id
+    - url
+    - x
+    - y
+    # TODO: Rename to camelCase in next major version (breaking API change)
+    - Load
+    - ExitSuccess
+    - ExitAbort
+    - ExitError
+
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+type_body_length:
+  warning: 300
+  error: 400

@@ -1,4 +1,4 @@
-# Code of Conduct for Quiltt-JS
+# Code of Conduct for Quiltt
 
 ## Our Pledge
 

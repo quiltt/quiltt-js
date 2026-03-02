@@ -1,0 +1,51 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/android/**'
+  pull_request:
+    paths:
+      - 'packages/android/**'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: packages/android
+
+jobs:
+  build:
+    name: Android CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.0'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: bundle install
+
+      - name: Build connector
+        run: ./gradlew connector:assembleRelease
+
+      - name: Lint
+        run: ./gradlew connector:lint
+
+      - name: Unit tests
+        run: ./gradlew connector:test
+
+      - name: Build example app
+        run: bundle exec fastlane android build_example_app

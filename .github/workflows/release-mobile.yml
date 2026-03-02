@@ -1,0 +1,303 @@
+name: Publish Mobile SDKs
+
+# Triggered when the JS packages are published by Changesets.
+# All mobile SDKs are released at the same version for a unified release.
+on:
+  push:
+    tags:
+      - '@quiltt/core@*'
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+
+jobs:
+  # ── 1. Extract the version from the Changesets tag ───────────────────────────
+  prepare:
+    name: Extract version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/@quiltt/core@}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Releasing mobile SDKs v$VERSION"
+
+  # ── 2. Update all platform version files in a single commit ──────────────────
+  update-versions:
+    name: Update version files
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Update Android version files
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          sed -i 's/version = ".*"/version = "'"$VERSION"'"/' \
+            packages/android/connector/build.gradle.kts
+          printf 'package app.quiltt.connector\nval quilttSdkVersion = "%s"\n' "$VERSION" \
+            > packages/android/connector/src/main/java/app/quiltt/connector/QuilttSdkVersion.kt
+
+      - name: Update Flutter version files
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          sed -i "s/^version: .*/version: $VERSION/" packages/flutter/pubspec.yaml
+          echo "var quilttSdkVersion = \"$VERSION\";" > packages/flutter/lib/quiltt_sdk_version.dart
+
+      - name: Update iOS version file
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          printf 'import Foundation\npublic let quilttSdkVersion = "%s"\n' "$VERSION" \
+            > packages/ios/Sources/QuilttConnector/QuilttSdkVersion.swift
+
+      - name: Commit and push version updates
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          git add \
+            packages/android/connector/build.gradle.kts \
+            packages/android/connector/src/main/java/app/quiltt/connector/QuilttSdkVersion.kt \
+            packages/flutter/pubspec.yaml \
+            packages/flutter/lib/quiltt_sdk_version.dart \
+            packages/ios/Sources/QuilttConnector/QuilttSdkVersion.swift
+          git diff --cached --quiet || git commit -m "chore: release v$VERSION [skip ci]"
+          git pull --rebase origin main
+          git push origin main
+
+      - name: Create platform tags
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          git tag "android/v$VERSION"
+          git tag "flutter/v$VERSION"
+          git tag "ios/v$VERSION"
+          git push origin "android/v$VERSION" "flutter/v$VERSION" "ios/v$VERSION"
+
+  # ── 3a. Build, test, and publish Android to Maven Central ────────────────────
+  publish-android:
+    name: Publish Android
+    needs: [prepare, update-versions]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/android
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.0'
+          bundler-cache: true
+
+      - name: Install Fastlane
+        run: bundle install
+
+      - name: Build and test
+        run: |
+          ./gradlew clean build
+          ./gradlew connector:assembleRelease
+          ./gradlew connector:test
+          ./gradlew connector:lint
+
+      - name: Build example app
+        run: bundle exec fastlane android build_example_app
+
+      - name: Publish to Maven Central
+        run: |
+          ./gradlew publishConnectorPublicationToSonatypeRepository \
+            --max-workers 1 closeAndReleaseSonatypeStagingRepository
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: 'android/v${{ needs.prepare.outputs.version }}'
+          name: 'Android SDK v${{ needs.prepare.outputs.version }}'
+          body: |
+            ## Android SDK v${{ needs.prepare.outputs.version }}
+
+            ### Installation
+
+            **Gradle (Kotlin DSL):**
+            ```kotlin
+            dependencies {
+                implementation("app.quiltt:connector:${{ needs.prepare.outputs.version }}")
+            }
+            ```
+
+            **Maven:**
+            ```xml
+            <dependency>
+                <groupId>app.quiltt</groupId>
+                <artifactId>connector</artifactId>
+                <version>${{ needs.prepare.outputs.version }}</version>
+            </dependency>
+            ```
+
+            Requires Android API Level 26+.
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── 3b. Build, test, and publish Flutter to pub.dev ──────────────────────────
+  publish-flutter:
+    name: Publish Flutter
+    needs: [prepare, update-versions]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/flutter
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.5.0'
+
+      - uses: flutter-actions/setup-flutter@v2
+        with:
+          version: '3.32.7'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+
+      - name: Analyze
+        run: flutter analyze lib
+
+      - name: Test
+        run: flutter test
+
+      - name: Validate package
+        run: flutter pub publish --dry-run
+
+      - name: Setup pub.dev credentials
+        run: |
+          mkdir -p ~/.pub-cache
+          cat > ~/.pub-cache/credentials.json << EOF
+          {
+            "accessToken": "${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
+            "refreshToken": "${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
+            "tokenEndpoint": "${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}",
+            "scopes": ["https://www.googleapis.com/auth/userinfo.email", "openid"],
+            "expiration": ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+          }
+          EOF
+
+      - name: Publish to pub.dev
+        run: flutter pub publish --force
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: 'flutter/v${{ needs.prepare.outputs.version }}'
+          name: 'Flutter SDK v${{ needs.prepare.outputs.version }}'
+          body: |
+            ## Flutter SDK v${{ needs.prepare.outputs.version }}
+
+            ### Installation
+
+            ```yaml
+            dependencies:
+              quiltt_connector: ^${{ needs.prepare.outputs.version }}
+            ```
+
+            Published to [pub.dev](https://pub.dev/packages/quiltt_connector).
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── 3c. Build, test, and release iOS ─────────────────────────────────────────
+  release-ios:
+    name: Release iOS
+    needs: [prepare, update-versions]
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: packages/ios
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.2'
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.0'
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Build Swift package
+        run: swift build -c release
+
+      - name: Run tests
+        run: swift test
+
+      - name: Build example app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bundle exec fastlane ios build_example_app
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: 'ios/v${{ needs.prepare.outputs.version }}'
+          name: 'iOS SDK v${{ needs.prepare.outputs.version }}'
+          body: |
+            ## iOS SDK v${{ needs.prepare.outputs.version }}
+
+            ### Swift Package Manager
+
+            In Xcode: **File → Add Package Dependencies**, enter the repository URL and select version `${{ needs.prepare.outputs.version }}`.
+
+            Or in `Package.swift`:
+            ```swift
+            .package(url: "https://github.com/quiltt/quiltt-js", from: "${{ needs.prepare.outputs.version }}")
+            ```
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,185 @@
+# frozen_string_literal: true
+
+require 'octokit'
+require 'semantic'
+require 'json'
+
+default_platform :ios
+
+REPO_NAME = 'quiltt/quiltt-js'
+GITHUB_TOKEN = ENV['GITHUB_TOKEN']
+
+def bump_version_file(level)
+  client = ::Octokit::Client.new(access_token: GITHUB_TOKEN)
+  latest_release = client.latest_release(REPO_NAME)
+
+  current_version = Semantic::Version.new(latest_release.tag_name)
+  new_version = current_version.increment!(level).to_s
+  generate_release_version_file(new_version)
+  new_version
+end
+
+def release(new_version)
+  new_branch = "release/#{new_version}"
+  push_to_git_remote(new_branch)
+
+  set_github_release(
+    repository_name: REPO_NAME,
+    api_token: GITHUB_TOKEN,
+    name: new_version.to_s,
+    tag_name: new_version.to_s,
+    is_generate_release_notes: true,
+    commitish: new_branch
+  )
+
+  create_pull_request(
+    repo: REPO_NAME,
+    api_token: GITHUB_TOKEN,
+    title: "Release #{new_version}",
+    head: new_branch,
+    base: 'main'
+  )
+end
+
+# Find a suitable iPhone simulator from available devices
+def find_suitable_simulator
+  begin
+    # Get list of available simulators in JSON format
+    simulator_json = `xcrun simctl list devices available -j`
+    simulators = JSON.parse(simulator_json)
+
+    # Look for runtime versions (priority order)
+    runtime_priorities = ['iOS-18-2', 'iOS-18-1', 'iOS-17-5', 'iOS-17-4']
+
+    # Priority order for device models
+    device_priorities = ['iPhone 16 Pro', 'iPhone 15 Pro', 'iPhone 16', 'iPhone 15']
+
+    # Find the best available simulator
+    runtime_priorities.each do |runtime|
+      if simulators['devices'].key?(runtime)
+        devices = simulators['devices'][runtime]
+
+        # Try to find preferred device models in priority order
+        device_priorities.each do |device_name|
+          device = devices.find { |d| d['name'].include?(device_name) && d['isAvailable'] }
+          return device if device
+        end
+
+        # If no priority device found, use the first available one
+        first_available = devices.find { |d| d['isAvailable'] }
+        return first_available if first_available
+      end
+    end
+
+    # Fallback approach - look through all devices without runtime priority
+    simulators['devices'].each do |_runtime, devices|
+      device_priorities.each do |device_name|
+        device = devices.find { |d| d['name'].include?(device_name) && d['isAvailable'] }
+        return device if device
+      end
+    end
+
+    # If still nothing found, use any available iOS simulator
+    simulators['devices'].each do |runtime_name, devices|
+      if runtime_name.include?('iOS')
+        first_available = devices.find { |d| d['isAvailable'] }
+        return first_available if first_available
+      end
+    end
+
+    # Ultimate fallback
+    return nil
+  rescue => e
+    UI.error("Error finding simulator: #{e.message}")
+    return nil
+  end
+end
+
+platform :ios do
+  desc 'CI workflow'
+  lane :ci do
+    build_swift_package
+    test_swift_package
+    build_example_app
+  end
+
+  desc 'Build Swift Package'
+  lane :build_swift_package do
+    Dir.chdir('..') do
+      success = system('swift build')
+      raise 'Swift package build failed' unless success
+    end
+  end
+
+  desc 'Test Swift Package'
+  lane :test_swift_package do
+    Dir.chdir('..') do
+      success = system('swift test')
+      raise 'Swift package tests failed' unless success
+    end
+  end
+
+  desc 'Release patch version'
+  lane :release_patch do
+    new_version = bump_version_file(:patch)
+    # build_example_app
+    # test_example_app
+    release(new_version)
+  end
+
+  desc 'Release minor version'
+  lane :release_minor do
+    new_version = bump_version_file(:minor)
+    build_example_app
+    # test_example_app
+    release(new_version)
+  end
+
+  desc 'Release major version'
+  lane :release_major do
+    new_version = bump_version_file(:major)
+    build_example_app
+    # test_example_app
+    release(new_version)
+  end
+
+  desc 'Build Example App'
+  lane :build_example_app do
+    Dir.chdir('..') do
+      # For CI, we want to build for simulator to avoid code signing issues
+      if ENV['CI']
+        # First attempt with a known simulator that should work on recent versions
+        success = system('xcodebuild -workspace ExampleSwiftUI/ExampleSwiftUI.xcodeproj/project.xcworkspace -scheme ExampleSwiftUI -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2" build')
+
+        # If that fails, try to find a suitable simulator dynamically
+        if !success
+          puts "First build attempt failed, trying to find suitable simulator..."
+          simulator = find_suitable_simulator
+
+          if simulator
+            puts "Found simulator: #{simulator['name']} with udid: #{simulator['udid']}"
+            success = system("xcodebuild -workspace ExampleSwiftUI/ExampleSwiftUI.xcodeproj/project.xcworkspace -scheme ExampleSwiftUI -sdk iphonesimulator -destination 'platform=iOS Simulator,id=#{simulator['udid']}' build")
+          else
+            # Last resort - try with generic device
+            puts "No suitable simulator found, trying with generic device..."
+            success = system('xcodebuild -workspace ExampleSwiftUI/ExampleSwiftUI.xcodeproj/project.xcworkspace -scheme ExampleSwiftUI -sdk iphonesimulator -destination "platform=iOS Simulator,id=dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder" build')
+          end
+        end
+      else
+        success = system('xcodebuild -workspace ExampleSwiftUI/ExampleSwiftUI.xcodeproj/project.xcworkspace -allowProvisioningUpdates -scheme ExampleSwiftUI -sdk iphoneos build')
+      end
+      raise 'Build failed' unless success
+    end
+  end
+
+  def generate_release_version_file(version)
+    sh("echo \"import Foundation\npublic let quilttSdkVersion = \\\"#{version}\\\"\" > ../Sources/QuilttConnector/QuilttSdkVersion.swift")
+  end
+
+  def push_to_git_remote(branch)
+    sh("git checkout -b #{branch}")
+    sh('git add ../Sources/QuilttConnector/QuilttSdkVersion.swift')
+    sh('git commit -m "Bump version"')
+    sh("git push origin #{branch}")
+  end
+end

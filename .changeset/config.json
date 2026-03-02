@@ -3,7 +3,7 @@
   "changelog": ["@changesets/changelog-github", { "repo": "quiltt/quiltt-js" }],
   "commit": false,
   "fixed": [
-    ["@quiltt/core", "@quiltt/react", "@quiltt/react-native", "@quiltt/vue", "@quiltt/capacitor"]
+    ["@quiltt/core", "@quiltt/react", "@quiltt/react-native", "@quiltt/vue", "@quiltt/capacitor", "@quiltt/android", "@quiltt/flutter", "@quiltt/ios"]
   ],
   "linked": [],
   "access": "public",

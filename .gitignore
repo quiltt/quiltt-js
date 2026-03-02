@@ -9,6 +9,7 @@ dist
 # misc
 .DS_Store
 *.pem
+CLAUDE.local.md
 
 # debug
 npm-debug.log*
@@ -36,7 +37,24 @@ npm-debug.log*
 npm-debug.log
 .npmrc
 
-# RN SDK
+# Android
+packages/android/.gradle/
+packages/android/**/build/
+packages/android/local.properties
+packages/android/**/*.apk
+packages/android/**/*.aab
+packages/android/**/*.keystore
+
+# Flutter
+packages/flutter/build/
+packages/flutter/.dart_tool/
+packages/flutter/.flutter-plugins
+packages/flutter/.flutter-plugins-dependencies
+
+# iOS
+packages/ios/.build/
+packages/ios/DerivedData/
+packages/ios/Pods/
 
 # Tests
 coverage/**/*

@@ -1,0 +1,53 @@
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/flutter/**'
+  pull_request:
+    paths:
+      - 'packages/flutter/**'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: packages/flutter
+
+jobs:
+  build:
+    name: Flutter CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.5.0'
+
+      - uses: flutter-actions/setup-flutter@v2
+        with:
+          version: '3.24.0'
+          channel: stable
+          cache: true
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.0'
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: |
+          bundle install
+          flutter pub get
+
+      - name: Analyze
+        run: flutter analyze lib
+
+      - name: Test
+        run: flutter test
+
+      - name: Check publish readiness
+        run: flutter pub publish --dry-run
