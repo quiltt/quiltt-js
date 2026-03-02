@@ -26,10 +26,10 @@
     "@capacitor/core": "8.1.0",
     "@capacitor/ios": "8.1.0",
     "@quiltt/capacitor": "workspace:*",
-    "vue": "^3.5.0"
+    "vue": "3.5.28"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.3",
+    "@biomejs/biome": "2.4.5",
     "@capacitor/cli": "^8.0.0",
     "@playwright/test": "1.57.0",
     "@types/node": "24.11.0",

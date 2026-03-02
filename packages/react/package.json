@@ -67,12 +67,12 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.4",
+    "@apollo/client": "^4.1.6",
     "@quiltt/core": "workspace:*",
     "use-debounce": "^10.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.3",
+    "@biomejs/biome": "2.4.5",
     "@types/node": "24.11.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

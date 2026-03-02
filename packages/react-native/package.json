@@ -59,10 +59,10 @@
     "@quiltt/core": "workspace:*",
     "@quiltt/react": "workspace:*",
     "lodash.debounce": "4.0.8",
-    "react-native-device-info": "15.0.1"
+    "react-native-device-info": "15.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.3",
+    "@biomejs/biome": "2.4.5",
     "@types/base-64": "1.0.2",
     "@types/lodash.debounce": "4.0.9",
     "@types/node": "24.11.0",
