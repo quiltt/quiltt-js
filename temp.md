@@ -1,11 +1,3 @@
----
-"@quiltt/capacitor": minor
-"@quiltt/core": minor
-"@quiltt/react": minor
-"@quiltt/react-native": minor
-"@quiltt/vue": minor
----
-
 Add @quiltt/capacitor package for Ionic and Capacitor apps
 
 - Framework-agnostic by default — works with Vue, Angular, Svelte, or vanilla JS
