@@ -33,7 +33,7 @@
     "@biomejs/biome": "2.4.3",
     "@capacitor/cli": "^8.0.0",
     "@playwright/test": "1.57.0",
-    "@types/node": "24.10.13",
+    "@types/node": "24.11.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.4",

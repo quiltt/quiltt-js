@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.3",
-    "@types/node": "24.10.13",
+    "@types/node": "24.11.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "bunchee": "6.9.4",

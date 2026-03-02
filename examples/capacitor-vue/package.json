@@ -32,7 +32,7 @@
     "@biomejs/biome": "2.4.3",
     "@capacitor/cli": "^8.0.0",
     "@playwright/test": "1.57.0",
-    "@types/node": "24.10.13",
+    "@types/node": "24.11.0",
     "@vitejs/plugin-vue": "5.2.4",
     "typescript": "5.9.3",
     "vite": "7.3.1",
