@@ -1,5 +1,11 @@
 # @quiltt/core
 
+## 5.1.2
+
+### Patch Changes
+
+- [#423](https://github.com/quiltt/quiltt-js/pull/423) [`aca4d51`](https://github.com/quiltt/quiltt-js/commit/aca4d51bc699f80e50977d28b120280db9a4414d) Thanks [@sirwolfgang](https://github.com/sirwolfgang)! - Fix VersionLink to allow custom Quiltt-SDK-Agent header override
+
 ## 5.1.1
 
 ### Patch Changes
