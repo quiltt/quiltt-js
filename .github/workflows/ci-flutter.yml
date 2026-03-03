@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'packages/flutter/**'
+      - "packages/flutter/**"
   pull_request:
     paths:
-      - 'packages/flutter/**'
+      - "packages/flutter/**"
   workflow_dispatch:
 
 permissions:
@@ -28,19 +28,12 @@ jobs:
 
       - uses: flutter-actions/setup-flutter@v4
         with:
-          version: '3.32.0'
+          version: "3.32.0"
           channel: stable
           cache: true
 
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.4.7'
-          bundler-cache: true
-
       - name: Install dependencies
-        run: |
-          bundle install
-          flutter pub get
+        run: flutter pub get
 
       - name: Analyze
         run: flutter analyze lib
