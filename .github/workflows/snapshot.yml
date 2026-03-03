@@ -1,0 +1,81 @@
+name: Snapshot Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "npm dist-tag for the snapshot (e.g. next, canary, pr-123)"
+        required: false
+        default: "next"
+        type: string
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions: {}
+
+jobs:
+  snapshot:
+    # prevent this action from running on forks
+    if: github.repository == 'quiltt/quiltt-js'
+
+    name: Publish snapshot
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+        with:
+          build-packages: "false"
+
+      - name: Create .npmrc in home folder
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> $HOME/.npmrc
+          echo "strict-peer-dependencies=false" >> $HOME/.npmrc
+          echo "git-checks=false" >> $HOME/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Check for changesets
+        run: |
+          count=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l | tr -d ' ')
+          if [ "$count" -eq 0 ]; then
+            echo "No changesets found. Create one first: pnpm changeset"
+            exit 1
+          fi
+          echo "Found $count changeset(s)"
+
+      - name: Version packages as snapshot
+        run: pnpm changeset version --snapshot ${{ inputs.tag }}
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Publish snapshot to npm
+        run: pnpm -r publish --tag ${{ inputs.tag }} --no-git-checks --filter=./packages/**
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Write step summary
+        uses: actions/github-script@v7
+        env:
+          SNAPSHOT_TAG: ${{ inputs.tag }}
+        with:
+          script: |
+            const fs = require('fs')
+            const version = JSON.parse(fs.readFileSync('packages/core/package.json', 'utf8')).version
+            const tag = process.env.SNAPSHOT_TAG
+
+            await core.summary
+              .addHeading('Snapshot published', 2)
+              .addRaw(`**Version:** \`${version}\`\n\n**Tag:** \`${tag}\`\n\nInstall:`)
+              .addCodeBlock(
+                `pnpm add @quiltt/core@${tag}\npnpm add @quiltt/react@${tag}`,
+                'sh'
+              )
+              .write()

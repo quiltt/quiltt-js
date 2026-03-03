@@ -1,0 +1,96 @@
+# frozen_string_literal: true
+
+require 'octokit'
+require 'semantic'
+
+REPO_NAME = 'quiltt/quiltt-js'
+GITHUB_TOKEN = ENV['GITHUB_TOKEN']
+PUBSPEC_YAML_FILE_PATH = '../pubspec.yaml'
+SDK_VERSION_FILE_PATH = '../lib/quiltt_sdk_version.dart'
+
+def release(new_version)
+  new_branch = "release/#{new_version}"
+  push_to_git_remote(new_branch)
+
+  set_github_release(
+    repository_name: REPO_NAME,
+    api_token: GITHUB_TOKEN,
+    name: new_version.to_s,
+    tag_name: new_version.to_s,
+    is_generate_release_notes: true,
+    commitish: new_branch
+  )
+
+  create_pull_request(
+    repo: REPO_NAME,
+    api_token: GITHUB_TOKEN,
+    title: "Release #{new_version}",
+    head: new_branch,
+    base: 'main'
+  )
+end
+
+def bump_version_file(level)
+  client = ::Octokit::Client.new(access_token: GITHUB_TOKEN)
+  latest_release = client.latest_release(REPO_NAME)
+
+  current_version = Semantic::Version.new(latest_release.tag_name.gsub('v', ''))
+  new_version = current_version.increment!(level).to_s
+
+  # Increment version in pubspec.yaml
+  genereate_new_pubspec_yaml(new_version)
+  # Increment version in quiltt_sdk_version.dart
+  generate_release_version_file(new_version)
+  new_version
+end
+
+def genereate_new_pubspec_yaml(new_version)
+  yaml = YAML.load_file(PUBSPEC_YAML_FILE_PATH)
+  yaml['version'] = new_version
+  File.open(PUBSPEC_YAML_FILE_PATH, 'w') { |f| f.write yaml.to_yaml }
+end
+
+def generate_release_version_file(version)
+  sh("echo \"var quilttSdkVersion = \\\"#{version}\\\";\" > #{SDK_VERSION_FILE_PATH}")
+end
+
+def push_to_git_remote(branch)
+  sh("git checkout -b #{branch}")
+  sh("git add #{PUBSPEC_YAML_FILE_PATH}")
+  sh("git add #{SDK_VERSION_FILE_PATH}")
+  sh('git commit -m "Bump version"')
+  sh("git push origin #{branch}")
+end
+
+lane :release_patch do
+  new_version = bump_version_file(:patch)
+  check_publish
+  # build_example_app
+  release(new_version)
+end
+
+lane :release_minor do
+  new_version = bump_version_file(:minor)
+  check_publish
+  # build_example_app
+  release(new_version)
+end
+
+lane :release_major do
+  new_version = bump_version_file(:major)
+  check_publish
+  # build_example_app
+  release(new_version)
+end
+
+lane :check_publish do
+  sh('flutter pub get')
+  sh('flutter pub publish --dry-run')
+end
+
+lane :build_example_app do
+  # TODO: run tests, build android as a stop gap for now
+  Dir.chdir('../example') do
+    sh('flutter build appbundle')
+  end
+end

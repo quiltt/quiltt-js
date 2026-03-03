@@ -1,0 +1,56 @@
+name: iOS CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/ios/**"
+  pull_request:
+    paths:
+      - "packages/ios/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: packages/ios
+
+jobs:
+  build:
+    name: iOS CI
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.2"
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4.7"
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Lint
+        run: swiftlint lint --strict
+
+      - name: Build Swift package
+        run: swift build
+
+      - name: Run tests
+        run: swift test
+
+      - name: Build example app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bundle exec fastlane ios build_example_app

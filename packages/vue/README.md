@@ -1,7 +1,7 @@
 # @quiltt/vue
 
 [![npm version](https://badge.fury.io/js/@quiltt%2Fvue.svg)](https://badge.fury.io/js/@quiltt%2Fvue)
-[![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci.yml)
+[![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci-js.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci-js.yml)
 
 Vue 3 composables and components for Quiltt Connector.
 

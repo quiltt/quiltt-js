@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">App Jetpack Compose</string>
+    <string name="title_activity_quiltt_connector">QuilttConnectorActivity</string>
+</resources>
