@@ -13,6 +13,20 @@
 1. Enter [the URL of the Quiltt Connector Swift SDK repository](https://github.com/quiltt/quiltt-connector-swift-sdk), select the latest version and click `Add Package`.
 1. The Quiltt Connector Swift SDK is now integrated into your project. You can import it in your Swift files with `import QuilttConnector`.
 
+## Development
+
+Install [SwiftLint](https://github.com/realm/SwiftLint) for local linting:
+
+```sh
+brew install swiftlint
+```
+
+Run from `packages/ios/`:
+
+```sh
+swiftlint lint --strict
+```
+
 ## Usage
 
 After importing `QuilttConnector`, you can use its classes and methods in your code. Here's a basic example:

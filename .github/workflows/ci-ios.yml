@@ -11,6 +11,9 @@ on:
       - 'packages/ios/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/ios
@@ -29,11 +32,17 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.0'
+          ruby-version: '3.4.7'
           bundler-cache: true
 
       - name: Install dependencies
         run: bundle install
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Lint
+        run: swiftlint lint --strict
 
       - name: Build Swift package
         run: swift build

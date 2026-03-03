@@ -508,7 +508,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.0'
+          ruby-version: '3.4.7'
           bundler-cache: true
 
       - name: Install Fastlane
@@ -530,13 +530,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: '3.5.0'
-
       - uses: flutter-actions/setup-flutter@v2
         with:
-          version: '3.24.0'
+          version: '3.32.0'
           channel: stable
           cache: true
 
@@ -565,7 +561,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.0'
+          ruby-version: '3.4.7'
           bundler-cache: true
 
       - name: Install dependencies

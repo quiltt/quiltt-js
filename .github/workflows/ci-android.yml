@@ -11,6 +11,9 @@ on:
       - 'packages/android/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: packages/android
@@ -32,7 +35,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.0'
+          ruby-version: '3.4.7'
           bundler-cache: true
 
       - name: Install Fastlane
