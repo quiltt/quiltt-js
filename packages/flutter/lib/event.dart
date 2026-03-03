@@ -33,23 +33,17 @@ class ConnectorSDKOnEventExitCallback {
 class ConnectorSDKOnExitSuccessCallback {
   ConnectorSDKCallbackMetadata eventMetadata;
 
-  ConnectorSDKOnExitSuccessCallback({
-    required this.eventMetadata,
-  });
+  ConnectorSDKOnExitSuccessCallback({required this.eventMetadata});
 }
 
 class ConnectorSDKOnExitAbortCallback {
   ConnectorSDKCallbackMetadata eventMetadata;
 
-  ConnectorSDKOnExitAbortCallback({
-    required this.eventMetadata,
-  });
+  ConnectorSDKOnExitAbortCallback({required this.eventMetadata});
 }
 
 class ConnectorSDKOnExitErrorCallback {
   ConnectorSDKCallbackMetadata eventMetadata;
 
-  ConnectorSDKOnExitErrorCallback({
-    required this.eventMetadata,
-  });
+  ConnectorSDKOnExitErrorCallback({required this.eventMetadata});
 }

@@ -7,8 +7,10 @@ class URLUtils {
     if (string.isEmpty) return false;
 
     // Check for typical URL encoding patterns like %20, %3A, etc.
-    final hasEncodedChars =
-        RegExp(r'%[0-9A-F]{2}', caseSensitive: false).hasMatch(string);
+    final hasEncodedChars = RegExp(
+      r'%[0-9A-F]{2}',
+      caseSensitive: false,
+    ).hasMatch(string);
 
     // Match iOS behavior - ignore double encoding check for now
     return hasEncodedChars;
