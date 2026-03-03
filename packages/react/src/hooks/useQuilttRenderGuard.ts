@@ -63,7 +63,7 @@ export const useQuilttRenderGuard = (componentName: string) => {
           `    )\n` +
           `  }\n\n` +
           `Learn more:\n` +
-          `  • https://github.com/quiltt/quiltt-js/tree/main/packages/react#provider-usage\n` +
+          `  • https://github.com/quiltt/quiltt-sdks/tree/main/packages/react#provider-usage\n` +
           `  • https://react.dev/reference/react/useContext#my-component-doesnt-see-the-value-from-my-provider`
       )
     }

@@ -36,7 +36,7 @@ If you're ready to submit a code change:
 5. **Create a changeset** by running `pnpm changeset` and following the prompts. All packages are on fixed versioning, so a changeset on any one package bumps all of them. See [RELEASING.md](RELEASING.md) for more details.
 6. **Commit your changes.** Use clear and descriptive commit messages. Include the generated changeset file.
 7. **Push your changes** to your fork on GitHub.
-8. **Submit a pull request** against the `main` branch of `quiltt-js`. Provide a clear description of the changes and any relevant issue numbers.
+8. **Submit a pull request** against the `main` branch of `quiltt-sdks`. Provide a clear description of the changes and any relevant issue numbers.
 
 #### Code Review Process
 
