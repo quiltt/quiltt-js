@@ -5,7 +5,7 @@ name: Publish Mobile SDKs
 on:
   push:
     tags:
-      - '@quiltt/core@*'
+      - "@quiltt/core@*"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -113,7 +113,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.7'
+          ruby-version: "3.4.7"
           bundler-cache: true
 
       - name: Install Fastlane
@@ -136,16 +136,16 @@ jobs:
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.ANDROID_SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.ANDROID_SIGNING_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: 'android/v${{ needs.prepare.outputs.version }}'
-          name: 'Android SDK v${{ needs.prepare.outputs.version }}'
+          tag_name: "android/v${{ needs.prepare.outputs.version }}"
+          name: "Android SDK v${{ needs.prepare.outputs.version }}"
           body: |
             ## Android SDK v${{ needs.prepare.outputs.version }}
 
@@ -154,14 +154,14 @@ jobs:
             **Gradle (Kotlin DSL):**
             ```kotlin
             dependencies {
-                implementation("app.quiltt:connector:${{ needs.prepare.outputs.version }}")
+                implementation("io.quiltt:connector:${{ needs.prepare.outputs.version }}")
             }
             ```
 
             **Maven:**
             ```xml
             <dependency>
-                <groupId>app.quiltt</groupId>
+                <groupId>io.quiltt</groupId>
                 <artifactId>connector</artifactId>
                 <version>${{ needs.prepare.outputs.version }}</version>
             </dependency>
@@ -177,6 +177,9 @@ jobs:
     name: Publish Flutter
     needs: [prepare, update-versions]
     runs-on: ubuntu-latest
+    environment: pub-dev
+    permissions:
+      id-token: write
     defaults:
       run:
         working-directory: packages/flutter
@@ -188,7 +191,7 @@ jobs:
 
       - uses: flutter-actions/setup-flutter@v2
         with:
-          version: '3.32.0'
+          version: "3.32.0"
           channel: stable
           cache: true
 
@@ -199,24 +202,8 @@ jobs:
       - name: Analyze
         run: flutter analyze lib
 
-      - name: Test
-        run: flutter test
-
       - name: Validate package
         run: flutter pub publish --dry-run
-
-      - name: Setup pub.dev credentials
-        run: |
-          mkdir -p ~/.pub-cache
-          cat > ~/.pub-cache/credentials.json << EOF
-          {
-            "accessToken": "${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
-            "refreshToken": "${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
-            "tokenEndpoint": "${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}",
-            "scopes": ["https://www.googleapis.com/auth/userinfo.email", "openid"],
-            "expiration": ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
-          }
-          EOF
 
       - name: Publish to pub.dev
         run: flutter pub publish --force
@@ -224,8 +211,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: 'flutter/v${{ needs.prepare.outputs.version }}'
-          name: 'Flutter SDK v${{ needs.prepare.outputs.version }}'
+          tag_name: "flutter/v${{ needs.prepare.outputs.version }}"
+          name: "Flutter SDK v${{ needs.prepare.outputs.version }}"
           body: |
             ## Flutter SDK v${{ needs.prepare.outputs.version }}
 
@@ -257,11 +244,11 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.2'
+          xcode-version: "16.2"
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.7'
+          ruby-version: "3.4.7"
           bundler-cache: true
 
       - name: Install dependencies
@@ -281,8 +268,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: 'ios/v${{ needs.prepare.outputs.version }}'
-          name: 'iOS SDK v${{ needs.prepare.outputs.version }}'
+          tag_name: "ios/v${{ needs.prepare.outputs.version }}"
+          name: "iOS SDK v${{ needs.prepare.outputs.version }}"
           body: |
             ## iOS SDK v${{ needs.prepare.outputs.version }}
 

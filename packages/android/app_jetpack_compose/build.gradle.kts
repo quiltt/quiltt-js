@@ -72,5 +72,5 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation(project(":connector"))
 //    Enable below to use the published version
-//    implementation("app.quiltt:connector:<VERSION>")
+//    implementation("io.quiltt:connector:<VERSION>")
 }

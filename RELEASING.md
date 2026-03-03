@@ -31,7 +31,7 @@ The following packages are published to their respective registries automaticall
 
 | Package | Registry | Workflow |
 | --- | --- | --- |
-| Android (`app.quiltt:connector`) | Maven Central | `release-mobile.yml` |
+| Android (`io.quiltt:connector`) | Maven Central | `release-mobile.yml` |
 | Flutter (`quiltt_connector`) | pub.dev | `release-mobile.yml` |
 | iOS (`QuilttConnector`) | GitHub Releases + SPM tag | `release-mobile.yml` |
 
@@ -124,7 +124,7 @@ Triggered automatically by the `@quiltt/core@*` tag pushed by the JS release:
    - `packages/ios/Sources/QuilttConnector/QuilttSdkVersion.swift`
 3. **Publish in parallel**:
    - Android: builds, tests, publishes to Maven Central, creates `android/v*` GitHub release
-   - Flutter: analyzes, tests, publishes to pub.dev, creates `flutter/v*` GitHub release
+   - Flutter: analyzes, validates, publishes to pub.dev, creates `flutter/v*` GitHub release
    - iOS: builds, tests, creates `ios/v*` GitHub release
 
 ### Configuration Details
@@ -214,17 +214,14 @@ If there are version conflicts:
 
 - `OSSRH_USERNAME`: Sonatype OSSRH username
 - `OSSRH_PASSWORD`: Sonatype OSSRH password
-- `SIGNING_KEY_ID`: GPG signing key ID
-- `SIGNING_PASSWORD`: GPG signing key passphrase
-- `SIGNING_KEY`: GPG signing key (base64 encoded)
+- `ANDROID_SIGNING_KEY_ID`: GPG signing key ID
+- `ANDROID_SIGNING_PASSWORD`: GPG signing key passphrase
+- `ANDROID_SIGNING_KEY`: GPG signing key (base64 encoded)
 - `SONATYPE_STAGING_PROFILE_ID`: Sonatype staging profile ID
 
 #### Flutter Release
 
-- `PUB_DEV_PUBLISH_ACCESS_TOKEN`: pub.dev OAuth access token
-- `PUB_DEV_PUBLISH_REFRESH_TOKEN`: pub.dev OAuth refresh token
-- `PUB_DEV_PUBLISH_TOKEN_ENDPOINT`: pub.dev token endpoint URL
-- `PUB_DEV_PUBLISH_EXPIRATION`: pub.dev token expiration timestamp
+No secrets required. Publishing uses GitHub Actions OIDC — pub.dev is configured to trust the `quiltt/quiltt-sdk` repository with the `pub-dev` environment.
 
 ### Workflow Triggers
 

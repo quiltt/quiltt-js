@@ -44,7 +44,7 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("connector") {
-            groupId = "app.quiltt"
+            groupId = "io.quiltt"
             artifactId = "connector"
             version = "1.0.3"
 
@@ -80,7 +80,7 @@ publishing {
             }
 
             artifact("$buildDir/outputs/aar/connector-release.aar")
-        } // app.quiltt:quiltt-connector:VERSION
+        } // io.quiltt:quiltt-connector:VERSION
     }
     repositories {
         maven {
@@ -96,8 +96,8 @@ publishing {
 
 signing {
     useInMemoryPgpKeys(
-        System.getenv("SIGNING_KEY_ID"),
-        System.getenv("SIGNING_KEY"),
-        System.getenv("SIGNING_PASSWORD"))
+        System.getenv("ANDROID_SIGNING_KEY_ID"),
+        System.getenv("ANDROID_SIGNING_KEY"),
+        System.getenv("ANDROID_SIGNING_PASSWORD"))
     sign(publishing.publications["connector"])
 }

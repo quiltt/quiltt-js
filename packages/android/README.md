@@ -1,6 +1,6 @@
 # Quiltt Android SDK
 
-[![Maven Central](https://img.shields.io/maven-central/v/app.quiltt/connector)](https://search.maven.org/artifact/app.quiltt/connector)
+[![Maven Central](https://img.shields.io/maven-central/v/io.quiltt/connector)](https://search.maven.org/artifact/io.quiltt/connector)
 [![API Level](https://img.shields.io/badge/API-26%2B-brightgreen.svg)](https://android-arsenal.com/api?level=26)
 [![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci-android.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci-android.yml)
 
@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    implementation("app.quiltt:connector:<INSERT_LATEST_VERSION>")
+    implementation("io.quiltt:connector:<INSERT_LATEST_VERSION>")
 }
 ```
 
@@ -32,7 +32,7 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>app.quiltt</groupId>
+    <groupId>io.quiltt</groupId>
     <artifactId>connector</artifactId>
     <version>INSERT_LATEST_VERSION</version>
 </dependency>
@@ -518,7 +518,7 @@ If using code obfuscation, add these rules to your `proguard-rules.pro`:
 
 This SDK is released automatically alongside all other Quiltt packages when a new version is published. Versions are unified across the entire monorepo.
 
-**Latest Version:** [![Maven Central](https://img.shields.io/maven-central/v/app.quiltt/connector)](https://search.maven.org/artifact/app.quiltt/connector)
+**Latest Version:** [![Maven Central](https://img.shields.io/maven-central/v/io.quiltt/connector)](https://search.maven.org/artifact/io.quiltt/connector)
 
 For release process details, see the [monorepo release documentation](../../RELEASING.md).
 
