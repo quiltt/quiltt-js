@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'packages/android/**'
+      - "packages/android/**"
   pull_request:
     paths:
-      - 'packages/android/**'
+      - "packages/android/**"
   workflow_dispatch:
 
 permissions:
@@ -35,7 +35,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.7'
+          ruby-version: "3.4.7"
           bundler-cache: true
 
       - name: Install Fastlane

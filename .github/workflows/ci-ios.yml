@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'packages/ios/**'
+      - "packages/ios/**"
   pull_request:
     paths:
-      - 'packages/ios/**'
+      - "packages/ios/**"
   workflow_dispatch:
 
 permissions:
@@ -28,11 +28,11 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.2'
+          xcode-version: "16.2"
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.7'
+          ruby-version: "3.4.7"
           bundler-cache: true
 
       - name: Install dependencies

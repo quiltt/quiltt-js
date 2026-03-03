@@ -97,6 +97,39 @@ A single changeset bumps all packages together due to the fixed versioning group
 Add new useAccountBalance hook for real-time balance updates.
 ```
 
+## Snapshot Releases (Pre-release Testing)
+
+Snapshot releases let you publish a test build from any branch without affecting the official release history. Use them when you want someone to test a change before merging.
+
+### How to Publish a Snapshot
+
+1. Ensure your branch has a changeset (`pnpm changeset` if not)
+2. Go to **Actions → Snapshot Release → Run workflow**
+3. Select your branch from the dropdown
+4. Optionally set a dist-tag (default: `next`; use something like `pr-123` to namespace it)
+5. Click **Run workflow**
+
+The workflow versions all packages to `0.0.0-<tag>-<timestamp>`, builds, and publishes the 5 public JS packages to npm under the specified dist-tag. The step summary shows the exact install commands.
+
+### Installing a Snapshot
+
+```bash
+# Install by exact version
+pnpm add @quiltt/core@0.0.0-next-20260303T141200Z
+
+# Or by dist-tag (always resolves to the latest snapshot under that tag)
+pnpm add @quiltt/core@next
+```
+
+### Notes
+
+- Snapshot versions never become `latest` on npm — they are always published under a named dist-tag
+- The mobile packages (`android`, `flutter`, `ios`) are versioned internally but not published to npm
+- Snapshots do not create git tags or GitHub releases
+- Old snapshot versions accumulate on npm; this is expected and harmless
+
+---
+
 ## For Maintainers: The Release Process
 
 ### Automated Workflow
@@ -116,16 +149,19 @@ Runs on push to `main`. When changesets are present:
 Triggered automatically by the `@quiltt/core@*` tag pushed by the JS release:
 
 1. **Extract version** from the Changesets tag
-2. **Update version files** across all mobile packages in a single commit:
-   - `packages/android/connector/build.gradle.kts`
-   - `packages/android/connector/src/main/java/app/quiltt/connector/QuilttSdkVersion.kt`
-   - `packages/flutter/pubspec.yaml`
-   - `packages/flutter/lib/quiltt_sdk_version.dart`
-   - `packages/ios/Sources/QuilttConnector/QuilttSdkVersion.swift`
-3. **Publish in parallel**:
+2. **Update version files, commit to `main`, and push platform tags:**
+   - Updates the following files with the new version:
+     - `packages/android/connector/build.gradle.kts`
+     - `packages/android/connector/src/main/java/app/quiltt/connector/QuilttSdkVersion.kt`
+     - `packages/flutter/pubspec.yaml`
+     - `packages/flutter/lib/quiltt_sdk_version.dart`
+     - `packages/ios/Sources/QuilttConnector/QuilttSdkVersion.swift`
+   - Commits these changes directly to `main` with `[skip ci]` to avoid re-triggering CI
+   - Pushes platform tags: `android/v*`, `flutter/v*`, `ios/v*`
+3. **Publish in parallel** (each job checks out `main` after the version commit):
    - Android: builds, tests, publishes to Maven Central, creates `android/v*` GitHub release
    - Flutter: analyzes, validates, publishes to pub.dev, creates `flutter/v*` GitHub release
-   - iOS: builds, tests, creates `ios/v*` GitHub release
+   - iOS: builds, tests, creates `ios/v*` GitHub release (iOS is distributed via SPM — the `ios/v*` tag is the SPM release ref)
 
 ### Configuration Details
 
@@ -140,10 +176,6 @@ All packages are configured with fixed versioning (they always release together 
 #### Internal Dependencies
 
 When a package updates its internal dependencies, it receives a `patch` bump automatically via the `updateInternalDependencies` setting.
-
-#### Example Tags
-
-Git tags for example projects (prefixed with `@quiltt/examples-`) are automatically cleaned up before each release to prevent tag clutter.
 
 ### Manual Release (Emergency Only)
 
@@ -235,6 +267,7 @@ No secrets required. Publishing uses GitHub Actions OIDC — pub.dev is configur
 | `ci-ios.yml` | Push/PR touching `packages/ios/**` |
 | `tests-unit.yml` | Push to `main`, pull requests |
 | `tests-e2e.yml` | Push to `main`, pull requests |
+| `snapshot.yml` | Manual (`workflow_dispatch`) |
 | `bundlewatch.yml` | Pull requests |
 | `check-todos.yml` | Push to `main`, pull requests |
 

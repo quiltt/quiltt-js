@@ -15,7 +15,7 @@
     "clean": "turbo run clean",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "publish": "pnpm run build && npx changeset tag && pnpm -r publish packages --no-git-checks --filter=./packages/**",
+    "publish": "pnpm run build && npx changeset tag && pnpm -r publish --no-git-checks --filter=./packages/**",
     "test": "turbo run test",
     "test:unit": "vitest run --coverage",
     "test:e2e": "turbo run test:component",
