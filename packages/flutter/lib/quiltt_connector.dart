@@ -31,7 +31,7 @@ class QuilttConnector {
   }
 
   /// Connect to a connector
-  connect(
+  void connect(
     BuildContext context,
     QuilttConnectorConfiguration config, {
     Function(ConnectorSDKOnEventCallback event)? onEvent,
@@ -55,7 +55,7 @@ class QuilttConnector {
   }
 
   /// Reconnect to a connector
-  reconnect(
+  void reconnect(
     BuildContext context,
     QuilttConnectorConfiguration config, {
     Function(ConnectorSDKOnEventCallback event)? onEvent,
@@ -94,7 +94,7 @@ class _WebViewPage {
   Function(ConnectorSDKOnExitAbortCallback event)? onExitAbort;
   Function(ConnectorSDKOnExitErrorCallback event)? onExitError;
 
-  _init(controller, context, QuilttConnectorConfiguration config,
+  void _init(WebViewController controller, BuildContext context, QuilttConnectorConfiguration config,
       {String? token,
       Function(ConnectorSDKOnEventCallback event)? onEvent,
       Function(ConnectorSDKOnEventExitCallback event)? onExit,
@@ -112,7 +112,7 @@ class _WebViewPage {
     this.onExitError = onExitError;
   }
 
-  _closeWebView() {
+  void _closeWebView() {
     if (Navigator.canPop(context)) {
       controller.clearLocalStorage();
       Navigator.pop(context);
@@ -128,7 +128,7 @@ class _WebViewPage {
   //   'cdn.plaid.com',
   // ];
 
-  _shouldRender(String url) {
+  bool _shouldRender(String url) {
     // Don't render Quiltt connector events in WebView
     if (url.startsWith('quilttconnector://')) {
       return false;
@@ -137,13 +137,13 @@ class _WebViewPage {
     return true;
   }
 
-  _handleOAuth(String oauthUrl) async {
+  Future<void> _handleOAuth(String oauthUrl) async {
     // Normalize the URL encoding to prevent issues with double-encoding
     final normalizedUrl = URLUtils.normalizeUrlEncoding(oauthUrl);
     await launchUrlString(normalizedUrl, mode: LaunchMode.externalApplication);
   }
 
-  _handleQuilttConnectorEvent(Uri uri, String initInjectedJavaScript) async {
+  Future<void> _handleQuilttConnectorEvent(Uri uri, String initInjectedJavaScript) async {
     ConnectorSDKCallbackMetadata eventMetadata = ConnectorSDKCallbackMetadata(
       connectorId: config.connectorId,
       connectionId: uri.queryParameters['connectionId'],

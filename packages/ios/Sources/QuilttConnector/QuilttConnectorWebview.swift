@@ -34,7 +34,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
             (self as WKWebView).scrollView.isScrollEnabled = true
             self.isMultipleTouchEnabled = false
         #endif
-        /** Enable isInspectable to debug webview */
+        // Enable isInspectable to debug webview
         //  if #available(iOS 16.4, *) {
         //  self.isInspectable = true
         //  }
@@ -74,7 +74,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         // Create query items
         var queryItems = [
             URLQueryItem(name: "mode", value: "webview"),
-            URLQueryItem(name: "agent", value: "ios-\(quilttSdkVersion)"),
+            URLQueryItem(name: "agent", value: "ios-\(quilttSdkVersion)")
         ]
 
         // Handle the OAuth redirect URL with special care
@@ -203,8 +203,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         case "Navigate":
             if let urlc = URLComponents(string: url.absoluteString),
                 let navigateUrlItem = urlc.queryItems?.first(where: { $0.name == "url" }),
-                let navigateUrlString = navigateUrlItem.value
-            {
+                let navigateUrlString = navigateUrlItem.value {
                 // Handle potential encoding issues
                 if URLUtils.isEncoded(navigateUrlString) {
                     let decodedUrl = navigateUrlString.removingPercentEncoding ?? navigateUrlString
