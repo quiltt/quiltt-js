@@ -1,7 +1,7 @@
 # Quiltt Flutter SDK
 
 [![pub package](https://img.shields.io/pub/v/quiltt_connector.svg)](https://pub.dev/packages/quiltt_connector)
-[![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci-flutter.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci-flutter.yml)
+[![CI](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-flutter.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-flutter.yml)
 
 The Quiltt Flutter SDK provides a Widget for integrating [Quiltt Connector](https://quiltt.dev/connector) into your Flutter app.
 

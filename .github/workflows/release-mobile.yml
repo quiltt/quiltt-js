@@ -279,7 +279,7 @@ jobs:
 
             Or in `Package.swift`:
             ```swift
-            .package(url: "https://github.com/quiltt/quiltt-js", from: "${{ needs.prepare.outputs.version }}")
+            .package(url: "https://github.com/quiltt/quiltt-sdks", from: "${{ needs.prepare.outputs.version }}")
             ```
           generate_release_notes: true
         env:

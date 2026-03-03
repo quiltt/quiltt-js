@@ -1,6 +1,6 @@
 # Quiltt SDKs
 
-[![Maintainability](https://qlty.sh/gh/quiltt/projects/quiltt-js/maintainability.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js) [![Code Coverage](https://qlty.sh/gh/quiltt/projects/quiltt-js/coverage.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-js)
+[![Maintainability](https://qlty.sh/gh/quiltt/projects/quiltt-sdks/maintainability.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-sdks) [![Code Coverage](https://qlty.sh/gh/quiltt/projects/quiltt-sdks/coverage.svg)](https://qlty.sh/gh/quiltt/projects/quiltt-sdks)
 
 This repository is the unified home of Quiltt's SDKs, covering JavaScript/TypeScript, Android, Flutter, and iOS. All packages are versioned and released together.
 

@@ -12,7 +12,7 @@ permissions: {}
 jobs:
   release:
     # prevent this action from running on forks
-    if: github.repository == 'quiltt/quiltt-js'
+    if: github.repository == 'quiltt/quiltt-sdks'
 
     name: Release
     runs-on: ubuntu-latest

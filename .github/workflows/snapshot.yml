@@ -16,7 +16,7 @@ permissions: {}
 jobs:
   snapshot:
     # prevent this action from running on forks
-    if: github.repository == 'quiltt/quiltt-js'
+    if: github.repository == 'quiltt/quiltt-sdks'
 
     name: Publish snapshot
     runs-on: ubuntu-latest

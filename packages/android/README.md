@@ -2,7 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.quiltt/connector)](https://search.maven.org/artifact/io.quiltt/connector)
 [![API Level](https://img.shields.io/badge/API-26%2B-brightgreen.svg)](https://android-arsenal.com/api?level=26)
-[![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci-android.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci-android.yml)
+[![CI](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-android.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-android.yml)
 
 The Quiltt Android SDK provides native Android components for integrating [Quiltt Connector](https://quiltt.dev/connector) into your Android applications.
 

@@ -3,7 +3,7 @@
 require 'octokit'
 require 'semantic'
 
-REPO_NAME = 'quiltt/quiltt-js'
+REPO_NAME = 'quiltt/quiltt-sdks'
 GITHUB_TOKEN = ENV['GITHUB_TOKEN']
 PUBSPEC_YAML_FILE_PATH = '../pubspec.yaml'
 SDK_VERSION_FILE_PATH = '../lib/quiltt_sdk_version.dart'

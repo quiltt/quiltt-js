@@ -6,15 +6,15 @@
     "quiltt",
     "typescript"
   ],
-  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/core#readme",
+  "homepage": "https://github.com/quiltt/quiltt-sdks/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quiltt/quiltt-js.git",
+    "url": "https://github.com/quiltt/quiltt-sdks.git",
     "directory": "packages/core"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/quiltt/quiltt-js/issues"
+    "url": "https://github.com/quiltt/quiltt-sdks/issues"
   },
   "sideEffects": [],
   "type": "module",

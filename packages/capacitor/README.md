@@ -1,7 +1,7 @@
 # @quiltt/capacitor
 
 [![npm version](https://badge.fury.io/js/@quiltt%2Fcapacitor.svg)](https://badge.fury.io/js/@quiltt%2Fcapacitor)
-[![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci-js.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci-js.yml)
+[![CI](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-js.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-js.yml)
 
 Quiltt Connector SDK for Capacitor and Ionic apps on iOS, Android, and web.
 

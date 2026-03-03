@@ -9,15 +9,15 @@
     "vue3",
     "typescript"
   ],
-  "homepage": "https://github.com/quiltt/quiltt-js/tree/main/packages/vue#readme",
+  "homepage": "https://github.com/quiltt/quiltt-sdks/tree/main/packages/vue#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quiltt/quiltt-js.git",
+    "url": "https://github.com/quiltt/quiltt-sdks.git",
     "directory": "packages/vue"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/quiltt/quiltt-js/issues"
+    "url": "https://github.com/quiltt/quiltt-sdks/issues"
   },
   "sideEffects": [],
   "type": "module",

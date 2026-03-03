@@ -3,7 +3,7 @@ require 'semantic'
 
 default_platform :android
 
-REPO_NAME = 'quiltt/quiltt-js'.freeze
+REPO_NAME = 'quiltt/quiltt-sdks'.freeze
 GITHUB_TOKEN = ENV['GITHUB_TOKEN']
 GRADLE_FILE_PATH = '../connector/build.gradle.kts'.freeze
 SDK_VERSION_FILE_PATH = '../connector/src/main/java/app/quiltt/connector/QuilttSdkVersion.kt'.freeze

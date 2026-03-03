@@ -1,8 +1,8 @@
 # Quiltt iOS SDK
 
-[![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fquiltt%2Fquiltt-js%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/quiltt/quiltt-js)
-[![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fquiltt%2Fquiltt-js%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/quiltt/quiltt-js)
-[![CI](https://github.com/quiltt/quiltt-js/actions/workflows/ci-ios.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-js/actions/workflows/ci-ios.yml)
+[![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fquiltt%2Fquiltt-sdks%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/quiltt/quiltt-sdks)
+[![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fquiltt%2Fquiltt-sdks%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/quiltt/quiltt-sdks)
+[![CI](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-ios.yml/badge.svg?branch=main)](https://github.com/quiltt/quiltt-sdks/actions/workflows/ci-ios.yml)
 
 ## Install
 
@@ -10,7 +10,7 @@
 
 1. Open your project in Xcode.
 1. Select `File` > `Add Package Dependency...`.
-1. Enter [the URL of the Quiltt Connector Swift SDK repository](https://github.com/quiltt/quiltt-js), select the latest version and click `Add Package`.
+1. Enter [the URL of the Quiltt Connector Swift SDK repository](https://github.com/quiltt/quiltt-sdks), select the latest version and click `Add Package`.
 1. The Quiltt Connector Swift SDK is now integrated into your project. You can import it in your Swift files with `import QuilttConnector`.
 
 ## Development

@@ -4,11 +4,11 @@
 
 ### Minor Changes
 
-- [#427](https://github.com/quiltt/quiltt-js/pull/427) [`6d4b768`](https://github.com/quiltt/quiltt-js/commit/6d4b7683f49d0a6e649a4bdfaff0398669102a63) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Bump minor version to be consistent with SemVer standards
+- [#427](https://github.com/quiltt/quiltt-sdks/pull/427) [`6d4b768`](https://github.com/quiltt/quiltt-sdks/commit/6d4b7683f49d0a6e649a4bdfaff0398669102a63) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Bump minor version to be consistent with SemVer standards
 
 ### Patch Changes
 
-- Updated dependencies [[`6d4b768`](https://github.com/quiltt/quiltt-js/commit/6d4b7683f49d0a6e649a4bdfaff0398669102a63)]:
+- Updated dependencies [[`6d4b768`](https://github.com/quiltt/quiltt-sdks/commit/6d4b7683f49d0a6e649a4bdfaff0398669102a63)]:
   - @quiltt/react@5.2.0
   - @quiltt/vue@5.2.0
 
@@ -16,7 +16,7 @@
 
 ### Patch Changes
 
-- [#425](https://github.com/quiltt/quiltt-js/pull/425) [`c684b3b`](https://github.com/quiltt/quiltt-js/commit/c684b3b5f6ea2829e2abfa2a75c0d430edad66a5) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add @quiltt/capacitor package for Ionic and Capacitor apps
+- [#425](https://github.com/quiltt/quiltt-sdks/pull/425) [`c684b3b`](https://github.com/quiltt/quiltt-sdks/commit/c684b3b5f6ea2829e2abfa2a75c0d430edad66a5) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add @quiltt/capacitor package for Ionic and Capacitor apps
 
   - Framework-agnostic by default — works with Vue, Angular, Svelte, or vanilla JS
   - Vue 3 components via `@quiltt/capacitor/vue` subpath
@@ -53,6 +53,6 @@
   <QuilttConnector appLauncherUrl="https://myapp.com/callback" />
   ```
 
-- Updated dependencies [[`c684b3b`](https://github.com/quiltt/quiltt-js/commit/c684b3b5f6ea2829e2abfa2a75c0d430edad66a5)]:
+- Updated dependencies [[`c684b3b`](https://github.com/quiltt/quiltt-sdks/commit/c684b3b5f6ea2829e2abfa2a75c0d430edad66a5)]:
   - @quiltt/react@5.1.3
   - @quiltt/vue@5.1.3
