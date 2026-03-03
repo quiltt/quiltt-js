@@ -1,6 +1,6 @@
 # Releasing
 
-This document describes the release process for the quiltt-js monorepo. Our release workflow is fully automated using [Changesets](https://github.com/changesets/changesets) and GitHub Actions.
+This document describes the release process for the quiltt-sdks monorepo. Our release workflow is fully automated using [Changesets](https://github.com/changesets/changesets) and GitHub Actions.
 
 For general contributing guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md). For project overview, see the [main README](README.md).
 
@@ -253,7 +253,7 @@ If there are version conflicts:
 
 #### Flutter Release
 
-No secrets required. Publishing uses GitHub Actions OIDC — pub.dev is configured to trust the `quiltt/quiltt-sdk` repository with the `pub-dev` environment.
+No secrets required. Publishing uses GitHub Actions OIDC — pub.dev is configured to trust the `quiltt/quiltt-sdks` repository with the `pub-dev` environment.
 
 ### Workflow Triggers
 
@@ -282,6 +282,6 @@ No secrets required. Publishing uses GitHub Actions OIDC — pub.dev is configur
 
 If you encounter issues with the release process:
 
-- Check the [GitHub Actions logs](https://github.com/quiltt/quiltt-js/actions)
+- Check the [GitHub Actions logs](https://github.com/quiltt/quiltt-sdks/actions)
 - Review [Changesets documentation](https://github.com/changesets/changesets/blob/main/docs/common-questions.md)
 - Open an issue in the repository

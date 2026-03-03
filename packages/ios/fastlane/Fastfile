@@ -6,7 +6,7 @@ require 'json'
 
 default_platform :ios
 
-REPO_NAME = 'quiltt/quiltt-js'
+REPO_NAME = 'quiltt/quiltt-sdks'
 GITHUB_TOKEN = ENV['GITHUB_TOKEN']
 
 def bump_version_file(level)

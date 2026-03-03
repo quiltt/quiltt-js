@@ -73,9 +73,9 @@ publishing {
                 }
 
                 scm {
-                    connection.set("scm:git:github.com/quiltt/quiltt-js.git")
-                    developerConnection.set("scm:git:ssh://github.com/quiltt/quiltt-js.git")
-                    url.set("https://github.com/quiltt/quiltt-js/tree/main/packages/android/connector")
+                    connection.set("scm:git:github.com/quiltt/quiltt-sdks.git")
+                    developerConnection.set("scm:git:ssh://github.com/quiltt/quiltt-sdks.git")
+                    url.set("https://github.com/quiltt/quiltt-sdks/tree/main/packages/android/connector")
                 }
             }
 

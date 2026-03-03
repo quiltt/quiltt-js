@@ -1,8 +1,8 @@
-# Copilot Instructions for quiltt-js
+# Copilot Instructions for quiltt-sdks
 
 ## Project Overview
 
-quiltt-js is a TypeScript monorepo providing JavaScript SDKs for Quiltt's unified fintech API. The project enables seamless integration with open banking data and enrichment providers across React, React Native, and Node.js environments.
+quiltt-sdks is a TypeScript monorepo providing JavaScript SDKs for Quiltt's unified fintech API. The project enables seamless integration with open banking data and enrichment providers across React, React Native, and Node.js environments.
 
 ### Key Concepts
 
