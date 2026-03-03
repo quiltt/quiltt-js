@@ -109,7 +109,7 @@ jobs:
           distribution: corretto
           java-version: 21
 
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -142,7 +142,7 @@ jobs:
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: "android/v${{ needs.prepare.outputs.version }}"
           name: "Android SDK v${{ needs.prepare.outputs.version }}"
@@ -189,7 +189,7 @@ jobs:
         with:
           ref: main
 
-      - uses: flutter-actions/setup-flutter@v2
+      - uses: flutter-actions/setup-flutter@v4
         with:
           version: "3.32.0"
           channel: stable
@@ -209,7 +209,7 @@ jobs:
         run: flutter pub publish --force
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: "flutter/v${{ needs.prepare.outputs.version }}"
           name: "Flutter SDK v${{ needs.prepare.outputs.version }}"
@@ -266,7 +266,7 @@ jobs:
         run: bundle exec fastlane ios build_example_app
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: "ios/v${{ needs.prepare.outputs.version }}"
           name: "iOS SDK v${{ needs.prepare.outputs.version }}"

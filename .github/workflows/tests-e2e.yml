@@ -504,7 +504,7 @@ jobs:
           distribution: corretto
           java-version: 21
 
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -530,7 +530,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: flutter-actions/setup-flutter@v2
+      - uses: flutter-actions/setup-flutter@v4
         with:
           version: '3.32.0'
           channel: stable
