@@ -91,13 +91,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: '3.5.0'
-
       - uses: flutter-actions/setup-flutter@v2
         with:
-          version: '3.24.0'
+          version: '3.32.0'
           channel: stable
           cache: true
 
@@ -105,7 +101,7 @@ jobs:
         run: flutter pub get
 
       - name: Test
-        run: flutter test
+        run: cd example && flutter pub get && flutter test
 
   test-ios-unit:
     needs: changes
