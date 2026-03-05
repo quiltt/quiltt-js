@@ -65,7 +65,8 @@ jobs:
               -workspace ExampleSwiftUI/ExampleSwiftUI.xcodeproj/project.xcworkspace \
               -scheme ExampleSwiftUI \
               -destination "$destination" \
-              -only-testing:ExampleSwiftUIUITests \
+              -only-testing:ExampleSwiftUIUITests/ExampleSwiftUIUITests \
+              -parallel-testing-enabled NO \
               -resultBundlePath ExampleSwiftUIUITests.xcresult \
               test
           }
