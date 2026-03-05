@@ -58,14 +58,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _connectionId = "No connection Id yet";
-  _setConnectionId(String id) {
+  void _setConnectionId(String id) {
     setState(() {
       debugPrint("setConnectionId: $id");
       _connectionId = id;
     });
   }
 
-  _launchConnector() {
+  void _launchConnector() {
     String token = "token";
 
     QuilttConnectorConfiguration config = QuilttConnectorConfiguration(

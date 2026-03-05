@@ -74,7 +74,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         // Create query items
         var queryItems = [
             URLQueryItem(name: "mode", value: "webview"),
-            URLQueryItem(name: "agent", value: "ios-\(quilttSdkVersion)")
+            URLQueryItem(name: "agent", value: "ios-\(quilttSdkVersion)"),
         ]
 
         // Handle the OAuth redirect URL with special care
@@ -98,7 +98,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
     /**
      urlAllowList & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
      For other urls, we assume those are bank urls, which needs to be handle in external browser.
-
+    
      https://developer.apple.com/documentation/webkit/wknavigationdelegate/1455641-webview
      */
     public func webView(
@@ -203,7 +203,8 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         case "Navigate":
             if let urlc = URLComponents(string: url.absoluteString),
                 let navigateUrlItem = urlc.queryItems?.first(where: { $0.name == "url" }),
-                let navigateUrlString = navigateUrlItem.value {
+                let navigateUrlString = navigateUrlItem.value
+            {
                 // Handle potential encoding issues
                 if URLUtils.isEncoded(navigateUrlString) {
                     let decodedUrl = navigateUrlString.removingPercentEncoding ?? navigateUrlString

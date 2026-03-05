@@ -102,27 +102,34 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         val connectorId = params.config.connectorId
         val profileId = urlComponents.getQueryParameter("profileId")
         val connectionId = urlComponents.getQueryParameter("connectionId")
+        val metadata = ConnectorSDKCallbackMetadata(
+            connectorId = connectorId,
+            profileId = profileId,
+            connectionId = connectionId,
+        )
         Log.d(TAG, "handleQuilttEvent: $url")
         when (url.host) {
             "Load" -> {
                 initInjectJavaScript()
+                params.onEvent?.invoke(ConnectorSDKEventType.Load, metadata)
             }
             "ExitAbort" -> {
                 clearLocalStorage()
-                params.onExit?.invoke(ConnectorSDKEventType.ExitAbort, ConnectorSDKCallbackMetadata(connectorId = connectorId, profileId = null, connectionId = null))
-                params.onExitAbort?.invoke(ConnectorSDKCallbackMetadata(connectorId = connectorId, profileId = null, connectionId = null))
+                params.onEvent?.invoke(ConnectorSDKEventType.ExitAbort, metadata)
+                params.onExit?.invoke(ConnectorSDKEventType.ExitAbort, metadata)
+                params.onExitAbort?.invoke(metadata)
             }
             "ExitError" -> {
                 clearLocalStorage()
-                params.onExit?.invoke(ConnectorSDKEventType.ExitError, ConnectorSDKCallbackMetadata(connectorId = connectorId, profileId = null, connectionId = null))
-                params.onExitError?.invoke(ConnectorSDKCallbackMetadata(connectorId = connectorId, profileId = null, connectionId = null))
+                params.onEvent?.invoke(ConnectorSDKEventType.ExitError, metadata)
+                params.onExit?.invoke(ConnectorSDKEventType.ExitError, metadata)
+                params.onExitError?.invoke(metadata)
             }
             "ExitSuccess" -> {
                 clearLocalStorage()
-                if (connectionId != null) {
-                    params.onExit?.invoke(ConnectorSDKEventType.ExitSuccess, ConnectorSDKCallbackMetadata(connectorId = connectorId, profileId = null, connectionId = connectionId))
-                    params.onExitSuccess?.invoke(ConnectorSDKCallbackMetadata(connectorId = connectorId, profileId = null, connectionId = connectionId))
-                }
+                params.onEvent?.invoke(ConnectorSDKEventType.ExitSuccess, metadata)
+                params.onExit?.invoke(ConnectorSDKEventType.ExitSuccess, metadata)
+                params.onExitSuccess?.invoke(metadata)
             }
             "Authenticate" -> {
                 Log.d(TAG, "Authenticate: $profileId")

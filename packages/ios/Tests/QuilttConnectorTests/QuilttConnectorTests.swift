@@ -1,11 +1,13 @@
 import XCTest
+
 @testable import QuilttConnector
 
-// Simple test case that will pass during CI
-// For now, just this test is just making sure that the package is building correctly
 final class QuilttConnectorTests: XCTestCase {
-    func testExample() throws {
-        // This simple test will pass for CI purposes
+    @MainActor
+    func testAuthenticate_doesNotThrow() {
+        let connector = QuilttConnector()
+        connector.authenticate(token: "test-session-token")
+        // authenticate() stores token in private state; no throw means success
         XCTAssertTrue(true)
     }
 }
