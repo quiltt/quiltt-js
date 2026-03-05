@@ -35,7 +35,7 @@ describe('QuilttConnector plugin registration', () => {
     expect(webPlugin).toBeDefined()
     expect(webPlugin).toMatchObject({
       openUrl: expect.any(Function),
-      getLaunchUrl: expect.any(Function),
+      getAppLauncherUrl: expect.any(Function),
     })
   })
 })

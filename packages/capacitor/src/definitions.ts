@@ -47,16 +47,16 @@ export interface QuilttConnectorPlugin {
   openUrl(options: OpenUrlOptions): Promise<{ completed: boolean }>
 
   /**
-   * Get the URL that was used to launch the app, if any.
+   * Get the app launcher URL, if any.
    *
    * This is useful for handling OAuth callbacks when the app is opened
    * from a Universal Link (iOS) or App Link (Android).
    *
-   * @returns A promise that resolves with the launch URL, or undefined if none
+   * @returns A promise that resolves with the app launcher URL, or undefined if none
    *
    * @since 5.0.3
    */
-  getLaunchUrl(): Promise<DeepLinkEvent>
+  getAppLauncherUrl(): Promise<DeepLinkEvent>
 
   /**
    * Listen for deep link events.

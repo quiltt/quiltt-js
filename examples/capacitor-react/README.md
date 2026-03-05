@@ -18,9 +18,9 @@ Open <http://localhost:5173>.
 
 The app reads these variables (with safe defaults in `src/app.tsx`):
 
-- `VITE_QUILTT_AUTH_TOKEN`
-- `VITE_QUILTT_CONNECTOR_ID`
-- `VITE_APP_LAUNCHER_URL`
+- `VITE_QUILTT_AUTH_TOKEN`: Session token for `QuilttProvider`
+- `VITE_QUILTT_CONNECTOR_ID`: Connector ID passed to `QuilttButton` and `QuilttConnector`
+- `VITE_APP_LAUNCHER_URL`: Value passed to the `appLauncherUrl` prop for mobile OAuth callbacks
 
 Create a `.env` file in this directory for local testing with real values:
 

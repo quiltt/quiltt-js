@@ -17,11 +17,11 @@ describe('QuilttConnectorWeb', () => {
     expect(openSpy).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
   })
 
-  it('returns launch URL when OAuth params exist', async () => {
+  it('returns app launcher URL when OAuth params exist', async () => {
     window.history.replaceState({}, '', '/callback?code=abc')
 
     const plugin = new QuilttConnectorWeb()
-    await expect(plugin.getLaunchUrl()).resolves.toEqual({
+    await expect(plugin.getAppLauncherUrl()).resolves.toEqual({
       url: 'http://localhost:3000/callback?code=abc',
     })
   })
@@ -30,6 +30,6 @@ describe('QuilttConnectorWeb', () => {
     window.history.replaceState({}, '', '/')
 
     const plugin = new QuilttConnectorWeb()
-    await expect(plugin.getLaunchUrl()).resolves.toEqual({ url: null })
+    await expect(plugin.getAppLauncherUrl()).resolves.toEqual({ url: null })
   })
 })

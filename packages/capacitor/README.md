@@ -20,7 +20,8 @@ npx cap sync
 
 ## Deep Link Configuration
 
-Configure URL schemes for OAuth callbacks from bank authentication.
+Configure URL schemes for OAuth callbacks from bank authentication. This should match the
+`appLauncherUrl` / `app-launcher-url` you pass to Quiltt components.
 
 **iOS** — `ios/App/Info.plist`:
 
@@ -162,22 +163,22 @@ import { QuilttConnector } from '@quiltt/capacitor'
 | Method                              | Description                           |
 | ----------------------------------- | ------------------------------------- |
 | `openUrl({ url })`                  | Opens URL in system browser           |
-| `getLaunchUrl()`                    | Returns the URL that launched the app |
+| `getAppLauncherUrl()`               | Returns the app launcher URL          |
 | `addListener('deepLink', callback)` | Listens for deep link callbacks       |
 | `removeAllListeners()`              | Removes all event listeners           |
 
 ### Component Props
 
-| Prop             | Type                 | Description                             |
-| ---------------- | -------------------- | --------------------------------------- |
-| `connectorId`    | `string`             | **Required.** Quiltt Connector ID       |
-| `connectionId`   | `string`             | Existing connection ID for reconnection |
-| `institution`    | `string`             | Pre-select an institution               |
-| `appLauncherUrl` | `string`             | Deep link URL for OAuth callbacks       |
-| `onLoad`         | `(metadata) => void` | Connector loaded                        |
-| `onExitSuccess`  | `(metadata) => void` | Connection successful                   |
-| `onExitAbort`    | `(metadata) => void` | User cancelled                          |
-| `onExitError`    | `(metadata) => void` | Error occurred                          |
+| Prop             | Type                 | Description                                                    |
+| ---------------- | -------------------- | -------------------------------------------------------------- |
+| `connectorId`    | `string`             | **Required.** Quiltt Connector ID                              |
+| `connectionId`   | `string`             | Existing connection ID for reconnection                        |
+| `institution`    | `string`             | Pre-select an institution                                      |
+| `appLauncherUrl` | `string`             | App launcher URL (Universal Link/App Link) for OAuth callbacks |
+| `onLoad`         | `(metadata) => void` | Connector loaded                                               |
+| `onExitSuccess`  | `(metadata) => void` | Connection successful                                          |
+| `onExitAbort`    | `(metadata) => void` | User cancelled                                                 |
+| `onExitError`    | `(metadata) => void` | Error occurred                                                 |
 
 ### Re-exports
 
@@ -193,7 +194,7 @@ import { QuilttConnector } from '@quiltt/capacitor'
 
 ### OAuth redirects not working
 
-- Verify `appLauncherUrl` matches your URL scheme
+- Verify `appLauncherUrl` matches your configured URL scheme or app link
 - Run `npx cap sync` after configuration changes
 
 ### Blank screen after bank auth

@@ -6,7 +6,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react'
 const pluginMocks = vi.hoisted(() => ({
   openUrl: vi.fn(),
   addListener: vi.fn(),
-  getLaunchUrl: vi.fn(),
+  getAppLauncherUrl: vi.fn(),
 }))
 
 const sessionMocks = vi.hoisted(() => ({
@@ -17,7 +17,7 @@ vi.mock('../src/plugin', () => ({
   QuilttConnector: {
     openUrl: pluginMocks.openUrl,
     addListener: pluginMocks.addListener,
-    getLaunchUrl: pluginMocks.getLaunchUrl,
+    getAppLauncherUrl: pluginMocks.getAppLauncherUrl,
   },
 }))
 
@@ -53,7 +53,7 @@ beforeEach(() => {
 
 const primePluginMocks = () => {
   pluginMocks.addListener.mockResolvedValue({ remove: vi.fn() })
-  pluginMocks.getLaunchUrl.mockResolvedValue({ url: null })
+  pluginMocks.getAppLauncherUrl.mockResolvedValue({ url: null })
 }
 
 describe('QuilttConnector (capacitor)', () => {
@@ -284,7 +284,7 @@ describe('QuilttConnector (capacitor)', () => {
       return Promise.resolve({ remove: vi.fn() })
     })
 
-    pluginMocks.getLaunchUrl.mockResolvedValue({ url: 'not-a-valid-url' })
+    pluginMocks.getAppLauncherUrl.mockResolvedValue({ url: 'not-a-valid-url' })
 
     const connectorRef = createRef<QuilttConnectorHandle>()
 
@@ -395,7 +395,7 @@ describe('QuilttConnector (capacitor)', () => {
     const remove = vi.fn()
 
     pluginMocks.addListener.mockResolvedValue({ remove })
-    pluginMocks.getLaunchUrl.mockResolvedValue({ url: null })
+    pluginMocks.getAppLauncherUrl.mockResolvedValue({ url: null })
 
     const { unmount } = render(<QuilttConnector connectorId="connector_test" />)
     unmount()
