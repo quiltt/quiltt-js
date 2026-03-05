@@ -41,8 +41,8 @@ class QuilttConnectorWebView(context: Context) : WebView(context) {
         )
         this.webViewClient = QuilttConnectorWebViewClient(clientParams)
         
-        // Apply smart URL encoding to the redirect URL
-        val safeOAuthRedirectUrl = UrlUtils.smartEncodeURIComponent(config.oauthRedirectUrl)
+        // Apply smart URL encoding to the app launcher URL
+        val safeAppLauncherUrl = UrlUtils.smartEncodeURIComponent(config.appLauncherUrl)
         
         // Build the URL using Uri.Builder to properly handle parameter encoding
         val urlBuilder = Uri.Builder()
@@ -51,13 +51,13 @@ class QuilttConnectorWebView(context: Context) : WebView(context) {
             .appendQueryParameter("mode", "webview")
             .appendQueryParameter("agent", "android-${quilttSdkVersion}")
         
-        // Handle the OAuth redirect URL with special care
-        if (UrlUtils.isEncoded(safeOAuthRedirectUrl)) {
+        // Handle the app launcher URL with special care
+        if (UrlUtils.isEncoded(safeAppLauncherUrl)) {
             // If already encoded, decode once to prevent double encoding
-            val decodedOnce = Uri.decode(safeOAuthRedirectUrl)
-            urlBuilder.appendQueryParameter("oauth_redirect_url", decodedOnce)
+            val decodedOnce = Uri.decode(safeAppLauncherUrl)
+            urlBuilder.appendQueryParameter("app_launcher_url", decodedOnce)
         } else {
-            urlBuilder.appendQueryParameter("oauth_redirect_url", safeOAuthRedirectUrl)
+            urlBuilder.appendQueryParameter("app_launcher_url", safeAppLauncherUrl)
         }
         
         val url = urlBuilder.build().toString()

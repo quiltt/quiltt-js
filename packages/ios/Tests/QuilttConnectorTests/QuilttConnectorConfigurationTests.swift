@@ -6,10 +6,10 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
     func testConnectConfiguration_requiredFields() {
         let config = QuilttConnectorConnectConfiguration(
             connectorId: "my-connector",
-            oauthRedirectUrl: "https://example.com/callback"
+            appLauncherUrl: "https://example.com/callback"
         )
         XCTAssertEqual(config.connectorId, "my-connector")
-        XCTAssertEqual(config.oauthRedirectUrl, "https://example.com/callback")
+        XCTAssertEqual(config.appLauncherUrl, "https://example.com/callback")
         XCTAssertNil(config.connectionId)
         XCTAssertNil(config.institution)
     }
@@ -17,7 +17,7 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
     func testConnectConfiguration_withInstitution() {
         let config = QuilttConnectorConnectConfiguration(
             connectorId: "my-connector",
-            oauthRedirectUrl: "https://example.com/callback",
+            appLauncherUrl: "https://example.com/callback",
             institution: "mx_bank_1"
         )
         XCTAssertEqual(config.institution, "mx_bank_1")
@@ -27,7 +27,7 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
     func testConnectConfiguration_connectionIdIsAlwaysNil() {
         let config = QuilttConnectorConnectConfiguration(
             connectorId: "c",
-            oauthRedirectUrl: "https://example.com"
+            appLauncherUrl: "https://example.com"
         )
         XCTAssertNil(config.connectionId)
     }
@@ -35,11 +35,11 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
     func testReconnectConfiguration_requiredFields() {
         let config = QuilttConnectorReconnectConfiguration(
             connectorId: "my-connector",
-            oauthRedirectUrl: "https://example.com/callback",
+            appLauncherUrl: "https://example.com/callback",
             connectionId: "conn-abc123"
         )
         XCTAssertEqual(config.connectorId, "my-connector")
-        XCTAssertEqual(config.oauthRedirectUrl, "https://example.com/callback")
+        XCTAssertEqual(config.appLauncherUrl, "https://example.com/callback")
         XCTAssertEqual(config.connectionId, "conn-abc123")
         XCTAssertNil(config.institution)
     }
@@ -47,7 +47,7 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
     func testReconnectConfiguration_institutionIsAlwaysNil() {
         let config = QuilttConnectorReconnectConfiguration(
             connectorId: "c",
-            oauthRedirectUrl: "https://example.com",
+            appLauncherUrl: "https://example.com",
             connectionId: "conn-1"
         )
         XCTAssertNil(config.institution)

@@ -63,8 +63,8 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         self.onExitAbort = onExitAbort
         self.onExitError = onExitError
 
-        // Apply smart URL encoding to the redirect URL
-        let safeOAuthRedirectUrl = URLUtils.smartEncodeURIComponent(config.oauthRedirectUrl)
+        // Apply smart URL encoding to the app launcher URL
+        let safeAppLauncherUrl = URLUtils.smartEncodeURIComponent(config.appLauncherUrl)
 
         // Build the URL components
         var urlComponents = URLComponents()
@@ -77,13 +77,13 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
             URLQueryItem(name: "agent", value: "ios-\(quilttSdkVersion)"),
         ]
 
-        // Handle the OAuth redirect URL with special care
-        if URLUtils.isEncoded(safeOAuthRedirectUrl) {
+        // Handle the app launcher URL with special care
+        if URLUtils.isEncoded(safeAppLauncherUrl) {
             // If already encoded, decode once to prevent double encoding
-            let decodedOnce = safeOAuthRedirectUrl.removingPercentEncoding ?? safeOAuthRedirectUrl
-            queryItems.append(URLQueryItem(name: "oauth_redirect_url", value: decodedOnce))
+            let decodedOnce = safeAppLauncherUrl.removingPercentEncoding ?? safeAppLauncherUrl
+            queryItems.append(URLQueryItem(name: "app_launcher_url", value: decodedOnce))
         } else {
-            queryItems.append(URLQueryItem(name: "oauth_redirect_url", value: safeOAuthRedirectUrl))
+            queryItems.append(URLQueryItem(name: "app_launcher_url", value: safeAppLauncherUrl))
         }
 
         urlComponents.queryItems = queryItems

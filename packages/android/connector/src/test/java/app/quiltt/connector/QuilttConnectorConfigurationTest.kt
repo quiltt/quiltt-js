@@ -6,20 +6,20 @@ import org.junit.Test
 
 class QuilttConnectorConfigurationTest {
     @Test
-    fun connectConfiguration_hasExpectedConnectorIdAndRedirectUrl() {
+    fun connectConfiguration_hasExpectedConnectorIdAndAppLauncherUrl() {
         val config = QuilttConnectorConnectConfiguration(
             connectorId = "my-connector",
-            oauthRedirectUrl = "https://example.com/callback",
+            appLauncherUrl = "https://example.com/callback",
         )
         assertEquals("my-connector", config.connectorId)
-        assertEquals("https://example.com/callback", config.oauthRedirectUrl)
+        assertEquals("https://example.com/callback", config.appLauncherUrl)
     }
 
     @Test
     fun connectConfiguration_connectionIdIsAlwaysNull() {
         val config = QuilttConnectorConnectConfiguration(
             connectorId = "my-connector",
-            oauthRedirectUrl = "https://example.com/callback",
+            appLauncherUrl = "https://example.com/callback",
         )
         assertNull(config.connectionId)
     }
@@ -28,7 +28,7 @@ class QuilttConnectorConfigurationTest {
     fun connectConfiguration_institutionDefaultsToNull() {
         val config = QuilttConnectorConnectConfiguration(
             connectorId = "my-connector",
-            oauthRedirectUrl = "https://example.com/callback",
+            appLauncherUrl = "https://example.com/callback",
         )
         assertNull(config.institution)
     }
@@ -37,7 +37,7 @@ class QuilttConnectorConfigurationTest {
     fun connectConfiguration_withInstitution() {
         val config = QuilttConnectorConnectConfiguration(
             connectorId = "my-connector",
-            oauthRedirectUrl = "https://example.com/callback",
+            appLauncherUrl = "https://example.com/callback",
             institution = "mx_bank_1",
         )
         assertEquals("mx_bank_1", config.institution)
@@ -48,11 +48,11 @@ class QuilttConnectorConfigurationTest {
     fun reconnectConfiguration_hasExpectedFields() {
         val config = QuilttConnectorReconnectConfiguration(
             connectorId = "my-connector",
-            oauthRedirectUrl = "https://example.com/callback",
+            appLauncherUrl = "https://example.com/callback",
             connectionId = "conn-abc123",
         )
         assertEquals("my-connector", config.connectorId)
-        assertEquals("https://example.com/callback", config.oauthRedirectUrl)
+        assertEquals("https://example.com/callback", config.appLauncherUrl)
         assertEquals("conn-abc123", config.connectionId)
     }
 
@@ -60,7 +60,7 @@ class QuilttConnectorConfigurationTest {
     fun reconnectConfiguration_institutionIsAlwaysNull() {
         val config = QuilttConnectorReconnectConfiguration(
             connectorId = "my-connector",
-            oauthRedirectUrl = "https://example.com/callback",
+            appLauncherUrl = "https://example.com/callback",
             connectionId = "conn-1",
         )
         assertNull(config.institution)

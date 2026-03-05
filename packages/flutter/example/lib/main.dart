@@ -70,10 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     QuilttConnectorConfiguration config = QuilttConnectorConfiguration(
         connectorId: "connectorId",
-        oauthRedirectUrl: "quilttexample://open.flutter.app");
+        appLauncherUrl: "https://example.com/callback");
 
     debugPrint(
-        '_launchConnector: ${config.connectorId}, $config.oauthRedirectUrl');
+        '_launchConnector: ${config.connectorId}, $config.appLauncherUrl');
     QuilttConnector quilttConnector = QuilttConnector();
     quilttConnector.authenticate(token);
     quilttConnector.connect(context, config, onEvent: (event) {
