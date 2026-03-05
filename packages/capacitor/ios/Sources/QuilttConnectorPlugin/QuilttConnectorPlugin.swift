@@ -1,5 +1,5 @@
-import Foundation
 import Capacitor
+import Foundation
 
 /// QuilttConnector Capacitor Plugin for iOS
 /// Handles deep linking, URL opening, and OAuth redirect flows for Quiltt Connector integration
@@ -9,10 +9,10 @@ public class QuilttConnectorPlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "QuilttConnector"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "openUrl", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "getLaunchUrl", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "getAppLauncherUrl", returnType: CAPPluginReturnPromise),
     ]
 
-    private var launchUrl: URL?
+    private var appLauncherUrl: URL?
 
     public override func load() {
         NotificationCenter.default.addObserver(
@@ -36,24 +36,28 @@ public class QuilttConnectorPlugin: CAPPlugin, CAPBridgedPlugin {
     /// Handle incoming URLs from deep links or universal links
     @objc private func handleOpenUrl(_ notification: Notification) {
         guard let object = notification.object as? [String: Any],
-              let url = object["url"] as? URL else {
+            let url = object["url"] as? URL
+        else {
             return
         }
 
-        // Store as launch URL
-        launchUrl = url
+        // Store as app launcher URL
+        appLauncherUrl = url
 
         // Notify JavaScript listeners
-        notifyListeners("deepLink", data: [
-            "url": url.absoluteString
-        ])
+        notifyListeners(
+            "deepLink",
+            data: [
+                "url": url.absoluteString
+            ])
     }
 
     /// Opens a URL in the system browser
     /// Used for OAuth flows and external authentication
     @objc func openUrl(_ call: CAPPluginCall) {
         guard let urlString = call.getString("url"),
-              let url = URL(string: urlString) else {
+            let url = URL(string: urlString)
+        else {
             call.reject("Invalid URL")
             return
         }
@@ -82,10 +86,10 @@ public class QuilttConnectorPlugin: CAPPlugin, CAPBridgedPlugin {
         }
     }
 
-    /// Returns the URL that launched the app (if any)
+    /// Returns the app launcher URL (if any)
     /// Used to handle OAuth callbacks and deep link navigation
-    @objc func getLaunchUrl(_ call: CAPPluginCall) {
-        if let url = launchUrl {
+    @objc func getAppLauncherUrl(_ call: CAPPluginCall) {
+        if let url = appLauncherUrl {
             call.resolve([
                 "url": url.absoluteString
             ])

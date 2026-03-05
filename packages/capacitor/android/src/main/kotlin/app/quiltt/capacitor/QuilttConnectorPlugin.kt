@@ -14,10 +14,10 @@ import com.getcapacitor.annotation.CapacitorPlugin
  */
 @CapacitorPlugin(name = "QuilttConnector")
 class QuilttConnectorPlugin : Plugin() {
-    private var launchUrl: String? = null
+    private var appLauncherUrl: String? = null
 
     override fun load() {
-        // Check if the app was launched via an intent with a URL
+        // Capture the app launcher URL when the app starts from a deep-link intent
         val intent = activity?.intent
         handleIntent(intent)
     }
@@ -31,7 +31,7 @@ class QuilttConnectorPlugin : Plugin() {
         val data = intent?.data
         if (data != null) {
             val url = data.toString()
-            launchUrl = url
+            appLauncherUrl = url
 
             // Notify JavaScript listeners
             val ret = JSObject()
@@ -67,14 +67,14 @@ class QuilttConnectorPlugin : Plugin() {
     }
 
     /**
-     * Returns the URL that launched the app (if any)
+     * Returns the app launcher URL (if any)
      * Used to handle OAuth callbacks and deep link navigation
      */
     @PluginMethod
-    fun getLaunchUrl(call: PluginCall) {
+    fun getAppLauncherUrl(call: PluginCall) {
         val ret = JSObject()
-        if (launchUrl != null) {
-            ret.put("url", launchUrl)
+        if (appLauncherUrl != null) {
+            ret.put("url", appLauncherUrl)
         } else {
             ret.put("url", JSObject.NULL)
         }

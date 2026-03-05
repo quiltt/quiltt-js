@@ -277,8 +277,8 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
         }
       })
 
-      // Check if app was launched with a URL
-      QuilttConnectorPlugin.getLaunchUrl().then((result) => {
+      // Check if app was opened via the app launcher URL
+      QuilttConnectorPlugin.getAppLauncherUrl().then((result) => {
         if (result?.url) {
           postOAuthCallbackToIframe(result.url)
         }

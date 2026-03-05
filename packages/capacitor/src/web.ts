@@ -21,12 +21,12 @@ export class QuilttConnectorWeb extends WebPlugin implements QuilttConnectorPlug
   }
 
   /**
-   * Get the launch URL on web.
+   * Get the app launcher URL on web.
    *
    * On web, we check the current URL for any OAuth callback parameters.
    * This is useful when the user is redirected back to the app after OAuth.
    */
-  async getLaunchUrl(): Promise<DeepLinkEvent> {
+  async getAppLauncherUrl(): Promise<DeepLinkEvent> {
     const currentUrl = window.location.href
 
     // Check if the current URL contains OAuth callback parameters
