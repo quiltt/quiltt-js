@@ -61,7 +61,12 @@ class QuilttConnectorWebView(context: Context) : WebView(context) {
         }
         
         val url = urlBuilder.build().toString()
-        this.loadUrl(url)
+        val sdkAgent = TelemetryUtils.getSDKAgent(
+            quilttSdkVersion,
+            TelemetryUtils.getRuntimePlatformInfo()
+        )
+        val headers = mapOf("Quiltt-SDK-Agent" to sdkAgent)
+        this.loadUrl(url, headers)
     }
 }
 

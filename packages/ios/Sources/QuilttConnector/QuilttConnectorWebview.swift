@@ -89,7 +89,12 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         urlComponents.queryItems = queryItems
 
         if let url = urlComponents.url {
-            let req = URLRequest(url: url)
+            let sdkAgent = TelemetryUtils.getSDKAgent(
+                sdkVersion: quilttSdkVersion,
+                platformInfo: TelemetryUtils.getRuntimePlatformInfo()
+            )
+            var req = URLRequest(url: url)
+            req.setValue(sdkAgent, forHTTPHeaderField: "Quiltt-SDK-Agent")
             return super.load(req)
         }
         return nil

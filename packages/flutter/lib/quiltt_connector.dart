@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:quiltt_connector/configuration.dart';
 import 'package:quiltt_connector/event.dart';
 import 'package:quiltt_connector/quiltt_sdk_version.dart';
+import 'package:quiltt_connector/telemetry_utils.dart';
 import 'package:quiltt_connector/url_utils.dart';
 
 /// This class is the entry point for the Quiltt Connector SDK.
@@ -336,7 +337,15 @@ class _WebViewPage {
           },
         ),
       )
-      ..loadRequest(Uri.parse(connectorUrl));
+      ..loadRequest(
+        Uri.parse(connectorUrl),
+        headers: {
+          'Quiltt-SDK-Agent': getSDKAgent(
+            quilttSdkVersion,
+            getRuntimePlatformInfo(),
+          ),
+        },
+      );
   }
 
   Widget build(BuildContext context, {String? token, String? connectionId}) {
