@@ -15,7 +15,7 @@ struct WebView: UIViewRepresentable {
     @Binding var connectionId: String
     @State var config = QuilttConnectorConnectConfiguration(
         connectorId: "<CONNECTOR_ID>",
-        oauthRedirectUrl: "<YOUR_HTTPS_UNIVERSAL_LINK>"
+        appLauncherUrl: "<YOUR_HTTPS_UNIVERSAL_LINK>"
 //        institution: "<OPTIONAL_INSTITUTION_SEARCH_TERM_TO_PREFILL_INSTITUTION>"
     )
 
