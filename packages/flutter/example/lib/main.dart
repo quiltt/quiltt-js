@@ -58,22 +58,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _connectionId = "No connection Id yet";
-  _setConnectionId(String id) {
+  void _setConnectionId(String id) {
     setState(() {
       debugPrint("setConnectionId: $id");
       _connectionId = id;
     });
   }
 
-  _launchConnector() {
+  void _launchConnector() {
     String token = "token";
 
     QuilttConnectorConfiguration config = QuilttConnectorConfiguration(
         connectorId: "connectorId",
-        oauthRedirectUrl: "quilttexample://open.flutter.app");
+        appLauncherUrl: "https://example.com/callback");
 
     debugPrint(
-        '_launchConnector: ${config.connectorId}, $config.oauthRedirectUrl');
+        '_launchConnector: ${config.connectorId}, $config.appLauncherUrl');
     QuilttConnector quilttConnector = QuilttConnector();
     quilttConnector.authenticate(token);
     quilttConnector.connect(context, config, onEvent: (event) {
