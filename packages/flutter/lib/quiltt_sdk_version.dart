@@ -1,1 +1,1 @@
-var quilttSdkVersion = "5.2.0";
+const quilttSdkVersion = "5.2.0";

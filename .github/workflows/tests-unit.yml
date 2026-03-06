@@ -127,9 +127,6 @@ jobs:
     name: iOS Unit Tests
     runs-on: macos-14
     if: needs.changes.outputs.ios == 'true'
-    defaults:
-      run:
-        working-directory: packages/ios
 
     steps:
       - uses: actions/checkout@v4
@@ -139,20 +136,22 @@ jobs:
           xcode-version: "16.2"
 
       - name: Run tests with coverage
+        working-directory: .
         run: swift test --enable-code-coverage
 
       - name: Generate lcov coverage report
+        working-directory: .
         run: |
           BINARY=$(find .build -name "*PackageTests" -not -path "*checkouts*" -not -name "*.dSYM" | head -1)
           PROFDATA=$(find .build/debug/codecoverage -name "*.profdata" 2>/dev/null | head -1)
           if [ -n "$BINARY" ] && [ -n "$PROFDATA" ]; then
-            mkdir -p coverage
+            mkdir -p packages/ios/coverage
             xcrun llvm-cov export "$BINARY" \
               -instr-profile "$PROFDATA" \
               -format lcov \
               --ignore-filename-regex='.*\.build.*|.*Tests.*' \
-              > coverage/lcov.info
-            echo "Coverage report generated at coverage/lcov.info"
+              > packages/ios/coverage/lcov.info
+            echo "Coverage report generated at packages/ios/coverage/lcov.info"
           else
             echo "Warning: could not find binary ($BINARY) or profdata ($PROFDATA)"
           fi
