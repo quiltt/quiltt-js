@@ -15,28 +15,6 @@ permissions:
   actions: write
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      android: ${{ steps.filter.outputs.android }}
-      flutter: ${{ steps.filter.outputs.flutter }}
-      ios: ${{ steps.filter.outputs.ios }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            android:
-              - 'packages/android/**'
-            flutter:
-              - 'packages/flutter/**'
-            ios:
-              - 'packages/ios/**'
-              - 'Package.swift'
-
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -61,10 +39,8 @@ jobs:
           incomplete: true
 
   test-android-unit:
-    needs: changes
     name: Android Unit Tests
     runs-on: ubuntu-latest
-    if: needs.changes.outputs.android == 'true'
     defaults:
       run:
         working-directory: packages/android
@@ -92,10 +68,8 @@ jobs:
           incomplete: true
 
   test-flutter-unit:
-    needs: changes
     name: Flutter Unit Tests
     runs-on: ubuntu-latest
-    if: needs.changes.outputs.flutter == 'true'
     defaults:
       run:
         working-directory: packages/flutter
@@ -121,10 +95,8 @@ jobs:
           incomplete: true
 
   test-ios-unit:
-    needs: changes
     name: iOS Unit Tests
     runs-on: macos-14
-    if: needs.changes.outputs.ios == 'true'
 
     steps:
       - uses: actions/checkout@v6
