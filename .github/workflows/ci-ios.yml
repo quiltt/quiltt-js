@@ -11,6 +11,7 @@ on:
     paths:
       - "packages/ios/**"
       - "Package.swift"
+      - ".github/workflows/ci-ios.yml"
   workflow_dispatch:
 
 permissions:

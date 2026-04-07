@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - "packages/android/**"
+      - ".github/workflows/ci-android.yml"
   workflow_dispatch:
 
 permissions:

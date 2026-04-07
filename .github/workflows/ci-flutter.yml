@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - "packages/flutter/**"
+      - ".github/workflows/ci-flutter.yml"
   workflow_dispatch:
 
 permissions:
