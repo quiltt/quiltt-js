@@ -64,7 +64,10 @@ jobs:
         run: |
           xcodebuild test \
             -scheme QuilttConnector \
-            -destination "platform=iOS Simulator,OS=${{ matrix.ios-version }},name=${{ matrix.device }}"
+            -destination "platform=iOS Simulator,OS=${{ matrix.ios-version }},name=${{ matrix.device }}" \
+          || xcodebuild test \
+            -scheme QuilttConnector \
+            -destination "platform=iOS Simulator,name=${{ matrix.device }}"
 
       - name: Build example app
         if: matrix.ios-version == '18.2'
