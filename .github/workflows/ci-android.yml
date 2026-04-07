@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk-version: ["17", "21"] # 17 is the AGP 8.x minimum; 21 is the current LTS ceiling
+        jdk-version: ["17", "21", "25"] # 17 is the AGP 8.x minimum LTS; 21 is previous LTS; 25 is current LTS
 
     steps:
       - uses: actions/checkout@v6

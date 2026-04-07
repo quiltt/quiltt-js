@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flutter-version: ["3.41.6", "3.32.0"] # current stable; minimum version with Dart >=3.8.0
+        flutter-version: ["3.41.6", "3.38.0", "3.32.0"] # current stable; previous stable; minimum version with Dart >=3.8.0
 
     steps:
       - uses: actions/checkout@v6
