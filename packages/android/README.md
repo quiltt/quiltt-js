@@ -522,6 +522,28 @@ This SDK is released automatically alongside all other Quiltt packages when a ne
 
 For release process details, see the [monorepo release documentation](../../RELEASING.md).
 
+## Development
+
+### Dependency Lockfiles
+
+This project uses [Gradle dependency locking](https://docs.gradle.org/current/userguide/dependency_locking.html) to ensure reproducible builds. Each subproject (`connector`, `app`, `app_jetpack_compose`) has a committed `gradle.lockfile` that pins all resolved dependency versions.
+
+**When you add, remove, or upgrade a dependency**, the build will fail with a lock state mismatch until you regenerate the lockfiles. Run the following from `packages/android/`:
+
+```bash
+./gradlew :connector:dependencies --write-locks
+./gradlew :app:dependencies --write-locks
+./gradlew :app_jetpack_compose:dependencies --write-locks
+```
+
+Then commit the updated `gradle.lockfile` files alongside your dependency change.
+
+To update a single specific dependency without regenerating everything:
+
+```bash
+./gradlew :connector:dependencies --update-locks com.example:my-lib
+```
+
 ## Contributing
 
 We welcome contributions! Please see the [contributing guidelines](../../CONTRIBUTING.md) and [Code of Conduct](../../CODE_OF_CONDUCT.md) for more information.
