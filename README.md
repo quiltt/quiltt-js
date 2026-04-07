@@ -8,6 +8,17 @@ This repository is the unified home of Quiltt's SDKs, covering JavaScript/TypeSc
 
 Quiltt's unified API streamlines fintech application development by providing a single point of integration to multiple open banking data and enrichment providers. Our platform simplifies complex financial data workflows, enabling developers to focus on building exceptional user experiences.
 
+## Platform Support
+
+The CI matrix tests against the following versions. Update this table when changing the matrix in `.github/workflows/ci-*.yml`.
+
+| Platform      | Minimum supported      | Latest tested    |
+| ------------- | ---------------------- | ---------------- |
+| Node.js       | 20                     | 24               |
+| Android (JDK) | 17 (AGP 8.x minimum)   | 25 (current LTS) |
+| Flutter       | 3.32.0 (Dart >= 3.8.0) | 3.41.6           |
+| iOS           | 17.5                   | 18.2             |
+
 ## Getting Started
 
 For comprehensive documentation including core concepts, guides, and API reference, visit [https://quiltt.dev](https://quiltt.dev).
