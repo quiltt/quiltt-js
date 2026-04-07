@@ -20,13 +20,19 @@ defaults:
 
 jobs:
   build:
-    name: Flutter CI
+    name: "Flutter ${{ matrix.flutter-version }} CI"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter-version: ["3.41.4", "3.27.4"] # current stable; update older version as needed
 
     steps:
       - uses: actions/checkout@v6
 
       - uses: ./.github/actions/setup-flutter
+        with:
+          flutter-version: ${{ matrix.flutter-version }}
 
       - name: Install dependencies
         run: flutter pub get

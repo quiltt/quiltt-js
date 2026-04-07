@@ -20,8 +20,12 @@ defaults:
 
 jobs:
   build:
-    name: Android CI
+    name: "Android CI (JDK ${{ matrix.jdk-version }})"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk-version: ["17", "21"] # 17 is the AGP 8.x minimum; 21 is the current LTS ceiling
 
     steps:
       - uses: actions/checkout@v6
@@ -29,7 +33,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: corretto
-          java-version: 21
+          java-version: ${{ matrix.jdk-version }}
 
       - uses: gradle/actions/setup-gradle@v4
 
