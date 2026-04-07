@@ -10,4 +10,26 @@ subprojects {
     dependencyLocking {
         lockAllConfigurations()
     }
+
+    configurations.all {
+        resolutionStrategy {
+            force(
+                "commons-io:commons-io:2.14.0",
+                "com.google.guava:guava:32.0.1-jre",
+                "com.google.protobuf:protobuf-java:3.25.5",
+                "org.bouncycastle:bcprov-jdk18on:1.78",
+                "io.netty:netty-buffer:4.1.132.Final",
+                "io.netty:netty-codec:4.1.132.Final",
+                "io.netty:netty-codec-http:4.1.132.Final",
+                "io.netty:netty-codec-http2:4.1.132.Final",
+                "io.netty:netty-codec-socks:4.1.132.Final",
+                "io.netty:netty-common:4.1.132.Final",
+                "io.netty:netty-handler:4.1.132.Final",
+                "io.netty:netty-handler-proxy:4.1.132.Final",
+                "io.netty:netty-resolver:4.1.132.Final",
+                "io.netty:netty-transport:4.1.132.Final",
+                "io.netty:netty-transport-native-unix-common:4.1.132.Final",
+            )
+        }
+    }
 }
