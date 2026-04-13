@@ -65,6 +65,7 @@ jobs:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: packages/android/connector/build/reports/coverage/test/debug/report.xml
           format: jacoco
+          add-prefix: packages/android/connector/src/main/java/
           incomplete: true
 
   test-flutter-unit:
@@ -92,6 +93,7 @@ jobs:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: packages/flutter/coverage/lcov.info
           format: lcov
+          add-prefix: packages/flutter/
           incomplete: true
 
   test-ios-unit:
