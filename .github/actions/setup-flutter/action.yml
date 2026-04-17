@@ -1,11 +1,17 @@
 name: Setup Flutter
 description: Install and cache pinned Flutter SDK for CI
 
+inputs:
+  flutter-version:
+    description: "Flutter version to install"
+    required: false
+    default: '3.41.4'
+
 runs:
   using: composite
   steps:
     - uses: flutter-actions/setup-flutter@v4
       with:
-        version: '3.41.4'
+        version: ${{ inputs.flutter-version }}
         channel: stable
         cache: true

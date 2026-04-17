@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - "packages/flutter/**"
+      - ".github/workflows/ci-flutter.yml"
   workflow_dispatch:
 
 permissions:
@@ -20,13 +21,19 @@ defaults:
 
 jobs:
   build:
-    name: Flutter CI
+    name: "Flutter ${{ matrix.flutter-version }} CI"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter-version: ["3.41.6", "3.38.0", "3.32.0"] # current stable; previous stable; minimum version with Dart >=3.8.0
 
     steps:
       - uses: actions/checkout@v6
 
       - uses: ./.github/actions/setup-flutter
+        with:
+          flutter-version: ${{ matrix.flutter-version }}
 
       - name: Install dependencies
         run: flutter pub get

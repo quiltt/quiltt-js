@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: ["24", "22", "20"] # We only support LTS versions of Node.js that are actively maintained
+        node-version: ["24", "22", "20"] # Current + actively maintained LTS versions
     steps:
       - name: Checkout branch
         uses: actions/checkout@v6

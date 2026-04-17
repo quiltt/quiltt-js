@@ -15,28 +15,6 @@ permissions:
   actions: write
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      android: ${{ steps.filter.outputs.android }}
-      flutter: ${{ steps.filter.outputs.flutter }}
-      ios: ${{ steps.filter.outputs.ios }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            android:
-              - 'packages/android/**'
-            flutter:
-              - 'packages/flutter/**'
-            ios:
-              - 'packages/ios/**'
-              - 'Package.swift'
-
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -61,10 +39,8 @@ jobs:
           incomplete: true
 
   test-android-unit:
-    needs: changes
     name: Android Unit Tests
     runs-on: ubuntu-latest
-    if: needs.changes.outputs.android == 'true'
     defaults:
       run:
         working-directory: packages/android
@@ -89,13 +65,12 @@ jobs:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: packages/android/connector/build/reports/coverage/test/debug/report.xml
           format: jacoco
+          add-prefix: packages/android/connector/src/main/java/
           incomplete: true
 
   test-flutter-unit:
-    needs: changes
     name: Flutter Unit Tests
     runs-on: ubuntu-latest
-    if: needs.changes.outputs.flutter == 'true'
     defaults:
       run:
         working-directory: packages/flutter
@@ -118,13 +93,12 @@ jobs:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: packages/flutter/coverage/lcov.info
           format: lcov
+          add-prefix: packages/flutter/
           incomplete: true
 
   test-ios-unit:
-    needs: changes
     name: iOS Unit Tests
     runs-on: macos-14
-    if: needs.changes.outputs.ios == 'true'
 
     steps:
       - uses: actions/checkout@v6

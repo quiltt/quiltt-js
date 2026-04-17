@@ -11,6 +11,7 @@ on:
     paths:
       - "packages/ios/**"
       - "Package.swift"
+      - ".github/workflows/ci-ios.yml"
   workflow_dispatch:
 
 permissions:
@@ -22,8 +23,16 @@ defaults:
 
 jobs:
   build:
-    name: iOS CI
+    name: "iOS ${{ matrix.ios-version }} CI"
     runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ios-version: "18.2"
+            device: "iPhone 16 Pro"
+          - ios-version: "17.5"
+            device: "iPhone 15"
 
     steps:
       - uses: actions/checkout@v6
@@ -52,9 +61,16 @@ jobs:
 
       - name: Run tests
         working-directory: .
-        run: swift test
+        run: |
+          xcodebuild test \
+            -scheme QuilttConnector \
+            -destination "platform=iOS Simulator,OS=${{ matrix.ios-version }},name=${{ matrix.device }}" \
+          || xcodebuild test \
+            -scheme QuilttConnector \
+            -destination "platform=iOS Simulator,name=${{ matrix.device }}"
 
       - name: Build example app
+        if: matrix.ios-version == '18.2'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bundle exec fastlane ios build_example_app
