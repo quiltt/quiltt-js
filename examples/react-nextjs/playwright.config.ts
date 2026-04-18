@@ -1,5 +1,14 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// Load .env.local so test files have the same NEXT_PUBLIC_* vars as the app.
+// Next.js 16.2+ runs the dev server in a more isolated context, so these are
+// no longer inherited automatically by the playwright test process.
+try {
+  process.loadEnvFile('.env.local')
+} catch {
+  // .env.local may not exist in CI — env vars are injected directly there
+}
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
