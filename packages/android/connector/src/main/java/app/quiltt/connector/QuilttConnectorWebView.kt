@@ -155,21 +155,18 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
     
     /**
      * Helper function to handle URL parsing and OAuth redirect for Navigate events
+     * 
+     * The URL parameter may arrive double-encoded (e.g., https%253A%252F%252F...) due to
+     * how it's passed through the quilttconnector:// scheme. This function detects and
+     * handles that encoding to ensure the URL can be properly validated and launched.
      */
     private fun handleNavigateUrl(navigateUrlString: String) {
-        // Handle potential encoding issues - Match iOS logic exactly
-        if (UrlUtils.isEncoded(navigateUrlString)) {
-            val decodedUrl = Uri.decode(navigateUrlString)
-            parseAndHandleOAuthUrl(decodedUrl) { 
-                Log.w(TAG, "Failed to parse decoded URL, trying original")
-                parseAndHandleOAuthUrl(navigateUrlString) {
-                    Log.e(TAG, "Failed to parse both decoded and original URL: $navigateUrlString")
-                }
-            }
-        } else {
-            parseAndHandleOAuthUrl(navigateUrlString) {
-                Log.e(TAG, "Failed to parse URL: $navigateUrlString")
-            }
+        // First, normalize any double-encoding in the URL
+        val normalizedUrl = UrlUtils.normalizeUrlEncoding(navigateUrlString)
+        
+        // Then parse and handle the normalized URL
+        parseAndHandleOAuthUrl(normalizedUrl) { 
+            Log.e(TAG, "Failed to parse and handle OAuth URL: $normalizedUrl")
         }
     }
     
@@ -241,16 +238,17 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
     private fun handleOAuthUrl(oauthUrl: Uri) {
         val urlString = oauthUrl.toString()
         
+        // Normalize the URL encoding FIRST to handle double-encoded URLs
+        // (e.g., https%253A%252F%252F... becomes https%3A%2F%2F...)
+        val normalizedUrl = UrlUtils.normalizeUrlEncoding(urlString)
+        
         // Check if URL uses HTTPS scheme (case-insensitive)
         // Note: We use string checking instead of Uri.scheme because encoded URLs 
         // like "https%3A%2F%2F..." would have scheme=null after Uri.parse()
-        if (!urlString.startsWith("https://", ignoreCase = true)) {
-            Log.w(TAG, "Skipping non-HTTPS URL: $oauthUrl")
+        if (!normalizedUrl.startsWith("https://", ignoreCase = true)) {
+            Log.w(TAG, "Skipping non-HTTPS URL: $normalizedUrl")
             return
         }
-        
-        // Normalize the URL encoding to prevent double-encoding issues
-        val normalizedUrl = UrlUtils.normalizeUrlEncoding(urlString)
         
         // Open the URL in the system browser
         try {

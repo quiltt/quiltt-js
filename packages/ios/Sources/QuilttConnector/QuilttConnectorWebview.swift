@@ -210,20 +210,13 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
                 let navigateUrlItem = urlc.queryItems?.first(where: { $0.name == "url" }),
                 let navigateUrlString = navigateUrlItem.value
             {
-                // Handle potential encoding issues
-                if URLUtils.isEncoded(navigateUrlString) {
-                    let decodedUrl = navigateUrlString.removingPercentEncoding ?? navigateUrlString
-                    if let navigateUrl = URL(string: decodedUrl) {
-                        handleOAuthUrl(navigateUrl)
-                    } else {
-                        print("Failed to create URL from decoded string: \(decodedUrl)")
-                        // Fallback to original string
-                        if let navigateUrl = URL(string: navigateUrlString) {
-                            handleOAuthUrl(navigateUrl)
-                        }
-                    }
-                } else if let navigateUrl = URL(string: navigateUrlString) {
-                    handleOAuthUrl(navigateUrl)
+                // Normalize URL encoding first to handle double-encoded URLs
+                let normalizedUrl = URLUtils.normalizeUrlEncoding(navigateUrlString)
+
+                do {
+                    try handleNavigateUrl(normalizedUrl)
+                } catch {
+                    print("Failed to handle OAuth URL: \(error)")
                 }
             } else {
                 print("Navigate URL missing from request")
@@ -254,15 +247,32 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         return true
     }
 
+    /**
+     Helper function to handle URL parsing and OAuth redirect for Navigate events
+     
+     The URL parameter may arrive double-encoded (e.g., https%253A%252F%252F...) due to
+     how it's passed through the quilttconnector:// scheme. This function detects and
+     handles that encoding to ensure the URL can be properly validated and launched.
+     */
+    private func handleNavigateUrl(_ navigateUrlString: String) throws {
+        guard let navigateUrl = URL(string: navigateUrlString) else {
+            throw URLError(.badURL)
+        }
+        handleOAuthUrl(navigateUrl)
+    }
+
     private func handleOAuthUrl(_ oauthUrl: URL) {
-        // Skip non-HTTPS URLs
-        if !oauthUrl.absoluteString.hasPrefix("https://") {
-            print("handleOAuthUrl - Skipping non https url - \(oauthUrl)")
+        let urlString = oauthUrl.absoluteString
+
+        // Normalize the URL encoding FIRST to handle double-encoded URLs
+        // (e.g., https%253A%252F%252F... becomes https%3A%2F%2F...)
+        let normalizedUrlString = URLUtils.normalizeUrlEncoding(urlString)
+
+        // Check if URL uses HTTPS scheme (case-insensitive)
+        if !normalizedUrlString.hasPrefix("https://") && !normalizedUrlString.hasPrefix("HTTPS://") {
+            print("handleOAuthUrl - Skipping non-HTTPS URL: \(normalizedUrlString)")
             return
         }
-
-        // Normalize URL to handle potential double-encoding
-        let normalizedUrlString = URLUtils.normalizeUrlEncoding(oauthUrl.absoluteString)
 
         #if canImport(UIKit) && os(iOS)
             if let normalizedUrl = URL(string: normalizedUrlString) {

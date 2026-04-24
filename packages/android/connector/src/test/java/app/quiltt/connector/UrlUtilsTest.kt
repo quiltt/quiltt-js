@@ -102,4 +102,32 @@ class UrlUtilsTest {
     fun normalizeUrlEncoding_withEmptyString_returnsEmpty() {
         assertEquals("", UrlUtils.normalizeUrlEncoding(""))
     }
+
+    // Double-encoding scenario tests
+
+    @Test
+    fun normalizeUrlEncoding_withDoubleEncodedOAuthUrl() {
+        // Reproduces the bug: OAuth URL arrives double-encoded
+        val doubleEncodedUrl = "https%253A%252F%252Fapi.oauth.example.com%252Faggregator-oauth"
+        val result = UrlUtils.normalizeUrlEncoding(doubleEncodedUrl)
+        
+        // After one decode, it should become single-encoded
+        assertEquals("https%3A%2F%2Fapi.oauth.example.com%2Faggregator-oauth", result)
+    }
+
+    @Test
+    fun normalizeUrlEncoding_withSingleEncodedOAuthUrl() {
+        // Single-encoded OAuth URL should not be decoded further
+        val singleEncoded = "https%3A%2F%2Fapi.example.com%2Foauth%3Fclient_id%3D123"
+        val result = UrlUtils.normalizeUrlEncoding(singleEncoded)
+        assertEquals(singleEncoded, result)
+    }
+
+    @Test
+    fun normalizeUrlEncoding_withPlainHttpsUrl() {
+        // Plain non-encoded HTTPS URL should pass through unchanged
+        val plainUrl = "https://api.example.com/oauth?client_id=123"
+        val result = UrlUtils.normalizeUrlEncoding(plainUrl)
+        assertEquals(plainUrl, result)
+    }
 }
