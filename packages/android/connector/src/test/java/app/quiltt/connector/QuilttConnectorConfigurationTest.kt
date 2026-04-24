@@ -5,31 +5,17 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class QuilttConnectorConfigurationTest {
+    // ConnectConfiguration
+
     @Test
-    fun connectConfiguration_hasExpectedConnectorIdAndAppLauncherUrl() {
+    fun connectConfiguration_requiredFields() {
         val config = QuilttConnectorConnectConfiguration(
             connectorId = "my-connector",
             appLauncherUrl = "https://example.com/callback",
         )
         assertEquals("my-connector", config.connectorId)
         assertEquals("https://example.com/callback", config.appLauncherUrl)
-    }
-
-    @Test
-    fun connectConfiguration_connectionIdIsAlwaysNull() {
-        val config = QuilttConnectorConnectConfiguration(
-            connectorId = "my-connector",
-            appLauncherUrl = "https://example.com/callback",
-        )
         assertNull(config.connectionId)
-    }
-
-    @Test
-    fun connectConfiguration_institutionDefaultsToNull() {
-        val config = QuilttConnectorConnectConfiguration(
-            connectorId = "my-connector",
-            appLauncherUrl = "https://example.com/callback",
-        )
         assertNull(config.institution)
     }
 
@@ -45,7 +31,18 @@ class QuilttConnectorConfigurationTest {
     }
 
     @Test
-    fun reconnectConfiguration_hasExpectedFields() {
+    fun connectConfiguration_connectionIdIsAlwaysNull() {
+        val config = QuilttConnectorConnectConfiguration(
+            connectorId = "c",
+            appLauncherUrl = "https://example.com",
+        )
+        assertNull(config.connectionId)
+    }
+
+    // ReconnectConfiguration
+
+    @Test
+    fun reconnectConfiguration_requiredFields() {
         val config = QuilttConnectorReconnectConfiguration(
             connectorId = "my-connector",
             appLauncherUrl = "https://example.com/callback",
@@ -54,13 +51,14 @@ class QuilttConnectorConfigurationTest {
         assertEquals("my-connector", config.connectorId)
         assertEquals("https://example.com/callback", config.appLauncherUrl)
         assertEquals("conn-abc123", config.connectionId)
+        assertNull(config.institution)
     }
 
     @Test
     fun reconnectConfiguration_institutionIsAlwaysNull() {
         val config = QuilttConnectorReconnectConfiguration(
-            connectorId = "my-connector",
-            appLauncherUrl = "https://example.com/callback",
+            connectorId = "c",
+            appLauncherUrl = "https://example.com",
             connectionId = "conn-1",
         )
         assertNull(config.institution)

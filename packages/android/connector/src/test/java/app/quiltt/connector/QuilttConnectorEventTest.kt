@@ -5,34 +5,38 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class QuilttConnectorEventTest {
+    // ConnectorSDKEventType
+
     @Test
-    fun eventType_loadValue() {
+    fun eventType_load_rawValue() {
         assertEquals("loaded", ConnectorSDKEventType.Load.value)
     }
 
     @Test
-    fun eventType_exitSuccessValue() {
+    fun eventType_exitSuccess_rawValue() {
         assertEquals("exited.successful", ConnectorSDKEventType.ExitSuccess.value)
     }
 
     @Test
-    fun eventType_exitAbortValue() {
+    fun eventType_exitAbort_rawValue() {
         assertEquals("exited.aborted", ConnectorSDKEventType.ExitAbort.value)
     }
 
     @Test
-    fun eventType_exitErrorValue() {
+    fun eventType_exitError_rawValue() {
         assertEquals("exited.errored", ConnectorSDKEventType.ExitError.value)
     }
 
     @Test
-    fun eventType_allValuesAreDistinct() {
+    fun eventType_allCases_haveDistinctRawValues() {
         val values = ConnectorSDKEventType.entries.map { it.value }
         assertEquals(values.size, values.toSet().size)
     }
 
+    // ConnectorSDKCallbackMetadata
+
     @Test
-    fun callbackMetadata_storesAllFields() {
+    fun callbackMetadata_allFields() {
         val metadata = ConnectorSDKCallbackMetadata(
             connectorId = "connector-1",
             profileId = "profile-1",
@@ -44,7 +48,7 @@ class QuilttConnectorEventTest {
     }
 
     @Test
-    fun callbackMetadata_allowsNullOptionals() {
+    fun callbackMetadata_nullOptionals() {
         val metadata = ConnectorSDKCallbackMetadata(
             connectorId = "connector-1",
             profileId = null,

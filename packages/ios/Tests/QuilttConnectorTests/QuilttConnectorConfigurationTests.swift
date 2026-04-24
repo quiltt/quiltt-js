@@ -3,6 +3,8 @@ import XCTest
 @testable import QuilttConnector
 
 final class QuilttConnectorConfigurationTests: XCTestCase {
+    // ConnectConfiguration
+
     func testConnectConfiguration_requiredFields() {
         let config = QuilttConnectorConnectConfiguration(
             connectorId: "my-connector",
@@ -31,6 +33,8 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
         )
         XCTAssertNil(config.connectionId)
     }
+
+    // ReconnectConfiguration
 
     func testReconnectConfiguration_requiredFields() {
         let config = QuilttConnectorReconnectConfiguration(

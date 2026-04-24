@@ -161,31 +161,32 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
      * handles that encoding to ensure the URL can be properly validated and launched.
      */
     private fun handleNavigateUrl(navigateUrlString: String) {
-        // Normalize any double-encoding in the URL
-        val normalizedUrl = UrlUtils.normalizeUrlEncoding(navigateUrlString)
-        
-        // Fully decode the URL to handle both single and double-encoded strings
-        val fullyDecodedUrl = Uri.decode(normalizedUrl)
-        
-        // Then parse and handle the decoded URL
-        parseAndHandleOAuthUrl(fullyDecodedUrl) { 
-            Log.e(TAG, "Failed to parse and handle OAuth URL: $fullyDecodedUrl")
+        // Attempt to decode iteratively, but stop once we have a valid URL with https scheme
+        var decodedUrl = navigateUrlString
+        var attempts = 0
+        val maxAttempts = 3
+
+        while (attempts < maxAttempts) {
+            val uri = Uri.parse(decodedUrl)
+            if (uri.scheme?.equals("https", ignoreCase = true) == true) {
+                handleOAuthUrl(uri)
+                return
+            }
+
+            // Try decoding once more
+            val decoded = Uri.decode(decodedUrl)
+            if (decoded != decodedUrl) {
+                decodedUrl = decoded
+                attempts++
+            } else {
+                break
+            }
         }
+
+        // If we couldn't parse a valid URL after attempts, log error
+        Log.e(TAG, "Failed to parse OAuth URL after decoding attempts: $navigateUrlString")
     }
     
-    /**
-     * Helper function to parse URL string and handle OAuth redirect with error callback
-     */
-    private fun parseAndHandleOAuthUrl(urlString: String, onError: () -> Unit) {
-        try {
-            val navigateUri = Uri.parse(urlString)
-            handleOAuthUrl(navigateUri)
-        } catch (error: Exception) {
-            Log.e(TAG, "URL parsing failed", error)
-            onError()
-        }
-    }
-
     private fun initInjectJavaScript() {
         val tokenString = params.token ?: "null"
         val connectorId = params.config.connectorId
@@ -218,57 +219,26 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         params.webView.evaluateJavascript(script, null)
     }
 
-    private val allowedListUrl = listOf(
-        "quiltt.app",
-        "quiltt.dev",
-        "moneydesktop.com",
-        "cdn.plaid.com",
-        "finicity.com",
-    )
-
     private fun shouldRender(url: Uri): Boolean {
         if (isQuilttEvent(url)) {
             return false
         }
-        for (allowedUrl in allowedListUrl) {
-            if (url.toString().contains(allowedUrl)) {
-                return true
-            }
-        }
-        return false
+        return true
     }
 
     private fun handleOAuthUrl(oauthUrl: Uri) {
-        val urlString = oauthUrl.toString()
-        
-        // Normalize the URL encoding FIRST to handle double-encoded URLs
-        // (e.g., https%253A%252F%252F... becomes https%3A%2F%2F...)
-        val normalizedUrl = UrlUtils.normalizeUrlEncoding(urlString)
-        
-        // Fully decode the URL to handle remaining percent-encoded characters
-        val fullyDecodedUrl = Uri.decode(normalizedUrl)
-        
-        // Check if URL uses HTTPS scheme (case-insensitive)
-        // Note: We use string checking instead of Uri.scheme because encoded URLs 
-        // like "https%3A%2F%2F..." would have scheme=null after Uri.parse()
-        if (!fullyDecodedUrl.startsWith("https://", ignoreCase = true)) {
-            Log.w(TAG, "Skipping non-HTTPS URL: $fullyDecodedUrl")
+        // Check if URL uses HTTPS scheme using the Uri's scheme property
+        if (oauthUrl.scheme?.lowercase() != "https") {
+            Log.w(TAG, "Skipping non-HTTPS URL: $oauthUrl")
             return
         }
         
         // Open the URL in the system browser
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullyDecodedUrl))
+            val intent = Intent(Intent.ACTION_VIEW, oauthUrl)
             params.context.startActivity(intent)
         } catch (error: Exception) {
-            Log.e(TAG, "Failed to open decoded URL in browser: $fullyDecodedUrl", error)
-            // Fallback to original URL if decoding creates an invalid URL
-            try {
-                val intent = Intent(Intent.ACTION_VIEW, oauthUrl)
-                params.context.startActivity(intent)
-            } catch (fallbackError: Exception) {
-                Log.e(TAG, "Failed to open original URL in browser: $oauthUrl", fallbackError)
-            }
+            Log.e(TAG, "Failed to open URL in browser: $oauthUrl", error)
         }
     }
 

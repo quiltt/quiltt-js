@@ -11,8 +11,7 @@ class URLUtils {
         // Check for typical URL encoding patterns like %20, %3A, etc.
         let hasEncodedChars = string.range(of: "%[0-9A-F]{2}", options: [.regularExpression, .caseInsensitive]) != nil
 
-        // Double-encoded strings (e.g. %253A) are not considered properly encoded —
-        // normalizeUrlEncoding should be used to fix them first.
+        // Double-encoded strings (e.g. %253A) are not considered properly encoded
         let hasDoubleEncoding =
             string.range(of: "%25[0-9A-F]{2}", options: [.regularExpression, .caseInsensitive]) != nil
 
@@ -40,30 +39,5 @@ class URLUtils {
         }
         print("URL encoded from: \(string) to: \(encoded)")
         return encoded
-    }
-
-    /**
-     Checks if a string appears to be double-encoded
-     - Parameter string: The string to check
-     - Returns: Boolean indicating if the string appears to be double-encoded
-     */
-    static func isDoubleEncoded(_ string: String) -> Bool {
-        if string.isEmpty { return false }
-        return string.range(of: "%25[0-9A-F]{2}", options: [.regularExpression, .caseInsensitive]) != nil
-    }
-
-    /**
-     Normalizes a URL string by decoding it once if it appears to be double-encoded
-     - Parameter urlString: The URL string to normalize
-     - Returns: A normalized URL string
-     */
-    static func normalizeUrlEncoding(_ urlString: String) -> String {
-        if isDoubleEncoded(urlString) {
-            print("Detected double-encoded URL: \(urlString)")
-            let normalized = urlString.removingPercentEncoding ?? urlString
-            print("Normalized to: \(normalized)")
-            return normalized
-        }
-        return urlString
     }
 }
