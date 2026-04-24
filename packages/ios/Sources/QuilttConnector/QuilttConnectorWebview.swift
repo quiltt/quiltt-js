@@ -249,13 +249,27 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
 
     /**
      Helper function to handle URL parsing and OAuth redirect for Navigate events
-     
+
      The URL parameter may arrive double-encoded (e.g., https%253A%252F%252F...) due to
      how it's passed through the quilttconnector:// scheme. This function detects and
      handles that encoding to ensure the URL can be properly validated and launched.
      */
     private func handleNavigateUrl(_ navigateUrlString: String) throws {
-        guard let navigateUrl = URL(string: navigateUrlString) else {
+        // Fully decode the string to handle both single and double-encoded URLs
+        var decodedUrl = navigateUrlString
+        var previousUrl: String?
+
+        // Keep decoding until we get a stable result (no more percent-encoded characters in scheme)
+        while decodedUrl != previousUrl {
+            previousUrl = decodedUrl
+            if let decoded = decodedUrl.removingPercentEncoding {
+                decodedUrl = decoded
+            } else {
+                break
+            }
+        }
+
+        guard let navigateUrl = URL(string: decodedUrl) else {
             throw URLError(.badURL)
         }
         handleOAuthUrl(navigateUrl)
@@ -268,22 +282,35 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         // (e.g., https%253A%252F%252F... becomes https%3A%2F%2F...)
         let normalizedUrlString = URLUtils.normalizeUrlEncoding(urlString)
 
+        // Fully decode the string to handle remaining percent-encoded characters
+        var fullyDecodedString = normalizedUrlString
+        var previousString: String?
+
+        while fullyDecodedString != previousString {
+            previousString = fullyDecodedString
+            if let decoded = fullyDecodedString.removingPercentEncoding {
+                fullyDecodedString = decoded
+            } else {
+                break
+            }
+        }
+
         // Check if URL uses HTTPS scheme (case-insensitive)
-        if !normalizedUrlString.hasPrefix("https://") && !normalizedUrlString.hasPrefix("HTTPS://") {
-            print("handleOAuthUrl - Skipping non-HTTPS URL: \(normalizedUrlString)")
+        if !fullyDecodedString.hasPrefix("https://") && !fullyDecodedString.hasPrefix("HTTPS://") {
+            print("handleOAuthUrl - Skipping non-HTTPS URL: \(fullyDecodedString)")
             return
         }
 
         #if canImport(UIKit) && os(iOS)
-            if let normalizedUrl = URL(string: normalizedUrlString) {
+            if let decodedUrl = URL(string: fullyDecodedString) {
                 if #available(iOS 10.0, *) {
-                    UIApplication.shared.open(normalizedUrl)
+                    UIApplication.shared.open(decodedUrl)
                 } else {
-                    UIApplication.shared.openURL(normalizedUrl)
+                    UIApplication.shared.openURL(decodedUrl)
                 }
             } else {
-                // Fallback to original URL if normalization creates an invalid URL
-                print("Normalization created invalid URL, using original")
+                // Fallback to original URL if decoding creates an invalid URL
+                print("Decoding created invalid URL, using original")
                 if #available(iOS 10.0, *) {
                     UIApplication.shared.open(oauthUrl)
                 } else {
@@ -292,7 +319,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
             }
         #else
             // For non-iOS platforms (used only during testing)
-            print("[TEST MODE] Would open URL: \(normalizedUrlString)")
+            print("[TEST MODE] Would open URL: \(fullyDecodedString)")
         #endif
     }
 
