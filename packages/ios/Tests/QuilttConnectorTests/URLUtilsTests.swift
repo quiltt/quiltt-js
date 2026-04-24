@@ -86,7 +86,7 @@ final class URLUtilsTests: XCTestCase {
         // Reproduces the bug: OAuth URL arrives double-encoded
         let doubleEncodedUrl = "https%253A%252F%252Fapi.oauth.example.com%252Faggregator-oauth"
         let result = URLUtils.normalizeUrlEncoding(doubleEncodedUrl)
-        
+
         // After one decode, it should become single-encoded
         XCTAssertEqual(result, "https%3A%2F%2Fapi.oauth.example.com%2Faggregator-oauth")
     }
