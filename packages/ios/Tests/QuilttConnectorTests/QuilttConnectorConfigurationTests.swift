@@ -26,14 +26,6 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
         XCTAssertNil(config.connectionId)
     }
 
-    func testConnectConfiguration_connectionIdIsAlwaysNil() {
-        let config = QuilttConnectorConnectConfiguration(
-            connectorId: "c",
-            appLauncherUrl: "https://example.com"
-        )
-        XCTAssertNil(config.connectionId)
-    }
-
     // ReconnectConfiguration
 
     func testReconnectConfiguration_requiredFields() {

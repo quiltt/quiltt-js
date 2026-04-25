@@ -189,38 +189,14 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         }
     }
 
-    /**
-     Helper function to handle URL parsing and OAuth redirect for Navigate events
-
-     The URL parameter may arrive double-encoded (e.g., https%253A%252F%252F...) due to
-     how it's passed through the quilttconnector:// scheme. This function detects and
-     handles that encoding to ensure the URL can be properly validated and launched.
-     */
     private func handleNavigateUrl(_ navigateUrlString: String) {
-        // Attempt to decode iteratively, but stop once we have a valid URL with https scheme
-        var decodedUrl = navigateUrlString
-        var attempts = 0
-        let maxAttempts = 3
-
-        while attempts < maxAttempts {
-            if let url = URL(string: decodedUrl),
-               url.scheme?.lowercased() == "https"
-            {
-                handleOAuthUrl(url)
-                return
-            }
-
-            // Try decoding once more
-            if let decoded = decodedUrl.removingPercentEncoding, decoded != decodedUrl {
-                decodedUrl = decoded
-                attempts += 1
-            } else {
-                break
-            }
+        if let resolved = URLUtils.resolveUrl(navigateUrlString),
+           let url = URL(string: resolved)
+        {
+            handleOAuthUrl(url)
+        } else {
+            print("Failed to parse OAuth URL after decoding attempts: \(navigateUrlString)")
         }
-
-        // If we couldn't parse a valid URL after attempts, log error
-        print("Failed to parse OAuth URL after decoding attempts: \(navigateUrlString)")
     }
 
     private func initInjectJavaScript() {

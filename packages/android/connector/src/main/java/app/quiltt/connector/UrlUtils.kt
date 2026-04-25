@@ -33,4 +33,34 @@ object UrlUtils {
         println("URL encoded from: $str to: $encoded")
         return encoded
     }
+
+    /**
+     * Iteratively decodes a URL string until it resolves to a valid HTTPS URL.
+     *
+     * URL parameters may arrive double-encoded (e.g., https%253A%252F%252F...) due to
+     * how they are passed through the quilttconnector:// scheme. This function decodes
+     * up to [maxAttempts] times, stopping as soon as the result parses as an HTTPS URL.
+     *
+     * @param urlString The possibly-encoded URL string
+     * @param maxAttempts Maximum number of decode iterations (default 3)
+     * @return The resolved HTTPS URL string, or null if it could not be resolved
+     */
+    fun resolveUrl(urlString: String, maxAttempts: Int = 3): String? {
+        var decoded = urlString
+        var attempts = 0
+
+        while (attempts < maxAttempts) {
+            val uri = Uri.parse(decoded)
+            if (uri.scheme?.equals("https", ignoreCase = true) == true) {
+                return decoded
+            }
+
+            val next = Uri.decode(decoded)
+            if (next == decoded) break
+            decoded = next
+            attempts++
+        }
+
+        return null
+    }
 }

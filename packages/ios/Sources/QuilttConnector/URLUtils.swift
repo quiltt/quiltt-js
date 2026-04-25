@@ -40,4 +40,34 @@ class URLUtils {
         print("URL encoded from: \(string) to: \(encoded)")
         return encoded
     }
+
+    /**
+     Iteratively decodes a URL string until it resolves to a valid HTTPS URL.
+
+     URL parameters may arrive double-encoded (e.g., https%253A%252F%252F...) due to
+     how they are passed through the quilttconnector:// scheme. This function decodes
+     up to `maxAttempts` times, stopping as soon as the result parses as an HTTPS URL.
+
+     - Parameter urlString: The possibly-encoded URL string
+     - Parameter maxAttempts: Maximum number of decode iterations (default 3)
+     - Returns: The resolved HTTPS URL string, or nil if it could not be resolved
+     */
+    static func resolveUrl(_ urlString: String, maxAttempts: Int = 3) -> String? {
+        var decoded = urlString
+        var attempts = 0
+
+        while attempts < maxAttempts {
+            if let url = URL(string: decoded),
+               url.scheme?.lowercased() == "https"
+            {
+                return decoded
+            }
+
+            guard let next = decoded.removingPercentEncoding, next != decoded else { break }
+            decoded = next
+            attempts += 1
+        }
+
+        return nil
+    }
 }

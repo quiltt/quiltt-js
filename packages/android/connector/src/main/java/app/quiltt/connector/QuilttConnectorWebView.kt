@@ -153,38 +153,13 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         }
     }
     
-    /**
-     * Helper function to handle URL parsing and OAuth redirect for Navigate events
-     * 
-     * The URL parameter may arrive double-encoded (e.g., https%253A%252F%252F...) due to
-     * how it's passed through the quilttconnector:// scheme. This function detects and
-     * handles that encoding to ensure the URL can be properly validated and launched.
-     */
     private fun handleNavigateUrl(navigateUrlString: String) {
-        // Attempt to decode iteratively, but stop once we have a valid URL with https scheme
-        var decodedUrl = navigateUrlString
-        var attempts = 0
-        val maxAttempts = 3
-
-        while (attempts < maxAttempts) {
-            val uri = Uri.parse(decodedUrl)
-            if (uri.scheme?.equals("https", ignoreCase = true) == true) {
-                handleOAuthUrl(uri)
-                return
-            }
-
-            // Try decoding once more
-            val decoded = Uri.decode(decodedUrl)
-            if (decoded != decodedUrl) {
-                decodedUrl = decoded
-                attempts++
-            } else {
-                break
-            }
+        val resolved = UrlUtils.resolveUrl(navigateUrlString)
+        if (resolved != null) {
+            handleOAuthUrl(Uri.parse(resolved))
+        } else {
+            Log.e(TAG, "Failed to parse OAuth URL after decoding attempts: $navigateUrlString")
         }
-
-        // If we couldn't parse a valid URL after attempts, log error
-        Log.e(TAG, "Failed to parse OAuth URL after decoding attempts: $navigateUrlString")
     }
     
     private fun initInjectJavaScript() {

@@ -3,6 +3,7 @@ package app.quiltt.connector
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -69,6 +70,36 @@ class UrlUtilsTest {
         val result = UrlUtils.smartEncodeURIComponent(plain)
         assertNotEquals(plain, result)
         assertFalse(result.contains(" "))
+    }
+
+    // resolveUrl
+
+    @Test
+    fun resolveUrl_withPlainHttpsUrl_returnsAsIs() {
+        val url = "https://api.example.com/oauth?client_id=123"
+        assertEquals(url, UrlUtils.resolveUrl(url))
+    }
+
+    @Test
+    fun resolveUrl_withSingleEncodedHttpsUrl_decodesOnce() {
+        val encoded = "https%3A%2F%2Fapi.example.com%2Foauth"
+        assertEquals("https://api.example.com/oauth", UrlUtils.resolveUrl(encoded))
+    }
+
+    @Test
+    fun resolveUrl_withDoubleEncodedHttpsUrl_decodesToHttps() {
+        val doubleEncoded = "https%253A%252F%252Fapi.example.com%252Foauth"
+        assertEquals("https://api.example.com/oauth", UrlUtils.resolveUrl(doubleEncoded))
+    }
+
+    @Test
+    fun resolveUrl_withNonHttpsUrl_returnsNull() {
+        assertNull(UrlUtils.resolveUrl("http://example.com"))
+    }
+
+    @Test
+    fun resolveUrl_withGarbageString_returnsNull() {
+        assertNull(UrlUtils.resolveUrl("not-a-url"))
     }
 
 }

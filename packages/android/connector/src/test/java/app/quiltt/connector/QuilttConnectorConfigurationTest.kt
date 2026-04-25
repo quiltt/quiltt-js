@@ -30,15 +30,6 @@ class QuilttConnectorConfigurationTest {
         assertNull(config.connectionId)
     }
 
-    @Test
-    fun connectConfiguration_connectionIdIsAlwaysNull() {
-        val config = QuilttConnectorConnectConfiguration(
-            connectorId = "c",
-            appLauncherUrl = "https://example.com",
-        )
-        assertNull(config.connectionId)
-    }
-
     // ReconnectConfiguration
 
     @Test

@@ -47,4 +47,29 @@ final class URLUtilsTests: XCTestCase {
         XCTAssertNotEqual(result, plain)
         XCTAssertFalse(result.contains(" "))
     }
+
+    // resolveUrl
+
+    func testResolveUrl_withPlainHttpsUrl_returnsAsIs() {
+        let url = "https://api.example.com/oauth?client_id=123"
+        XCTAssertEqual(URLUtils.resolveUrl(url), url)
+    }
+
+    func testResolveUrl_withSingleEncodedHttpsUrl_decodesOnce() {
+        let encoded = "https%3A%2F%2Fapi.example.com%2Foauth"
+        XCTAssertEqual(URLUtils.resolveUrl(encoded), "https://api.example.com/oauth")
+    }
+
+    func testResolveUrl_withDoubleEncodedHttpsUrl_decodesToHttps() {
+        let doubleEncoded = "https%253A%252F%252Fapi.example.com%252Foauth"
+        XCTAssertEqual(URLUtils.resolveUrl(doubleEncoded), "https://api.example.com/oauth")
+    }
+
+    func testResolveUrl_withNonHttpsUrl_returnsNil() {
+        XCTAssertNil(URLUtils.resolveUrl("http://example.com"))
+    }
+
+    func testResolveUrl_withGarbageString_returnsNil() {
+        XCTAssertNil(URLUtils.resolveUrl("not-a-url"))
+    }
 }
