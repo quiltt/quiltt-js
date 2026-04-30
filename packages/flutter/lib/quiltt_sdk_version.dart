@@ -1,1 +1,1 @@
-const quilttSdkVersion = "5.2.4";
+const quilttSdkVersion = "5.2.5";
