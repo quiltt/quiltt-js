@@ -42,7 +42,7 @@ final class ConnectorSDKCallbackMetadataTests: XCTestCase {
         XCTAssertEqual(metadata.connectionId, "conn-1")
     }
 
-    func testCallbackMetadata_nullOptionals() {
+    func testCallbackMetadata_nilOptionals() {
         let metadata = ConnectorSDKCallbackMetadata(
             connectorId: "connector-1",
             profileId: nil,
