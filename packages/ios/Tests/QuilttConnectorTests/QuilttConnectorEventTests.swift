@@ -3,23 +3,23 @@ import XCTest
 @testable import QuilttConnector
 
 final class ConnectorSDKEventTypeTests: XCTestCase {
-    func testLoad_rawValue() {
+    func testEventType_load_rawValue() {
         XCTAssertEqual(ConnectorSDKEventType.Load.rawValue, "loaded")
     }
 
-    func testExitSuccess_rawValue() {
+    func testEventType_exitSuccess_rawValue() {
         XCTAssertEqual(ConnectorSDKEventType.ExitSuccess.rawValue, "exited.successful")
     }
 
-    func testExitAbort_rawValue() {
+    func testEventType_exitAbort_rawValue() {
         XCTAssertEqual(ConnectorSDKEventType.ExitAbort.rawValue, "exited.aborted")
     }
 
-    func testExitError_rawValue() {
+    func testEventType_exitError_rawValue() {
         XCTAssertEqual(ConnectorSDKEventType.ExitError.rawValue, "exited.errored")
     }
 
-    func testAllCases_haveDistinctRawValues() {
+    func testEventType_allCases_haveDistinctRawValues() {
         let values = [
             ConnectorSDKEventType.Load.rawValue,
             ConnectorSDKEventType.ExitSuccess.rawValue,
@@ -31,7 +31,7 @@ final class ConnectorSDKEventTypeTests: XCTestCase {
 }
 
 final class ConnectorSDKCallbackMetadataTests: XCTestCase {
-    func testInit_allFields() {
+    func testCallbackMetadata_allFields() {
         let metadata = ConnectorSDKCallbackMetadata(
             connectorId: "connector-1",
             profileId: "profile-1",
@@ -42,7 +42,7 @@ final class ConnectorSDKCallbackMetadataTests: XCTestCase {
         XCTAssertEqual(metadata.connectionId, "conn-1")
     }
 
-    func testInit_nilOptionals() {
+    func testCallbackMetadata_nilOptionals() {
         let metadata = ConnectorSDKCallbackMetadata(
             connectorId: "connector-1",
             profileId: nil,

@@ -32,22 +32,6 @@ final class URLUtilsTests: XCTestCase {
         XCTAssertFalse(URLUtils.isEncoded("https%253A%252F%252Fexample.com"))
     }
 
-    func testIsDoubleEncoded_withDoubleEncoded() {
-        XCTAssertTrue(URLUtils.isDoubleEncoded("https%253A%252F%252Fexample.com"))
-    }
-
-    func testIsDoubleEncoded_withSingleEncoded() {
-        XCTAssertFalse(URLUtils.isDoubleEncoded("https%3A%2F%2Fexample.com"))
-    }
-
-    func testIsDoubleEncoded_withPlainUrl() {
-        XCTAssertFalse(URLUtils.isDoubleEncoded("https://example.com"))
-    }
-
-    func testIsDoubleEncoded_withEmptyString() {
-        XCTAssertFalse(URLUtils.isDoubleEncoded(""))
-    }
-
     func testSmartEncodeURIComponent_emptyString() {
         XCTAssertEqual(URLUtils.smartEncodeURIComponent(""), "")
     }
@@ -64,19 +48,35 @@ final class URLUtilsTests: XCTestCase {
         XCTAssertFalse(result.contains(" "))
     }
 
-    func testNormalizeUrlEncoding_withDoubleEncoded_decodesOnce() {
-        let doubleEncoded = "https%253A%252F%252Fexample.com"
-        let result = URLUtils.normalizeUrlEncoding(doubleEncoded)
-        XCTAssertEqual(result, "https%3A%2F%2Fexample.com")
+    // resolveUrl
+
+    func testResolveUrl_withPlainHttpsUrl_returnsAsIs() {
+        let url = "https://api.example.com/oauth?client_id=123"
+        XCTAssertEqual(URLUtils.resolveUrl(url), url)
     }
 
-    func testNormalizeUrlEncoding_withPlainUrl_returnsUnchanged() {
-        let plain = "https://example.com"
-        XCTAssertEqual(URLUtils.normalizeUrlEncoding(plain), plain)
+    func testResolveUrl_withSingleEncodedHttpsUrl_decodesOnce() {
+        let encoded = "https%3A%2F%2Fapi.example.com%2Foauth"
+        XCTAssertEqual(URLUtils.resolveUrl(encoded), "https://api.example.com/oauth")
     }
 
-    func testNormalizeUrlEncoding_withSingleEncoded_returnsUnchanged() {
-        let singleEncoded = "https%3A%2F%2Fexample.com"
-        XCTAssertEqual(URLUtils.normalizeUrlEncoding(singleEncoded), singleEncoded)
+    func testResolveUrl_withDoubleEncodedHttpsUrl_decodesToHttps() {
+        let doubleEncoded = "https%253A%252F%252Fapi.example.com%252Foauth"
+        XCTAssertEqual(URLUtils.resolveUrl(doubleEncoded), "https://api.example.com/oauth")
+    }
+
+    func testResolveUrl_withTripleEncodedHttpsUrl_decodesToHttps() {
+        // Triple-encoded: https%25253A%25252F%25252Fapi.example.com%25252Foauth
+        // Requires exactly 3 decodes to reach the plain HTTPS URL
+        let tripleEncoded = "https%25253A%25252F%25252Fapi.example.com%25252Foauth"
+        XCTAssertEqual(URLUtils.resolveUrl(tripleEncoded), "https://api.example.com/oauth")
+    }
+
+    func testResolveUrl_withNonHttpsUrl_returnsNil() {
+        XCTAssertNil(URLUtils.resolveUrl("http://example.com"))
+    }
+
+    func testResolveUrl_withGarbageString_returnsNil() {
+        XCTAssertNil(URLUtils.resolveUrl("not-a-url"))
     }
 }

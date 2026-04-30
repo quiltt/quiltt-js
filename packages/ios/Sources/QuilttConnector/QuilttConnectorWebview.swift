@@ -101,9 +101,9 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
     }
 
     /**
-     urlAllowList & shouldRender ensure we are only rendering Quiltt, MX and Plaid content in Webview
-     For other urls, we assume those are bank urls, which needs to be handle in external browser.
-    
+     Intercepts navigation actions to handle Quiltt events, render allowed content,
+     or open OAuth URLs in an external browser.
+
      https://developer.apple.com/documentation/webkit/wknavigationdelegate/1455641-webview
      */
     public func webView(
@@ -136,37 +136,6 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
     public func authenticate(_ token: String) {
         self.token = token
         self.initInjectJavaScript()
-    }
-
-    private func initInjectJavaScript() {
-        let tokenString = token ?? "null"
-
-        let connectorId = config!.connectorId
-        let connectionId = config?.connectionId ?? "null"
-        let institution = config?.institution ?? "null"
-        let script = """
-                const options = {
-                  source: 'quiltt',
-                  type: 'Options',
-                  token: '\(tokenString)',
-                  connectorId: '\(connectorId)',
-                  connectionId: '\(connectionId)',
-                  institution: '\(institution)',
-                };
-                const compactedOptions = Object.keys(options).reduce((acc, key) => {
-                  if (options[key] !== 'null') {
-                    acc[key] = options[key];
-                  }
-                  return acc;
-                }, {});
-                window.postMessage(compactedOptions);
-            """
-        self.evaluateJavaScript(script)
-    }
-
-    private func clearLocalStorage() {
-        let script = "localStorage.clear()"
-        self.evaluateJavaScript(script)
     }
 
     private func handleQuilttEvent(_ url: URL) {
@@ -210,21 +179,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
                 let navigateUrlItem = urlc.queryItems?.first(where: { $0.name == "url" }),
                 let navigateUrlString = navigateUrlItem.value
             {
-                // Handle potential encoding issues
-                if URLUtils.isEncoded(navigateUrlString) {
-                    let decodedUrl = navigateUrlString.removingPercentEncoding ?? navigateUrlString
-                    if let navigateUrl = URL(string: decodedUrl) {
-                        handleOAuthUrl(navigateUrl)
-                    } else {
-                        print("Failed to create URL from decoded string: \(decodedUrl)")
-                        // Fallback to original string
-                        if let navigateUrl = URL(string: navigateUrlString) {
-                            handleOAuthUrl(navigateUrl)
-                        }
-                    }
-                } else if let navigateUrl = URL(string: navigateUrlString) {
-                    handleOAuthUrl(navigateUrl)
-                }
+                handleNavigateUrl(navigateUrlString)
             } else {
                 print("Navigate URL missing from request")
             }
@@ -234,55 +189,70 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         }
     }
 
-    // TODO: Need to regroup on this and figure out how to handle this better
-    // private var urlAllowList = [
-    //     "quiltt.app",
-    //     "quiltt.dev",
-    //     "moneydesktop.com",
-    //     "cdn.plaid.com",
-    // ]
+    private func handleNavigateUrl(_ navigateUrlString: String) {
+        if let resolved = URLUtils.resolveUrl(navigateUrlString),
+           let url = URL(string: resolved)
+        {
+            handleOAuthUrl(url)
+        } else {
+            print("Failed to parse OAuth URL after decoding attempts: \(navigateUrlString)")
+        }
+    }
+
+    private func initInjectJavaScript() {
+        let tokenString = token ?? "null"
+
+        let connectorId = config!.connectorId
+        let connectionId = config?.connectionId ?? "null"
+        let institution = config?.institution ?? "null"
+        let script = """
+                const options = {
+                  source: 'quiltt',
+                  type: 'Options',
+                  token: '\(tokenString)',
+                  connectorId: '\(connectorId)',
+                  connectionId: '\(connectionId)',
+                  institution: '\(institution)',
+                };
+                const compactedOptions = Object.keys(options).reduce((acc, key) => {
+                  if (options[key] !== 'null') {
+                    acc[key] = options[key];
+                  }
+                  return acc;
+                }, {});
+                window.postMessage(compactedOptions);
+            """
+        self.evaluateJavaScript(script)
+    }
+
+    private func clearLocalStorage() {
+        let script = "localStorage.clear()"
+        self.evaluateJavaScript(script)
+    }
 
     private func shouldRender(_ url: URL) -> Bool {
         if isQuilttEvent(url) {
             return false
         }
-        // for allowedUrl in urlAllowList {
-        //     if url.absoluteString.contains(allowedUrl) {
-        //         return true
-        //     }
-        // }
         return true
     }
 
     private func handleOAuthUrl(_ oauthUrl: URL) {
-        // Skip non-HTTPS URLs
-        if !oauthUrl.absoluteString.hasPrefix("https://") {
-            print("handleOAuthUrl - Skipping non https url - \(oauthUrl)")
+        // Check if URL uses HTTPS scheme using the URL object's normalized scheme property
+        guard oauthUrl.scheme?.lowercased() == "https" else {
+            print("handleOAuthUrl - Skipping non-HTTPS URL: \(oauthUrl)")
             return
         }
 
-        // Normalize URL to handle potential double-encoding
-        let normalizedUrlString = URLUtils.normalizeUrlEncoding(oauthUrl.absoluteString)
-
         #if canImport(UIKit) && os(iOS)
-            if let normalizedUrl = URL(string: normalizedUrlString) {
-                if #available(iOS 10.0, *) {
-                    UIApplication.shared.open(normalizedUrl)
-                } else {
-                    UIApplication.shared.openURL(normalizedUrl)
-                }
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(oauthUrl)
             } else {
-                // Fallback to original URL if normalization creates an invalid URL
-                print("Normalization created invalid URL, using original")
-                if #available(iOS 10.0, *) {
-                    UIApplication.shared.open(oauthUrl)
-                } else {
-                    UIApplication.shared.openURL(oauthUrl)
-                }
+                UIApplication.shared.openURL(oauthUrl)
             }
         #else
             // For non-iOS platforms (used only during testing)
-            print("[TEST MODE] Would open URL: \(normalizedUrlString)")
+            print("[TEST MODE] Would open URL: \(oauthUrl)")
         #endif
     }
 

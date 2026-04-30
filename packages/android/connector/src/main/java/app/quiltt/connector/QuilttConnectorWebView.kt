@@ -153,39 +153,15 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         }
     }
     
-    /**
-     * Helper function to handle URL parsing and OAuth redirect for Navigate events
-     */
     private fun handleNavigateUrl(navigateUrlString: String) {
-        // Handle potential encoding issues - Match iOS logic exactly
-        if (UrlUtils.isEncoded(navigateUrlString)) {
-            val decodedUrl = Uri.decode(navigateUrlString)
-            parseAndHandleOAuthUrl(decodedUrl) { 
-                Log.w(TAG, "Failed to parse decoded URL, trying original")
-                parseAndHandleOAuthUrl(navigateUrlString) {
-                    Log.e(TAG, "Failed to parse both decoded and original URL: $navigateUrlString")
-                }
-            }
+        val resolved = UrlUtils.resolveUrl(navigateUrlString)
+        if (resolved != null) {
+            handleOAuthUrl(Uri.parse(resolved))
         } else {
-            parseAndHandleOAuthUrl(navigateUrlString) {
-                Log.e(TAG, "Failed to parse URL: $navigateUrlString")
-            }
+            Log.e(TAG, "Failed to parse OAuth URL after decoding attempts: $navigateUrlString")
         }
     }
     
-    /**
-     * Helper function to parse URL string and handle OAuth redirect with error callback
-     */
-    private fun parseAndHandleOAuthUrl(urlString: String, onError: () -> Unit) {
-        try {
-            val navigateUri = Uri.parse(urlString)
-            handleOAuthUrl(navigateUri)
-        } catch (error: Exception) {
-            Log.e(TAG, "URL parsing failed", error)
-            onError()
-        }
-    }
-
     private fun initInjectJavaScript() {
         val tokenString = params.token ?: "null"
         val connectorId = params.config.connectorId
@@ -218,53 +194,26 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         params.webView.evaluateJavascript(script, null)
     }
 
-    private val allowedListUrl = listOf(
-        "quiltt.app",
-        "quiltt.dev",
-        "moneydesktop.com",
-        "cdn.plaid.com",
-        "finicity.com",
-    )
-
     private fun shouldRender(url: Uri): Boolean {
         if (isQuilttEvent(url)) {
             return false
         }
-        for (allowedUrl in allowedListUrl) {
-            if (url.toString().contains(allowedUrl)) {
-                return true
-            }
-        }
-        return false
+        return true
     }
 
     private fun handleOAuthUrl(oauthUrl: Uri) {
-        val urlString = oauthUrl.toString()
-        
-        // Check if URL uses HTTPS scheme (case-insensitive)
-        // Note: We use string checking instead of Uri.scheme because encoded URLs 
-        // like "https%3A%2F%2F..." would have scheme=null after Uri.parse()
-        if (!urlString.startsWith("https://", ignoreCase = true)) {
+        // Check if URL uses HTTPS scheme using the Uri's scheme property
+        if (oauthUrl.scheme?.lowercase() != "https") {
             Log.w(TAG, "Skipping non-HTTPS URL: $oauthUrl")
             return
         }
         
-        // Normalize the URL encoding to prevent double-encoding issues
-        val normalizedUrl = UrlUtils.normalizeUrlEncoding(urlString)
-        
         // Open the URL in the system browser
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(normalizedUrl))
+            val intent = Intent(Intent.ACTION_VIEW, oauthUrl)
             params.context.startActivity(intent)
         } catch (error: Exception) {
-            Log.e(TAG, "Failed to open normalized URL in browser: $normalizedUrl", error)
-            // Fallback to original URL if normalization creates an invalid URL
-            try {
-                val intent = Intent(Intent.ACTION_VIEW, oauthUrl)
-                params.context.startActivity(intent)
-            } catch (fallbackError: Exception) {
-                Log.e(TAG, "Failed to open original URL in browser: $oauthUrl", fallbackError)
-            }
+            Log.e(TAG, "Failed to open URL in browser: $oauthUrl", error)
         }
     }
 

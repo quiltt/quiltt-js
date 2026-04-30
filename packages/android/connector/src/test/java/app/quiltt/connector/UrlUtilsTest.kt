@@ -3,6 +3,7 @@ package app.quiltt.connector
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,41 +66,48 @@ class UrlUtilsTest {
 
     @Test
     fun smartEncodeURIComponent_plainUrl_getsEncoded() {
-        val plain = "https://example.com/callback?foo=bar"
+        val plain = "https://example.com/callback?foo=bar baz"
         val result = UrlUtils.smartEncodeURIComponent(plain)
         assertNotEquals(plain, result)
-    }
-
-    @Test
-    fun smartEncodeURIComponent_plainUrlWithSpaces_encodesSpaces() {
-        val plain = "https://example.com/path?q=hello world"
-        val result = UrlUtils.smartEncodeURIComponent(plain)
         assertFalse(result.contains(" "))
     }
 
-    // normalizeUrlEncoding
+    // resolveUrl
 
     @Test
-    fun normalizeUrlEncoding_withPlainUrl_returnsUnchanged() {
-        val url = "https://example.com"
-        assertEquals(url, UrlUtils.normalizeUrlEncoding(url))
+    fun resolveUrl_withPlainHttpsUrl_returnsAsIs() {
+        val url = "https://api.example.com/oauth?client_id=123"
+        assertEquals(url, UrlUtils.resolveUrl(url))
     }
 
     @Test
-    fun normalizeUrlEncoding_withSingleEncoded_returnsUnchanged() {
-        val url = "https%3A%2F%2Fexample.com"
-        assertEquals(url, UrlUtils.normalizeUrlEncoding(url))
+    fun resolveUrl_withSingleEncodedHttpsUrl_decodesOnce() {
+        val encoded = "https%3A%2F%2Fapi.example.com%2Foauth"
+        assertEquals("https://api.example.com/oauth", UrlUtils.resolveUrl(encoded))
     }
 
     @Test
-    fun normalizeUrlEncoding_withDoubleEncoded_decodesOnce() {
-        val doubleEncoded = "https%253A%252F%252Fexample.com"
-        val result = UrlUtils.normalizeUrlEncoding(doubleEncoded)
-        assertEquals("https%3A%2F%2Fexample.com", result)
+    fun resolveUrl_withDoubleEncodedHttpsUrl_decodesToHttps() {
+        val doubleEncoded = "https%253A%252F%252Fapi.example.com%252Foauth"
+        assertEquals("https://api.example.com/oauth", UrlUtils.resolveUrl(doubleEncoded))
     }
 
     @Test
-    fun normalizeUrlEncoding_withEmptyString_returnsEmpty() {
-        assertEquals("", UrlUtils.normalizeUrlEncoding(""))
+    fun resolveUrl_withTripleEncodedHttpsUrl_decodesToHttps() {
+        // Triple-encoded: https%25253A%25252F%25252Fapi.example.com%25252Foauth
+        // Requires exactly 3 decodes to reach the plain HTTPS URL
+        val tripleEncoded = "https%25253A%25252F%25252Fapi.example.com%25252Foauth"
+        assertEquals("https://api.example.com/oauth", UrlUtils.resolveUrl(tripleEncoded))
     }
+
+    @Test
+    fun resolveUrl_withNonHttpsUrl_returnsNull() {
+        assertNull(UrlUtils.resolveUrl("http://example.com"))
+    }
+
+    @Test
+    fun resolveUrl_withGarbageString_returnsNull() {
+        assertNull(UrlUtils.resolveUrl("not-a-url"))
+    }
+
 }

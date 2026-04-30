@@ -13,4 +13,8 @@ final class QuilttSdkVersionTests: XCTestCase {
         XCTAssertNotNil(
             range, "SDK version '\(quilttSdkVersion)' should follow semver X.Y.Z format")
     }
+
+    func testSdkVersion_doesNotContainSpaces() {
+        XCTAssertFalse(quilttSdkVersion.contains(" "))
+    }
 }
