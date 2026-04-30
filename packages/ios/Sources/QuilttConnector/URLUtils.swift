@@ -68,6 +68,13 @@ class URLUtils {
             attempts += 1
         }
 
+        // The last decoded value produced by the loop was never validated
+        if let url = URL(string: decoded),
+           url.scheme?.lowercased() == "https"
+        {
+            return decoded
+        }
+
         return nil
     }
 }

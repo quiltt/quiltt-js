@@ -65,6 +65,13 @@ final class URLUtilsTests: XCTestCase {
         XCTAssertEqual(URLUtils.resolveUrl(doubleEncoded), "https://api.example.com/oauth")
     }
 
+    func testResolveUrl_withTripleEncodedHttpsUrl_decodesToHttps() {
+        // Triple-encoded: https%25253A%25252F%25252Fapi.example.com%25252Foauth
+        // Requires exactly 3 decodes to reach the plain HTTPS URL
+        let tripleEncoded = "https%25253A%25252F%25252Fapi.example.com%25252Foauth"
+        XCTAssertEqual(URLUtils.resolveUrl(tripleEncoded), "https://api.example.com/oauth")
+    }
+
     func testResolveUrl_withNonHttpsUrl_returnsNil() {
         XCTAssertNil(URLUtils.resolveUrl("http://example.com"))
     }

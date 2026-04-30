@@ -93,6 +93,14 @@ class UrlUtilsTest {
     }
 
     @Test
+    fun resolveUrl_withTripleEncodedHttpsUrl_decodesToHttps() {
+        // Triple-encoded: https%25253A%25252F%25252Fapi.example.com%25252Foauth
+        // Requires exactly 3 decodes to reach the plain HTTPS URL
+        val tripleEncoded = "https%25253A%25252F%25252Fapi.example.com%25252Foauth"
+        assertEquals("https://api.example.com/oauth", UrlUtils.resolveUrl(tripleEncoded))
+    }
+
+    @Test
     fun resolveUrl_withNonHttpsUrl_returnsNull() {
         assertNull(UrlUtils.resolveUrl("http://example.com"))
     }

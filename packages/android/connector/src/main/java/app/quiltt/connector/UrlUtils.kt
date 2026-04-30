@@ -61,6 +61,12 @@ object UrlUtils {
             attempts++
         }
 
+        // The last decoded value produced by the loop was never validated
+        val uri = Uri.parse(decoded)
+        if (uri.scheme?.equals("https", ignoreCase = true) == true) {
+            return decoded
+        }
+
         return null
     }
 }
