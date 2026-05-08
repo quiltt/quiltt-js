@@ -48,6 +48,11 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.12.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    
+    // Version constraints for transitive dependencies
+    constraints {
+        implementation("org.bouncycastle:bcprov-jdk18on:1.84")
+    }
 }
 
 publishing {
