@@ -1,0 +1,11 @@
+{
+  "name": "Quiltt Connector Example",
+  "short_name": "QuilttExample",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4a148c",
+  "description": "Example app for the Quiltt Connector Flutter SDK",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}
