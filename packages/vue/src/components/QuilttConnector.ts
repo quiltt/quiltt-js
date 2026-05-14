@@ -1,12 +1,16 @@
 /**
  * QuilttConnector - Embeds the Quiltt Connector in an iframe
  *
+ * @deprecated Use {@link QuilttContainer} instead. This component will be
+ * removed in a future version. `QuilttContainer` provides the same inline
+ * connector experience and aligns with the React package API.
+ *
  * This component renders the Quiltt Connector directly in your page,
  * suitable for full-page or embedded connector experiences.
  *
  * @example
  * ```vue
- * <QuilttConnector
+ * <QuilttContainer
  *   :connector-id="connectorId"
  *   @exit-success="handleSuccess"
  * />
@@ -48,6 +52,15 @@ export const QuilttConnector = defineComponent({
       type: String as PropType<string | undefined>,
       default: undefined,
     },
+    /**
+     * Forces complete remount when connectionId changes.
+     * Useful as a fallback for ensuring clean state.
+     * @default false
+     */
+    forceRemountOnConnectionChange: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   emits: {
@@ -66,6 +79,11 @@ export const QuilttConnector = defineComponent({
   },
 
   setup(props, { emit, expose }) {
+    console.warn(
+      '[Quiltt] QuilttConnector is deprecated. Use QuilttContainer instead, which provides ' +
+        'the same inline connector experience and aligns with the @quiltt/react package API.'
+    )
+
     const iframeRef = ref<HTMLIFrameElement>()
     const { session } = useQuilttSession()
 
@@ -191,6 +209,14 @@ export const QuilttConnector = defineComponent({
 
     expose({ handleOAuthCallback })
 
+    // Generate key for forced remounting if enabled
+    const componentKey = computed(() => {
+      if (!props.forceRemountOnConnectionChange) {
+        return undefined
+      }
+      return `${props.connectorId}-${props.connectionId || 'no-connection'}`
+    })
+
     onMounted(() => {
       window.addEventListener('message', handleMessage)
     })
@@ -201,6 +227,7 @@ export const QuilttConnector = defineComponent({
 
     return () =>
       h('iframe', {
+        key: componentKey.value,
         ref: iframeRef,
         src: connectorUrl.value,
         allow: 'publickey-credentials-get *',

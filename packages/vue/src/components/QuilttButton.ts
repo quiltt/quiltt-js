@@ -4,6 +4,10 @@
  * Wraps a button (or custom element) that opens the Quiltt Connector
  * in a modal overlay when clicked.
  *
+ * When connectionId changes, the button will automatically update the existing
+ * connector instance with the new connection details. If you need to force a
+ * complete remount instead, set forceRemountOnConnectionChange to true.
+ *
  * @example
  * ```vue
  * <QuilttButton
@@ -58,6 +62,15 @@ export const QuilttButton = defineComponent({
     as: {
       type: String,
       default: 'button',
+    },
+    /**
+     * Forces complete remount when connectionId changes.
+     * Useful as a fallback for ensuring clean state.
+     * @default false
+     */
+    forceRemountOnConnectionChange: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -126,16 +139,36 @@ export const QuilttButton = defineComponent({
         : undefined,
     })
 
-    const handleClick = () => {
-      open()
+    const handleClick = (event: MouseEvent) => {
+      // Call the user's onClick handler if provided
+      const userOnClick = vProps?.onClick
+      if (userOnClick) {
+        userOnClick(event)
+      }
+
+      // Only open if event wasn't prevented
+      if (!event.defaultPrevented) {
+        open()
+      }
     }
+
+    // Generate key for forced remounting if enabled, but respect user-provided key
+    const componentKey = computed(() => {
+      if (!props.forceRemountOnConnectionChange) {
+        return undefined
+      }
+      return `${props.connectorId}-${props.connectionId || 'no-connection'}`
+    })
 
     return () =>
       h(
         props.as,
         {
+          key: componentKey.value,
           class: 'quiltt-button',
           onClick: handleClick,
+          'quiltt-connection': props.connectionId,
+          'quiltt-app-launcher-uri': effectiveAppLauncherUri.value,
         },
         slots.default?.()
       )

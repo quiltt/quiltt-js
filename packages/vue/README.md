@@ -61,12 +61,27 @@ import { QuilttButton } from '@quiltt/vue/components'
 
 ### QuilttButton
 
-Opens the connector in a modal overlay.
+Opens the connector in a modal overlay. Supports custom click handlers via `@click` event.
 
 ```vue
-<QuilttButton connector-id="YOUR_CONNECTOR_ID" @exit-success="handleSuccess">
+<QuilttButton 
+  connector-id="YOUR_CONNECTOR_ID" 
+  @click="handleClick"
+  @exit-success="handleSuccess"
+>
   Connect Account
 </QuilttButton>
+```
+
+To prevent the connector from opening, call `event.preventDefault()` in your click handler:
+
+```typescript
+const handleClick = (event: MouseEvent) => {
+  // Perform validation
+  if (!isReady) {
+    event.preventDefault() // Prevents connector from opening
+  }
+}
 ```
 
 ### QuilttContainer
@@ -78,6 +93,8 @@ Renders the connector inline.
 ```
 
 ### QuilttConnector
+
+⚠️ **Deprecated** — Use [`QuilttContainer`](#quilttcontainer) instead. It provides the same inline connector experience and aligns with the React package API.
 
 Full-page iframe for embedded integration.
 
@@ -131,6 +148,20 @@ const { open } = useQuilttConnector('YOUR_CONNECTOR_ID', {
 <button @click="open">Add Account</button>
 ```
 
+**Best Practice:** Memoize callback functions to avoid warnings and prevent unexpected behavior:
+
+```typescript
+import { computed } from 'vue'
+
+const handleExitSuccess = computed(() => (m) => {
+  console.log('Connected:', m.connectionId)
+})
+
+const { open } = useQuilttConnector('YOUR_CONNECTOR_ID', {
+  onExitSuccess: handleExitSuccess.value,
+})
+```
+
 ### Additional Composables
 
 `@quiltt/vue` also exports:
@@ -157,19 +188,23 @@ import { QuilttPlugin, QuilttSessionKey, QuilttSetSessionKey } from '@quiltt/vue
 
 ## Props and Events
 
-| Prop | Type | Description |
-| ------ | ------ | ------------- |
-| `connector-id` | `string` | **Required.** Quiltt Connector ID |
-| `connection-id` | `string` | Existing connection ID for reconnection |
-| `institution` | `string` | Pre-select an institution |
-| `app-launcher-url` | `string` | Deep link URL for OAuth callbacks |
+| Prop | Type | Default | Description |
+| ------ | ------ | ------ | ------------- |
+| `connector-id` | `string` | — | **Required.** Quiltt Connector ID |
+| `connection-id` | `string` | — | Existing connection ID for reconnection |
+| `institution` | `string` | — | Pre-select an institution |
+| `app-launcher-url` | `string` | — | Deep link URL for OAuth callbacks |
+| `force-remount-on-connection-change` | `boolean` | `false` | Force complete remount when `connectionId` changes (useful as fallback for clean state) |
 
 | Event | Payload | Description |
 | ------- | --------- | ------------- |
 | `@load` | `metadata` | Connector loaded |
+| `@open` | `metadata` | Connector opened (modal/inline) |
+| `@exit` | `type, metadata` | Connector exited (any reason) |
 | `@exit-success` | `metadata` | Connection successful |
 | `@exit-abort` | `metadata` | User cancelled |
 | `@exit-error` | `metadata` | Error occurred |
+| `@event` | `type, metadata` | Any connector event |
 
 ## Reconnection
 
@@ -177,6 +212,16 @@ Pass `connection-id` to reconnect an existing connection:
 
 ```vue
 <QuilttButton connection-id="YOUR_EXISTING_CONNECTION_ID" ... />
+```
+
+When `connection-id` changes, the component automatically updates the existing connector instance with the new connection details. To force a complete remount instead, use `force-remount-on-connection-change`:
+
+```vue
+<QuilttButton 
+  connection-id="YOUR_EXISTING_CONNECTION_ID"
+  force-remount-on-connection-change
+  ...
+/>
 ```
 
 ## Capacitor / Ionic
