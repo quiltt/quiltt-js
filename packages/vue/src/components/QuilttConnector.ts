@@ -24,6 +24,8 @@ import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quilt
 
 import { useQuilttSession } from '../composables/useQuilttSession'
 
+let deprecationWarned = false
+
 export interface QuilttConnectorHandle {
   handleOAuthCallback: (url: string) => void
 }
@@ -79,10 +81,13 @@ export const QuilttConnector = defineComponent({
   },
 
   setup(props, { emit, expose }) {
-    console.warn(
-      '[Quiltt] QuilttConnector is deprecated. Use QuilttContainer instead, which provides ' +
-        'the same inline connector experience and aligns with the @quiltt/react package API.'
-    )
+    if (!deprecationWarned) {
+      deprecationWarned = true
+      console.warn(
+        '[Quiltt] QuilttConnector is deprecated. Use QuilttContainer instead, which provides ' +
+          'the same inline connector experience and aligns with the @quiltt/react package API.'
+      )
+    }
 
     const iframeRef = ref<HTMLIFrameElement>()
     const { session } = useQuilttSession()

@@ -91,8 +91,12 @@ function isInsideJSDocBlock(lines, lineIndex) {
     const trimmed = lines[i].trim()
     if (inBlock) {
       if (trimmed.endsWith('*/')) inBlock = false
-    } else if (trimmed.startsWith('/**') && !trimmed.startsWith('/**/')) {
-      inBlock = true
+    } else if (trimmed.startsWith('/**')) {
+      // Single-line JSDoc (/** ... */): open and close on the same line,
+      // so don't enter block-tracking — avoids poisoning subsequent lines.
+      if (!trimmed.endsWith('*/')) {
+        inBlock = true
+      }
     }
   }
   return inBlock || lines[lineIndex].trim().startsWith('/**')

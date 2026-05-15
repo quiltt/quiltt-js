@@ -1,4 +1,4 @@
-import { createApp, h } from 'vue'
+import { createApp, h, nextTick, ref } from 'vue'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -255,9 +255,11 @@ describe('QuilttButton', () => {
     app.unmount()
   })
 
-  it('generates remount key when forceRemountOnConnectionChange is enabled', () => {
+  it('recreates element when connectionId changes and forceRemountOnConnectionChange is enabled', async () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
+
+    const connectionIdRef = ref('conn_123')
 
     const app = createApp({
       render: () =>
@@ -265,7 +267,7 @@ describe('QuilttButton', () => {
           QuilttButton,
           {
             connectorId: 'connector_test',
-            connectionId: 'conn_123',
+            connectionId: connectionIdRef.value,
             forceRemountOnConnectionChange: true,
           },
           () => 'Open'
@@ -274,15 +276,27 @@ describe('QuilttButton', () => {
 
     app.mount(root)
 
-    const button = root.querySelector('.quiltt-button')
-    expect(button).toBeTruthy()
+    const initialElement = root.querySelector('.quiltt-button')
+    expect(initialElement).toBeTruthy()
 
+    // Change connectionId to trigger a key change and complete replacement
+    connectionIdRef.value = 'conn_456'
+    await nextTick()
+
+    // The old element should have been destroyed and replaced by a new one
+    const currentElement = root.querySelector('.quiltt-button')
+    expect(currentElement).toBeTruthy()
+    expect(currentElement).not.toBe(initialElement)
+
+    // The composable is set up once at mount; the key is on the inner element,
+    // so setup() is not re-run — only the DOM element was replaced.
     const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
       () => string,
       Record<string, unknown>,
     ]
     expect(connectorId()).toBe('connector_test')
-    expect((options.connectionId as () => string | undefined)()).toBe('conn_123')
+    // The getter reflects the latest reactive value
+    expect((options.connectionId as () => string | undefined)()).toBe('conn_456')
 
     app.unmount()
   })
