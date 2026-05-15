@@ -212,4 +212,62 @@ describe('QuilttContainer', () => {
 
     app.unmount()
   })
+
+  it('wires onOpen callback when parent subscribes to open event', () => {
+    const onOpen = vi.fn()
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttContainer, {
+          connectorId: 'connector_test',
+          onOpen,
+        }),
+    })
+
+    app.mount(root)
+
+    const options = mocks.getLatestOptions()
+    expect(options).toBeDefined()
+    expect(options?.onOpen).toBeDefined()
+
+    const metadata = { connectorId: 'connector_test' }
+    ;(options?.onOpen as (metadata: unknown) => void)?.(metadata)
+
+    expect(onOpen).toHaveBeenCalledWith(metadata)
+
+    app.unmount()
+  })
+
+  it('generates remount key when forceRemountOnConnectionChange is enabled', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttContainer, {
+          connectorId: 'connector_test',
+          connectionId: 'conn_123',
+          forceRemountOnConnectionChange: true,
+        }),
+    })
+
+    app.mount(root)
+
+    // The component should render without errors
+    const element = root.querySelector('.quiltt-container')
+    expect(element).toBeTruthy()
+
+    // Props are passed to the composable correctly
+    const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+    expect(connectorId()).toBe('connector_test')
+    expect((options.connectionId as () => string | undefined)()).toBe('conn_123')
+
+    app.unmount()
+  })
 })

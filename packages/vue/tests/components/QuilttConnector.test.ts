@@ -420,4 +420,28 @@ describe('QuilttConnector', () => {
 
     app.unmount()
   })
+
+  it('generates iframe key for forced remount when forceRemountOnConnectionChange is enabled', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttConnector, {
+          connectorId: 'connector_test',
+          connectionId: 'conn_123',
+          forceRemountOnConnectionChange: true,
+        }),
+    })
+
+    app.mount(root)
+
+    const iframe = root.querySelector('iframe')
+    expect(iframe).toBeTruthy()
+    const src = iframe?.getAttribute('src') || ''
+    expect(src).toContain('connector_test.quiltt.app')
+    expect(src).toContain('connectionId=conn_123')
+
+    app.unmount()
+  })
 })

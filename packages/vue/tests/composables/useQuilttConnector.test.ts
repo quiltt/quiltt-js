@@ -1,4 +1,4 @@
-import { createApp, nextTick, ref } from 'vue'
+import { createApp, nextTick, reactive, ref } from 'vue'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -356,5 +356,141 @@ describe('useQuilttConnector', () => {
 
     script?.remove()
     unmount()
+  })
+
+  it('rejects when an existing script tag triggers an error event', async () => {
+    const existingScript = document.createElement('script')
+    existingScript.src = `${cdnBase}/v1/connector.js`
+    document.head.appendChild(existingScript)
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const { unmount } = mountComposable(() => useQuilttConnector('connector_test'))
+
+    await nextTick() // onMounted fires → loadScript → finds existing script → attaches listeners
+
+    existingScript.dispatchEvent(new Event('error'))
+    await nextTick()
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('[Quiltt] Failed to load SDK:', expect.any(Error))
+
+    existingScript.remove()
+    unmount()
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('warns when callbacks change after connector has been created', async () => {
+    const connector = {
+      open: vi.fn(),
+      onEvent: vi.fn(),
+      onOpen: vi.fn(),
+      onLoad: vi.fn(),
+      onExit: vi.fn(),
+      onExitSuccess: vi.fn(),
+      onExitAbort: vi.fn(),
+      onExitError: vi.fn(),
+    }
+
+    ;(globalThis as any).Quiltt = {
+      authenticate: vi.fn(),
+      connect: vi.fn(() => connector),
+      reconnect: vi.fn(() => connector),
+    }
+
+    const options = reactive({
+      connectionId: 'conn_123',
+      onEvent: vi.fn(),
+    })
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const { unmount } = mountComposable(() => useQuilttConnector('connector_test', options))
+
+    await nextTick()
+    await nextTick()
+    // Connector has been created, hasConnectorBeenCreated = true
+
+    // Change a callback — this triggers the callback change watcher
+    options.onEvent = vi.fn()
+    await nextTick()
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Callback functions changed after initial render')
+    )
+
+    unmount()
+    consoleWarnSpy.mockRestore()
+    delete (globalThis as any).Quiltt
+  })
+
+  it('skips callback change warning before connector has been created', async () => {
+    // Do NOT set globalThis.Quiltt so the SDK script is not loaded
+    // and the connector is never created (hasConnectorBeenCreated stays false)
+    const options = reactive({ onEvent: vi.fn() })
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const { unmount } = mountComposable(() => useQuilttConnector('connector_test', options))
+
+    await nextTick()
+    // At this point: onMounted fired, loadScript created a script element,
+    // but isLoaded is false, so updateConnector did nothing.
+    // hasConnectorBeenCreated is still false.
+
+    // Change callbacks — the callback watcher fires but returns early
+    options.onEvent = vi.fn()
+    await nextTick()
+
+    // No warning logged (line 211 returns early since hasConnectorBeenCreated is false)
+    expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('Callback functions changed')
+    )
+
+    // Clean up script tag
+    const script = document.head.querySelector(
+      `script[src^="${cdnBase}/v1/connector.js"]`
+    ) as HTMLScriptElement | null
+    script?.remove()
+    unmount()
+    consoleWarnSpy.mockRestore()
+  })
+
+  it('skips callback change warning when no connectionId is set', async () => {
+    const connector = {
+      open: vi.fn(),
+      onEvent: vi.fn(),
+      onOpen: vi.fn(),
+      onLoad: vi.fn(),
+      onExit: vi.fn(),
+      onExitSuccess: vi.fn(),
+      onExitAbort: vi.fn(),
+      onExitError: vi.fn(),
+    }
+
+    ;(globalThis as any).Quiltt = {
+      authenticate: vi.fn(),
+      connect: vi.fn(() => connector),
+      reconnect: vi.fn(() => connector),
+    }
+
+    const options = reactive({
+      onEvent: vi.fn(),
+    })
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const { unmount } = mountComposable(() => useQuilttConnector('connector_test', options))
+
+    await nextTick()
+    await nextTick()
+
+    // Change a callback — but prevConnectionId is undefined, so no warning
+    options.onEvent = vi.fn()
+    await nextTick()
+
+    expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('Callback functions changed after initial render')
+    )
+
+    unmount()
+    consoleWarnSpy.mockRestore()
+    delete (globalThis as any).Quiltt
   })
 })

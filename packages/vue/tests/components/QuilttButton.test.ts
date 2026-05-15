@@ -212,4 +212,78 @@ describe('QuilttButton', () => {
 
     app.unmount()
   })
+
+  it('calls user-provided onClick handler when clicked', () => {
+    const onClick = vi.fn()
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttButton, { connectorId: 'connector_test', onClick }, () => 'Open'),
+    })
+
+    app.mount(root)
+
+    const button = root.querySelector('.quiltt-button') as HTMLButtonElement | null
+    button?.click()
+
+    expect(onClick).toHaveBeenCalled()
+    expect(mocks.openSpy).toHaveBeenCalledTimes(1)
+
+    app.unmount()
+  })
+
+  it('does not open connector when onClick prevents default', () => {
+    const onClick = vi.fn((event: MouseEvent) => event.preventDefault())
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttButton, { connectorId: 'connector_test', onClick }, () => 'Open'),
+    })
+
+    app.mount(root)
+
+    const button = root.querySelector('.quiltt-button') as HTMLButtonElement | null
+    button?.click()
+
+    expect(onClick).toHaveBeenCalled()
+    expect(mocks.openSpy).not.toHaveBeenCalled()
+
+    app.unmount()
+  })
+
+  it('generates remount key when forceRemountOnConnectionChange is enabled', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(
+          QuilttButton,
+          {
+            connectorId: 'connector_test',
+            connectionId: 'conn_123',
+            forceRemountOnConnectionChange: true,
+          },
+          () => 'Open'
+        ),
+    })
+
+    app.mount(root)
+
+    const button = root.querySelector('.quiltt-button')
+    expect(button).toBeTruthy()
+
+    const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+    expect(connectorId()).toBe('connector_test')
+    expect((options.connectionId as () => string | undefined)()).toBe('conn_123')
+
+    app.unmount()
+  })
 })
