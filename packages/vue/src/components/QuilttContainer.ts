@@ -5,6 +5,10 @@
  * The SDK detects the `quiltt-container` attribute and renders the connector
  * inline automatically — no manual `open()` call required.
  *
+ * When connectionId changes, the container will automatically update the existing
+ * connector instance with the new connection details. If you need to force a
+ * complete remount instead, set forceRemountOnConnectionChange to true.
+ *
  * @example
  * ```vue
  * <QuilttContainer
@@ -58,11 +62,22 @@ export const QuilttContainer = defineComponent({
       type: String,
       default: 'div',
     },
+    /**
+     * Forces complete remount when connectionId changes.
+     * Useful as a fallback for ensuring clean state.
+     * @default false
+     */
+    forceRemountOnConnectionChange: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   emits: {
     /** Connector loaded */
     load: (_metadata: ConnectorSDKCallbackMetadata) => true,
+    /** Connector opened */
+    open: (_metadata: ConnectorSDKCallbackMetadata) => true,
     /** Connection successful */
     'exit-success': (_metadata: ConnectorSDKCallbackMetadata) => true,
     /** User cancelled */
@@ -102,6 +117,9 @@ export const QuilttContainer = defineComponent({
         ? (type: ConnectorSDKEventType, metadata: ConnectorSDKCallbackMetadata) =>
             emit('event', type, metadata)
         : undefined,
+      onOpen: vProps?.onOpen
+        ? (metadata: ConnectorSDKCallbackMetadata) => emit('open', metadata)
+        : undefined,
       onLoad: vProps?.onLoad
         ? (metadata: ConnectorSDKCallbackMetadata) => emit('load', metadata)
         : undefined,
@@ -120,10 +138,19 @@ export const QuilttContainer = defineComponent({
         : undefined,
     })
 
+    // Generate key for forced remounting if enabled, but respect user-provided key
+    const componentKey = computed(() => {
+      if (!props.forceRemountOnConnectionChange) {
+        return undefined
+      }
+      return `${props.connectorId}-${props.connectionId || 'no-connection'}`
+    })
+
     return () =>
       h(
         props.as,
         {
+          key: componentKey.value,
           'quiltt-container': props.connectorId,
           'quiltt-connection': props.connectionId,
           'quiltt-app-launcher-uri': effectiveAppLauncherUri.value,

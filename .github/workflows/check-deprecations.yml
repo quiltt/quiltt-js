@@ -1,0 +1,26 @@
+name: Check Deprecations
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    paths:
+      - ".changeset/**"
+      - "packages/*/src/**"
+
+permissions:
+  contents: read
+
+jobs:
+  check-deprecations:
+    name: Deprecation Audit (Major Bump)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js Environment
+        uses: ./.github/actions/setup-js
+        with:
+          build-packages: "false"
+
+      - name: Audit Deprecations
+        uses: ./.github/actions/check-deprecations

@@ -1,4 +1,4 @@
-import { createApp, h } from 'vue'
+import { createApp, h, nextTick, ref } from 'vue'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -209,6 +209,76 @@ describe('QuilttContainer', () => {
 
     expect((options.connectionId as () => string | undefined)()).toBe('conn_123')
     expect((options.institution as () => string | undefined)()).toBe('inst_456')
+
+    app.unmount()
+  })
+
+  it('wires onOpen callback when parent subscribes to open event', () => {
+    const onOpen = vi.fn()
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttContainer, {
+          connectorId: 'connector_test',
+          onOpen,
+        }),
+    })
+
+    app.mount(root)
+
+    const options = mocks.getLatestOptions()
+    expect(options).toBeDefined()
+    expect(options?.onOpen).toBeDefined()
+
+    const metadata = { connectorId: 'connector_test' }
+    ;(options?.onOpen as (metadata: unknown) => void)?.(metadata)
+
+    expect(onOpen).toHaveBeenCalledWith(metadata)
+
+    app.unmount()
+  })
+
+  it('recreates element when connectionId changes and forceRemountOnConnectionChange is enabled', async () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const connectionIdRef = ref('conn_123')
+
+    const app = createApp({
+      render: () =>
+        h(QuilttContainer, {
+          connectorId: 'connector_test',
+          connectionId: connectionIdRef.value,
+          forceRemountOnConnectionChange: true,
+        }),
+    })
+
+    app.mount(root)
+
+    const initialElement = root.querySelector('.quiltt-container')
+    expect(initialElement).toBeTruthy()
+
+    // Change connectionId to trigger a key change and complete replacement
+    connectionIdRef.value = 'conn_456'
+    await nextTick()
+
+    // The old element should have been destroyed and replaced by a new one
+    const currentElement = root.querySelector('.quiltt-container')
+    expect(currentElement).toBeTruthy()
+    expect(currentElement).not.toBe(initialElement)
+
+    // The composable is set up once at mount; the key is on the inner element,
+    // so setup() is not re-run — only the DOM element was replaced.
+    const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+    expect(connectorId()).toBe('connector_test')
+    // The getter reflects the latest reactive value
+    expect((options.connectionId as () => string | undefined)()).toBe('conn_456')
 
     app.unmount()
   })

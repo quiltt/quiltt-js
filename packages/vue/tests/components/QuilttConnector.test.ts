@@ -1,4 +1,4 @@
-import { createApp, h, ref } from 'vue'
+import { createApp, h, nextTick, ref } from 'vue'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -417,6 +417,40 @@ describe('QuilttConnector', () => {
       },
       'https://connector_test.quiltt.app'
     )
+
+    app.unmount()
+  })
+
+  it('recreates iframe when connectionId changes and forceRemountOnConnectionChange is enabled', async () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const connectionIdRef = ref('conn_123')
+
+    const app = createApp({
+      render: () =>
+        h(QuilttConnector, {
+          connectorId: 'connector_test',
+          connectionId: connectionIdRef.value,
+          forceRemountOnConnectionChange: true,
+        }),
+    })
+
+    app.mount(root)
+
+    const initialIframe = root.querySelector('iframe')
+    expect(initialIframe).toBeTruthy()
+    expect(initialIframe?.getAttribute('src')).toContain('connectionId=conn_123')
+
+    // Change connectionId to trigger a key change and full iframe replacement
+    connectionIdRef.value = 'conn_456'
+    await nextTick()
+
+    // The old iframe should have been destroyed and replaced by a new one
+    const currentIframe = root.querySelector('iframe')
+    expect(currentIframe).toBeTruthy()
+    expect(currentIframe).not.toBe(initialIframe)
+    expect(currentIframe?.getAttribute('src')).toContain('connectionId=conn_456')
 
     app.unmount()
   })

@@ -1,4 +1,4 @@
-import { createApp, h } from 'vue'
+import { createApp, h, nextTick, ref } from 'vue'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -209,6 +209,94 @@ describe('QuilttButton', () => {
 
     expect((options.connectionId as () => string | undefined)()).toBe('conn_123')
     expect((options.institution as () => string | undefined)()).toBe('inst_456')
+
+    app.unmount()
+  })
+
+  it('calls user-provided onClick handler when clicked', () => {
+    const onClick = vi.fn()
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttButton, { connectorId: 'connector_test', onClick }, () => 'Open'),
+    })
+
+    app.mount(root)
+
+    const button = root.querySelector('.quiltt-button') as HTMLButtonElement | null
+    button?.click()
+
+    expect(onClick).toHaveBeenCalled()
+    expect(mocks.openSpy).toHaveBeenCalledTimes(1)
+
+    app.unmount()
+  })
+
+  it('does not open connector when onClick prevents default', () => {
+    const onClick = vi.fn((event: MouseEvent) => event.preventDefault())
+
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () => h(QuilttButton, { connectorId: 'connector_test', onClick }, () => 'Open'),
+    })
+
+    app.mount(root)
+
+    const button = root.querySelector('.quiltt-button') as HTMLButtonElement | null
+    button?.click()
+
+    expect(onClick).toHaveBeenCalled()
+    expect(mocks.openSpy).not.toHaveBeenCalled()
+
+    app.unmount()
+  })
+
+  it('recreates element when connectionId changes and forceRemountOnConnectionChange is enabled', async () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const connectionIdRef = ref('conn_123')
+
+    const app = createApp({
+      render: () =>
+        h(
+          QuilttButton,
+          {
+            connectorId: 'connector_test',
+            connectionId: connectionIdRef.value,
+            forceRemountOnConnectionChange: true,
+          },
+          () => 'Open'
+        ),
+    })
+
+    app.mount(root)
+
+    const initialElement = root.querySelector('.quiltt-button')
+    expect(initialElement).toBeTruthy()
+
+    // Change connectionId to trigger a key change and complete replacement
+    connectionIdRef.value = 'conn_456'
+    await nextTick()
+
+    // The old element should have been destroyed and replaced by a new one
+    const currentElement = root.querySelector('.quiltt-button')
+    expect(currentElement).toBeTruthy()
+    expect(currentElement).not.toBe(initialElement)
+
+    // The composable is set up once at mount; the key is on the inner element,
+    // so setup() is not re-run — only the DOM element was replaced.
+    const [connectorId, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+    expect(connectorId()).toBe('connector_test')
+    // The getter reflects the latest reactive value
+    expect((options.connectionId as () => string | undefined)()).toBe('conn_456')
 
     app.unmount()
   })

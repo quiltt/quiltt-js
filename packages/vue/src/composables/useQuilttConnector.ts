@@ -184,6 +184,54 @@ export const useQuilttConnector = (
     { immediate: true }
   )
 
+  // Track callback changes to warn about potential memory leaks
+  let prevCallbacks = {
+    onEvent: options?.onEvent,
+    onOpen: options?.onOpen,
+    onLoad: options?.onLoad,
+    onExit: options?.onExit,
+    onExitSuccess: options?.onExitSuccess,
+    onExitAbort: options?.onExitAbort,
+    onExitError: options?.onExitError,
+  }
+  let hasConnectorBeenCreated = false
+
+  watch(
+    () => ({
+      onEvent: options?.onEvent,
+      onOpen: options?.onOpen,
+      onLoad: options?.onLoad,
+      onExit: options?.onExit,
+      onExitSuccess: options?.onExitSuccess,
+      onExitAbort: options?.onExitAbort,
+      onExitError: options?.onExitError,
+    }),
+    (newCallbacks) => {
+      // Skip warning on initial setup
+      if (!hasConnectorBeenCreated) return
+
+      // Check if callbacks actually changed by comparing object references
+      const callbacksChanged =
+        prevCallbacks.onEvent !== newCallbacks.onEvent ||
+        prevCallbacks.onOpen !== newCallbacks.onOpen ||
+        prevCallbacks.onLoad !== newCallbacks.onLoad ||
+        prevCallbacks.onExit !== newCallbacks.onExit ||
+        prevCallbacks.onExitSuccess !== newCallbacks.onExitSuccess ||
+        prevCallbacks.onExitAbort !== newCallbacks.onExitAbort ||
+        prevCallbacks.onExitError !== newCallbacks.onExitError
+
+      if (callbacksChanged && prevConnectionId !== undefined) {
+        console.warn(
+          '[Quiltt] Callback functions changed after initial render. ' +
+            'This may cause unexpected behavior. Consider memoizing callback functions ' +
+            'to maintain stable references.'
+        )
+      }
+
+      prevCallbacks = { ...newCallbacks }
+    }
+  )
+
   // Create/update connector when needed
   const updateConnector = () => {
     const currentConnectorId = getConnectorId()
@@ -225,6 +273,7 @@ export const useQuilttConnector = (
       }
 
       connectorCreated = true
+      hasConnectorBeenCreated = true
       prevConnectionId = currentConnectionId
       prevConnectorId = currentConnectorId
       prevInstitution = currentInstitution
