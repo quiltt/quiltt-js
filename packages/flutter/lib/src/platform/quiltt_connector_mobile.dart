@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -20,16 +22,12 @@ class QuilttConnectorMobile extends QuilttPlatformInterface {
   @override
   void authenticate(String token) {
     sessionToken = token;
-    String javaScript =
-        '''
-      const options = {
-        source: 'quiltt',
-        type: 'Options',
-        token: '$sessionToken',
-      };
-      window.postMessage(options);
-     ''';
-    controller.runJavaScript(javaScript);
+    final optionsJson = jsonEncode({
+      'source': 'quiltt',
+      'type': 'Options',
+      'token': token,
+    });
+    controller.runJavaScript('window.postMessage($optionsJson);');
   }
 
   @override
@@ -373,24 +371,16 @@ class _WebViewPage {
 
     debugPrint(connectorUrl);
 
-    var initInjectedJavaScript =
-        '''
-      const options = {
-        source: 'quiltt',
-        type: 'Options',
-        token: '$token',
-        connectorId: '${config.connectorId}',
-        connectionId: '$connectionId',
-        institution: '${config.institution}',
-      };
-      const compactedOptions = Object.keys(options).reduce((acc, key) => {
-        if (options[key] !== 'null') {
-          acc[key] = options[key];
-        }
-        return acc;
-      }, {});
-      window.postMessage(compactedOptions);
-     ''';
+    final optionsJson = jsonEncode({
+      'source': 'quiltt',
+      'type': 'Options',
+      'token': ?token,
+      'connectorId': config.connectorId,
+      'connectionId': ?connectionId,
+      'institution': ?config.institution,
+    });
+
+    final initInjectedJavaScript = 'window.postMessage($optionsJson);';
 
     // Only initialize the controller once
     if (!_isInitialized) {

@@ -147,13 +147,26 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
     Function(ConnectorSDKOnExitAbortCallback event)? onExitAbort,
     Function(ConnectorSDKOnExitErrorCallback event)? onExitError,
   }) {
+    if (isReconnect &&
+        (config.connectionId == null || config.connectionId!.isEmpty)) {
+      debugPrint(
+        'Quiltt: reconnect() requires a non-null, non-empty connectionId',
+      );
+      _fireExitError(
+        connectorId: config.connectorId,
+        onEvent: onEvent,
+        onExit: onExit,
+        onExitError: onExitError,
+      );
+      return;
+    }
+
     _ensureSDKLoaded()
         .then((_) {
           try {
-            // Authenticate with the current session token
-            if (sessionToken != null) {
-              QuilttJS.authenticate(sessionToken!.toJS);
-            }
+            // Always set global SDK auth state so a previous authenticated
+            // instance cannot leak its token into this session.
+            QuilttJS.authenticate(sessionToken?.toJS);
 
             // Build the options object for the JS SDK
             final options = _buildOptions(
@@ -210,12 +223,12 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
   }) {
     final options = <String, Object>{};
 
-    if (isReconnect && config.connectionId != null) {
-      options['connectionId'] = config.connectionId!;
+    if (config.connectionId case final String connectionId when isReconnect) {
+      options['connectionId'] = connectionId;
     }
 
-    if (config.institution != null) {
-      options['institution'] = config.institution!;
+    if (config.institution case final String institution) {
+      options['institution'] = institution;
     }
 
     return options.jsify() as JSObject;
@@ -245,12 +258,7 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
     connector.onExitSuccess(
       ((JSObject metadata) {
         final meta = _extractMetadata(metadata, connectorId);
-        onEvent?.call(
-          ConnectorSDKOnEventCallback(
-            type: 'exited.successful',
-            eventMetadata: meta,
-          ),
-        );
+        // connector.onEvent already delivers this event; only fire typed callbacks.
         onExit?.call(
           ConnectorSDKOnEventExitCallback(
             type: 'exited.successful',
@@ -266,12 +274,7 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
     connector.onExitAbort(
       ((JSObject metadata) {
         final meta = _extractMetadata(metadata, connectorId);
-        onEvent?.call(
-          ConnectorSDKOnEventCallback(
-            type: 'exited.aborted',
-            eventMetadata: meta,
-          ),
-        );
+        // connector.onEvent already delivers this event; only fire typed callbacks.
         onExit?.call(
           ConnectorSDKOnEventExitCallback(
             type: 'exited.aborted',
@@ -285,12 +288,7 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
     connector.onExitError(
       ((JSObject metadata) {
         final meta = _extractMetadata(metadata, connectorId);
-        onEvent?.call(
-          ConnectorSDKOnEventCallback(
-            type: 'exited.errored',
-            eventMetadata: meta,
-          ),
-        );
+        // connector.onEvent already delivers this event; only fire typed callbacks.
         onExit?.call(
           ConnectorSDKOnEventExitCallback(
             type: 'exited.errored',
@@ -298,15 +296,6 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
           ),
         );
         onExitError?.call(ConnectorSDKOnExitErrorCallback(eventMetadata: meta));
-      }).toJS,
-    );
-
-    connector.onLoad(
-      ((JSObject metadata) {
-        final meta = _extractMetadata(metadata, connectorId);
-        onEvent?.call(
-          ConnectorSDKOnEventCallback(type: 'loaded', eventMetadata: meta),
-        );
       }).toJS,
     );
   }

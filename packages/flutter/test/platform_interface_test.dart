@@ -69,11 +69,40 @@ void main() {
       expect(platform.sessionToken, equals('direct-token'));
     });
 
-    test('interface contract defines connect', () {
+    testWidgets('interface contract: connect and reconnect are callable', (
+      tester,
+    ) async {
       final platform = TestPlatformConnector();
-      // Verify the interface has connect/reconnect methods
+      final config = QuilttConnectorConfiguration(
+        connectorId: 'test',
+        appLauncherUrl: 'https://app.quiltt.io',
+      );
+
       expect(platform.connectCalled, isFalse);
       expect(platform.reconnectCalled, isFalse);
+
+      late BuildContext ctx;
+      await tester.pumpWidget(
+        Builder(
+          builder: (c) {
+            ctx = c;
+            return const SizedBox();
+          },
+        ),
+      );
+
+      platform.connect(ctx, config);
+      expect(platform.connectCalled, isTrue);
+      expect(platform.lastConfig, equals(config));
+
+      final reconnectConfig = QuilttConnectorConfiguration(
+        connectorId: 'test',
+        appLauncherUrl: 'https://app.quiltt.io',
+        connectionId: 'conn-123',
+      );
+      platform.reconnect(ctx, reconnectConfig);
+      expect(platform.reconnectCalled, isTrue);
+      expect(platform.lastConfig, equals(reconnectConfig));
     });
 
     test('test implementation can be used polymorphically', () {
@@ -83,7 +112,7 @@ void main() {
     });
   });
 
-  group('QuilttConnector facade', () {
+  group('QuilttPlatformInterface authenticate', () {
     test('authenticate stores token via platform', () {
       final platform = TestPlatformConnector();
       platform.authenticate('facade-token');
@@ -112,9 +141,6 @@ void main() {
       platform.sessionToken = null;
       expect(platform.sessionToken, isNull);
     });
-  });
-
-  group('QuilttConnectorConfiguration', () {
   });
 }
 
