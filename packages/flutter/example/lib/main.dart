@@ -67,30 +67,44 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _launchConnector() {
     const token = String.fromEnvironment('QUILTT_SESSION_TOKEN');
-    const connectorId = String.fromEnvironment('QUILTT_CONNECTOR_ID', defaultValue: '1h6bz4vo9z');
+    const connectorId = String.fromEnvironment(
+      'QUILTT_CONNECTOR_ID',
+      defaultValue: '1h6bz4vo9z',
+    );
 
     QuilttConnectorConfiguration config = QuilttConnectorConfiguration(
-        connectorId: connectorId,
-        appLauncherUrl: "https://example.com/callback");
+      connectorId: connectorId,
+      appLauncherUrl: "https://example.com/callback",
+    );
 
-    debugPrint('_launchConnector: ${config.connectorId}, ${config.appLauncherUrl}');
+    debugPrint(
+      '_launchConnector: ${config.connectorId}, ${config.appLauncherUrl}',
+    );
     QuilttConnector quilttConnector = QuilttConnector();
     quilttConnector.authenticate(token);
-    quilttConnector.connect(context, config, onEvent: (event) {
-      debugPrint("onEvent: ${event.type} ${event.eventMetadata.connectorId}");
-    }, onExit: (event) {
-      debugPrint("onExit: ${event.type} ${event.eventMetadata.connectorId}");
-    }, onExitSuccess: (event) {
-      debugPrint("onExitSuccess: ${event.eventMetadata.connectionId}");
-      final connectionId = event.eventMetadata.connectionId;
-      if (connectionId != null) {
-        _setConnectionId(connectionId);
-      }
-    }, onExitAbort: (event) {
-      debugPrint("onExitAbort: ${event.eventMetadata.connectorId}");
-    }, onExitError: (event) {
-      debugPrint("onExitError: ${event.eventMetadata.connectorId}");
-    });
+    quilttConnector.connect(
+      context,
+      config,
+      onEvent: (event) {
+        debugPrint("onEvent: ${event.type} ${event.eventMetadata.connectorId}");
+      },
+      onExit: (event) {
+        debugPrint("onExit: ${event.type} ${event.eventMetadata.connectorId}");
+      },
+      onExitSuccess: (event) {
+        debugPrint("onExitSuccess: ${event.eventMetadata.connectionId}");
+        final connectionId = event.eventMetadata.connectionId;
+        if (connectionId != null) {
+          _setConnectionId(connectionId);
+        }
+      },
+      onExitAbort: (event) {
+        debugPrint("onExitAbort: ${event.eventMetadata.connectorId}");
+      },
+      onExitError: (event) {
+        debugPrint("onExitError: ${event.eventMetadata.connectorId}");
+      },
+    );
   }
 
   @override
@@ -111,7 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         titleTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.inversePrimary, fontSize: 24),
+          color: Theme.of(context).colorScheme.inversePrimary,
+          fontSize: 24,
+        ),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -131,11 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Connection ID: $_connectionId',
-            ),
-          ],
+          children: <Widget>[Text('Connection ID: $_connectionId')],
         ),
       ),
       floatingActionButton: FloatingActionButton(

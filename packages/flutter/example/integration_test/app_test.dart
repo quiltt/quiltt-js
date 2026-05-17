@@ -8,8 +8,9 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Quiltt Connector integration tests', () {
-    testWidgets('app launches and renders home screen',
-        (WidgetTester tester) async {
+    testWidgets('app launches and renders home screen', (
+      WidgetTester tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -17,8 +18,9 @@ void main() {
       expect(find.text('Connection ID: No connection Id yet'), findsOneWidget);
     });
 
-    testWidgets('app bar is visible with correct title',
-        (WidgetTester tester) async {
+    testWidgets('app bar is visible with correct title', (
+      WidgetTester tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -26,8 +28,9 @@ void main() {
       expect(find.text('Quiltt Connector Home'), findsOneWidget);
     });
 
-    testWidgets('floating action button is visible and tappable',
-        (WidgetTester tester) async {
+    testWidgets('floating action button is visible and tappable', (
+      WidgetTester tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -36,8 +39,9 @@ void main() {
       expect(tester.widget<FloatingActionButton>(fab).onPressed, isNotNull);
     });
 
-    testWidgets('tapping FAB does not crash the app',
-        (WidgetTester tester) async {
+    testWidgets('tapping FAB does not crash the app', (
+      WidgetTester tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -65,8 +69,9 @@ void main() {
     ///
     /// When QUILTT_SESSION_TOKEN is empty (the default) the test still runs but
     /// the connector will show its own auth screens instead of the bank screen.
-    testWidgets('connector launches and app survives WebView initialization',
-        (WidgetTester tester) async {
+    testWidgets('connector launches and app survives WebView initialization', (
+      WidgetTester tester,
+    ) async {
       app.main();
       await tester.pumpAndSettle();
 
