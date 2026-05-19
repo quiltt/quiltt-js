@@ -44,6 +44,13 @@ declare const Quiltt: ConnectorSDK
 export interface UseQuilttConnectorOptions extends ConnectorSDKCallbacks {
   connectionId?: MaybeRefOrGetter<string | undefined>
   institution?: MaybeRefOrGetter<string | undefined>
+  /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: MaybeRefOrGetter<string | undefined>
   appLauncherUrl?: MaybeRefOrGetter<string | undefined>
   /**
    * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
@@ -101,6 +108,8 @@ export const useQuilttConnector = (
   const getConnectorId = (): string | undefined => toValue(connectorId)
   const getConnectionId = (): string | undefined => toValue(options?.connectionId)
   const getInstitution = (): string | undefined => toValue(options?.institution)
+  const getThemeMode = (): 'light' | 'dark' | 'auto' | undefined =>
+    toValue(options?.themeMode) as 'light' | 'dark' | 'auto' | undefined
   const getOauthRedirectUrl = (): string | undefined => toValue(options?.oauthRedirectUrl)
   const getAppLauncherUri = (): string | undefined =>
     toValue(options?.appLauncherUrl) ?? getOauthRedirectUrl()
@@ -135,6 +144,7 @@ export const useQuilttConnector = (
   let prevConnectionId = getConnectionId()
   let prevConnectorId = getConnectorId()
   let prevInstitution = getInstitution()
+  let prevThemeMode = getThemeMode()
   let prevAppLauncherUri = getAppLauncherUri()
   let connectorCreated = false
 
@@ -239,17 +249,20 @@ export const useQuilttConnector = (
 
     const currentConnectionId = getConnectionId()
     const currentInstitution = getInstitution()
+    const currentThemeMode = getThemeMode()
     const currentAppLauncherUri = getAppLauncherUri()
 
     // Check for changes
     const connectionIdChanged = prevConnectionId !== currentConnectionId
     const connectorIdChanged = prevConnectorId !== currentConnectorId
     const institutionChanged = prevInstitution !== currentInstitution
+    const themeModeChanged = prevThemeMode !== currentThemeMode
     const appLauncherUrlChanged = prevAppLauncherUri !== currentAppLauncherUri
     const hasChanges =
       connectionIdChanged ||
       connectorIdChanged ||
       institutionChanged ||
+      themeModeChanged ||
       appLauncherUrlChanged ||
       !connectorCreated
 
@@ -259,6 +272,7 @@ export const useQuilttConnector = (
         connector.value = markRaw(
           Quiltt.reconnect(currentConnectorId, {
             connectionId: currentConnectionId,
+            themeMode: currentThemeMode,
             appLauncherUrl: currentAppLauncherUri,
           })
         )
@@ -267,6 +281,7 @@ export const useQuilttConnector = (
         connector.value = markRaw(
           Quiltt.connect(currentConnectorId, {
             institution: currentInstitution,
+            themeMode: currentThemeMode,
             appLauncherUrl: currentAppLauncherUri,
           })
         )
@@ -277,13 +292,14 @@ export const useQuilttConnector = (
       prevConnectionId = currentConnectionId
       prevConnectorId = currentConnectorId
       prevInstitution = currentInstitution
+      prevThemeMode = currentThemeMode
       prevAppLauncherUri = currentAppLauncherUri
     }
   }
 
   // Watch for changes that require connector update
   watch(
-    [isLoaded, getConnectorId, getConnectionId, getInstitution, getAppLauncherUri],
+    [isLoaded, getConnectorId, getConnectionId, getInstitution, getThemeMode, getAppLauncherUri],
     updateConnector,
     {
       immediate: true,

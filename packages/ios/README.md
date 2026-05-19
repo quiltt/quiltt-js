@@ -49,7 +49,8 @@ struct WebView: UIViewRepresentable {
     @Binding var connectionId: String
     @State var config = QuilttConnectorConnectConfiguration(
         connectorId: "<CONNECTOR_ID>",
-        appLauncherUrl: "<YOUR_HTTPS_UNIVERSAL_LINK>"
+        appLauncherUrl: "<YOUR_HTTPS_UNIVERSAL_LINK>",
+        themeMode: "auto"
     )
 
     func makeUIView(context: Context) -> WKWebView {

@@ -44,6 +44,16 @@ export const QuilttContainer = defineComponent({
       type: String as PropType<string | undefined>,
       default: undefined,
     },
+    /**
+     * The theme mode for the Connector UI.
+     * - 'light': Force light theme (default)
+     * - 'dark': Force dark theme
+     * - 'auto': Follow device/system preference
+     */
+    themeMode: {
+      type: String as PropType<'light' | 'dark' | 'auto' | undefined>,
+      default: undefined,
+    },
     /** Deep link URL for OAuth callbacks (mobile apps) */
     appLauncherUrl: {
       type: String as PropType<string | undefined>,
@@ -112,6 +122,7 @@ export const QuilttContainer = defineComponent({
     useQuilttConnector(() => props.connectorId, {
       connectionId: () => props.connectionId,
       institution: () => props.institution,
+      themeMode: () => props.themeMode,
       appLauncherUrl: effectiveAppLauncherUri,
       onEvent: vProps?.onEvent
         ? (type: ConnectorSDKEventType, metadata: ConnectorSDKCallbackMetadata) =>
@@ -153,6 +164,7 @@ export const QuilttContainer = defineComponent({
           key: componentKey.value,
           'quiltt-container': props.connectorId,
           'quiltt-connection': props.connectionId,
+          'quiltt-theme-mode': props.themeMode,
           'quiltt-app-launcher-uri': effectiveAppLauncherUri.value,
           'quiltt-institution': props.institution,
           class: 'quiltt-container',

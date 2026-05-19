@@ -30,6 +30,25 @@ class QuilttConnectorConfigurationTest {
         assertNull(config.connectionId)
     }
 
+    @Test
+    fun connectConfiguration_themeModeDefaultsToNull() {
+        val config = QuilttConnectorConnectConfiguration(
+            connectorId = "my-connector",
+            appLauncherUrl = "https://example.com/callback",
+        )
+        assertNull(config.themeMode)
+    }
+
+    @Test
+    fun connectConfiguration_withThemeMode() {
+        val config = QuilttConnectorConnectConfiguration(
+            connectorId = "my-connector",
+            appLauncherUrl = "https://example.com/callback",
+            themeMode = "dark",
+        )
+        assertEquals("dark", config.themeMode)
+    }
+
     // ReconnectConfiguration
 
     @Test
@@ -53,5 +72,26 @@ class QuilttConnectorConfigurationTest {
             connectionId = "conn-1",
         )
         assertNull(config.institution)
+    }
+
+    @Test
+    fun reconnectConfiguration_themeModeDefaultsToNull() {
+        val config = QuilttConnectorReconnectConfiguration(
+            connectorId = "c",
+            appLauncherUrl = "https://example.com",
+            connectionId = "conn-1",
+        )
+        assertNull(config.themeMode)
+    }
+
+    @Test
+    fun reconnectConfiguration_withThemeMode() {
+        val config = QuilttConnectorReconnectConfiguration(
+            connectorId = "c",
+            appLauncherUrl = "https://example.com",
+            connectionId = "conn-1",
+            themeMode = "auto",
+        )
+        assertEquals("auto", config.themeMode)
     }
 }

@@ -371,6 +371,11 @@ class _WebViewPage {
       queryParams['app_launcher_url'] = safeAppLauncherUrl;
     }
 
+    // Add theme mode if provided
+    if (config.themeMode != null) {
+      queryParams['theme_mode'] = config.themeMode!;
+    }
+
     var connectorUrl = Uri.https(
       uriBuilder.authority,
       uriBuilder.path,

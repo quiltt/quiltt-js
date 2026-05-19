@@ -7,5 +7,5 @@ const connectorId = config.public.quilttConnectorId
 </script>
 
 <template>
-  <QuilttContainer :connector-id="connectorId" as="div" class="container-frame" />
+  <QuilttContainer :connector-id="connectorId" as="div" class="container-frame" theme-mode="auto" />
 </template>

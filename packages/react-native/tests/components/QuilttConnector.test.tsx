@@ -62,6 +62,7 @@ describe('QuilttConnector', () => {
     connectionId: 'test-connection',
     institution: 'test-bank',
     appLauncherUrl: 'https://oauth.test.com/',
+    themeMode: 'dark' as const,
     onEvent: vi.fn(),
     onLoad: vi.fn(),
     onExit: vi.fn(),
@@ -154,6 +155,7 @@ describe('QuilttConnector', () => {
       expect(capturedWebViewProps.testID).toBe('webview')
       expect(capturedWebViewProps.originWhitelist).toEqual(['*'])
       expect(capturedWebViewProps.source.uri).toContain('quiltt.app')
+      expect(capturedWebViewProps.source.uri).toContain('theme_mode=dark')
       expect(capturedWebViewProps.javaScriptEnabled).toBe(true)
       expect(capturedWebViewProps.domStorageEnabled).toBe(true)
       expect(capturedWebViewProps.webviewDebuggingEnabled).toBe(true)

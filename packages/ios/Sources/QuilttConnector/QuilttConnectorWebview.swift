@@ -86,6 +86,11 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
             queryItems.append(URLQueryItem(name: "app_launcher_url", value: safeAppLauncherUrl))
         }
 
+        // Add theme mode if provided
+        if let themeMode = config.themeMode {
+            queryItems.append(URLQueryItem(name: "theme_mode", value: themeMode))
+        }
+
         urlComponents.queryItems = queryItems
 
         if let url = urlComponents.url {

@@ -8,6 +8,11 @@ public protocol QuilttConnectorConfiguration {
     var appLauncherUrl: String { get }
     var connectionId: String? { get }
     var institution: String? { get }
+    var themeMode: String? { get }
+}
+
+extension QuilttConnectorConfiguration {
+    public var themeMode: String? { nil }
 }
 
 public struct QuilttConnectorConnectConfiguration: QuilttConnectorConfiguration {
@@ -15,14 +20,17 @@ public struct QuilttConnectorConnectConfiguration: QuilttConnectorConfiguration 
     public var appLauncherUrl: String
     public var connectionId: String?
     public var institution: String?
+    public var themeMode: String?
     public init(
         connectorId: String,
         appLauncherUrl: String,
-        institution: String? = nil
+        institution: String? = nil,
+        themeMode: String? = nil
     ) {
         self.connectorId = connectorId
         self.appLauncherUrl = appLauncherUrl
         self.institution = institution
+        self.themeMode = themeMode
     }
 }
 
@@ -31,14 +39,17 @@ public struct QuilttConnectorReconnectConfiguration: QuilttConnectorConfiguratio
     public var appLauncherUrl: String
     public var connectionId: String?
     public var institution: String?
+    public var themeMode: String?
 
     public init(
         connectorId: String,
         appLauncherUrl: String,
-        connectionId: String
+        connectionId: String,
+        themeMode: String? = nil
     ) {
         self.connectorId = connectorId
         self.appLauncherUrl = appLauncherUrl
         self.connectionId = connectionId
+        self.themeMode = themeMode
     }
 }

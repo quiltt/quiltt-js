@@ -14,6 +14,7 @@ test('renders Quiltt button and inline connector', async ({ page }) => {
   await expect(connectorFrame).toHaveAttribute('src', /^https:\/\/[^/]+\.quiltt\.app\/?/)
   await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)embed_location=(?:[^&]+)(?:&|$)/)
   await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)mode=INLINE(?:&|$)/)
+  await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)theme_mode=auto(?:&|$)/)
 
   await page.evaluate((origin) => {
     window.dispatchEvent(

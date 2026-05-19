@@ -16,6 +16,13 @@ type BaseQuilttButtonProps<T extends ElementType> = {
   connectionId?: string // For Reconnect Mode
   institution?: string // For Connect Mode
   /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: 'light' | 'dark' | 'auto'
+  /**
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
@@ -60,6 +67,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   connectorId,
   connectionId,
   institution,
+  themeMode,
   appLauncherUrl,
   oauthRedirectUrl,
   forceRemountOnConnectionChange = false,
@@ -130,6 +138,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   const { open } = useQuilttConnector(connectorId, {
     connectionId,
     institution,
+    themeMode,
     appLauncherUrl: effectiveAppLauncherUri,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
@@ -174,6 +183,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
       onClick={handleClick}
       onLoad={onHtmlLoad}
       quiltt-connection={connectionId}
+      quiltt-theme-mode={themeMode}
       quiltt-app-launcher-uri={effectiveAppLauncherUri}
       {...props}
     >

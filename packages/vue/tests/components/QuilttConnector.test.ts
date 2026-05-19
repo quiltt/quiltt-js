@@ -53,6 +53,51 @@ describe('QuilttConnector', () => {
     app.unmount()
   })
 
+  it('includes theme_mode parameter in iframe src when themeMode prop is set', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttConnector, {
+          connectorId: 'connector_test',
+          themeMode: 'dark',
+        }),
+    })
+
+    app.mount(root)
+
+    const iframe = root.querySelector('iframe') as HTMLIFrameElement | null
+    expect(iframe).toBeTruthy()
+
+    const src = iframe?.getAttribute('src') || ''
+    expect(src).toContain('theme_mode=dark')
+
+    app.unmount()
+  })
+
+  it('does not include theme_mode in iframe src when not provided', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttConnector, {
+          connectorId: 'connector_test',
+        }),
+    })
+
+    app.mount(root)
+
+    const iframe = root.querySelector('iframe') as HTMLIFrameElement | null
+    expect(iframe).toBeTruthy()
+
+    const src = iframe?.getAttribute('src') || ''
+    expect(src).not.toContain('theme_mode')
+
+    app.unmount()
+  })
+
   it('does not include token in iframe src when session token is missing', () => {
     sessionRef.value = null
 

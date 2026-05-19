@@ -12,12 +12,14 @@ test('renders Quiltt button and inline connector', async ({ page }) => {
   const launchButton = page.getByRole('button', { name: 'Connect Account' })
   await expect(launchButton).toBeVisible()
   await expect(launchButton).toHaveAttribute('quiltt-app-launcher-uri', /.+/)
+  await expect(launchButton).toHaveAttribute('quiltt-theme-mode', 'dark')
 
   const connectorFrame = page.locator('iframe[title="Quiltt Connector"]')
   await expect(connectorFrame).toHaveCount(1)
   await expect(connectorFrame).toHaveAttribute('src', /^https:\/\/[^/]+\.quiltt\.app\/?/)
   await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)embed_location=(?:[^&]+)(?:&|$)/)
   await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)mode=INLINE(?:&|$)/)
+  await expect(connectorFrame).toHaveAttribute('src', /(?:\?|&)theme_mode=auto(?:&|$)/)
 
   await page.evaluate((origin) => {
     window.dispatchEvent(

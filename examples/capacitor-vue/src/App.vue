@@ -26,6 +26,7 @@ const addEvent = (message: string) => {
         <QuilttButton
           :connector-id="connectorId"
           :app-launcher-url="appLauncherUrl"
+          theme-mode="dark"
           class="launch-button"
           @exit-success="(metadata: any) => addEvent(`ExitSuccess: ${metadata.connectionId ?? 'n/a'}`)"
           @exit-abort="() => addEvent('ExitAbort')"
@@ -40,6 +41,7 @@ const addEvent = (message: string) => {
         <QuilttConnector
           :connector-id="connectorId"
           :app-launcher-url="appLauncherUrl"
+          theme-mode="auto"
           style="width: 100%; height: 100%"
           @load="() => addEvent('Load')"
           @exit-success="(metadata: any) => addEvent(`Inline ExitSuccess: ${metadata.connectionId ?? 'n/a'}`)"

@@ -3,3 +3,10 @@ resolutionMode: "highest"
 packages:
   - "packages/*"
   - "examples/*"
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  detox: true
+  dtrace-provider: true
+  esbuild: true
+  sharp: true

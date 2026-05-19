@@ -404,4 +404,16 @@ describe('QuilttConnector (capacitor)', () => {
       expect(remove).toHaveBeenCalledTimes(1)
     })
   })
+
+  it('includes themeMode in iframe src when provided', () => {
+    primePluginMocks()
+
+    const { container } = render(<QuilttConnector connectorId="connector_test" themeMode="dark" />)
+
+    const iframe = container.querySelector('iframe') as HTMLIFrameElement | null
+    expect(iframe).toBeTruthy()
+
+    const src = iframe?.getAttribute('src') || ''
+    expect(src).toContain('theme_mode=dark')
+  })
 })

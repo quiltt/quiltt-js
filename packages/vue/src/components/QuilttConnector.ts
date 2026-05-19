@@ -49,6 +49,16 @@ export const QuilttConnector = defineComponent({
       type: String as PropType<string | undefined>,
       default: undefined,
     },
+    /**
+     * The theme mode for the Connector UI.
+     * - 'light': Force light theme (default)
+     * - 'dark': Force dark theme
+     * - 'auto': Follow device/system preference
+     */
+    themeMode: {
+      type: String as PropType<'light' | 'dark' | 'auto' | undefined>,
+      default: undefined,
+    },
     /** Deep link URL for OAuth callbacks (mobile apps) */
     appLauncherUrl: {
       type: String as PropType<string | undefined>,
@@ -127,6 +137,9 @@ export const QuilttConnector = defineComponent({
       }
       if (props.appLauncherUrl) {
         url.searchParams.set('app_launcher_url', props.appLauncherUrl)
+      }
+      if (props.themeMode) {
+        url.searchParams.set('theme_mode', props.themeMode)
       }
       if (typeof window !== 'undefined') {
         url.searchParams.set('embed_location', window.location.href)

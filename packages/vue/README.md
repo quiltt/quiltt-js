@@ -89,7 +89,7 @@ const handleClick = (event: MouseEvent) => {
 Renders the connector inline.
 
 ```vue
-<QuilttContainer connector-id="YOUR_CONNECTOR_ID" @exit-success="handleSuccess" />
+<QuilttContainer connector-id="YOUR_CONNECTOR_ID" theme-mode="auto" @exit-success="handleSuccess" />
 ```
 
 ### QuilttConnector
@@ -101,6 +101,7 @@ Full-page iframe for embedded integration.
 ```vue
 <QuilttConnector
   connector-id="YOUR_CONNECTOR_ID"
+  theme-mode="dark"
   @exit-success="handleSuccess"
   @navigate="handleNavigate"
   style="width: 100%; height: 100vh" />
@@ -141,6 +142,7 @@ import { useQuilttConnector } from '@quiltt/vue'
 
 const { open } = useQuilttConnector('YOUR_CONNECTOR_ID', {
   onExitSuccess: (m) => console.log('Connected:', m.connectionId),
+  themeMode: 'auto',
 })
 ```
 
@@ -193,6 +195,7 @@ import { QuilttPlugin, QuilttSessionKey, QuilttSetSessionKey } from '@quiltt/vue
 | `connector-id` | `string` | — | **Required.** Quiltt Connector ID |
 | `connection-id` | `string` | — | Existing connection ID for reconnection |
 | `institution` | `string` | — | Pre-select an institution |
+| `theme-mode` | `'light' \| 'dark' \| 'auto'` | — | Connector UI theme mode |
 | `app-launcher-url` | `string` | — | Deep link URL for OAuth callbacks |
 | `force-remount-on-connection-change` | `boolean` | `false` | Force complete remount when `connectionId` changes (useful as fallback for clean state) |
 

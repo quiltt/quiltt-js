@@ -28,6 +28,7 @@ export const App = () => {
             <QuilttButton
               connectorId={defaultConnectorId}
               appLauncherUrl={defaultAppLauncherUri}
+              themeMode="dark"
               onExitSuccess={(metadata) =>
                 addEvent(`ExitSuccess: ${metadata.connectionId ?? 'n/a'}`)
               }
@@ -44,6 +45,7 @@ export const App = () => {
             <QuilttConnector
               connectorId={defaultConnectorId}
               appLauncherUrl={defaultAppLauncherUri}
+              themeMode="auto"
               onLoad={() => addEvent('Load')}
               onExitSuccess={(metadata) =>
                 addEvent(`Inline ExitSuccess: ${metadata.connectionId ?? 'n/a'}`)

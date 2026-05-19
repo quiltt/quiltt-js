@@ -72,6 +72,7 @@ export const App = () => {
       onExitSuccess={handleExitSuccess}
       className="my-css-class"
       style={{ borderWidth: '2px' }}
+      themeMode="auto"
       // ... other props to pass through to the button
     >
       Add Account
@@ -106,6 +107,7 @@ export const App = () => {
       onExitSuccess={handleExitSuccess}
       className="my-css-class"
       style={{ height: '100%' }}
+      themeMode="auto"
       // ... other props to pass through to the container
     />
   )
@@ -155,6 +157,7 @@ const App = () => {
   const { open } = useQuilttConnector('YOUR_CONNECTOR_ID', {
     onEvent: (type) => console.log(`Received Quiltt Event: ${type}`),
     onExitSuccess: (metadata) => console.log("Connector onExitSuccess", metadata.connectionId),
+    themeMode: 'dark',
   })
 
   return(

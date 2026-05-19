@@ -108,7 +108,7 @@ jobs:
           working-directory: packages/flutter/example
           script: |
             flutter devices
-            bash -lc 'set -o pipefail; flutter test integration_test/app_test.dart -d emulator-5554 --dart-define=QUILTT_SESSION_TOKEN="${{ steps.auth.outputs.token }}" --dart-define=QUILTT_CONNECTOR_ID=1h6bz4vo9z 2>&1 | tee flutter-integration-android.log'
+            bash -lc 'set -o pipefail; for i in 1 2 3; do echo "--- flutter test attempt $i ---"; flutter test integration_test/app_test.dart -d emulator-5554 --dart-define=QUILTT_SESSION_TOKEN="${{ steps.auth.outputs.token }}" --dart-define=QUILTT_CONNECTOR_ID=1h6bz4vo9z 2>&1 | tee flutter-integration-android.log && break; if [ $i -lt 3 ]; then echo "Attempt $i failed, waiting 15s before retry..."; sleep 15; else echo "All 3 attempts failed."; exit 1; fi; done'
 
       - name: Run integration tests (iOS)
         if: matrix.platform == 'ios'

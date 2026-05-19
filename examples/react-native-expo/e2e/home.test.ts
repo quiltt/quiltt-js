@@ -2,10 +2,28 @@ import { by, device, element, waitFor } from 'detox'
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const waitForConnectorReady = async () => {
-  await waitFor(element(by.id('quiltt-connector')))
-    .toBeVisible()
-    .withTimeout(120000)
+const waitForConnectorReady = async (timeoutMs = 120000) => {
+  // Use toExist() instead of toBeVisible() to avoid Espresso's
+  // window-focus requirement on Android. The WebView can cause the
+  // activity window to lose focus briefly, and toBeVisible()'s
+  // isDisplayed() check fails when has-window-focus=false.
+  const start = Date.now()
+  let lastError: unknown
+
+  while (Date.now() - start < timeoutMs) {
+    try {
+      await waitFor(element(by.id('quiltt-connector')))
+        .toExist()
+        .withTimeout(5000)
+
+      return
+    } catch (error) {
+      lastError = error
+      await sleep(2000)
+    }
+  }
+
+  throw lastError ?? new Error('Connector element never appeared')
 }
 
 const launchAppWithRetries = async () => {
