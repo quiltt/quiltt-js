@@ -45,5 +45,22 @@ void main() {
       );
       expect(config.institution, equals('mx_bank_1'));
     });
+
+    test('themeMode defaults to null', () {
+      final config = QuilttConnectorConfiguration(
+        connectorId: 'my-connector',
+        appLauncherUrl: 'https://example.com/callback',
+      );
+      expect(config.themeMode, isNull);
+    });
+
+    test('stores optional themeMode', () {
+      final config = QuilttConnectorConfiguration(
+        connectorId: 'my-connector',
+        appLauncherUrl: 'https://example.com/callback',
+        themeMode: 'dark',
+      );
+      expect(config.themeMode, equals('dark'));
+    });
   });
 }

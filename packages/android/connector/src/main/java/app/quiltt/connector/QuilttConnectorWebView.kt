@@ -59,6 +59,11 @@ class QuilttConnectorWebView(context: Context) : WebView(context) {
         } else {
             urlBuilder.appendQueryParameter("app_launcher_url", safeAppLauncherUrl)
         }
+
+        // Add theme mode if provided
+        config.themeMode?.let { themeMode ->
+            urlBuilder.appendQueryParameter("theme_mode", themeMode)
+        }
         
         val url = urlBuilder.build().toString()
         val sdkAgent = TelemetryUtils.getSDKAgent(

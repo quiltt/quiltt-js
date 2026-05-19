@@ -37,6 +37,7 @@ export const useQuilttConnector = (
   const prevConnectionIdRef = useRef<string | undefined>(options?.connectionId)
   const prevConnectorIdRef = useRef<string | undefined>(connectorId)
   const prevInstitutionRef = useRef<string | undefined>(options?.institution)
+  const prevThemeModeRef = useRef<string | undefined>(options?.themeMode)
   // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
   const prevAppLauncherUriRef = useRef<string | undefined>(
     options?.appLauncherUrl ?? options?.oauthRedirectUrl
@@ -73,6 +74,7 @@ export const useQuilttConnector = (
 
     const currentConnectionId = options?.connectionId
     const currentInstitution = options?.institution
+    const currentThemeMode = options?.themeMode
     // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
     const currentAppLauncherUri = options?.appLauncherUrl ?? options?.oauthRedirectUrl
 
@@ -80,11 +82,13 @@ export const useQuilttConnector = (
     const connectionIdChanged = prevConnectionIdRef.current !== currentConnectionId
     const connectorIdChanged = prevConnectorIdRef.current !== connectorId
     const institutionChanged = !isDeepEqual(prevInstitutionRef.current, currentInstitution)
+    const themeModeChanged = prevThemeModeRef.current !== currentThemeMode
     const appLauncherUrlChanged = prevAppLauncherUriRef.current !== currentAppLauncherUri
     const hasChanges =
       connectionIdChanged ||
       connectorIdChanged ||
       institutionChanged ||
+      themeModeChanged ||
       appLauncherUrlChanged ||
       !connectorCreatedRef.current
 
@@ -95,6 +99,7 @@ export const useQuilttConnector = (
         setConnector(
           Quiltt.reconnect(connectorId, {
             connectionId: currentConnectionId,
+            themeMode: currentThemeMode,
             appLauncherUrl: currentAppLauncherUri,
           })
         )
@@ -103,6 +108,7 @@ export const useQuilttConnector = (
         setConnector(
           Quiltt.connect(connectorId, {
             institution: currentInstitution,
+            themeMode: currentThemeMode,
             appLauncherUrl: currentAppLauncherUri,
           })
         )
@@ -113,12 +119,14 @@ export const useQuilttConnector = (
       prevConnectionIdRef.current = currentConnectionId
       prevConnectorIdRef.current = connectorId
       prevInstitutionRef.current = currentInstitution
+      prevThemeModeRef.current = currentThemeMode
       prevAppLauncherUriRef.current = currentAppLauncherUri
     }
   }, [
     connectorId,
     options?.connectionId,
     options?.institution,
+    options?.themeMode,
     options?.appLauncherUrl,
     options?.oauthRedirectUrl,
     status,

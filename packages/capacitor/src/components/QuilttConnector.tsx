@@ -22,6 +22,13 @@ type QuilttConnectorProps = {
   connectionId?: string
   institution?: string
   /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: 'light' | 'dark' | 'auto'
+  /**
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
@@ -69,6 +76,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       connectorId,
       connectionId,
       institution,
+      themeMode,
       appLauncherUrl,
       style,
       className,
@@ -105,6 +113,9 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       if (appLauncherUrl) {
         url.searchParams.set('app_launcher_url', normalizeUrlValue(appLauncherUrl))
       }
+      if (themeMode) {
+        url.searchParams.set('theme_mode', themeMode)
+      }
 
       if (typeof window !== 'undefined') {
         url.searchParams.set('embed_location', window.location.href)
@@ -114,7 +125,7 @@ export const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnector
       url.searchParams.set('mode', 'INLINE')
 
       return url.toString()
-    }, [connectorOrigin, session?.token, connectionId, institution, appLauncherUrl])
+    }, [connectorOrigin, session?.token, connectionId, institution, themeMode, appLauncherUrl])
 
     useEffect(() => {
       setIsLoaded(false)

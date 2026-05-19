@@ -26,6 +26,23 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
         XCTAssertNil(config.connectionId)
     }
 
+    func testConnectConfiguration_themeModeDefaultsToNil() {
+        let config = QuilttConnectorConnectConfiguration(
+            connectorId: "my-connector",
+            appLauncherUrl: "https://example.com/callback"
+        )
+        XCTAssertNil(config.themeMode)
+    }
+
+    func testConnectConfiguration_withThemeMode() {
+        let config = QuilttConnectorConnectConfiguration(
+            connectorId: "my-connector",
+            appLauncherUrl: "https://example.com/callback",
+            themeMode: "dark"
+        )
+        XCTAssertEqual(config.themeMode, "dark")
+    }
+
     // ReconnectConfiguration
 
     func testReconnectConfiguration_requiredFields() {
@@ -47,5 +64,24 @@ final class QuilttConnectorConfigurationTests: XCTestCase {
             connectionId: "conn-1"
         )
         XCTAssertNil(config.institution)
+    }
+
+    func testReconnectConfiguration_themeModeDefaultsToNil() {
+        let config = QuilttConnectorReconnectConfiguration(
+            connectorId: "c",
+            appLauncherUrl: "https://example.com",
+            connectionId: "conn-1"
+        )
+        XCTAssertNil(config.themeMode)
+    }
+
+    func testReconnectConfiguration_withThemeMode() {
+        let config = QuilttConnectorReconnectConfiguration(
+            connectorId: "c",
+            appLauncherUrl: "https://example.com",
+            connectionId: "conn-1",
+            themeMode: "auto"
+        )
+        XCTAssertEqual(config.themeMode, "auto")
     }
 }

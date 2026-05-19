@@ -213,6 +213,30 @@ describe('QuilttButton', () => {
     app.unmount()
   })
 
+  it('passes themeMode to useQuilttConnector', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttButton, {
+          connectorId: 'connector_test',
+          themeMode: 'dark',
+        }),
+    })
+
+    app.mount(root)
+
+    const [, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+
+    expect((options.themeMode as () => string | undefined)()).toBe('dark')
+
+    app.unmount()
+  })
+
   it('calls user-provided onClick handler when clicked', () => {
     const onClick = vi.fn()
 

@@ -29,7 +29,8 @@ class _Example extends State {
   connect() {
     QuilttConnectorConfiguration config = QuilttConnectorConfiguration(
       connectorId: "<CONNECTOR_ID>",
-      appLauncherUrl: "<YOUR_HTTPS_APP_LINK>"
+      appLauncherUrl: "<YOUR_HTTPS_APP_LINK>",
+      themeMode: "auto",
     );
 
     QuilttConnector quilttConnector = QuilttConnector();

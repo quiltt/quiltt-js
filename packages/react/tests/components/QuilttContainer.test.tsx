@@ -215,4 +215,37 @@ describe('QuilttContainer', () => {
     const component = container.querySelector('[data-testid="custom-component"]')
     expect(component?.className).toBe('custom-class')
   })
+
+  it('passes themeMode to useQuilttConnector', () => {
+    render(
+      <QuilttContainer connectorId="mockConnectorId" themeMode="dark">
+        Content
+      </QuilttContainer>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({ themeMode: 'dark' })
+    )
+  })
+
+  it('renders quiltt-theme-mode attribute on the container element', () => {
+    const { container } = render(
+      <QuilttContainer connectorId="mockConnectorId" themeMode="auto">
+        Content
+      </QuilttContainer>
+    )
+
+    const element = container.firstElementChild
+    expect(element?.getAttribute('quiltt-theme-mode')).toBe('auto')
+  })
+
+  it('does not render quiltt-theme-mode attribute when not provided', () => {
+    const { container } = render(
+      <QuilttContainer connectorId="mockConnectorId">Content</QuilttContainer>
+    )
+
+    const element = container.firstElementChild
+    expect(element?.hasAttribute('quiltt-theme-mode')).toBe(false)
+  })
 })

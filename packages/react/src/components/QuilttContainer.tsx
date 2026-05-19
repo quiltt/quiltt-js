@@ -15,6 +15,13 @@ type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
     connectorId: string
     connectionId?: string // For Reconnect Mode
     /**
+     * The theme mode for the Connector UI.
+     * - 'light': Force light theme (default)
+     * - 'dark': Force dark theme
+     * - 'auto': Follow device/system preference
+     */
+    themeMode?: 'light' | 'dark' | 'auto'
+    /**
      * The app launcher URL for mobile OAuth flows.
      * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
      */
@@ -46,6 +53,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   as,
   connectorId,
   connectionId,
+  themeMode,
   appLauncherUrl,
   oauthRedirectUrl,
   institution,
@@ -111,6 +119,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 
   useQuilttConnector(connectorId, {
     connectionId,
+    themeMode,
     appLauncherUrl: effectiveAppLauncherUri,
     institution,
     nonce: props?.nonce, // Pass nonce for script loading if needed
@@ -141,6 +150,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
       key={containerKey}
       quiltt-container={connectorId}
       quiltt-connection={connectionId}
+      quiltt-theme-mode={themeMode}
       quiltt-app-launcher-uri={effectiveAppLauncherUri}
       quiltt-institution={institution}
       {...props}

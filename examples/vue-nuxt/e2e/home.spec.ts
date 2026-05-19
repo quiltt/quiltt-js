@@ -33,4 +33,16 @@ test.describe('Home Page', () => {
     await expect(page.locator('.containers')).toHaveCount(1)
     await expect(page.locator('.heading')).toHaveCount(2)
   })
+
+  test('should render quiltt-theme-mode attribute on component button', async ({ page }) => {
+    const componentButton = page.locator('button.component-button').first()
+    await expect(componentButton).toBeVisible()
+    await expect(componentButton).toHaveAttribute('quiltt-theme-mode', 'dark')
+  })
+
+  test('should render quiltt-theme-mode attribute on QuilttContainer', async ({ page }) => {
+    const container = page.locator('div.container-frame.quiltt-container').first()
+    await expect(container).toBeVisible()
+    await expect(container).toHaveAttribute('quiltt-theme-mode', 'auto')
+  })
 })

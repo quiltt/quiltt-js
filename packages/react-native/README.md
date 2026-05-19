@@ -75,6 +75,7 @@ export const App = () => {
       <QuilttConnector
         connectorId="YOUR_CONNECTOR_ID"
         appLauncherUrl={appLauncherUrl}
+        themeMode="auto"
 
         // See the JavaScript API docs for the full list of available callbacks...
         onExitSuccess={handleExitSuccess}

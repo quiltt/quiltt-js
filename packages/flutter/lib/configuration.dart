@@ -12,11 +12,16 @@ class QuilttConnectorConfiguration {
   /// An optional institution hint to pre-select in the connector.
   String? institution;
 
+  /// The theme mode for the Connector UI.
+  /// Supported values: 'light', 'dark', 'auto'.
+  String? themeMode;
+
   /// Creates a [QuilttConnectorConfiguration].
   QuilttConnectorConfiguration({
     required this.connectorId,
     required this.appLauncherUrl,
     this.connectionId,
     this.institution,
+    this.themeMode,
   });
 }

@@ -156,4 +156,37 @@ describe('QuilttButton', () => {
     const button = container.querySelector('button')
     expect(button?.hasAttribute('quiltt-app-launcher-uri')).toBe(false)
   })
+
+  it('passes themeMode to useQuilttConnector', () => {
+    render(
+      <QuilttButton connectorId="mockConnectorId" themeMode="dark">
+        Test Button
+      </QuilttButton>
+    )
+
+    expect(useQuilttConnector).toHaveBeenCalledWith(
+      'mockConnectorId',
+      expect.objectContaining({ themeMode: 'dark' })
+    )
+  })
+
+  it('renders quiltt-theme-mode attribute on the button element', () => {
+    const { container } = render(
+      <QuilttButton connectorId="mockConnectorId" themeMode="auto">
+        Test Button
+      </QuilttButton>
+    )
+
+    const button = container.querySelector('button')
+    expect(button?.getAttribute('quiltt-theme-mode')).toBe('auto')
+  })
+
+  it('does not render quiltt-theme-mode attribute when not provided', () => {
+    const { container } = render(
+      <QuilttButton connectorId="mockConnectorId">Test Button</QuilttButton>
+    )
+
+    const button = container.querySelector('button')
+    expect(button?.hasAttribute('quiltt-theme-mode')).toBe(false)
+  })
 })

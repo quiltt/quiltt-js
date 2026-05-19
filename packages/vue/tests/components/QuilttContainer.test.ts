@@ -213,6 +213,50 @@ describe('QuilttContainer', () => {
     app.unmount()
   })
 
+  it('passes themeMode to useQuilttConnector', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttContainer, {
+          connectorId: 'connector_test',
+          themeMode: 'dark',
+        }),
+    })
+
+    app.mount(root)
+
+    const [, options] = mocks.useQuilttConnectorMock.mock.calls[0] as [
+      () => string,
+      Record<string, unknown>,
+    ]
+
+    expect((options.themeMode as () => string | undefined)()).toBe('dark')
+
+    app.unmount()
+  })
+
+  it('renders quiltt-theme-mode attribute on the container element', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+
+    const app = createApp({
+      render: () =>
+        h(QuilttContainer, {
+          connectorId: 'connector_test',
+          themeMode: 'auto',
+        }),
+    })
+
+    app.mount(root)
+
+    const containerEl = root.querySelector('[quiltt-container="connector_test"]')
+    expect(containerEl?.getAttribute('quiltt-theme-mode')).toBe('auto')
+
+    app.unmount()
+  })
+
   it('wires onOpen callback when parent subscribes to open event', () => {
     const onOpen = vi.fn()
 

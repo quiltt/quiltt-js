@@ -126,6 +126,13 @@ export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
   /** The Institution ID or search term to connect */
   institution?: string
   /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: 'light' | 'dark' | 'auto'
+  /**
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
@@ -144,6 +151,13 @@ export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
 export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
   /** The ID of the Connection to reconnect */
   connectionId: string
+  /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: 'light' | 'dark' | 'auto'
   /**
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
@@ -168,6 +182,13 @@ export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
   connectionId?: string
   /** The nonce to use for the script tag */
   nonce?: string
+  /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: 'light' | 'dark' | 'auto'
   /**
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.

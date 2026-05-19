@@ -35,7 +35,14 @@ test.describe('Connector Flow', () => {
     const button = page.getByRole('button', { name: 'Launch with Component' })
     await button.click()
 
-    await expect(page.locator(iframeSelector)).toBeVisible()
+    const iframe = page.locator(iframeSelector)
+    await expect(iframe).toBeVisible()
+  })
+
+  test('should pass quiltt-theme-mode attribute on themed button', async ({ page }) => {
+    const button = page.getByRole('button', { name: 'Launch with Component' })
+    await expect(button).toBeVisible()
+    await expect(button).toHaveAttribute('quiltt-theme-mode', 'dark')
   })
 
   test('should launch connector with custom button component', async ({ page }) => {

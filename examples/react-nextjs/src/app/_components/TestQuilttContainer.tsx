@@ -5,7 +5,14 @@ import { QuilttContainer } from '@quiltt/react'
 import { connectorId } from './quiltt-config'
 
 export const TestQuilttContainer = () => {
-  return <QuilttContainer connectorId={connectorId} className="container-frame" as="div" />
+  return (
+    <QuilttContainer
+      connectorId={connectorId}
+      className="container-frame"
+      as="div"
+      themeMode="auto"
+    />
+  )
 }
 
 export default TestQuilttContainer

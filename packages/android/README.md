@@ -68,7 +68,8 @@ class QuilttConnectorActivity : AppCompatActivity() {
         
         val config = QuilttConnectorConnectConfiguration(
             connectorId = "<CONNECTOR_ID>",
-            appLauncherUrl = "<YOUR_HTTPS_APP_LINK>"
+            appLauncherUrl = "<YOUR_HTTPS_APP_LINK>",
+            themeMode = "auto"
         )
 
         // Launch Connect Flow

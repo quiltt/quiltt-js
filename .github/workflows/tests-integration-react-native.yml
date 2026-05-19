@@ -201,6 +201,7 @@ jobs:
         run: pnpm run build
         working-directory: ./examples/react-native-expo
         env:
+          NODE_OPTIONS: "--experimental-require-module"
           EXPO_PUBLIC_QUILTT_CLIENT_ID: ${{ secrets.QUILTT_CLIENT_ID }}
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: ""
           EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z
@@ -208,9 +209,12 @@ jobs:
 
       - name: Build for testing (iOS)
         if: matrix.platform == 'ios'
-        run: pnpm run test:ios:build
+        run: |
+          CI=1 pnpm exec expo prebuild --platform ios --clean
+          pnpm run test:ios:build
         working-directory: ./examples/react-native-expo
         env:
+          NODE_OPTIONS: "--experimental-require-module"
           EXPO_PUBLIC_QUILTT_CLIENT_ID: ${{ secrets.QUILTT_CLIENT_ID }}
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: ""
           EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z
@@ -221,6 +225,7 @@ jobs:
         run: pnpm run test:android:build
         working-directory: ./examples/react-native-expo
         env:
+          NODE_OPTIONS: "--experimental-require-module"
           EXPO_PUBLIC_QUILTT_CLIENT_ID: ${{ secrets.QUILTT_CLIENT_ID }}
           EXPO_PUBLIC_QUILTT_AUTH_TOKEN: ""
           EXPO_PUBLIC_CONNECTOR_ID: 1h6bz4vo9z

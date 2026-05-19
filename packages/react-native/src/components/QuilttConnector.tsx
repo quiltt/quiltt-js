@@ -149,6 +149,13 @@ type QuilttConnectorProps = {
   connectionId?: string
   institution?: string
   /**
+   * The theme mode for the Connector UI.
+   * - 'light': Force light theme (default)
+   * - 'dark': Force dark theme
+   * - 'auto': Follow device/system preference
+   */
+  themeMode?: 'light' | 'dark' | 'auto'
+  /**
    * The app launcher URL for mobile OAuth flows.
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
@@ -166,6 +173,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       connectorId,
       connectionId,
       institution,
+      themeMode,
       appLauncherUrl,
       oauthRedirectUrl,
       onEvent,
@@ -248,6 +256,10 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       url.searchParams.append('mode', 'webview')
       url.searchParams.append('agent', sdkAgent)
 
+      if (themeMode) {
+        url.searchParams.append('theme_mode', themeMode)
+      }
+
       if (hasConfiguredAppLauncherUrl) {
         // For the oauth_redirect_url, we need to be careful
         // If it's already encoded, we need to decode it once to prevent
@@ -261,7 +273,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       }
 
       return url.toString()
-    }, [connectorId, hasConfiguredAppLauncherUrl, safeAppLauncherUrl, sdkAgent])
+    }, [connectorId, hasConfiguredAppLauncherUrl, safeAppLauncherUrl, sdkAgent, themeMode])
 
     useEffect(() => {
       if (preFlightCheck.checked || !connectorUrl || !errorReporter) return

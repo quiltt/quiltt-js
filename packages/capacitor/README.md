@@ -176,6 +176,7 @@ import { QuilttConnector } from '@quiltt/capacitor'
 | `connectorId`    | `string`             | **Required.** Quiltt Connector ID                              |
 | `connectionId`   | `string`             | Existing connection ID for reconnection                        |
 | `institution`    | `string`             | Pre-select an institution                                      |
+| `themeMode`      | `string`             | Connector UI theme mode (`'light'`, `'dark'`, `'auto'`)       |
 | `appLauncherUrl` | `string`             | App launcher URL (Universal Link/App Link) for OAuth callbacks |
 | `onLoad`         | `(metadata) => void` | Connector loaded                                               |
 | `onExitSuccess`  | `(metadata) => void` | Connection successful                                          |
