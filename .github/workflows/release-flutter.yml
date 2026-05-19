@@ -30,6 +30,17 @@ jobs:
         working-directory: packages/flutter
 
     steps:
+      - name: Validate ref is a flutter/v* tag
+        run: |
+          case "$GITHUB_REF" in
+            refs/tags/flutter/v*) ;;
+            *)
+              echo "ERROR: This workflow must run against a flutter/v* tag ref (got: $GITHUB_REF)"
+              echo "For workflow_dispatch, select a flutter/v* tag from the 'Use workflow from' dropdown."
+              exit 1
+              ;;
+          esac
+
       - name: Extract version from tag
         id: version
         env:
