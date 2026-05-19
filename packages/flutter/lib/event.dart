@@ -1,3 +1,46 @@
+/// Canonical event type values matching the Quiltt Connector JS SDK.
+///
+/// Values are identical to the `ConnectorSDKEventType` enum in `@quiltt/core`
+/// and are consistent across mobile and web platforms.
+///
+/// The mobile WebView receives PascalCase URL-scheme hosts from the connector
+/// web app (e.g. `quilttconnector://ExitSuccess`). [fromUrlHost] maps these to
+/// the correct enum case — the same pattern used by the iOS and Android SDKs.
+enum ConnectorSDKEventType {
+  opened('opened'),
+  loaded('loaded'),
+  exitSuccessful('exited.successful'),
+  exitAborted('exited.aborted'),
+  exitErrored('exited.errored');
+
+  const ConnectorSDKEventType(this.value);
+
+  /// The canonical string value used by the Quiltt JS SDK.
+  final String value;
+
+  /// Maps a PascalCase URL-scheme host (as received from the WebView on mobile)
+  /// to the corresponding [ConnectorSDKEventType].
+  ///
+  /// Returns `null` for non-SDK hosts such as `Navigate` or `Authenticate`.
+  static ConnectorSDKEventType? fromUrlHost(String host) => switch (host) {
+    'Load' => ConnectorSDKEventType.loaded,
+    'ExitSuccess' => ConnectorSDKEventType.exitSuccessful,
+    'ExitAbort' => ConnectorSDKEventType.exitAborted,
+    'ExitError' => ConnectorSDKEventType.exitErrored,
+    _ => null,
+  };
+
+  /// Parses a canonical string value back to [ConnectorSDKEventType].
+  ///
+  /// Returns `null` for unknown values.
+  static ConnectorSDKEventType? fromValue(String value) {
+    for (final type in ConnectorSDKEventType.values) {
+      if (type.value == value) return type;
+    }
+    return null;
+  }
+}
+
 /// Metadata included with every Connector SDK callback event.
 class ConnectorSDKCallbackMetadata {
   /// The ID of the connector that triggered the event.
@@ -19,8 +62,8 @@ class ConnectorSDKCallbackMetadata {
 
 /// Callback payload delivered for intermediate Connector events.
 class ConnectorSDKOnEventCallback {
-  /// The event type identifier (e.g. `'load'`, `'navigate'`).
-  String type;
+  /// The event type.
+  ConnectorSDKEventType type;
 
   /// Metadata associated with the event.
   ConnectorSDKCallbackMetadata eventMetadata;
@@ -34,8 +77,8 @@ class ConnectorSDKOnEventCallback {
 
 /// Callback payload delivered when the Connector exits via an event.
 class ConnectorSDKOnEventExitCallback {
-  /// The exit event type identifier.
-  String type;
+  /// The exit event type.
+  ConnectorSDKEventType type;
 
   /// Metadata associated with the exit event.
   ConnectorSDKCallbackMetadata eventMetadata;

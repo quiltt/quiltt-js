@@ -14,6 +14,15 @@ abstract class QuilttPlatformInterface {
   void authenticate(String token);
 
   /// Connect to a connector.
+  ///
+  /// [context] is used by the mobile implementation to push a Navigator route.
+  /// On web, the JS SDK manages its own full-window overlay and [context] is
+  /// ignored.
+  ///
+  /// **Event types**: [onExitSuccess], [onExitAbort], and [onExitError] are the
+  /// normalised cross-platform callbacks. The [onEvent] and [onExit] callbacks
+  /// carry a typed [ConnectorSDKEventType] value — the same canonical enum on
+  /// both mobile and web.
   void connect(
     BuildContext context,
     QuilttConnectorConfiguration config, {
@@ -24,7 +33,13 @@ abstract class QuilttPlatformInterface {
     Function(ConnectorSDKOnExitErrorCallback event)? onExitError,
   });
 
-  /// Reconnect to a connector.
+  /// Reconnect to an existing connection.
+  ///
+  /// [context] is used by the mobile implementation to push a Navigator route.
+  /// On web, the JS SDK manages its own full-window overlay and [context] is
+  /// ignored.
+  ///
+  /// See [connect] for notes on event type semantics and callback behaviour.
   void reconnect(
     BuildContext context,
     QuilttConnectorConfiguration config, {

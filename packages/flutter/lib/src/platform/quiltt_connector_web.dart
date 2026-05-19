@@ -15,6 +15,7 @@ const _quilttCdnUrl = 'https://cdn.quiltt.io/v1/connector.js';
 /// Tracks the script loading state across instances.
 bool _sdkLoaded = false;
 bool _sdkLoading = false;
+bool _sdkFailed = false;
 Completer<void>? _loadCompleter;
 
 /// Creates the web platform connector implementation.
@@ -40,6 +41,11 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
   Future<void> _ensureSDKLoaded() {
     if (_sdkLoaded) return Future.value();
     if (_sdkLoading) return _loadCompleter!.future;
+    if (_sdkFailed) {
+      return Future.error(
+        Exception('Quiltt SDK previously failed to load from $_quilttCdnUrl'),
+      );
+    }
 
     // If the SDK was preloaded in index.html, skip injection.
     if (globalContext.has('Quiltt')) {
@@ -74,9 +80,10 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
       'error'.toJS,
       ((JSAny event) {
         _sdkLoading = false;
-        final error = 'Failed to load Quiltt SDK from $_quilttCdnUrl';
-        debugPrint('Quiltt: $error');
-        _loadCompleter?.completeError(error);
+        _sdkFailed = true;
+        _loadCompleter?.completeError(
+          Exception('Failed to load Quiltt SDK from $_quilttCdnUrl'),
+        );
         _loadCompleter = null;
       }).toJS,
     );
@@ -231,6 +238,10 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
       options['institution'] = institution;
     }
 
+    if (config.themeMode case final String themeMode) {
+      options['themeMode'] = themeMode;
+    }
+
     return options.jsify() as JSObject;
   }
 
@@ -248,9 +259,12 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
       connector.onEvent(
         ((JSString type, JSObject metadata) {
           final meta = _extractMetadata(metadata, connectorId);
-          onEvent(
-            ConnectorSDKOnEventCallback(type: type.toDart, eventMetadata: meta),
-          );
+          final eventType = ConnectorSDKEventType.fromValue(type.toDart);
+          if (eventType != null) {
+            onEvent(
+              ConnectorSDKOnEventCallback(type: eventType, eventMetadata: meta),
+            );
+          }
         }).toJS,
       );
     }
@@ -261,7 +275,7 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
         // connector.onEvent already delivers this event; only fire typed callbacks.
         onExit?.call(
           ConnectorSDKOnEventExitCallback(
-            type: 'exited.successful',
+            type: ConnectorSDKEventType.exitSuccessful,
             eventMetadata: meta,
           ),
         );
@@ -277,7 +291,7 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
         // connector.onEvent already delivers this event; only fire typed callbacks.
         onExit?.call(
           ConnectorSDKOnEventExitCallback(
-            type: 'exited.aborted',
+            type: ConnectorSDKEventType.exitAborted,
             eventMetadata: meta,
           ),
         );
@@ -291,7 +305,7 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
         // connector.onEvent already delivers this event; only fire typed callbacks.
         onExit?.call(
           ConnectorSDKOnEventExitCallback(
-            type: 'exited.errored',
+            type: ConnectorSDKEventType.exitErrored,
             eventMetadata: meta,
           ),
         );
@@ -335,13 +349,13 @@ class QuilttConnectorWeb extends QuilttPlatformInterface {
     final metadata = ConnectorSDKCallbackMetadata(connectorId: connectorId);
     onEvent?.call(
       ConnectorSDKOnEventCallback(
-        type: 'exited.errored',
+        type: ConnectorSDKEventType.exitErrored,
         eventMetadata: metadata,
       ),
     );
     onExit?.call(
       ConnectorSDKOnEventExitCallback(
-        type: 'exited.errored',
+        type: ConnectorSDKEventType.exitErrored,
         eventMetadata: metadata,
       ),
     );

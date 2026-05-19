@@ -72,6 +72,19 @@ class QuilttConnectorMobile extends QuilttPlatformInterface {
     Function(ConnectorSDKOnExitAbortCallback event)? onExitAbort,
     Function(ConnectorSDKOnExitErrorCallback event)? onExitError,
   }) {
+    if (config.connectionId == null || config.connectionId!.isEmpty) {
+      debugPrint(
+        'Quiltt: reconnect() requires a non-null, non-empty connectionId',
+      );
+      final metadata = ConnectorSDKCallbackMetadata(
+        connectorId: config.connectorId,
+      );
+      onExitError?.call(
+        ConnectorSDKOnExitErrorCallback(eventMetadata: metadata),
+      );
+      return;
+    }
+
     _webViewPage._init(
       controller,
       context,
@@ -167,19 +180,20 @@ class _WebViewPage {
       profileId: uri.queryParameters['profileId'],
     );
 
-    // Normalize case to avoid case sensitivity issues
-    String eventType = uri.host.toLowerCase();
+    // Resolve enum directly from the PascalCase URL-scheme host (same pattern
+    // as iOS/Android SDKs; no string normalisation layer needed).
+    final eventType = ConnectorSDKEventType.fromUrlHost(uri.host);
 
     try {
-      switch (eventType) {
-        case 'load':
+      switch (uri.host) {
+        case 'Load':
           try {
             await controller.runJavaScript(initInjectedJavaScript);
           } catch (error) {
             debugPrint('Failed to inject initialization JavaScript: $error');
           }
           break;
-        case 'navigate':
+        case 'Navigate':
           if (uri.queryParameters.containsKey('url')) {
             var navigateUrl = Uri.decodeFull(uri.queryParameters['url']!);
 
@@ -200,17 +214,17 @@ class _WebViewPage {
             debugPrint('Navigate URL missing from request');
           }
           break;
-        case 'exitsuccess':
+        case 'ExitSuccess':
           try {
             onEvent?.call(
               ConnectorSDKOnEventCallback(
-                type: eventType,
+                type: ConnectorSDKEventType.exitSuccessful,
                 eventMetadata: eventMetadata,
               ),
             );
             onExit?.call(
               ConnectorSDKOnEventExitCallback(
-                type: eventType,
+                type: ConnectorSDKEventType.exitSuccessful,
                 eventMetadata: eventMetadata,
               ),
             );
@@ -223,17 +237,17 @@ class _WebViewPage {
             _closeWebView();
           }
           break;
-        case 'exitabort':
+        case 'ExitAbort':
           try {
             onEvent?.call(
               ConnectorSDKOnEventCallback(
-                type: eventType,
+                type: ConnectorSDKEventType.exitAborted,
                 eventMetadata: eventMetadata,
               ),
             );
             onExit?.call(
               ConnectorSDKOnEventExitCallback(
-                type: eventType,
+                type: ConnectorSDKEventType.exitAborted,
                 eventMetadata: eventMetadata,
               ),
             );
@@ -246,17 +260,17 @@ class _WebViewPage {
             _closeWebView();
           }
           break;
-        case 'exiterror':
+        case 'ExitError':
           try {
             onEvent?.call(
               ConnectorSDKOnEventCallback(
-                type: eventType,
+                type: ConnectorSDKEventType.exitErrored,
                 eventMetadata: eventMetadata,
               ),
             );
             onExit?.call(
               ConnectorSDKOnEventExitCallback(
-                type: eventType,
+                type: ConnectorSDKEventType.exitErrored,
                 eventMetadata: eventMetadata,
               ),
             );
@@ -269,27 +283,19 @@ class _WebViewPage {
             _closeWebView();
           }
           break;
-        case 'authenticate':
-          try {
-            // This was exposed as a callback for web, to allow hiding of the loading box.
-            // Mobile is fullscreen, so they are going to get loading screen.
-            onEvent?.call(
-              ConnectorSDKOnEventCallback(
-                type: eventType,
-                eventMetadata: eventMetadata,
-              ),
-            );
-          } catch (error) {
-            debugPrint('Error in authenticate callback: $error');
-          }
+        case 'Authenticate':
+          // Internal mobile signal (web uses this to hide its loading overlay).
+          // Not forwarded to callbacks — no canonical SDK event type.
           break;
         default:
-          debugPrint('Unknown event: ${uri.host}');
+          debugPrint('Unknown Quiltt event: ${uri.host}');
       }
     } catch (error) {
       debugPrint('Error handling Quiltt connector event: $error');
-      // Only close WebView on exit events to prevent users from getting stuck
-      if (eventType.startsWith('exit')) {
+      // Only close WebView on exit events to prevent users from getting stuck.
+      if (eventType != null &&
+          eventType != ConnectorSDKEventType.loaded &&
+          eventType != ConnectorSDKEventType.opened) {
         _closeWebView();
       }
     }
