@@ -7,6 +7,11 @@ on:
   push:
     tags:
       - "flutter/v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g., 5.3.0)"
+        required: true
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -17,7 +22,6 @@ jobs:
   publish-flutter:
     name: Publish Flutter
     runs-on: ubuntu-latest
-    environment: pub-dev # pub-dev is a valid environment name on quiltt-sdks. If the GitHub Actions Workflow extension is flagging this as an error, it can be ignored.
     permissions:
       id-token: write
       contents: write
@@ -28,8 +32,14 @@ jobs:
     steps:
       - name: Extract version from tag
         id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          VERSION="${GITHUB_REF#refs/tags/flutter/v}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            VERSION="$INPUT_VERSION"
+          else
+            VERSION="${GITHUB_REF#refs/tags/flutter/v}"
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Releasing Flutter SDK v$VERSION"
 
