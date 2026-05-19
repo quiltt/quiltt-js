@@ -180,20 +180,20 @@ class _WebViewPage {
       profileId: uri.queryParameters['profileId'],
     );
 
-    // Resolve enum directly from the PascalCase URL-scheme host (same pattern
-    // as iOS/Android SDKs; no string normalisation layer needed).
-    final eventType = ConnectorSDKEventType.fromUrlHost(uri.host);
+    // Android's URI parser lowercases the host; normalise for safety.
+    final host = uri.host.toLowerCase();
+    final eventType = ConnectorSDKEventType.fromUrlHost(host);
 
     try {
-      switch (uri.host) {
-        case 'Load':
+      switch (host) {
+        case 'load':
           try {
             await controller.runJavaScript(initInjectedJavaScript);
           } catch (error) {
             debugPrint('Failed to inject initialization JavaScript: $error');
           }
           break;
-        case 'Navigate':
+        case 'navigate':
           if (uri.queryParameters.containsKey('url')) {
             var navigateUrl = Uri.decodeFull(uri.queryParameters['url']!);
 
@@ -214,7 +214,7 @@ class _WebViewPage {
             debugPrint('Navigate URL missing from request');
           }
           break;
-        case 'ExitSuccess':
+        case 'exitsuccess':
           try {
             onEvent?.call(
               ConnectorSDKOnEventCallback(
@@ -237,7 +237,7 @@ class _WebViewPage {
             _closeWebView();
           }
           break;
-        case 'ExitAbort':
+        case 'exitabort':
           try {
             onEvent?.call(
               ConnectorSDKOnEventCallback(
@@ -260,7 +260,7 @@ class _WebViewPage {
             _closeWebView();
           }
           break;
-        case 'ExitError':
+        case 'exiterror':
           try {
             onEvent?.call(
               ConnectorSDKOnEventCallback(
@@ -283,12 +283,12 @@ class _WebViewPage {
             _closeWebView();
           }
           break;
-        case 'Authenticate':
+        case 'authenticate':
           // Internal mobile signal (web uses this to hide its loading overlay).
           // Not forwarded to callbacks — no canonical SDK event type.
           break;
         default:
-          debugPrint('Unknown Quiltt event: ${uri.host}');
+          debugPrint('Unknown Quiltt event: $host');
       }
     } catch (error) {
       debugPrint('Error handling Quiltt connector event: $error');

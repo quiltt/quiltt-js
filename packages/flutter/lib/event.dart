@@ -18,17 +18,22 @@ enum ConnectorSDKEventType {
   /// The canonical string value used by the Quiltt JS SDK.
   final String value;
 
-  /// Maps a PascalCase URL-scheme host (as received from the WebView on mobile)
-  /// to the corresponding [ConnectorSDKEventType].
+  /// Maps a URL-scheme host (as received from the WebView on mobile) to the
+  /// corresponding [ConnectorSDKEventType].
   ///
-  /// Returns `null` for non-SDK hosts such as `Navigate` or `Authenticate`.
-  static ConnectorSDKEventType? fromUrlHost(String host) => switch (host) {
-    'Load' => ConnectorSDKEventType.loaded,
-    'ExitSuccess' => ConnectorSDKEventType.exitSuccessful,
-    'ExitAbort' => ConnectorSDKEventType.exitAborted,
-    'ExitError' => ConnectorSDKEventType.exitErrored,
-    _ => null,
-  };
+  /// Android's URI parser normalises the host to lowercase
+  /// (`quilttconnector://ExitSuccess` → host `exitsuccess`), so comparison is
+  /// done case-insensitively for cross-platform safety.
+  ///
+  /// Returns `null` for non-SDK hosts such as `navigate` or `authenticate`.
+  static ConnectorSDKEventType? fromUrlHost(String host) =>
+      switch (host.toLowerCase()) {
+        'load' => ConnectorSDKEventType.loaded,
+        'exitsuccess' => ConnectorSDKEventType.exitSuccessful,
+        'exitabort' => ConnectorSDKEventType.exitAborted,
+        'exiterror' => ConnectorSDKEventType.exitErrored,
+        _ => null,
+      };
 
   /// Parses a canonical string value back to [ConnectorSDKEventType].
   ///

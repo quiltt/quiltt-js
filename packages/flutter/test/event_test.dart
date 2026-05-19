@@ -20,28 +20,39 @@ void main() {
       );
     });
 
-    test('fromUrlHost maps PascalCase mobile hosts to enum', () {
+    test('fromUrlHost maps lowercase mobile hosts to enum', () {
       expect(
-        ConnectorSDKEventType.fromUrlHost('Load'),
+        ConnectorSDKEventType.fromUrlHost('load'),
         equals(ConnectorSDKEventType.loaded),
       );
+      expect(
+        ConnectorSDKEventType.fromUrlHost('exitsuccess'),
+        equals(ConnectorSDKEventType.exitSuccessful),
+      );
+      expect(
+        ConnectorSDKEventType.fromUrlHost('exitabort'),
+        equals(ConnectorSDKEventType.exitAborted),
+      );
+      expect(
+        ConnectorSDKEventType.fromUrlHost('exiterror'),
+        equals(ConnectorSDKEventType.exitErrored),
+      );
+    });
+
+    test('fromUrlHost is case-insensitive', () {
       expect(
         ConnectorSDKEventType.fromUrlHost('ExitSuccess'),
         equals(ConnectorSDKEventType.exitSuccessful),
       );
       expect(
-        ConnectorSDKEventType.fromUrlHost('ExitAbort'),
-        equals(ConnectorSDKEventType.exitAborted),
-      );
-      expect(
-        ConnectorSDKEventType.fromUrlHost('ExitError'),
-        equals(ConnectorSDKEventType.exitErrored),
+        ConnectorSDKEventType.fromUrlHost('EXITSUCCESS'),
+        equals(ConnectorSDKEventType.exitSuccessful),
       );
     });
 
     test('fromUrlHost returns null for non-SDK hosts', () {
-      expect(ConnectorSDKEventType.fromUrlHost('Navigate'), isNull);
-      expect(ConnectorSDKEventType.fromUrlHost('Authenticate'), isNull);
+      expect(ConnectorSDKEventType.fromUrlHost('navigate'), isNull);
+      expect(ConnectorSDKEventType.fromUrlHost('authenticate'), isNull);
       expect(ConnectorSDKEventType.fromUrlHost('unknown'), isNull);
     });
 
