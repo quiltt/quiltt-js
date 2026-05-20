@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-// The Capacitor Vue SDK renders the inline connector with class="quiltt-connector"
-const iframeSelector = 'iframe.quiltt-connector'
+// The Quiltt SDK renders an iframe inside QuilttContainer
+const iframeSelector = 'div.quiltt-container iframe'
 
 test.describe('Connector: Full Bank Connection', () => {
   test('should complete a Mock bank connection end-to-end', async ({ page, context }) => {
