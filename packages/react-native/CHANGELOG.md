@@ -1,5 +1,13 @@
 # @quiltt/react-native
 
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @quiltt/core@6.0.0
+  - @quiltt/react@6.0.0
+
 ## 5.3.0
 
 ### Minor Changes
