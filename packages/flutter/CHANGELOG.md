@@ -1,5 +1,16 @@
 # Changelog
 
+## 6.0.0
+
+### Major Changes
+
+- [#475](https://github.com/quiltt/quiltt-sdks/pull/475) [`bfc1035`](https://github.com/quiltt/quiltt-sdks/commit/bfc10352aae42264e9b40e2af856cf3e6979cd45) Thanks [@mateusz-pietras](https://github.com/mateusz-pietras)! - Add Flutter Web platform support via dart:js_interop
+
+  - Platform abstraction layer with conditional import (mobile WebView / web JS interop)
+  - Lazy-loads Quiltt JS SDK from CDN; detects pre-loaded SDK and skips injection
+  - **Breaking**: introduces `ConnectorSDKEventType` enum — `onEvent` and `onExit` callbacks now carry a typed `ConnectorSDKEventType` instead of a raw string
+  - **Breaking**: removes previously public `connectorId`, `connectionId`, `controller` fields
+
 ## 5.3.0
 
 ### Minor Changes
