@@ -92,21 +92,6 @@ Renders the connector inline.
 <QuilttContainer connector-id="YOUR_CONNECTOR_ID" theme-mode="auto" @exit-success="handleSuccess" />
 ```
 
-### QuilttConnector
-
-⚠️ **Deprecated** — Use [`QuilttContainer`](#quilttcontainer) instead. It provides the same inline connector experience and aligns with the React package API.
-
-Full-page iframe for embedded integration.
-
-```vue
-<QuilttConnector
-  connector-id="YOUR_CONNECTOR_ID"
-  theme-mode="dark"
-  @exit-success="handleSuccess"
-  @navigate="handleNavigate"
-  style="width: 100%; height: 100vh" />
-```
-
 ## Composables
 
 For better tree-shaking, you can import composables from subpaths:

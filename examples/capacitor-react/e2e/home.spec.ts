@@ -11,7 +11,7 @@ test('renders Quiltt button and inline connector', async ({ page }) => {
 
   const launchButton = page.getByRole('button', { name: 'Connect Account' })
   await expect(launchButton).toBeVisible()
-  await expect(launchButton).toHaveAttribute('quiltt-app-launcher-uri', /.+/)
+  await expect(launchButton).toHaveAttribute('quiltt-app-launcher-url', /.+/)
   await expect(launchButton).toHaveAttribute('quiltt-theme-mode', 'dark')
 
   const connectorFrame = page.locator('iframe[title="Quiltt Connector"]')

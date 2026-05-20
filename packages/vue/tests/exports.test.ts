@@ -5,7 +5,6 @@ import {
   AuthAPI,
   ConnectorsAPI,
   QuilttButton,
-  QuilttConnector,
   QuilttContainer,
   QuilttPlugin,
   QuilttSessionKey,
@@ -32,7 +31,6 @@ describe('@quiltt/vue exports', () => {
     ['QuilttSessionKey', QuilttSessionKey],
     ['QuilttButton', QuilttButton],
     ['QuilttContainer', QuilttContainer],
-    ['QuilttConnector', QuilttConnector],
   ])('exports Vue module %s', (_name, exported) => {
     expect(exported).toBeDefined()
   })

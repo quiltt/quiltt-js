@@ -3,7 +3,6 @@ import { useEffect, useRef } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
-import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 import { useQuilttRenderGuard } from '@/hooks/useQuilttRenderGuard'
 import type { PropsOf } from '@/types'
@@ -27,10 +26,6 @@ type BaseQuilttButtonProps<T extends ElementType> = {
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
   appLauncherUrl?: string
-  /**
-   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-   */
-  oauthRedirectUrl?: string
 
   /**
    * Forces complete remount when connectionId changes.
@@ -69,7 +64,6 @@ export const QuilttButton = <T extends ElementType = 'button'>({
   institution,
   themeMode,
   appLauncherUrl,
-  oauthRedirectUrl,
   forceRemountOnConnectionChange = false,
   onEvent,
   onOpen,
@@ -85,15 +79,6 @@ export const QuilttButton = <T extends ElementType = 'button'>({
 }: QuilttButtonProps<T> & PropsOf<T>) => {
   // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
   useQuilttRenderGuard('QuilttButton')
-
-  useEffect(() => {
-    if (oauthRedirectUrl !== undefined) {
-      console.warn(oauthRedirectUrlDeprecationWarning)
-    }
-  }, [oauthRedirectUrl])
-
-  // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-  const effectiveAppLauncherUri = appLauncherUrl ?? oauthRedirectUrl
 
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
@@ -139,7 +124,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
     connectionId,
     institution,
     themeMode,
-    appLauncherUrl: effectiveAppLauncherUri,
+    appLauncherUrl,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
     onOpen,
@@ -184,7 +169,7 @@ export const QuilttButton = <T extends ElementType = 'button'>({
       onLoad={onHtmlLoad}
       quiltt-connection={connectionId}
       quiltt-theme-mode={themeMode}
-      quiltt-app-launcher-uri={effectiveAppLauncherUri}
+      quiltt-app-launcher-url={appLauncherUrl}
       {...props}
     >
       {children}

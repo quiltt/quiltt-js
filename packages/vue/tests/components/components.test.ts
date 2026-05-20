@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 
 import * as ComponentsIndex from '@/components/index'
 import { QuilttButton } from '@/components/QuilttButton'
-import { QuilttConnector } from '@/components/QuilttConnector'
 import { QuilttContainer } from '@/components/QuilttContainer'
 
 const hasEmit = (component: { emits?: unknown }, eventName: string) => {
@@ -40,7 +39,6 @@ describe('components modules', () => {
   it('exports all components from components index', () => {
     expect(ComponentsIndex.QuilttButton).toBe(QuilttButton)
     expect(ComponentsIndex.QuilttContainer).toBe(QuilttContainer)
-    expect(ComponentsIndex.QuilttConnector).toBe(QuilttConnector)
   })
 
   it('defines button component contract', () => {
@@ -57,14 +55,7 @@ describe('components modules', () => {
     expect(hasEmit(QuilttContainer, 'event')).toBe(true)
   })
 
-  it('defines connector component contract', () => {
-    expect(QuilttConnector.name).toBe('QuilttConnector')
-    expect(QuilttConnector.props?.connectorId).toBeDefined()
-    expect(hasEmit(QuilttConnector, 'navigate')).toBe(true)
-    expect(hasEmit(QuilttConnector, 'exit-error')).toBe(true)
-  })
-
-  it('validates button emit payload signatures', () => {
+  it('validates container emit payload signatures', () => {
     expect(callEmitValidator(QuilttButton, 'load', {})).toBe(true)
     expect(callEmitValidator(QuilttButton, 'open', {})).toBe(true)
     expect(callEmitValidator(QuilttButton, 'exit-success', {})).toBe(true)
@@ -74,19 +65,12 @@ describe('components modules', () => {
     expect(callEmitValidator(QuilttButton, 'event', 'Load', {})).toBe(true)
   })
 
-  it('validates container and connector emit payload signatures', () => {
+  it('validates button and container emit payload signatures', () => {
     expect(callEmitValidator(QuilttContainer, 'load', {})).toBe(true)
     expect(callEmitValidator(QuilttContainer, 'exit-success', {})).toBe(true)
     expect(callEmitValidator(QuilttContainer, 'exit-abort', {})).toBe(true)
     expect(callEmitValidator(QuilttContainer, 'exit-error', {})).toBe(true)
     expect(callEmitValidator(QuilttContainer, 'exit', 'ExitSuccess', {})).toBe(true)
     expect(callEmitValidator(QuilttContainer, 'event', 'Load', {})).toBe(true)
-
-    expect(callEmitValidator(QuilttConnector, 'load', {})).toBe(true)
-    expect(callEmitValidator(QuilttConnector, 'exit-success', {})).toBe(true)
-    expect(callEmitValidator(QuilttConnector, 'exit-abort', {})).toBe(true)
-    expect(callEmitValidator(QuilttConnector, 'exit-error', {})).toBe(true)
-    expect(callEmitValidator(QuilttConnector, 'event', 'Load', {})).toBe(true)
-    expect(callEmitValidator(QuilttConnector, 'navigate', 'https://example.com')).toBe(true)
   })
 })

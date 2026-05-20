@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 
 import * as ComponentsIndex from '@/components/index'
 import * as ButtonModule from '@/components/QuilttButton'
-import * as ConnectorModule from '@/components/QuilttConnector'
 import * as ContainerModule from '@/components/QuilttContainer'
 import * as ComposablesIndex from '@/composables/index'
 import * as UseConnectorModule from '@/composables/useQuilttConnector'
@@ -28,7 +27,6 @@ describe('all vue source modules load', () => {
     ['src/plugin/QuilttPlugin.ts', PluginModule],
     ['src/components/QuilttButton.ts', ButtonModule],
     ['src/components/QuilttContainer.ts', ContainerModule],
-    ['src/components/QuilttConnector.ts', ConnectorModule],
     ['src/composables/useQuilttConnector.ts', UseConnectorModule],
     ['src/composables/useQuilttInstitutions.ts', UseInstitutionsModule],
     ['src/composables/useQuilttResolvable.ts', UseResolvableModule],

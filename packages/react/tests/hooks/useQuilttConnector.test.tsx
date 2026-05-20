@@ -286,59 +286,6 @@ describe('useQuilttConnector', () => {
       })
     })
 
-    it('should support deprecated oauthRedirectUrl for backwards compatibility', async () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-      renderHook(
-        () =>
-          useQuilttConnector('mockConnectorId', {
-            oauthRedirectUrl: 'https://app.example.com/quiltt/callback-deprecated',
-          }),
-        {
-          wrapper: Wrapper,
-        }
-      )
-
-      await waitFor(() => {
-        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
-          institution: undefined,
-          appLauncherUrl: 'https://app.example.com/quiltt/callback-deprecated',
-        })
-      })
-
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('`oauthRedirectUrl` is deprecated')
-      )
-      consoleWarnSpy.mockRestore()
-    })
-
-    it('should prefer appLauncherUrl over deprecated oauthRedirectUrl', async () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-      renderHook(
-        () =>
-          useQuilttConnector('mockConnectorId', {
-            appLauncherUrl: 'https://app.example.com/quiltt/callback/new',
-            oauthRedirectUrl: 'https://app.example.com/quiltt/callback/old',
-          }),
-        {
-          wrapper: Wrapper,
-        }
-      )
-
-      await waitFor(() => {
-        expect(globalQuiltt.connect).toHaveBeenCalledWith('mockConnectorId', {
-          institution: undefined,
-          appLauncherUrl: 'https://app.example.com/quiltt/callback/new',
-        })
-      })
-
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('`oauthRedirectUrl` is deprecated')
-      )
-      consoleWarnSpy.mockRestore()
-    })
-
     it('should recreate connector when connectorId changes', async () => {
       const { rerender } = renderHook(({ id }) => useQuilttConnector(id), {
         wrapper: Wrapper,

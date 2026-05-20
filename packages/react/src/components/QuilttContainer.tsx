@@ -3,7 +3,6 @@ import { useEffect, useRef } from 'react'
 
 import type { ConnectorSDKCallbacks } from '@quiltt/core'
 
-import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import { useQuilttConnector } from '@/hooks/useQuilttConnector'
 import { useQuilttRenderGuard } from '@/hooks/useQuilttRenderGuard'
 import type { PropsOf } from '@/types'
@@ -26,10 +25,6 @@ type QuilttContainerProps<T extends ElementType> = PropsWithChildren<
      * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
      */
     appLauncherUrl?: string
-    /**
-     * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-     */
-    oauthRedirectUrl?: string
     institution?: string // For Connect Mode
 
     /**
@@ -55,7 +50,6 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   connectionId,
   themeMode,
   appLauncherUrl,
-  oauthRedirectUrl,
   institution,
   forceRemountOnConnectionChange = false,
   onEvent,
@@ -69,15 +63,6 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
 }: QuilttContainerProps<T> & PropsOf<T>) => {
   // Check flag to warn about potential anti-pattern (may produce false positives for valid nested patterns)
   useQuilttRenderGuard('QuilttContainer')
-
-  useEffect(() => {
-    if (oauthRedirectUrl !== undefined) {
-      console.warn(oauthRedirectUrlDeprecationWarning)
-    }
-  }, [oauthRedirectUrl])
-
-  // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-  const effectiveAppLauncherUri = appLauncherUrl ?? oauthRedirectUrl
 
   // Keep track of previous connectionId for change detection
   const prevConnectionIdRef = useRef<string | undefined>(connectionId)
@@ -120,7 +105,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
   useQuilttConnector(connectorId, {
     connectionId,
     themeMode,
-    appLauncherUrl: effectiveAppLauncherUri,
+    appLauncherUrl,
     institution,
     nonce: props?.nonce, // Pass nonce for script loading if needed
     onEvent,
@@ -151,7 +136,7 @@ export const QuilttContainer = <T extends ElementType = 'div'>({
       quiltt-container={connectorId}
       quiltt-connection={connectionId}
       quiltt-theme-mode={themeMode}
-      quiltt-app-launcher-uri={effectiveAppLauncherUri}
+      quiltt-app-launcher-url={appLauncherUrl}
       quiltt-institution={institution}
       {...props}
     >
