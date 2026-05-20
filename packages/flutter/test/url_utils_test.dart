@@ -35,7 +35,10 @@ void main() {
 
   group('URLUtils.isDoubleEncoded', () {
     test('returns true for double-encoded string', () {
-      expect(URLUtils.isDoubleEncoded('https%253A%252F%252Fexample.com'), isTrue);
+      expect(
+        URLUtils.isDoubleEncoded('https%253A%252F%252Fexample.com'),
+        isTrue,
+      );
     });
 
     test('returns false for single-encoded string', () {

@@ -12,7 +12,8 @@ void main() {
       expect(
         semverPattern.hasMatch(quilttSdkVersion),
         isTrue,
-        reason: "SDK version '$quilttSdkVersion' should follow semver X.Y.Z format",
+        reason:
+            "SDK version '$quilttSdkVersion' should follow semver X.Y.Z format",
       );
     });
 

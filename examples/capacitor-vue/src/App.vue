@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { QuilttButton, QuilttConnector } from '@quiltt/capacitor/vue'
+import { QuilttButton, QuilttContainer } from '@quiltt/capacitor/vue'
 
 const connectorId = import.meta.env.VITE_QUILTT_CONNECTOR_ID ?? 'connector'
 const appLauncherUrl = import.meta.env.VITE_APP_LAUNCHER_URL ?? 'https://app.example.com/quiltt/callback'
@@ -38,7 +38,7 @@ const addEvent = (message: string) => {
 
       <div class="panel connector-panel">
         <h2>Inline Connector</h2>
-        <QuilttConnector
+        <QuilttContainer
           :connector-id="connectorId"
           :app-launcher-url="appLauncherUrl"
           theme-mode="auto"

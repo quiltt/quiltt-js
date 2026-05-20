@@ -80,53 +80,6 @@ describe('QuilttContainer', () => {
     )
   })
 
-  it('passes deprecated oauthRedirectUrl to useQuilttConnector for backwards compatibility', () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-    render(
-      <QuilttContainer
-        connectorId="mockConnectorId"
-        oauthRedirectUrl="https://app.example.com/quiltt/callback"
-      >
-        Container Content
-      </QuilttContainer>
-    )
-
-    expect(useQuilttConnector).toHaveBeenCalledWith(
-      'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback' })
-    )
-
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('`oauthRedirectUrl` is deprecated')
-    )
-    consoleWarnSpy.mockRestore()
-  })
-
-  it('prefers appLauncherUrl over deprecated oauthRedirectUrl when both provided', () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-    render(
-      <QuilttContainer
-        connectorId="mockConnectorId"
-        appLauncherUrl="https://app.example.com/quiltt/callback/new"
-        oauthRedirectUrl="https://app.example.com/quiltt/callback/old"
-      >
-        Container Content
-      </QuilttContainer>
-    )
-
-    expect(useQuilttConnector).toHaveBeenCalledWith(
-      'mockConnectorId',
-      expect.objectContaining({ appLauncherUrl: 'https://app.example.com/quiltt/callback/new' })
-    )
-
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('`oauthRedirectUrl` is deprecated')
-    )
-    consoleWarnSpy.mockRestore()
-  })
-
   it('passes connectionId and institution to useQuilttConnector', () => {
     render(
       <QuilttContainer
@@ -147,7 +100,7 @@ describe('QuilttContainer', () => {
     )
   })
 
-  it('renders quiltt-app-launcher-uri attribute on the container element', () => {
+  it('renders quiltt-app-launcher-url attribute on the container element', () => {
     const { container } = render(
       <QuilttContainer
         connectorId="mockConnectorId"
@@ -158,7 +111,7 @@ describe('QuilttContainer', () => {
     )
 
     const element = container.firstElementChild
-    expect(element?.getAttribute('quiltt-app-launcher-uri')).toBe(
+    expect(element?.getAttribute('quiltt-app-launcher-url')).toBe(
       'https://app.example.com/quiltt/callback'
     )
   })
@@ -174,13 +127,13 @@ describe('QuilttContainer', () => {
     expect(element?.getAttribute('quiltt-institution')).toBe('test-bank')
   })
 
-  it('does not render quiltt-app-launcher-uri attribute when not provided', () => {
+  it('does not render quiltt-app-launcher-url attribute when not provided', () => {
     const { container } = render(
       <QuilttContainer connectorId="mockConnectorId">Container Content</QuilttContainer>
     )
 
     const element = container.firstElementChild
-    expect(element?.hasAttribute('quiltt-app-launcher-uri')).toBe(false)
+    expect(element?.hasAttribute('quiltt-app-launcher-url')).toBe(false)
   })
 
   it('handles nested content correctly', () => {

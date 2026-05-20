@@ -5,7 +5,7 @@
 
 The Quiltt Flutter SDK provides a Widget for integrating [Quiltt Connector](https://quiltt.dev/connector) into your Flutter app.
 
-Note that this SDK currently supports iOS and Android. We welcome contributions to add support for other Flutter platforms!
+Supported platforms: **iOS**, **Android**, and **Web**.
 
 See the official guide at: [https://quiltt.dev/connector/sdk/flutter](https://quiltt.dev/connector/sdk/flutter)
 
@@ -136,13 +136,13 @@ Add an intent filter to your `android/app/src/main/AndroidManifest.xml`:
     android:exported="true"
     android:launchMode="singleTop"
     android:theme="@style/LaunchTheme">
-    
+
     <!-- Standard Flutter activity configuration -->
     <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
     </intent-filter>
-    
+
     <!-- Deep link intent filter for OAuth redirects -->
     <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
@@ -173,7 +173,7 @@ class _MyAppState extends State<MyApp> {
 
   void _initDeepLinks() async {
     _appLinks = AppLinks();
-    
+
     // Listen for incoming links when app is already running
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
       debugPrint('Deep link received: $uri');
@@ -201,6 +201,38 @@ class _MyAppState extends State<MyApp> {
   }
 }
 ```
+
+## Web Platform Setup
+
+The SDK supports Flutter Web via `dart:js_interop`. The Quiltt JS SDK is loaded
+lazily from CDN the first time a connector is launched — **no additional setup
+is required** for most apps.
+
+### Optional: preload the script in `index.html`
+
+If you prefer the script to be loaded as a normal page resource (recommended
+for strict CSP policies or to eliminate the small injection delay), add it to
+`web/index.html` before `flutter_bootstrap.js`:
+
+```html
+<!-- web/index.html -->
+<script src="https://cdn.quiltt.io/v1/connector.js"></script>
+<script src="flutter_bootstrap.js" async></script>
+```
+
+When the script is already present on page load, the SDK detects `window.Quiltt`
+and skips dynamic injection entirely. If you use a server-side CSP nonce, add it
+to the script tag the same way you would for any other static script:
+
+```html
+<script
+  nonce="NONCE_VALUE"
+  src="https://cdn.quiltt.io/v1/connector.js"
+></script>
+```
+
+> **Note**: `appLauncherUrl` is used only on iOS/Android for OAuth deep-link
+> redirects. On web, OAuth redirects are handled natively by the browser.
 
 ## Troubleshooting
 

@@ -137,11 +137,6 @@ export type ConnectorSDKConnectOptions = ConnectorSDKCallbacks & {
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
   appLauncherUrl?: string
-  /**
-   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-   * The OAuth redirect URL for mobile or embedded webview flows.
-   */
-  oauthRedirectUrl?: string
 }
 
 /**
@@ -163,11 +158,6 @@ export type ConnectorSDKReconnectOptions = ConnectorSDKCallbacks & {
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
   appLauncherUrl?: string
-  /**
-   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-   * The OAuth redirect URL for mobile or embedded webview flows.
-   */
-  oauthRedirectUrl?: string
 }
 
 /** Options to initialize Connector
@@ -194,9 +184,4 @@ export type ConnectorSDKConnectorOptions = ConnectorSDKCallbacks & {
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
   appLauncherUrl?: string
-  /**
-   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-   * The OAuth redirect URL for mobile or embedded webview flows.
-   */
-  oauthRedirectUrl?: string
 }

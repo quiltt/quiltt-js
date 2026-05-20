@@ -34,7 +34,6 @@ import type {
 } from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
 
-import { oauthRedirectUrlDeprecationWarning } from '../constants/deprecation-warnings'
 import { getSDKAgent } from '../utils'
 import { version } from '../version'
 import { useQuilttSession } from './useQuilttSession'
@@ -52,11 +51,6 @@ export interface UseQuilttConnectorOptions extends ConnectorSDKCallbacks {
    */
   themeMode?: MaybeRefOrGetter<string | undefined>
   appLauncherUrl?: MaybeRefOrGetter<string | undefined>
-  /**
-   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-   * The OAuth redirect URL for mobile or embedded webview flows.
-   */
-  oauthRedirectUrl?: MaybeRefOrGetter<string | undefined>
   nonce?: string
 }
 
@@ -110,9 +104,7 @@ export const useQuilttConnector = (
   const getInstitution = (): string | undefined => toValue(options?.institution)
   const getThemeMode = (): 'light' | 'dark' | 'auto' | undefined =>
     toValue(options?.themeMode) as 'light' | 'dark' | 'auto' | undefined
-  const getOauthRedirectUrl = (): string | undefined => toValue(options?.oauthRedirectUrl)
-  const getAppLauncherUri = (): string | undefined =>
-    toValue(options?.appLauncherUrl) ?? getOauthRedirectUrl()
+  const getAppLauncherUri = (): string | undefined => toValue(options?.appLauncherUrl)
 
   const session = ref<Maybe<QuilttJWT | undefined>>()
 
@@ -180,16 +172,6 @@ export const useQuilttConnector = (
 
       // Authenticate with current session
       Quiltt.authenticate(session.value?.token)
-    },
-    { immediate: true }
-  )
-
-  watch(
-    getOauthRedirectUrl,
-    (oauthRedirectUrl) => {
-      if (oauthRedirectUrl !== undefined) {
-        console.warn(oauthRedirectUrlDeprecationWarning)
-      }
     },
     { immediate: true }
   )

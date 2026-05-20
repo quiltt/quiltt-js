@@ -20,11 +20,11 @@
  * @example
  * ```vue
  * <script setup>
- * import { QuilttConnector, useQuilttSession } from '@quiltt/capacitor/vue'
+ * import { QuilttContainer, useQuilttSession } from '@quiltt/capacitor/vue'
  * </script>
  *
  * <template>
- *   <QuilttConnector
+ *   <QuilttContainer
  *     connector-id="<CONNECTOR_ID>"
  *     @exit-success="handleSuccess"
  *     @navigate="handleNavigate"

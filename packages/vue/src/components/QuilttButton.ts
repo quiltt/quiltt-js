@@ -19,12 +19,11 @@
  * ```
  */
 
-import { computed, defineComponent, getCurrentInstance, h, type PropType, watch } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, type PropType } from 'vue'
 
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKEventType } from '@quiltt/core'
 
 import { useQuilttConnector } from '../composables/useQuilttConnector'
-import { oauthRedirectUrlDeprecationWarning } from '../constants/deprecation-warnings'
 
 export const QuilttButton = defineComponent({
   name: 'QuilttButton',
@@ -57,14 +56,6 @@ export const QuilttButton = defineComponent({
     },
     /** Deep link URL for OAuth callbacks (mobile apps) */
     appLauncherUrl: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-    /**
-     * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-     * The OAuth redirect URL for mobile or embedded webview flows.
-     */
-    oauthRedirectUrl: {
       type: String as PropType<string | undefined>,
       default: undefined,
     },
@@ -102,18 +93,6 @@ export const QuilttButton = defineComponent({
   },
 
   setup(props, { emit, slots }) {
-    watch(
-      () => props.oauthRedirectUrl,
-      (value) => {
-        if (value !== undefined) {
-          console.warn(oauthRedirectUrlDeprecationWarning)
-        }
-      },
-      { immediate: true }
-    )
-
-    const effectiveAppLauncherUri = computed(() => props.appLauncherUrl ?? props.oauthRedirectUrl)
-
     // Only register SDK callbacks for events the parent is actually listening to,
     // mirroring React's behavior. The SDK's per-event handlers are setters (last
     // registration wins), so unconditionally registering emit wrappers would
@@ -124,7 +103,7 @@ export const QuilttButton = defineComponent({
       connectionId: () => props.connectionId,
       institution: () => props.institution,
       themeMode: () => props.themeMode,
-      appLauncherUrl: effectiveAppLauncherUri,
+      appLauncherUrl: () => props.appLauncherUrl,
       onEvent: vProps?.onEvent
         ? (type: ConnectorSDKEventType, metadata: ConnectorSDKCallbackMetadata) =>
             emit('event', type, metadata)
@@ -180,7 +159,7 @@ export const QuilttButton = defineComponent({
           onClick: handleClick,
           'quiltt-connection': props.connectionId,
           'quiltt-theme-mode': props.themeMode,
-          'quiltt-app-launcher-uri': effectiveAppLauncherUri.value,
+          'quiltt-app-launcher-url': props.appLauncherUrl,
         },
         slots.default?.()
       )

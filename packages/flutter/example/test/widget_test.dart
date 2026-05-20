@@ -9,8 +9,9 @@ void main() {
     expect(find.text('Quiltt Connector Home'), findsOneWidget);
   });
 
-  testWidgets('home screen shows initial connection ID label',
-      (WidgetTester tester) async {
+  testWidgets('home screen shows initial connection ID label', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
     expect(find.text('Connection ID: No connection Id yet'), findsOneWidget);
   });
@@ -20,17 +21,20 @@ void main() {
     expect(find.byType(AppBar), findsOneWidget);
   });
 
-  testWidgets('home screen renders a FloatingActionButton',
-      (WidgetTester tester) async {
+  testWidgets('home screen renders a FloatingActionButton', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
     expect(find.byType(FloatingActionButton), findsOneWidget);
   });
 
-  testWidgets('FloatingActionButton has an onPressed callback',
-      (WidgetTester tester) async {
+  testWidgets('FloatingActionButton has an onPressed callback', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
-    final fab =
-        tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
+    final fab = tester.widget<FloatingActionButton>(
+      find.byType(FloatingActionButton),
+    );
     expect(fab.onPressed, isNotNull);
   });
 }

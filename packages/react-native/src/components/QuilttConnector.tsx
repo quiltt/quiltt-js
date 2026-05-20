@@ -15,7 +15,6 @@ import { URL } from 'react-native-url-polyfill' // https://github.com/facebook/r
 import { WebView } from 'react-native-webview'
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes'
 
-import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import {
   ErrorReporter,
   getErrorMessage,
@@ -160,10 +159,6 @@ type QuilttConnectorProps = {
    * This URL should be a Universal Link (iOS) or App Link (Android) that redirects back to your app.
    */
   appLauncherUrl?: string
-  /**
-   * @deprecated Use `appLauncherUrl` instead. This property will be removed in a future version.
-   */
-  oauthRedirectUrl?: string
   testId?: string
 } & ConnectorSDKCallbacks
 
@@ -175,7 +170,6 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
       institution,
       themeMode,
       appLauncherUrl,
-      oauthRedirectUrl,
       onEvent,
       onLoad,
       onExit,
@@ -192,14 +186,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
     const [errorReporter, setErrorReporter] = useState<ErrorReporter | null>(null)
     const [sdkAgent, setSDKAgent] = useState<string>('')
 
-    useEffect(() => {
-      if (oauthRedirectUrl !== undefined) {
-        console.warn(oauthRedirectUrlDeprecationWarning)
-      }
-    }, [oauthRedirectUrl])
-
-    // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-    const effectiveAppLauncherUrl = appLauncherUrl ?? oauthRedirectUrl ?? ''
+    const effectiveAppLauncherUrl = appLauncherUrl ?? ''
 
     // Initialize error reporter and SDK Agent
     useEffect(() => {
@@ -359,8 +346,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
               const navigateUrl = url.searchParams.get('url')
 
               if (!hasConfiguredAppLauncherUrl) {
-                const errorMessage =
-                  'OAuth redirect requires `appLauncherUrl` (or deprecated `oauthRedirectUrl`) to be configured.'
+                const errorMessage = 'OAuth redirect requires `appLauncherUrl` to be configured.'
                 console.error(errorMessage)
                 onEvent?.(ConnectorSDKEventType.ExitError, metadata)
                 onExit?.(ConnectorSDKEventType.ExitError, metadata)

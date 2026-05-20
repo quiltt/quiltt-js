@@ -138,7 +138,7 @@ describe('useQuilttConnector', () => {
     const { unmount } = mountComposable(() =>
       useQuilttConnector('connector_test', {
         connectionId: 'connection_test',
-        oauthRedirectUrl: 'https://app.example.com/quiltt/callback',
+        appLauncherUrl: 'https://app.example.com/quiltt/callback',
         onOpen: vi.fn(),
         onExit: vi.fn(),
       })
@@ -153,9 +153,6 @@ describe('useQuilttConnector', () => {
         connectionId: 'connection_test',
         appLauncherUrl: 'https://app.example.com/quiltt/callback',
       })
-    )
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('`oauthRedirectUrl` is deprecated')
     )
 
     onOpenCallbacks[0]?.({})

@@ -9,7 +9,6 @@ import type {
 } from '@quiltt/core'
 import { cdnBase } from '@quiltt/core'
 
-import { oauthRedirectUrlDeprecationWarning } from '@/constants/deprecation-warnings'
 import { useQuilttSession } from '@/hooks/useQuilttSession'
 import { useScript } from '@/hooks/useScript'
 import { getSDKAgent, isDeepEqual } from '@/utils'
@@ -38,10 +37,7 @@ export const useQuilttConnector = (
   const prevConnectorIdRef = useRef<string | undefined>(connectorId)
   const prevInstitutionRef = useRef<string | undefined>(options?.institution)
   const prevThemeModeRef = useRef<string | undefined>(options?.themeMode)
-  // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-  const prevAppLauncherUriRef = useRef<string | undefined>(
-    options?.appLauncherUrl ?? options?.oauthRedirectUrl
-  )
+  const prevAppLauncherUriRef = useRef<string | undefined>(options?.appLauncherUrl)
   const connectorCreatedRef = useRef<boolean>(false)
 
   // Track whether the connector is currently open
@@ -52,12 +48,6 @@ export const useQuilttConnector = (
   useEffect(() => {
     callbacksRef.current = options || {}
   })
-
-  useEffect(() => {
-    if (options?.oauthRedirectUrl !== undefined) {
-      console.warn(oauthRedirectUrlDeprecationWarning)
-    }
-  }, [options?.oauthRedirectUrl])
 
   // Set Session
   // biome-ignore lint/correctness/useExhaustiveDependencies: trigger effects when script status changes too
@@ -75,8 +65,7 @@ export const useQuilttConnector = (
     const currentConnectionId = options?.connectionId
     const currentInstitution = options?.institution
     const currentThemeMode = options?.themeMode
-    // Support both appLauncherUrl (preferred) and oauthRedirectUrl (deprecated) for backwards compatibility
-    const currentAppLauncherUri = options?.appLauncherUrl ?? options?.oauthRedirectUrl
+    const currentAppLauncherUri = options?.appLauncherUrl
 
     // Check for changes - use deep equality for institution object
     const connectionIdChanged = prevConnectionIdRef.current !== currentConnectionId
@@ -128,7 +117,6 @@ export const useQuilttConnector = (
     options?.institution,
     options?.themeMode,
     options?.appLauncherUrl,
-    options?.oauthRedirectUrl,
     status,
   ])
 
