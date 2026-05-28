@@ -502,7 +502,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
                 decelerationRate: 'normal', // Controls scroll deceleration speed
                 keyboardDisplayRequiresUserAction: false, // Allows programmatic keyboard display
                 scrollEventThrottle: 16, // Optimize scroll performance (throttle scroll events)
-                startInLoadingState: true, // Shows loading indicator on first load
+                startInLoadingState: false, // Quiltt renders its own branded loader in the WebView HTML
               }
             : {
                 androidLayerType: 'hardware', // Use hardware acceleration for rendering
@@ -516,15 +516,11 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
   }
 )
 
-// Add styles for the WebView container
 const styles = StyleSheet.create({
-  webviewContainer: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
   webview: {
     flex: 1,
     overflow: 'hidden', // Prevent content from overflowing
+    backgroundColor: 'transparent',
   },
 })
 
