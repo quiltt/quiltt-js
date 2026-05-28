@@ -242,7 +242,7 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         return true
     }
 
-    private func handleOAuthUrl(_ oauthUrl: URL) {
+    func handleOAuthUrl(_ oauthUrl: URL) {
         // Check if URL uses HTTPS scheme using the URL object's normalized scheme property
         guard oauthUrl.scheme?.lowercased() == "https" else {
             print("handleOAuthUrl - Skipping non-HTTPS URL: \(oauthUrl)")
@@ -250,15 +250,43 @@ class QuilttConnectorWebview: WKWebView, WKNavigationDelegate {
         }
 
         #if canImport(UIKit) && os(iOS)
+            // Preflight: verify the device can handle this URL scheme
+            guard UIApplication.shared.canOpenURL(oauthUrl) else {
+                print("handleOAuthUrl - Cannot open URL: \(oauthUrl)")
+                fireOAuthFailure()
+                return
+            }
+
             if #available(iOS 10.0, *) {
-                UIApplication.shared.open(oauthUrl)
+                UIApplication.shared.open(oauthUrl, options: [:]) { success in
+                    if !success {
+                        print("handleOAuthUrl - Failed to open URL: \(oauthUrl)")
+                        self.fireOAuthFailure()
+                    }
+                }
             } else {
-                UIApplication.shared.openURL(oauthUrl)
+                let opened = UIApplication.shared.openURL(oauthUrl)
+                if !opened {
+                    print("handleOAuthUrl - Failed to open URL: \(oauthUrl)")
+                    fireOAuthFailure()
+                }
             }
         #else
             // For non-iOS platforms (used only during testing)
             print("[TEST MODE] Would open URL: \(oauthUrl)")
         #endif
+    }
+
+    func fireOAuthFailure() {
+        guard let connectorId = config?.connectorId else { return }
+        let metadata = ConnectorSDKCallbackMetadata(
+            connectorId: connectorId,
+            profileId: nil,
+            connectionId: nil
+        )
+        onEvent?(ConnectorSDKEventType.ExitError, metadata)
+        onExit?(ConnectorSDKEventType.ExitError, metadata)
+        onExitError?(metadata)
     }
 
     private func isQuilttEvent(_ url: URL) -> Bool {

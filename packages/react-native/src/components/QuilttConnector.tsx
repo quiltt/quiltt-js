@@ -103,7 +103,10 @@ export const checkConnectorUrl = async (
 /**
  * Handle opening OAuth URLs with proper encoding detection and normalization
  */
-export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
+export const handleOAuthUrl = async (
+  oauthUrl: URL | string | null | undefined,
+  onFailure?: (error: Error) => void
+) => {
   try {
     // Throw error if oauthUrl is null or undefined
     if (oauthUrl == null) {
@@ -121,21 +124,32 @@ export const handleOAuthUrl = (oauthUrl: URL | string | null | undefined) => {
     // Normalize the URL encoding
     const normalizedUrl = normalizeUrlEncoding(urlString)
 
+    // Verify the device can handle this URL scheme before attempting to open
+    const canOpen = await Linking.canOpenURL(normalizedUrl)
+    if (!canOpen) {
+      throw new Error(`Device cannot open OAuth URL: ${normalizedUrl}`)
+    }
+
     // Open the normalized URL
-    Linking.openURL(normalizedUrl)
-  } catch (_error) {
-    console.error('OAuth URL handling error')
+    await Linking.openURL(normalizedUrl)
+  } catch (error) {
+    console.error('OAuth URL handling error:', error)
 
     // Only try the fallback if oauthUrl is not null
     if (oauthUrl != null) {
       try {
         const fallbackUrl = typeof oauthUrl === 'string' ? oauthUrl : oauthUrl.toString()
         console.log('Attempting fallback OAuth opening')
-        Linking.openURL(fallbackUrl)
-      } catch (_fallbackError) {
-        console.error('Fallback OAuth opening failed')
+        await Linking.openURL(fallbackUrl)
+        return // fallback succeeded
+      } catch (fallbackError) {
+        console.error('Fallback OAuth opening failed:', fallbackError)
       }
     }
+
+    // Both attempts failed — notify via callback
+    const err = error instanceof Error ? error : new Error(String(error))
+    onFailure?.(err)
   }
 }
 
@@ -355,16 +369,22 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
               }
 
               if (navigateUrl) {
+                const onOAuthFailure = () => {
+                  onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+                  onExit?.(ConnectorSDKEventType.ExitError, metadata)
+                  onExitError?.(metadata)
+                }
+
                 if (isEncoded(navigateUrl)) {
                   try {
                     const decodedUrl = decodeURIComponent(navigateUrl)
-                    handleOAuthUrl(decodedUrl)
+                    handleOAuthUrl(decodedUrl, onOAuthFailure)
                   } catch (_error) {
                     console.error('Navigate URL decoding failed, using original')
-                    handleOAuthUrl(navigateUrl)
+                    handleOAuthUrl(navigateUrl, onOAuthFailure)
                   }
                 } else {
-                  handleOAuthUrl(navigateUrl)
+                  handleOAuthUrl(navigateUrl, onOAuthFailure)
                 }
               } else {
                 console.error('Navigate URL missing from request')
@@ -407,10 +427,15 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
 
         // Plaid set oauth url by doing window.location.href = url
         // So we use `handleOAuthUrl` as a catch all and assume all url got to this step is Plaid OAuth url
-        handleOAuthUrl(url)
+        const metadata = parseMetadata(url, connectorId)
+        handleOAuthUrl(url, () => {
+          onEvent?.(ConnectorSDKEventType.ExitError, metadata)
+          onExit?.(ConnectorSDKEventType.ExitError, metadata)
+          onExitError?.(metadata)
+        })
         return false
       },
-      [handleQuilttEvent, isQuilttEvent, shouldRender]
+      [connectorId, handleQuilttEvent, isQuilttEvent, onEvent, onExit, onExitError, shouldRender]
     )
 
     // Expose method to handle OAuth callbacks from parent component

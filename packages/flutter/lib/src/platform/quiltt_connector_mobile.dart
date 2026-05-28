@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'oauth_utils.dart';
 import 'package:quiltt_connector/configuration.dart';
 import 'package:quiltt_connector/event.dart';
 import 'package:quiltt_connector/quiltt_sdk_version.dart';
@@ -165,9 +165,13 @@ class _WebViewPage {
   }
 
   Future<void> _handleOAuth(String oauthUrl) async {
-    // Normalize the URL encoding to prevent issues with double-encoding
-    final normalizedUrl = URLUtils.normalizeUrlEncoding(oauthUrl);
-    await launchUrlString(normalizedUrl, mode: LaunchMode.externalApplication);
+    await handleOAuthUrl(
+      oauthUrl,
+      config.connectorId,
+      onEvent: onEvent,
+      onExit: onExit,
+      onExitError: onExitError,
+    );
   }
 
   Future<void> _handleQuilttConnectorEvent(

@@ -206,7 +206,7 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         return true
     }
 
-    private fun handleOAuthUrl(oauthUrl: Uri) {
+    fun handleOAuthUrl(oauthUrl: Uri) {
         // Check if URL uses HTTPS scheme using the Uri's scheme property
         if (oauthUrl.scheme?.lowercase() != "https") {
             Log.w(TAG, "Skipping non-HTTPS URL: $oauthUrl")
@@ -216,10 +216,29 @@ class QuilttConnectorWebViewClient(private val params: QuilttConnectorWebViewCli
         // Open the URL in the system browser
         try {
             val intent = Intent(Intent.ACTION_VIEW, oauthUrl)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            // Preflight: verify an app is available to handle this intent
+            if (intent.resolveActivity(params.context.packageManager) == null) {
+                Log.e(TAG, "No app available to open URL: $oauthUrl")
+                fireOAuthFailure()
+                return
+            }
             params.context.startActivity(intent)
         } catch (error: Exception) {
             Log.e(TAG, "Failed to open URL in browser: $oauthUrl", error)
+            fireOAuthFailure()
         }
+    }
+
+    fun fireOAuthFailure() {
+        val metadata = ConnectorSDKCallbackMetadata(
+            connectorId = params.config.connectorId,
+            profileId = null,
+            connectionId = null,
+        )
+        params.onEvent?.invoke(ConnectorSDKEventType.ExitError, metadata)
+        params.onExit?.invoke(ConnectorSDKEventType.ExitError, metadata)
+        params.onExitError?.invoke(metadata)
     }
 
     private fun isQuilttEvent(url: Uri): Boolean {

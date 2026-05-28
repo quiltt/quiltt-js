@@ -48,4 +48,84 @@ final class QuilttConnectorWebViewTests: XCTestCase {
         XCTAssertFalse(webView.isMultipleTouchEnabled)
         #endif
     }
+
+    // MARK: - OAuth URL Handling
+
+    @MainActor
+    func testHandleOAuthUrl_skipsNonHTTPS() {
+        let config = QuilttConnectorConnectConfiguration(
+            connectorId: "test-connector",
+            appLauncherUrl: "https://example.com/callback"
+        )
+        let webView = QuilttConnectorWebview()
+        webView.load(config: config)
+
+        // Non-HTTPS URL should be skipped without firing callbacks
+        let nonHttpsUrl = URL(string: "http://example.com/oauth")!
+        webView.handleOAuthUrl(nonHttpsUrl)
+
+        // Should not crash — non-HTTPS URLs are silently skipped
+    }
+
+    @MainActor
+    func testHandleOAuthUrl_acceptsHTTPS() {
+        let config = QuilttConnectorConnectConfiguration(
+            connectorId: "test-connector",
+            appLauncherUrl: "https://example.com/callback"
+        )
+        let webView = QuilttConnectorWebview()
+        webView.load(config: config)
+
+        // HTTPS URL should be accepted
+        let httpsUrl = URL(string: "https://secure.plaid.com/hl/test")!
+        webView.handleOAuthUrl(httpsUrl)
+
+        // Should not crash — HTTPS URLs pass the scheme check
+    }
+
+    @MainActor
+    func testFireOAuthFailure_invokesCallbacks() {
+        let config = QuilttConnectorConnectConfiguration(
+            connectorId: "test-connector",
+            appLauncherUrl: "https://example.com/callback"
+        )
+
+        var onEventCalled = false
+        var onExitCalled = false
+        var onExitErrorCalled = false
+
+        let webView = QuilttConnectorWebview()
+        webView.load(
+            config: config,
+            onEvent: { _, _ in onEventCalled = true },
+            onExit: { _, _ in onExitCalled = true },
+            onExitError: { _ in onExitErrorCalled = true }
+        )
+
+        webView.fireOAuthFailure()
+
+        XCTAssertTrue(onEventCalled, "onEvent should be called on OAuth failure")
+        XCTAssertTrue(onExitCalled, "onExit should be called on OAuth failure")
+        XCTAssertTrue(onExitErrorCalled, "onExitError should be called on OAuth failure")
+    }
+
+    @MainActor
+    func testFireOAuthFailure_noConnectorId_doesNotFire() {
+        let webView = QuilttConnectorWebview()
+
+        var onEventCalled = false
+        var onExitCalled = false
+        var onExitErrorCalled = false
+
+        webView.onEvent = { _, _ in onEventCalled = true }
+        webView.onExit = { _, _ in onExitCalled = true }
+        webView.onExitError = { _ in onExitErrorCalled = true }
+
+        // config is nil, so connectorId is unavailable
+        webView.fireOAuthFailure()
+
+        XCTAssertFalse(onEventCalled, "onEvent should NOT be called without connectorId")
+        XCTAssertFalse(onExitCalled, "onExit should NOT be called without connectorId")
+        XCTAssertFalse(onExitErrorCalled, "onExitError should NOT be called without connectorId")
+    }
 }

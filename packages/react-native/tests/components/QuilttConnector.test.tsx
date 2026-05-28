@@ -75,6 +75,7 @@ describe('QuilttConnector', () => {
 
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, 'fetch')
+    vi.spyOn(Linking, 'canOpenURL').mockImplementation(() => Promise.resolve(true))
     vi.spyOn(Linking, 'openURL').mockImplementation(() => Promise.resolve(true))
     capturedWebViewProps = null
     capturedWebViewRef = null
@@ -90,41 +91,78 @@ describe('QuilttConnector', () => {
   describe('handleOAuthUrl', () => {
     beforeEach(() => {
       vi.clearAllMocks()
+      vi.mocked(Linking.canOpenURL).mockResolvedValue(true)
+      vi.mocked(Linking.openURL).mockResolvedValue(true)
     })
 
-    it('should handle null or undefined URLs', () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    it('should handle null or undefined URLs', async () => {
+      const onFailure = vi.fn()
 
-      handleOAuthUrl(null)
-      expect(consoleErrorSpy).toHaveBeenCalledWith('OAuth URL handling error')
+      await handleOAuthUrl(null, onFailure)
+      expect(onFailure).toHaveBeenCalledWith(expect.any(Error))
 
-      handleOAuthUrl(undefined)
-      expect(consoleErrorSpy).toHaveBeenCalledWith('OAuth URL handling error')
-
-      consoleErrorSpy.mockRestore()
+      onFailure.mockClear()
+      await handleOAuthUrl(undefined, onFailure)
+      expect(onFailure).toHaveBeenCalledWith(expect.any(Error))
     })
 
-    it('should handle empty string URLs', () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    it('should handle empty string URLs', async () => {
+      // Mock openURL to reject so the fallback also fails
+      vi.mocked(Linking.openURL).mockRejectedValue(new Error('Cannot open empty URL'))
 
-      handleOAuthUrl('')
-      expect(consoleErrorSpy).toHaveBeenCalledWith('OAuth URL handling error')
+      const onFailure = vi.fn()
+      await handleOAuthUrl('', onFailure)
+      expect(onFailure).toHaveBeenCalledWith(expect.any(Error))
 
-      handleOAuthUrl('   ')
-      expect(consoleErrorSpy).toHaveBeenCalledWith('OAuth URL handling error')
-
-      consoleErrorSpy.mockRestore()
+      onFailure.mockClear()
+      await handleOAuthUrl('   ', onFailure)
+      expect(onFailure).toHaveBeenCalledWith(expect.any(Error))
     })
 
-    it('should normalize double-encoded URLs', () => {
+    it('should call canOpenURL before openURL', async () => {
+      const url = 'https://oauth.test.com/callback'
+      await handleOAuthUrl(url)
+
+      expect(Linking.canOpenURL).toHaveBeenCalledWith(url)
+      expect(Linking.openURL).toHaveBeenCalledWith(url)
+    })
+
+    it('should fire onFailure when canOpenURL returns false', async () => {
+      // Both canOpenURL and openURL must fail so the fallback also fails
+      vi.mocked(Linking.canOpenURL).mockResolvedValue(false)
+      vi.mocked(Linking.openURL).mockRejectedValue(new Error('Cannot open'))
+
+      const onFailure = vi.fn()
+      await handleOAuthUrl('https://oauth.test.com/callback', onFailure)
+
+      expect(Linking.canOpenURL).toHaveBeenCalled()
+      expect(onFailure).toHaveBeenCalledWith(expect.any(Error))
+    })
+
+    it('should attempt fallback when primary open fails', async () => {
+      // Primary canOpenURL succeeds, openURL rejects, then fallback also rejects
+      vi.mocked(Linking.canOpenURL).mockResolvedValueOnce(true).mockResolvedValueOnce(false)
+      vi.mocked(Linking.openURL).mockRejectedValue(new Error('Cannot open'))
+
+      const onFailure = vi.fn()
+      await handleOAuthUrl('https://oauth.test.com/callback', onFailure)
+
+      // Primary attempt: canOpenURL true, openURL rejects
+      // Fallback: canOpenURL false (second mock), onFailure fires
+      expect(onFailure).toHaveBeenCalled()
+    })
+
+    it('should normalize double-encoded URLs', async () => {
       const doubleEncodedUrl = 'https://oauth.test.com/callback?code=test%2520code'
-      handleOAuthUrl(doubleEncodedUrl)
+      await handleOAuthUrl(doubleEncodedUrl)
+      expect(Linking.canOpenURL).toHaveBeenCalled()
       expect(Linking.openURL).toHaveBeenCalled()
     })
 
-    it('should handle URL objects', () => {
+    it('should handle URL objects', async () => {
       const urlObject = new URL('https://oauth.test.com/callback')
-      handleOAuthUrl(urlObject)
+      await handleOAuthUrl(urlObject)
+      expect(Linking.canOpenURL).toHaveBeenCalledWith('https://oauth.test.com/callback')
       expect(Linking.openURL).toHaveBeenCalledWith('https://oauth.test.com/callback')
     })
   })
@@ -336,9 +374,10 @@ describe('QuilttConnector', () => {
   })
 
   describe('OAuth Handling', () => {
-    it('should handle OAuth redirection', () => {
+    it('should handle OAuth redirection', async () => {
       const url = new URL('https://oauth.test.com/callback')
-      handleOAuthUrl(url)
+      await handleOAuthUrl(url)
+      expect(Linking.canOpenURL).toHaveBeenCalledWith(url.toString())
       expect(Linking.openURL).toHaveBeenCalledWith(url.toString())
     })
   })
