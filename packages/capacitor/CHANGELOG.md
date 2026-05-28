@@ -1,5 +1,20 @@
 # @quiltt/capacitor
 
+## 6.0.1
+
+### Patch Changes
+
+- [#483](https://github.com/quiltt/quiltt-sdks/pull/483) [`5c60f90`](https://github.com/quiltt/quiltt-sdks/commit/5c60f90a00e7d2a9eb7a7a5a9139a47d78677101) Thanks [@jethfo](https://github.com/jethfo)! - Fix dark mode background flashes in the React Native Connector
+
+  When using `themeMode="dark"`, the native wrapper around the Quiltt Connector WebView now uses transparent backgrounds instead of hardcoded light ones. This eliminates white flashes and white safe-area insets during loading.
+
+  - **Android**: SafeAreaView wrapper background set to `transparent` to prevent white bleed in the status bar area
+  - **iOS**: WebView background set to `transparent` and native loading spinner disabled (`startInLoadingState: false`), since Quiltt renders its own branded loader inside the WebView HTML
+
+- Updated dependencies [[`5c60f90`](https://github.com/quiltt/quiltt-sdks/commit/5c60f90a00e7d2a9eb7a7a5a9139a47d78677101)]:
+  - @quiltt/react@6.0.1
+  - @quiltt/vue@6.0.1
+
 ## 6.0.0
 
 ### Patch Changes

@@ -1,5 +1,33 @@
 # @quiltt/android
 
+## 6.0.1
+
+### Patch Changes
+
+- [#487](https://github.com/quiltt/quiltt-sdks/pull/487) [`6bb6f33`](https://github.com/quiltt/quiltt-sdks/commit/6bb6f3370347f0885a51fb6df4379d90ee850a09) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Fix unhandled OAuth URL rejections across all mobile SDKs
+
+  - **react-native**: `handleOAuthUrl` is now `async`, await's `Linking.openURL()`,
+    calls `Linking.canOpenURL()` as a preflight, and propagates failures through
+    `onExitError` so host apps can surface error recovery UI.
+  - **iOS**: Added `UIApplication.shared.canOpenURL()` preflight and fires
+    `onExitError` when the URL cannot be opened.
+  - **Android**: Added `Intent.resolveActivity()` preflight before `startActivity`
+    and fires `onExitError` on failure.
+  - **Flutter**: Added `canLaunchUrlString()` preflight before `launchUrlString`,
+    checks the launch result, and fires `onExitError` on failure.
+
+  Previously, failed OAuth URL opens (e.g. Plaid OAuth URLs the OS cannot handle)
+  surfaced as unhandled promise rejections or silent failures without notifying
+  the host app. The connector would appear to freeze after the user tapped
+  "Connect." Host apps can now listen to `onExitError` to show a recovery UI.
+
+- [#483](https://github.com/quiltt/quiltt-sdks/pull/483) [`5c60f90`](https://github.com/quiltt/quiltt-sdks/commit/5c60f90a00e7d2a9eb7a7a5a9139a47d78677101) Thanks [@jethfo](https://github.com/jethfo)! - Fix dark mode background flashes in the React Native Connector
+
+  When using `themeMode="dark"`, the native wrapper around the Quiltt Connector WebView now uses transparent backgrounds instead of hardcoded light ones. This eliminates white flashes and white safe-area insets during loading.
+
+  - **Android**: SafeAreaView wrapper background set to `transparent` to prevent white bleed in the status bar area
+  - **iOS**: WebView background set to `transparent` and native loading spinner disabled (`startInLoadingState: false`), since Quiltt renders its own branded loader inside the WebView HTML
+
 ## 6.0.0
 
 ## 5.3.0
