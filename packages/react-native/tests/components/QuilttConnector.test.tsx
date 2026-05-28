@@ -177,7 +177,7 @@ describe('QuilttConnector', () => {
         expect(capturedWebViewProps.dataDetectorTypes).toBe('none')
         expect(capturedWebViewProps.allowsInlineMediaPlayback).toBe(true)
         expect(capturedWebViewProps.allowsBackForwardNavigationGestures).toBe(false)
-        expect(capturedWebViewProps.startInLoadingState).toBe(true)
+        expect(capturedWebViewProps.startInLoadingState).toBe(false)
         expect(capturedWebViewProps.automaticallyAdjustContentInsets).toBe(false)
         expect(capturedWebViewProps.contentInsetAdjustmentBehavior).toBe('never')
         expect(capturedWebViewProps.scrollEventThrottle).toBe(16)
