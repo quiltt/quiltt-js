@@ -1,5 +1,7 @@
 package app.quiltt.connector
 
+import android.net.Uri
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -71,5 +73,85 @@ class QuilttConnectorWebViewTest {
         assertTrue(loadedUrl.startsWith("https://test-connector.quiltt.app"))
         assertTrue(loadedUrl.contains("mode=webview"))
         assertTrue(loadedUrl.contains("agent=android-"))
+    }
+
+    // MARK: - OAuth URL Handling
+
+    @Test
+    fun fireOAuthFailure_invokesCallbacks() {
+        val context = RuntimeEnvironment.getApplication()
+        val config = QuilttConnectorConnectConfiguration(
+            connectorId = "test-connector",
+            appLauncherUrl = "https://example.com/callback",
+        )
+
+        var onEventCalled = false
+        var onExitCalled = false
+        var onExitErrorCalled = false
+
+        val params = QuilttConnectorWebViewClientParams(
+            context = context,
+            webView = QuilttConnectorWebView(context),
+            config = config,
+            token = null,
+            onEvent = { _, _ -> onEventCalled = true },
+            onExit = { _, _ -> onExitCalled = true },
+            onExitError = { onExitErrorCalled = true },
+        )
+
+        val client = QuilttConnectorWebViewClient(params)
+        client.fireOAuthFailure()
+
+        assertTrue("onEvent should be called on OAuth failure", onEventCalled)
+        assertTrue("onExit should be called on OAuth failure", onExitCalled)
+        assertTrue("onExitError should be called on OAuth failure", onExitErrorCalled)
+    }
+
+    @Test
+    fun handleOAuthUrl_skipsNonHTTPS() {
+        val context = RuntimeEnvironment.getApplication()
+        val config = QuilttConnectorConnectConfiguration(
+            connectorId = "test-connector",
+            appLauncherUrl = "https://example.com/callback",
+        )
+
+        var onExitErrorCalled = false
+        val params = QuilttConnectorWebViewClientParams(
+            context = context,
+            webView = QuilttConnectorWebView(context),
+            config = config,
+            token = null,
+            onExitError = { onExitErrorCalled = true },
+        )
+
+        val client = QuilttConnectorWebViewClient(params)
+        client.handleOAuthUrl(Uri.parse("http://example.com/oauth"))
+
+        // Non-HTTPS URLs are silently skipped, no callbacks fired
+        assertFalse("onExitError should NOT be called for non-HTTPS URL", onExitErrorCalled)
+    }
+
+    @Test
+    fun handleOAuthUrl_withHTTPS_noBrowserFiresFailure() {
+        val context = RuntimeEnvironment.getApplication()
+        val config = QuilttConnectorConnectConfiguration(
+            connectorId = "test-connector",
+            appLauncherUrl = "https://example.com/callback",
+        )
+
+        var onExitErrorCalled = false
+        val params = QuilttConnectorWebViewClientParams(
+            context = context,
+            webView = QuilttConnectorWebView(context),
+            config = config,
+            token = null,
+            onExitError = { onExitErrorCalled = true },
+        )
+
+        val client = QuilttConnectorWebViewClient(params)
+        // HTTPS URL with no browser available (Robolectric default) should fire failure
+        client.handleOAuthUrl(Uri.parse("https://secure.plaid.com/hl/test"))
+
+        assertTrue("onExitError should be called when no browser is available", onExitErrorCalled)
     }
 }
