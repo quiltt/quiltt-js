@@ -516,12 +516,7 @@ const QuilttConnector = forwardRef<QuilttConnectorHandle, QuilttConnectorProps>(
   }
 )
 
-// Add styles for the WebView container
 const styles = StyleSheet.create({
-  webviewContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
   webview: {
     flex: 1,
     overflow: 'hidden', // Prevent content from overflowing
