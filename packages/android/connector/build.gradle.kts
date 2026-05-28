@@ -39,6 +39,17 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+            all { test ->
+                // Use locally installed Android SDK when available (e.g. CI runners)
+                // to avoid Robolectric downloading framework JARs from Maven at test time.
+                val sdkRoot = System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_HOME")
+                if (sdkRoot != null) {
+                    test.jvmArgs(
+                        "-Drobolectric.dependency.repo.id=local",
+                        "-Drobolectric.dependency.repo.dir=$sdkRoot",
+                    )
+                }
+            }
         }
     }
 }
