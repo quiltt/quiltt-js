@@ -60,14 +60,12 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     
-    // Version constraints for transitive dependencies to fix security vulnerabilities
-    constraints {
-        implementation("org.bouncycastle:bcprov-jdk18on:1.84")
-        implementation("io.netty:netty-codec:4.1.133.Final")
-        implementation("io.netty:netty-codec-http:4.1.133.Final")
-        implementation("io.netty:netty-codec-http2:4.1.133.Final")
-        implementation("io.netty:netty-handler-proxy:4.1.133.Final")
-    }
+    // Direct dependencies to fix security vulnerabilities in transitive dependencies
+    implementation("org.bouncycastle:bcprov-jdk18on:1.84")
+    implementation("io.netty:netty-codec:4.1.133.Final")
+    implementation("io.netty:netty-codec-http:4.1.133.Final")
+    implementation("io.netty:netty-codec-http2:4.1.133.Final")
+    implementation("io.netty:netty-handler-proxy:4.1.133.Final")
 }
 
 publishing {
