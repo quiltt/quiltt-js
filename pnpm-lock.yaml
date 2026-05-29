@@ -15,7 +15,9 @@ overrides:
   '@xmldom/xmldom@<=0.8.13': 0.8.13
   uuid@<=11.1.1: 11.1.1
   minimatch@<=5.0.1: ^9.0.0
-  undici@<=7.24.1: 7.24.1
+  '@turbo/darwin-64@<=2.9.15': 2.9.15
+  '@turbo/windows-64@<=2.9.15': 2.9.15
+  undici@<=7.26.0: 7.26.0
 
 importers:
 
@@ -3871,8 +3873,8 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@turbo/darwin-64@2.9.14':
-    resolution: {integrity: sha512-t7QiPflaEyBE4oayeZtSmu4mEfjgIrcNlNNl1z1dmIVPqEdtA7+CfTf8d7KXsOGPh6aNgWjKxyvQg9uGfDQF+A==}
+  '@turbo/darwin-64@2.9.15':
+    resolution: {integrity: sha512-nnDo9R1Df+s2x6jxlERtbg7xRpuicf8p4J2krcnjeaMBt3q9V41pGXa4t9YM2Y4ozozsVJ+CH405CJUrWIQK4Q==}
     cpu: [x64]
     os: [darwin]
 
@@ -3891,8 +3893,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@turbo/windows-64@2.9.14':
-    resolution: {integrity: sha512-exanwN6sIduZwykYeiTQj8kCmOhazP5WOz3bvXMcYtjhL6Z3iRWLewKrXCBq0bqwSP3iBMb/AerRCnHI4lx46A==}
+  '@turbo/windows-64@2.9.15':
+    resolution: {integrity: sha512-/Fzm7afui7uK7dFBwrTXKuDhBBTiHk5I+hMVAPMR7cqQyDo2norCNUsN9PdNuYcmzYbhSOxzz498wQYvSAz29w==}
     cpu: [x64]
     os: [win32]
 
@@ -8512,8 +8514,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@7.24.1:
-    resolution: {integrity: sha512-5xoBibbmnjlcR3jdqtY2Lnx7WbrD/tHlT01TmvqZUFVc9Q1w4+j5hbnapTqbcXITMH1ovjq/W7BkqBilHiVAaA==}
+  undici@7.26.0:
+    resolution: {integrity: sha512-3O9Tf67pGhgOv9jM35AbhkXAKi13f3oy3aE4CSgr+TckGeY+/iu97ZXN+J7DpHPzLbVApFd1IFhcnBjREYXYcg==}
     engines: {node: '>=20.18.1'}
 
   unenv@2.0.0-rc.24:
@@ -10455,7 +10457,7 @@ snapshots:
       structured-headers: 0.4.1
       tar: 7.5.15
       terminal-link: 2.1.1
-      undici: 7.24.1
+      undici: 7.26.0
       wrap-ansi: 7.0.0
       ws: 8.21.0
     optionalDependencies:
@@ -12575,7 +12577,7 @@ snapshots:
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
 
-  '@turbo/darwin-64@2.9.14':
+  '@turbo/darwin-64@2.9.15':
     optional: true
 
   '@turbo/darwin-arm64@2.9.14':
@@ -12587,7 +12589,7 @@ snapshots:
   '@turbo/linux-arm64@2.9.14':
     optional: true
 
-  '@turbo/windows-64@2.9.14':
+  '@turbo/windows-64@2.9.15':
     optional: true
 
   '@turbo/windows-arm64@2.9.14':
@@ -18089,11 +18091,11 @@ snapshots:
 
   turbo@2.9.14:
     optionalDependencies:
-      '@turbo/darwin-64': 2.9.14
+      '@turbo/darwin-64': 2.9.15
       '@turbo/darwin-arm64': 2.9.14
       '@turbo/linux-64': 2.9.14
       '@turbo/linux-arm64': 2.9.14
-      '@turbo/windows-64': 2.9.14
+      '@turbo/windows-64': 2.9.15
       '@turbo/windows-arm64': 2.9.14
 
   type-detect@4.0.8: {}
@@ -18134,7 +18136,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.24.1: {}
+  undici@7.26.0: {}
 
   unenv@2.0.0-rc.24:
     dependencies:
