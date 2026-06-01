@@ -1,0 +1,44 @@
+{
+  "skill_name": "ios-simulator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need a command-line iOS Simulator test script for a maps feature. It should create or pick a simulator, boot it, install a simulator-built app, drive a custom route between two coordinates without using a GPX file, and clean up afterward. What simctl commands and caveats should I use?",
+      "expected_output": "A simctl-focused workflow that uses available device/runtime lookup, boots a simulator, installs a .app built for the simulator, uses simctl location start for custom command-line waypoints, clears location state, and shuts down or deletes test devices during cleanup.",
+      "files": [],
+      "assertions": [
+        "Uses `xcrun simctl location <device> start` for custom command-line waypoint routes instead of claiming only predefined scenarios are possible.",
+        "Explains that `location run` accepts predefined scenario names and does not take GPX file paths.",
+        "Boots before install or launch and installs a simulator-built `.app` rather than an `.ipa`.",
+        "Uses explicit UDID lookup or `booted` appropriately instead of hardcoding a simulator UDID.",
+        "Clears simulated location and shuts down or deletes simulator devices during cleanup."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review this Simulator launch plan: pass FEATURE_FLAG=1 by running `xcrun simctl spawn booted env FEATURE_FLAG=1 /path/MyApp.app/MyApp`, use `simctl push` to prove APNs works for all notification types, and grant every privacy service in CI so we can remove usage description keys.",
+      "expected_output": "A correction-focused review that uses SIMCTL_CHILD_ environment variables with simctl launch, limits simctl push to local application remote notification simulation, preserves real-device APNs testing, and warns that simctl privacy can mask missing Info.plist usage descriptions.",
+      "files": [],
+      "assertions": [
+        "Replaces the `spawn env` app launch pattern with `SIMCTL_CHILD_FEATURE_FLAG=1 xcrun simctl launch ...` or equivalent `SIMCTL_CHILD_` guidance.",
+        "Clarifies that `simctl spawn` is for arbitrary simulator processes, not the preferred path for launching an installed app with environment variables.",
+        "States that `simctl push` simulates local application remote push delivery only and does not prove APNs token registration, entitlements, server delivery, or unsupported push types.",
+        "Includes the `simctl push` payload constraints: top-level object, valid `aps`, and 4096-byte size limit.",
+        "Warns that `simctl privacy` does not remove the need for valid Info.plist usage description keys and normal prompt-flow testing."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We are deciding which tests can stay in iOS Simulator for a release candidate: camera capture, BLE pairing, barometer elevation, accelerometer controls, Face ID fallback, memory warnings, iCloud sync, push notifications, and Metal performance. Give the boundary and what must move to hardware.",
+      "expected_output": "A Simulator-versus-device boundary review grounded in Apple docs: hardware-only features move to real devices, simulated scenarios stay in Simulator where supported, and performance or APNs conclusions are verified on hardware.",
+      "files": [],
+      "assertions": [
+        "Routes camera, Bluetooth/BLE, barometer, and accelerometer/gyroscope-dependent behavior to real hardware testing.",
+        "Treats Face ID/Touch ID fallback, memory warnings, and manual iCloud sync trigger as Simulator-supported scenarios.",
+        "States that Simulator is not an accurate performance proxy for processing, graphics, memory, networking, or Metal GPU behavior.",
+        "States that real APNs delivery must be verified on a device and `simctl push` is only local payload/display handling.",
+        "Keeps the answer focused on iOS Simulator boundaries instead of turning it into an Instruments, Core Motion, Core Bluetooth, or push server implementation guide."
+      ]
+    }
+  ]
+}
