@@ -19,6 +19,12 @@
       "skillPath": "skills/flutter-expert/SKILL.md",
       "computedHash": "c7849f39cf34d91999f573b8ad39315dd68c7717bcd38c42b5e49cd83785d9c1"
     },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea"
+    },
     "ios-simulator": {
       "source": "dpearson2699/swift-ios-skills",
       "sourceType": "github",
