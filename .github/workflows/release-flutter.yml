@@ -30,6 +30,11 @@ jobs:
         working-directory: packages/flutter
 
     steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.QUILTTY_RELEASE_GITHUB_TOKEN }}
+
       - name: Validate ref is a flutter/v* tag
         run: |
           case "$GITHUB_REF" in
@@ -53,11 +58,6 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Releasing Flutter SDK v$VERSION"
-
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.ref }}
-          token: ${{ secrets.QUILTTY_RELEASE_GITHUB_TOKEN }}
 
       - uses: dart-lang/setup-dart@v1
 
