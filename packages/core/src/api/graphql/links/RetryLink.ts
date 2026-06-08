@@ -12,9 +12,10 @@ export const RetryLink = new ApolloRetryLink({
       // session-creating `*Initialize` mutations, which are not idempotent (a
       // retry could create a duplicate session if the first request reached the
       // server). Closes are idempotent and safe to retry, and they account for
-      // nearly all of these failures, so we intentionally never retry initialize
+      // nearly all of these failures, so we skip the retry for initialize here
       // rather than make it idempotent server-side. Scoped to `200` so genuine
-      // server errors (5xx) still follow the default retry path below.
+      // server errors (5xx) — including a 5xx `ServerParseError` on initialize —
+      // still follow the default retry path below.
       if (ServerParseError.is(error) && !error.bodyText && error.statusCode === 200) {
         return !/Initialize$/.test(operation.operationName ?? '')
       }

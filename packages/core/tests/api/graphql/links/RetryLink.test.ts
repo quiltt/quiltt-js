@@ -309,12 +309,17 @@ describe('RetryLink', () => {
 
     const link = RetryLink.concat(mockLink)
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       link.request(buildOperation('connectorPlaidClose'), vi.fn() as any)?.subscribe({
         next: (result) => {
-          expect(result).toEqual({ data: { success: true } })
-          expect(attemptCount).toBe(3)
+          try {
+            expect(result).toEqual({ data: { success: true } })
+            expect(attemptCount).toBe(3)
+          } catch (assertionError) {
+            reject(assertionError)
+          }
         },
+        error: reject,
         complete: () => {
           resolve()
         },
@@ -333,12 +338,17 @@ describe('RetryLink', () => {
 
     const link = RetryLink.concat(mockLink)
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       link.request(buildOperation('connectorPlaidInitialize'), vi.fn() as any)?.subscribe({
+        next: () => reject(new Error('expected the request to error, but it succeeded')),
         error: (error) => {
-          expect(ServerParseError.is(error)).toBe(true)
-          expect(attemptCount).toBe(1)
-          resolve()
+          try {
+            expect(ServerParseError.is(error)).toBe(true)
+            expect(attemptCount).toBe(1)
+            resolve()
+          } catch (assertionError) {
+            reject(assertionError)
+          }
         },
       })
     })
@@ -360,12 +370,17 @@ describe('RetryLink', () => {
 
     const link = RetryLink.concat(mockLink)
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       link.request(buildOperation('connectorPlaidClose'), vi.fn() as any)?.subscribe({
+        next: () => reject(new Error('expected the request to error, but it succeeded')),
         error: (error) => {
-          expect(error.statusCode).toBe(200)
-          expect(attemptCount).toBe(1)
-          resolve()
+          try {
+            expect(error.statusCode).toBe(200)
+            expect(attemptCount).toBe(1)
+            resolve()
+          } catch (assertionError) {
+            reject(assertionError)
+          }
         },
       })
     })
@@ -387,12 +402,17 @@ describe('RetryLink', () => {
 
     const link = RetryLink.concat(mockLink)
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       link.request(buildOperation(undefined), vi.fn() as any)?.subscribe({
         next: (result) => {
-          expect(result).toEqual({ data: { success: true } })
-          expect(attemptCount).toBe(2)
+          try {
+            expect(result).toEqual({ data: { success: true } })
+            expect(attemptCount).toBe(2)
+          } catch (assertionError) {
+            reject(assertionError)
+          }
         },
+        error: reject,
         complete: () => {
           resolve()
         },
@@ -421,12 +441,17 @@ describe('RetryLink', () => {
 
     const link = RetryLink.concat(mockLink)
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       link.request(buildOperation('connectorPlaidClose'), vi.fn() as any)?.subscribe({
         next: (result) => {
-          expect(result).toEqual({ data: { success: true } })
-          expect(attemptCount).toBe(3)
+          try {
+            expect(result).toEqual({ data: { success: true } })
+            expect(attemptCount).toBe(3)
+          } catch (assertionError) {
+            reject(assertionError)
+          }
         },
+        error: reject,
         complete: () => {
           resolve()
         },
@@ -457,12 +482,17 @@ describe('RetryLink', () => {
 
     // The 200-only gate must not catch this — a genuine 5xx follows the default
     // retry path even for an *Initialize op.
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       link.request(buildOperation('connectorPlaidInitialize'), vi.fn() as any)?.subscribe({
         next: (result) => {
-          expect(result).toEqual({ data: { success: true } })
-          expect(attemptCount).toBe(3)
+          try {
+            expect(result).toEqual({ data: { success: true } })
+            expect(attemptCount).toBe(3)
+          } catch (assertionError) {
+            reject(assertionError)
+          }
         },
+        error: reject,
         complete: () => {
           resolve()
         },

@@ -9,6 +9,7 @@ import {
   ErrorLink,
   ForwardableLink,
   HttpLink,
+  KeepaliveLink,
   RetryLink,
   SubscriptionLink,
 } from './links'
@@ -53,6 +54,7 @@ export class QuilttClient extends ApolloClient {
       authLink,
       ErrorLink,
       RetryLink,
+      KeepaliveLink,
     ] as ApolloLink[])
       .split(isSubscriptionOperation, subscriptionsLink as ApolloLink, ForwardableLink)
       .split(isBatchable, BatchHttpLink, HttpLink)
