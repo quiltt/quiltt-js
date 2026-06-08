@@ -9,4 +9,7 @@ import { endpointGraphQL } from '@/config'
 export const HttpLink = new ApolloHttpLink({
   uri: endpointGraphQL,
   fetch: effectiveFetch,
+  // Let an in-flight request survive page unload (e.g. a webview navigating or
+  // the host app backgrounding) so the server still processes close mutations.
+  fetchOptions: { keepalive: true },
 })
