@@ -433,4 +433,40 @@ describe('RetryLink', () => {
       })
     })
   })
+
+  it('should retry an empty-body 500 ServerParseError for an *Initialize operation (server error path)', async () => {
+    let attemptCount = 0
+    const mockLink = new ApolloLink(() => {
+      return new Observable((observer) => {
+        attemptCount++
+        if (attemptCount < 3) {
+          observer.error(
+            new ServerParseError(new SyntaxError('Unexpected EOF'), {
+              response: { status: 500 } as Response,
+              bodyText: '',
+            })
+          )
+        } else {
+          observer.next({ data: { success: true } })
+          observer.complete()
+        }
+      })
+    })
+
+    const link = RetryLink.concat(mockLink)
+
+    // The 200-only gate must not catch this — a genuine 5xx follows the default
+    // retry path even for an *Initialize op.
+    await new Promise<void>((resolve) => {
+      link.request(buildOperation('connectorPlaidInitialize'), vi.fn() as any)?.subscribe({
+        next: (result) => {
+          expect(result).toEqual({ data: { success: true } })
+          expect(attemptCount).toBe(3)
+        },
+        complete: () => {
+          resolve()
+        },
+      })
+    })
+  })
 })

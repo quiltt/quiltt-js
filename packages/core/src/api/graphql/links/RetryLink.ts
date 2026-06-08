@@ -6,15 +6,16 @@ export const RetryLink = new ApolloRetryLink({
     retryIf: (error, operation) => {
       if (!error) return false
 
-      // An empty body with a success status is a transport failure wearing a 200,
-      // typically an in-flight request killed when a (mobile) webview navigates or
-      // backgrounds. The status code lies; retry it — except for session-creating
-      // `*Initialize` mutations, which are not idempotent (a retry could create a
-      // duplicate session if the first request reached the server). Closes are
-      // idempotent and safe to retry, and they account for nearly all of these
-      // failures, so we intentionally never retry initialize rather than make it
-      // idempotent server-side.
-      if (ServerParseError.is(error) && !error.bodyText) {
+      // An empty body with a `200` is a transport failure wearing a success
+      // status, typically an in-flight request killed when a (mobile) webview
+      // navigates or backgrounds. The status code lies; retry it — except for
+      // session-creating `*Initialize` mutations, which are not idempotent (a
+      // retry could create a duplicate session if the first request reached the
+      // server). Closes are idempotent and safe to retry, and they account for
+      // nearly all of these failures, so we intentionally never retry initialize
+      // rather than make it idempotent server-side. Scoped to `200` so genuine
+      // server errors (5xx) still follow the default retry path below.
+      if (ServerParseError.is(error) && !error.bodyText && error.statusCode === 200) {
         return !/Initialize$/.test(operation.operationName ?? '')
       }
 
