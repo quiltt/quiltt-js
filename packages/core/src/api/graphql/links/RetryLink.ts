@@ -17,6 +17,10 @@ export const RetryLink = new ApolloRetryLink({
       // server errors (5xx) — including a 5xx `ServerParseError` on initialize —
       // still follow the default retry path below.
       if (ServerParseError.is(error) && !error.bodyText && error.statusCode === 200) {
+        // TODO: matching the operation-name suffix couples this generic SDK link to
+        // connector naming conventions. A context/directive-driven opt-in (e.g. a
+        // `retryable`/`idempotent` flag set on the operation context) would be a
+        // cleaner long-term shape.
         return !/Initialize$/.test(operation.operationName ?? '')
       }
 

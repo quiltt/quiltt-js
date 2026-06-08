@@ -95,8 +95,8 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.6",
-    "@rails/actioncable": "^8.1.200",
+    "@apollo/client": "^4.2.2",
+    "@rails/actioncable": "^8.1.300",
     "braces": "^3.0.3",
     "cross-fetch": "^4.1.0",
     "graphql": "^16.13.0",
