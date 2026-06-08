@@ -15,8 +15,7 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions:
-  contents: write
+permissions: {}
 
 jobs:
   publish-flutter:
