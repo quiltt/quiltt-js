@@ -10,15 +10,16 @@ import { ApolloLink } from '@apollo/client/core'
  * body budget across all in-flight requests, so enabling it link-wide could make
  * a large query or mutation throw a `TypeError`. Close bodies are tiny (just
  * identifiers), so the quota is never a concern here.
+ *
+ * NOTE: This link's operation-name matching is coordinated with `BatchHttpLink.batchKey`,
+ * which assigns close operations to a separate batch. This ensures closes can't be
+ * co-batched with other requests, preventing the batch body from exceeding keepalive's quota.
  */
 export const KeepaliveLink = new ApolloLink((operation, forward) => {
-  // TODO: matching the operation-name suffix couples this generic SDK link to
-  // connector naming conventions. A context/directive-driven opt-in (e.g. a
-  // `keepalive` flag set on the operation context) would be a cleaner long-term
-  // shape.
   if (/Close$/.test(operation.operationName ?? '')) {
     operation.setContext(({ fetchOptions = {} }) => ({
       fetchOptions: { ...fetchOptions, keepalive: true },
+      batchable: false,
     }))
   }
 

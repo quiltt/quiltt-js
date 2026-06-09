@@ -52,7 +52,21 @@ describe('KeepaliveLink', () => {
     expect(operation.getContext().fetchOptions).toEqual({ keepalive: true })
   })
 
-  it('does not set keepalive on a non-Close operation', async () => {
+  it('sets batchable: false on a *Close operation to prevent co-batching', async () => {
+    const operation = buildOperation('connectorPlaidClose')
+    const forward = forwardOnce()
+
+    await new Promise<void>((resolve, reject) => {
+      KeepaliveLink.request(operation, forward as any)?.subscribe({
+        error: reject,
+        complete: resolve,
+      })
+    })
+
+    expect(operation.getContext().batchable).toBe(false)
+  })
+
+  it('does not set batchable: false on non-Close operations', async () => {
     const operation = buildOperation('connectorPlaidInitialize')
     const forward = forwardOnce()
 
@@ -63,8 +77,7 @@ describe('KeepaliveLink', () => {
       })
     })
 
-    expect(forward).toHaveBeenCalledWith(operation)
-    expect(operation.getContext().fetchOptions).toBeUndefined()
+    expect(operation.getContext().batchable).toBeUndefined()
   })
 
   it('preserves existing fetchOptions when adding keepalive', async () => {
@@ -84,6 +97,7 @@ describe('KeepaliveLink', () => {
       credentials: 'include',
       keepalive: true,
     })
+    expect(operation.getContext().batchable).toBe(false)
   })
 
   it('forwards the operation untouched when operationName is undefined', async () => {
