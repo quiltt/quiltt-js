@@ -1,5 +1,13 @@
 # @quiltt/core
 
+## 6.0.2
+
+### Patch Changes
+
+- [#497](https://github.com/quiltt/quiltt-sdks/pull/497) [`462c095`](https://github.com/quiltt/quiltt-sdks/commit/462c095c4781fcc0e3dbe8bd124a70670b9444f5) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Retry empty-body `200` `ServerParseError` responses in `RetryLink`.
+
+  These occur when an in-flight GraphQL request is terminated by a (mobile) webview navigating or backgrounding — WebKit resolves the aborted request as a `200` with zero bytes, so `JSON.parse('')` throws and Apollo raises a `ServerParseError`. The misleading `200` status code previously caused the retry predicate to give up immediately. Session-creating `*Initialize` mutations are intentionally excluded from the retry since they are not idempotent — only the idempotent close mutations, which account for nearly all of these failures, are retried. Also adds a `KeepaliveLink` that sets `keepalive: true` on `*Close` mutations so they can still reach the server during page unload — scoped to closes rather than set link-wide, since `keepalive` requests share a small (~64 KiB) cumulative body budget that a large query or mutation could otherwise exceed.
+
 ## 6.0.1
 
 ### Patch Changes
