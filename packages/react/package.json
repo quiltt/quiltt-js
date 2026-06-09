@@ -67,7 +67,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.6",
+    "@apollo/client": "^4.2.2",
     "@quiltt/core": "workspace:*",
     "use-debounce": "^10.1.0"
   },
