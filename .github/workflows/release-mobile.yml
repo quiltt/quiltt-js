@@ -9,8 +9,7 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions:
-  contents: write
+permissions: {}
 
 jobs:
   # ── 1. Extract the version from the Changesets tag ───────────────────────────
@@ -32,6 +31,8 @@ jobs:
     name: Update version files
     needs: prepare
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -121,6 +122,8 @@ jobs:
     name: Publish Android
     needs: [prepare, update-versions]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: packages/android
@@ -219,6 +222,8 @@ jobs:
     name: Release iOS
     needs: [prepare, update-versions]
     runs-on: macos-14
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: packages/ios
