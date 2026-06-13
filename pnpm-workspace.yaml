@@ -24,3 +24,4 @@ overrides:
   undici@<=7.26.0: 7.26.0
   '@turbo/darwin-64@<=2.9.15': 2.9.15
   '@turbo/windows-64@<=2.9.15': 2.9.15
+  esbuild@<=0.28.1: 0.28.1
