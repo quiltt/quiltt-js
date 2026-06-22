@@ -21,6 +21,7 @@ overrides:
   '@xmldom/xmldom@<=0.8.13': 0.8.13
   uuid@<=11.1.1: 11.1.1
   minimatch@<=5.0.1: ^9.0.0
-  undici@<=7.26.0: 7.26.0
-  '@turbo/darwin-64@<=2.9.15': 2.9.15
-  '@turbo/windows-64@<=2.9.15': 2.9.15
+  '@turbo/darwin-64@<=2.9.18': 2.9.18
+  '@turbo/windows-64@<=2.9.18': 2.9.18
+  '@turbo/linux-64@<=2.9.18': 2.9.18
+  undici@<=7.28.0: 7.28.0
