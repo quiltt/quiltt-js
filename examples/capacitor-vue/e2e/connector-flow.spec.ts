@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-// The Quiltt SDK renders an iframe inside QuilttContainer
-const iframeSelector = 'div.quiltt-container iframe'
+// The QuilttConnector component renders an iframe directly
+const iframeSelector = 'iframe[title="Quiltt Connector"]'
 
 test.describe('Connector: Full Bank Connection', () => {
   test('should complete a Mock bank connection end-to-end', async ({ page, context }) => {

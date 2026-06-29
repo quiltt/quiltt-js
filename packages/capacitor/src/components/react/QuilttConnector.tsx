@@ -11,7 +11,7 @@ import {
 import type { ConnectorSDKCallbackMetadata, ConnectorSDKCallbacks } from '@quiltt/react'
 import { ConnectorSDKEventType, useQuilttSession } from '@quiltt/react'
 
-import { QuilttConnector as QuilttConnectorPlugin } from '../plugin'
+import { QuilttConnector as QuilttConnectorPlugin } from '../../plugin'
 
 export type QuilttConnectorHandle = {
   handleOAuthCallback: (url: string) => void

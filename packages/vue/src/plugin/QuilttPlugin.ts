@@ -9,10 +9,18 @@ import type { App, Plugin } from 'vue'
 import { ref, watch } from 'vue'
 
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
-import { JsonWebTokenParse } from '@quiltt/core'
+import {
+  createVersionLink,
+  HeadersLink,
+  InMemoryCache,
+  JsonWebTokenParse,
+  QuilttClient,
+} from '@quiltt/core'
+import { DefaultApolloClient } from '@vue/apollo-composable'
 
+import { getPlatformInfo } from '../utils'
 import type { QuilttPluginOptions } from './keys'
-import { QuilttClientIdKey, QuilttSessionKey, QuilttSetSessionKey } from './keys'
+import { QuilttClientIdKey, QuilttHeadersKey, QuilttSessionKey, QuilttSetSessionKey } from './keys'
 
 // Initialize JWT parser with our specific claims type
 const parse = JsonWebTokenParse<PrivateClaims>
@@ -92,6 +100,17 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     // Reactive session state
     const session = ref<Maybe<QuilttJWT> | undefined>(initialSession)
     const clientId = ref<string | undefined>(options?.clientId)
+    const headers = ref<Record<string, string> | undefined>(options?.headers)
+
+    // GraphQL client: use the provided client, or build the default QuilttClient.
+    // When the default client is used, custom headers are applied via a HeadersLink.
+    const apolloClient =
+      options?.graphqlClient ??
+      new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink(getPlatformInfo()),
+        customLinks: options?.headers ? [new HeadersLink({ headers: options.headers })] : undefined,
+      })
 
     /**
      * Set session token
@@ -172,7 +191,16 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     // Watch for session changes to update expiration timer
     stopSessionWatcher = watch(
       () => session.value,
-      (newSession) => {
+      (newSession, oldSession) => {
+        // Reset the GraphQL store whenever the session actually changes (mirrors
+        // React's QuilttAuthProvider). Skip the initial immediate run, where Vue
+        // passes `undefined` as the previous value.
+        if (oldSession !== undefined && newSession !== oldSession) {
+          apolloClient.resetStore().catch(() => {
+            // resetStore rejects if in-flight queries are aborted; safe to ignore.
+          })
+        }
+
         if (!newSession) {
           clearSessionTimeout()
           return
@@ -200,5 +228,9 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     app.provide(QuilttSessionKey, session)
     app.provide(QuilttSetSessionKey, setSession)
     app.provide(QuilttClientIdKey, clientId)
+    app.provide(QuilttHeadersKey, headers)
+
+    // Provide the GraphQL client so useQuery/useMutation/useQuilttClient resolve it.
+    app.provide(DefaultApolloClient, apolloClient)
   },
 }

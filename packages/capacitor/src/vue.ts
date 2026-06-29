@@ -20,14 +20,13 @@
  * @example
  * ```vue
  * <script setup>
- * import { QuilttContainer, useQuilttSession } from '@quiltt/capacitor/vue'
+ * import { QuilttConnector, useQuilttSession } from '@quiltt/capacitor/vue'
  * </script>
  *
  * <template>
- *   <QuilttContainer
+ *   <QuilttConnector
  *     connector-id="<CONNECTOR_ID>"
  *     @exit-success="handleSuccess"
- *     @navigate="handleNavigate"
  *   />
  * </template>
  * ```
@@ -36,7 +35,9 @@
 // Re-export all @quiltt/vue functionality
 export * from '@quiltt/vue'
 
+// Export Capacitor-specific Vue QuilttConnector component
+export { QuilttConnector } from './components/vue'
 // Export plugin type definitions
 export * from './definitions'
-// Export native plugin for OAuth handling
+// Export native plugin for advanced use cases
 export { QuilttConnector as QuilttConnectorPlugin } from './plugin'
