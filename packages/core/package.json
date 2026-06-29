@@ -91,7 +91,7 @@
     "build": "bunchee",
     "clean": "rimraf .turbo dist",
     "dev": "bunchee --watch",
-    "lint": "TIMING=1 biome check src/ tests/ --fix",
+    "lint": "TIMING=1 biome check . --fix",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
