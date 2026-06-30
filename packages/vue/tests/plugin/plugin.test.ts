@@ -43,7 +43,7 @@ describe('QuilttPlugin', () => {
 
   it('initializes session from localStorage when token option is not provided', () => {
     const token = createToken()
-    localStorage.setItem('quiltt:session', token)
+    localStorage.setItem('quiltt.session', JSON.stringify(token))
 
     const provide = vi.fn()
     const app = { provide } as any
@@ -80,7 +80,7 @@ describe('QuilttPlugin', () => {
 
     setSession(token)
 
-    expect(localStorage.getItem('quiltt:session')).toBe(token)
+    expect(localStorage.getItem('quiltt.session')).toBe(JSON.stringify(token))
   })
 
   it('clears session and storage when setSession is called with null', () => {
@@ -93,51 +93,10 @@ describe('QuilttPlugin', () => {
     const setSession = setSessionCall?.[1] as (token: string | null) => void
 
     setSession(createToken())
-    expect(localStorage.getItem('quiltt:session')).toBeTruthy()
+    expect(localStorage.getItem('quiltt.session')).toBeTruthy()
 
     setSession(null)
-    expect(localStorage.getItem('quiltt:session')).toBeNull()
-  })
-
-  it('syncs session updates from storage events', () => {
-    const provide = vi.fn()
-    const app = { provide } as any
-
-    QuilttPlugin.install?.(app, { clientId: 'cid_test' })
-
-    const sessionCall = provide.mock.calls.find((call) => call[0] === QuilttSessionKey)
-    const sessionRef = sessionCall?.[1] as { value: any }
-
-    const token = createToken(120)
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: 'quiltt:session',
-        newValue: token,
-      })
-    )
-
-    expect(sessionRef.value).toBeTruthy()
-    expect(sessionRef.value.token).toBe(token)
-  })
-
-  it('ignores storage events for unrelated keys', () => {
-    const provide = vi.fn()
-    const app = { provide } as any
-
-    QuilttPlugin.install?.(app, { clientId: 'cid_test' })
-
-    const sessionCall = provide.mock.calls.find((call) => call[0] === QuilttSessionKey)
-    const sessionRef = sessionCall?.[1] as { value: any }
-    const originalValue = sessionRef.value
-
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: 'another:key',
-        newValue: createToken(120),
-      })
-    )
-
-    expect(sessionRef.value).toBe(originalValue)
+    expect(localStorage.getItem('quiltt.session')).toBeNull()
   })
 
   it('expires session and clears storage when token timeout is reached', () => {
@@ -156,12 +115,12 @@ describe('QuilttPlugin', () => {
     const token = createToken(1)
 
     setSession(token)
-    expect(localStorage.getItem('quiltt:session')).toBe(token)
+    expect(localStorage.getItem('quiltt.session')).toBe(JSON.stringify(token))
 
     vi.advanceTimersByTime(1100)
 
     expect(sessionRef.value).toBeNull()
-    expect(localStorage.getItem('quiltt:session')).toBeNull()
+    expect(localStorage.getItem('quiltt.session')).toBeNull()
 
     vi.useRealTimers()
   })
@@ -181,7 +140,7 @@ describe('QuilttPlugin', () => {
     setSession(createToken(-60))
 
     expect(sessionRef.value).toBeNull()
-    expect(localStorage.getItem('quiltt:session')).toBeNull()
+    expect(localStorage.getItem('quiltt.session')).toBeNull()
   })
 
   it('handles storage access errors gracefully', () => {
@@ -196,7 +155,7 @@ describe('QuilttPlugin', () => {
   })
 
   it('clears expired initial token from options during immediate watch', () => {
-    localStorage.setItem('quiltt:session', createToken(300))
+    localStorage.setItem('quiltt.session', JSON.stringify(createToken(300)))
 
     const provide = vi.fn()
     const app = { provide } as any
@@ -210,7 +169,7 @@ describe('QuilttPlugin', () => {
     const sessionRef = sessionCall?.[1] as { value: any }
 
     expect(sessionRef.value).toBeNull()
-    expect(localStorage.getItem('quiltt:session')).toBeNull()
+    expect(localStorage.getItem('quiltt.session')).toBeNull()
   })
 
   it('expires initial valid token from options through watch timeout callback', () => {
@@ -269,8 +228,6 @@ describe('QuilttPlugin', () => {
 
     const provide = vi.fn()
     const onUnmount = vi.fn<(cb: () => void) => void>()
-    const addEventSpy = vi.spyOn(window, 'addEventListener')
-    const removeEventSpy = vi.spyOn(window, 'removeEventListener')
 
     const app = { provide, onUnmount } as any
 
@@ -287,17 +244,11 @@ describe('QuilttPlugin', () => {
     onUnmountCallback?.()
     onUnmountCallback?.()
 
-    expect(addEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
-    expect(removeEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
-    expect(removeEventSpy).toHaveBeenCalledTimes(1)
-
     vi.useRealTimers()
   })
 
   it('wraps app.unmount to run cleanup when onUnmount is unavailable', () => {
     const provide = vi.fn()
-    const addEventSpy = vi.spyOn(window, 'addEventListener')
-    const removeEventSpy = vi.spyOn(window, 'removeEventListener')
     const originalUnmount = vi.fn(() => 'unmounted')
 
     const app = {
@@ -311,7 +262,5 @@ describe('QuilttPlugin', () => {
 
     expect(result).toBe('unmounted')
     expect(originalUnmount).toHaveBeenCalledWith('arg1')
-    expect(addEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
-    expect(removeEventSpy).toHaveBeenCalledWith('storage', expect.any(Function))
   })
 })

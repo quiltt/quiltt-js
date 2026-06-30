@@ -33,7 +33,7 @@ export interface QuilttPluginOptions {
    */
   graphqlClient?: QuilttClient
   /**
-   * Custom headers to include with every API request (REST and GraphQL).
+   * Custom headers to include with every GraphQL request.
    * Only applies when using the default client (i.e., when `graphqlClient` is not provided).
    * For Quiltt internal usage. Not intended for public use.
    * @internal

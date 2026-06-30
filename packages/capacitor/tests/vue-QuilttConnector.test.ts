@@ -145,7 +145,9 @@ describe('QuilttConnector (capacitor vue)', () => {
       props: { connectorId: 'connector_test' },
     })
 
-    expect(typeof wrapper.vm.handleOAuthCallback).toBe('function')
+    expect(
+      typeof (wrapper.vm as unknown as { handleOAuthCallback: () => void }).handleOAuthCallback
+    ).toBe('function')
   })
 
   it('sets up deepLink listener on mount', () => {
@@ -169,10 +171,10 @@ describe('QuilttConnector (capacitor vue)', () => {
       props: { connectorId: 'connector_test' },
     })
 
-    // Wait for addListener's async .then() to register the remove callback
-    await new Promise((resolve) => setTimeout(resolve, 0))
-
     wrapper.unmount()
+
+    // Wait for the promise-based cleanup to resolve
+    await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(remove).toHaveBeenCalledTimes(1)
   })

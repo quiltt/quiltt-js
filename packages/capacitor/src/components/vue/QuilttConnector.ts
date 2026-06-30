@@ -129,7 +129,7 @@ export const QuilttConnector = defineComponent({
     const loadError = ref<string | null>(null)
     let abortController: AbortController | null = null
     let loadTimeoutId: ReturnType<typeof setTimeout> | null = null
-    let removeDeepLinkListener: (() => void) | null = null
+    let deepLinkListenerPromise: Promise<{ remove: () => void }> | null = null
 
     // Connector origin for secure postMessage targeting
     const connectorOrigin = computed(() => `https://${props.connectorId}.quiltt.app`)
@@ -293,12 +293,10 @@ export const QuilttConnector = defineComponent({
       }, 15000)
 
       // Listen for OAuth callbacks via deep links
-      QuilttConnectorPlugin.addListener('deepLink', (event) => {
+      deepLinkListenerPromise = QuilttConnectorPlugin.addListener('deepLink', (event) => {
         if (event.url) {
           postOAuthCallbackToIframe(event.url)
         }
-      }).then((listener) => {
-        removeDeepLinkListener = listener.remove
       })
 
       // Check if app was opened via the app launcher URL
@@ -322,9 +320,9 @@ export const QuilttConnector = defineComponent({
         loadTimeoutId = null
       }
 
-      if (removeDeepLinkListener) {
-        removeDeepLinkListener()
-        removeDeepLinkListener = null
+      if (deepLinkListenerPromise) {
+        deepLinkListenerPromise.then((l) => l.remove())
+        deepLinkListenerPromise = null
       }
     })
 

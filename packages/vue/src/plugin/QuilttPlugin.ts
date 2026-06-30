@@ -11,6 +11,7 @@ import { ref, watch } from 'vue'
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
 import {
   createVersionLink,
+  GlobalStorage,
   HeadersLink,
   InMemoryCache,
   JsonWebTokenParse,
@@ -24,41 +25,6 @@ import { QuilttClientIdKey, QuilttHeadersKey, QuilttSessionKey, QuilttSetSession
 
 // Initialize JWT parser with our specific claims type
 const parse = JsonWebTokenParse<PrivateClaims>
-
-// Storage key for session persistence
-const STORAGE_KEY = 'quiltt:session'
-
-/**
- * Get stored token from localStorage (browser only)
- */
-const getStoredToken = (): string | null => {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
-    return null
-  }
-  try {
-    return localStorage.getItem(STORAGE_KEY)
-  } catch {
-    return null
-  }
-}
-
-/**
- * Store token in localStorage (browser only)
- */
-const setStoredToken = (token: string | null): void => {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
-    return
-  }
-  try {
-    if (token) {
-      localStorage.setItem(STORAGE_KEY, token)
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  } catch {
-    // Storage not available
-  }
-}
 
 /**
  * Quiltt Vue Plugin
@@ -94,7 +60,7 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     }
 
     // Initialize with provided token or stored token
-    const initialToken = options?.token ?? getStoredToken()
+    const initialToken = options?.token ?? GlobalStorage.get('session')
     const initialSession = parse(initialToken)
 
     // Reactive session state
@@ -119,7 +85,7 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     const setSession = (token: Maybe<string>): void => {
       const parsed = parse(token)
       session.value = parsed
-      setStoredToken(token ?? null)
+      GlobalStorage.set('session', token ?? null)
 
       // Clear any existing expiration timer
       clearSessionTimeout()
@@ -132,28 +98,14 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
         if (timeUntilExpiry > 0) {
           sessionTimeout = setTimeout(() => {
             session.value = null
-            setStoredToken(null)
+            GlobalStorage.set('session', null)
           }, timeUntilExpiry)
         } else {
           // Token already expired
           session.value = null
-          setStoredToken(null)
+          GlobalStorage.set('session', null)
         }
       }
-    }
-
-    // Storage event handler for cross-tab synchronization
-    let storageHandler: ((event: StorageEvent) => void) | undefined
-
-    // Listen for storage changes from other tabs/windows
-    if (typeof window !== 'undefined') {
-      storageHandler = (event: StorageEvent) => {
-        if (event.key === STORAGE_KEY) {
-          const newSession = parse(event.newValue)
-          session.value = newSession
-        }
-      }
-      window.addEventListener('storage', storageHandler)
     }
 
     // Cleanup function for when the app is unmounted
@@ -167,10 +119,6 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
       if (stopSessionWatcher) {
         stopSessionWatcher()
         stopSessionWatcher = undefined
-      }
-      if (typeof window !== 'undefined' && storageHandler) {
-        window.removeEventListener('storage', storageHandler)
-        storageHandler = undefined
       }
     }
 
@@ -211,14 +159,14 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
 
         if (timeUntilExpiry <= 0) {
           session.value = null
-          setStoredToken(null)
+          GlobalStorage.set('session', null)
           return
         }
 
         clearSessionTimeout()
         sessionTimeout = setTimeout(() => {
           session.value = null
-          setStoredToken(null)
+          GlobalStorage.set('session', null)
         }, timeUntilExpiry)
       },
       { immediate: true }
