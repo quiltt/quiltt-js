@@ -83,18 +83,21 @@ This is a pnpm workspace monorepo managed with Turbo:
 
 ### File Naming
 
-**All new files must use kebab-case naming convention:**
+**TypeScript/TSX — kebab-case for `.ts` files, PascalCase for `.tsx` files:**
 
-- **Components**: `component-name.tsx`
-- **Hooks**: `use-hook-name.ts`
-- **Utils**: `utility-name.ts`
-- **Tests**: `file-name.test.ts` or `file-name.test.tsx`
+- **Components (`.tsx`)**: `ComponentName.tsx`
+- **Hooks (`.ts`)**: `use-hook-name.ts`
+- **Utils (`.ts`)**: `utility-name.ts`
+- **Tests**: `file-name.test.ts` or `file-name.test.tsx` (match the source file name)
 - **Types**: Include in same file as implementation or `types.ts` for shared types
 
-**Legacy naming conventions** (existing files only, do not use for new files):
-- Components: `ComponentName.tsx`
-- Hooks: `useHookName.ts`
-- Utils: `utilityName.ts`
+**Other languages — use ecosystem conventions:**
+
+| Language | Convention | Examples |
+|----------|-----------|----------|
+| Swift | PascalCase for types, camelCase for files | `QuilttConnector.swift`, `tokenStorage.swift` |
+| Dart | `snake_case` for files and directories | `quiltt_connector.dart`, `auth_api.dart` |
+| Kotlin/Java | PascalCase for class files | `QuilttConnector.kt`, `AuthApi.java` |
 
 ## Development Workflow
 

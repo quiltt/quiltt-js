@@ -1,6 +1,6 @@
 import { computed, inject } from 'vue'
 
-import { QuilttClientIdKey } from '../plugin/keys'
+import { QuilttClientIdKey, QuilttHeadersKey } from '../plugin/keys'
 
 /**
  * Read plugin-provided Quiltt settings.
@@ -8,8 +8,10 @@ import { QuilttClientIdKey } from '../plugin/keys'
  */
 export const useQuilttSettings = () => {
   const clientIdRef = inject(QuilttClientIdKey)
+  const headersRef = inject(QuilttHeadersKey)
 
   return {
     clientId: computed(() => clientIdRef?.value),
+    headers: computed(() => headersRef?.value),
   }
 }

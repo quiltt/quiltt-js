@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import * as ComponentsIndex from '../src/components/index'
-import * as ConnectorComponent from '../src/components/QuilttConnector'
+import * as ReactComponentsIndex from '../src/components/react/index'
+import * as ReactConnectorComponent from '../src/components/react/QuilttConnector'
+import * as VueComponentsIndex from '../src/components/vue/index'
+import * as VueConnectorComponent from '../src/components/vue/QuilttConnector'
 import * as DefinitionsModule from '../src/definitions'
 import * as RootIndex from '../src/index'
 import * as PluginModule from '../src/plugin'
@@ -15,10 +17,12 @@ describe('capacitor modules load', () => {
     ['src/plugin.ts', PluginModule],
     ['src/web.ts', WebModule],
     ['src/definitions.ts', DefinitionsModule],
-    ['src/components/index.ts', ComponentsIndex],
-    ['src/components/QuilttConnector.tsx', ConnectorComponent],
+    ['src/components/react/index.ts', ReactComponentsIndex],
+    ['src/components/react/QuilttConnector.tsx', ReactConnectorComponent],
     ['src/react.ts', ReactEntry],
     ['src/vue.ts', VueEntry],
+    ['src/components/vue/index.ts', VueComponentsIndex],
+    ['src/components/vue/QuilttConnector.ts', VueConnectorComponent],
   ])('loads %s', (_path, moduleExports) => {
     expect(moduleExports).toBeDefined()
     expect(typeof moduleExports).toBe('object')

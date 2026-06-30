@@ -9,9 +9,12 @@ test('renders Quiltt button and inline connector', async ({ page }) => {
   expect(response?.ok()).toBeTruthy()
   await expect(page).toHaveTitle(/Quiltt Capacitor Vue Example/)
 
-  const container = page.locator('div.quiltt-container')
-  await expect(container).toHaveCount(1)
-  await expect(container).toHaveAttribute('quiltt-container', connectorId)
+  const iframe = page.locator('iframe[title="Quiltt Connector"]')
+  await expect(iframe).toHaveCount(1)
+  const src = await iframe.getAttribute('src')
+  expect(src).toContain(connectorOrigin)
+  expect(src).toContain('embed_location=')
+  expect(src).toContain('mode=INLINE')
 
   await page.evaluate((origin) => {
     window.dispatchEvent(

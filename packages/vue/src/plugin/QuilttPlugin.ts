@@ -9,48 +9,22 @@ import type { App, Plugin } from 'vue'
 import { ref, watch } from 'vue'
 
 import type { Maybe, PrivateClaims, QuilttJWT } from '@quiltt/core'
-import { JsonWebTokenParse } from '@quiltt/core'
+import {
+  createVersionLink,
+  GlobalStorage,
+  HeadersLink,
+  InMemoryCache,
+  JsonWebTokenParse,
+  QuilttClient,
+} from '@quiltt/core'
+import { DefaultApolloClient } from '@vue/apollo-composable'
 
+import { getPlatformInfo } from '../utils'
 import type { QuilttPluginOptions } from './keys'
-import { QuilttClientIdKey, QuilttSessionKey, QuilttSetSessionKey } from './keys'
+import { QuilttClientIdKey, QuilttHeadersKey, QuilttSessionKey, QuilttSetSessionKey } from './keys'
 
 // Initialize JWT parser with our specific claims type
 const parse = JsonWebTokenParse<PrivateClaims>
-
-// Storage key for session persistence
-const STORAGE_KEY = 'quiltt:session'
-
-/**
- * Get stored token from localStorage (browser only)
- */
-const getStoredToken = (): string | null => {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
-    return null
-  }
-  try {
-    return localStorage.getItem(STORAGE_KEY)
-  } catch {
-    return null
-  }
-}
-
-/**
- * Store token in localStorage (browser only)
- */
-const setStoredToken = (token: string | null): void => {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
-    return
-  }
-  try {
-    if (token) {
-      localStorage.setItem(STORAGE_KEY, token)
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  } catch {
-    // Storage not available
-  }
-}
 
 /**
  * Quiltt Vue Plugin
@@ -86,12 +60,23 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     }
 
     // Initialize with provided token or stored token
-    const initialToken = options?.token ?? getStoredToken()
+    const initialToken = options?.token ?? GlobalStorage.get('session')
     const initialSession = parse(initialToken)
 
     // Reactive session state
     const session = ref<Maybe<QuilttJWT> | undefined>(initialSession)
     const clientId = ref<string | undefined>(options?.clientId)
+    const headers = ref<Record<string, string> | undefined>(options?.headers)
+
+    // GraphQL client: use the provided client, or build the default QuilttClient.
+    // When the default client is used, custom headers are applied via a HeadersLink.
+    const apolloClient =
+      options?.graphqlClient ??
+      new QuilttClient({
+        cache: new InMemoryCache(),
+        versionLink: createVersionLink(getPlatformInfo()),
+        customLinks: options?.headers ? [new HeadersLink({ headers: options.headers })] : undefined,
+      })
 
     /**
      * Set session token
@@ -100,7 +85,7 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     const setSession = (token: Maybe<string>): void => {
       const parsed = parse(token)
       session.value = parsed
-      setStoredToken(token ?? null)
+      GlobalStorage.set('session', token ?? null)
 
       // Clear any existing expiration timer
       clearSessionTimeout()
@@ -113,28 +98,14 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
         if (timeUntilExpiry > 0) {
           sessionTimeout = setTimeout(() => {
             session.value = null
-            setStoredToken(null)
+            GlobalStorage.set('session', null)
           }, timeUntilExpiry)
         } else {
           // Token already expired
           session.value = null
-          setStoredToken(null)
+          GlobalStorage.set('session', null)
         }
       }
-    }
-
-    // Storage event handler for cross-tab synchronization
-    let storageHandler: ((event: StorageEvent) => void) | undefined
-
-    // Listen for storage changes from other tabs/windows
-    if (typeof window !== 'undefined') {
-      storageHandler = (event: StorageEvent) => {
-        if (event.key === STORAGE_KEY) {
-          const newSession = parse(event.newValue)
-          session.value = newSession
-        }
-      }
-      window.addEventListener('storage', storageHandler)
     }
 
     // Cleanup function for when the app is unmounted
@@ -148,10 +119,6 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
       if (stopSessionWatcher) {
         stopSessionWatcher()
         stopSessionWatcher = undefined
-      }
-      if (typeof window !== 'undefined' && storageHandler) {
-        window.removeEventListener('storage', storageHandler)
-        storageHandler = undefined
       }
     }
 
@@ -172,7 +139,16 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     // Watch for session changes to update expiration timer
     stopSessionWatcher = watch(
       () => session.value,
-      (newSession) => {
+      (newSession, oldSession) => {
+        // Reset the GraphQL store whenever the session actually changes (mirrors
+        // React's QuilttAuthProvider). Skip the initial immediate run, where Vue
+        // passes `undefined` as the previous value.
+        if (oldSession !== undefined && newSession !== oldSession) {
+          apolloClient.resetStore().catch(() => {
+            // resetStore rejects if in-flight queries are aborted; safe to ignore.
+          })
+        }
+
         if (!newSession) {
           clearSessionTimeout()
           return
@@ -183,14 +159,14 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
 
         if (timeUntilExpiry <= 0) {
           session.value = null
-          setStoredToken(null)
+          GlobalStorage.set('session', null)
           return
         }
 
         clearSessionTimeout()
         sessionTimeout = setTimeout(() => {
           session.value = null
-          setStoredToken(null)
+          GlobalStorage.set('session', null)
         }, timeUntilExpiry)
       },
       { immediate: true }
@@ -200,5 +176,9 @@ export const QuilttPlugin: Plugin<[QuilttPluginOptions?]> = {
     app.provide(QuilttSessionKey, session)
     app.provide(QuilttSetSessionKey, setSession)
     app.provide(QuilttClientIdKey, clientId)
+    app.provide(QuilttHeadersKey, headers)
+
+    // Provide the GraphQL client so useQuery/useMutation/useQuilttClient resolve it.
+    app.provide(DefaultApolloClient, apolloClient)
   },
 }

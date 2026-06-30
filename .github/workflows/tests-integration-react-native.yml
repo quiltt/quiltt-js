@@ -157,6 +157,7 @@ jobs:
         if: matrix.platform == 'ios'
         run: |
           brew tap wix/brew
+          brew trust wix/brew
           brew install applesimutils
 
       - name: Build Detox framework cache

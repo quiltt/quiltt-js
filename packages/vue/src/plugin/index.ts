@@ -16,6 +16,7 @@
 
 export {
   QuilttClientIdKey,
+  QuilttHeadersKey,
   type QuilttPluginOptions,
   QuilttSessionKey,
   QuilttSetSessionKey,

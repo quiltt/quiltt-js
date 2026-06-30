@@ -25,8 +25,8 @@
 export * from '@quiltt/react'
 
 // Export Capacitor-specific QuilttConnector component
-export type { QuilttConnectorHandle } from './components'
-export { QuilttConnector } from './components'
+export type { QuilttConnectorHandle } from './components/react'
+export { QuilttConnector } from './components/react'
 // Export plugin type definitions
 export * from './definitions'
 // Export native plugin for advanced use cases
