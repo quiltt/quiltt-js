@@ -13,7 +13,7 @@ const sessionMocks = vi.hoisted(() => ({
   session: { token: 'session_token' },
 }))
 
-vi.mock('../src/plugin', () => ({
+vi.mock('../../src/plugin', () => ({
   QuilttConnector: {
     openUrl: pluginMocks.openUrl,
     addListener: pluginMocks.addListener,
@@ -32,8 +32,8 @@ vi.mock('@quiltt/react', () => ({
   useQuilttSession: () => ({ session: sessionMocks.session }),
 }))
 
-import type { QuilttConnectorHandle } from '../src/components/QuilttConnector'
-import { QuilttConnector } from '../src/components/QuilttConnector'
+import type { QuilttConnectorHandle } from '../../src/components/react/QuilttConnector'
+import { QuilttConnector } from '../../src/components/react/QuilttConnector'
 
 afterEach(() => {
   cleanup()

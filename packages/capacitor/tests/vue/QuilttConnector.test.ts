@@ -8,7 +8,7 @@ const pluginMocks = vi.hoisted(() => ({
   getAppLauncherUrl: vi.fn(),
 }))
 
-vi.mock('../src/plugin', () => ({
+vi.mock('../../src/plugin', () => ({
   QuilttConnector: {
     openUrl: pluginMocks.openUrl,
     addListener: pluginMocks.addListener,
@@ -26,7 +26,7 @@ vi.mock('@quiltt/vue', () => ({
   useQuilttSession: () => ({ session: { value: { token: 'session_token' } } }),
 }))
 
-import { QuilttConnector } from '../src/components/vue/QuilttConnector'
+import { QuilttConnector } from '../../src/components/vue/QuilttConnector'
 
 afterEach(() => {
   vi.clearAllMocks()
