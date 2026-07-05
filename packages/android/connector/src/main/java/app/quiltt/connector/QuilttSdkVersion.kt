@@ -1,2 +1,2 @@
 package app.quiltt.connector
-val quilttSdkVersion = "6.0.2"
+val quilttSdkVersion = "6.1.0"
