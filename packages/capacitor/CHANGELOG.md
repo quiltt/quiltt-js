@@ -1,5 +1,24 @@
 # @quiltt/capacitor
 
+## 6.1.0
+
+### Minor Changes
+
+- [#508](https://github.com/quiltt/quiltt-sdks/pull/508) [`9e01caa`](https://github.com/quiltt/quiltt-sdks/commit/9e01caacabc3288b48f0a40fb4473c0e1998158f) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Add Capacitor Vue QuilttConnector bridge component with tests and examples
+
+  - **Capacitor**: Add `components/vue/QuilttConnector.ts` — a Vue 3 `defineComponent` bridge that embeds the Quiltt Connector in an iframe and handles OAuth flows via Capacitor native plugins (mirrors the existing React `QuilttConnector` component)
+  - **Capacitor**: Update `vue.ts` to export the new `QuilttConnector` component from `@quiltt/capacitor/vue`
+  - **Capacitor**: Add `vue-QuilttConnector.test.ts` with 7 tests covering iframe rendering, URL building, theme mode, OAuth callback exposure, deep link lifecycle, and error states
+  - **Capacitor**: Add `components/vue/index.ts` entry point and update module-loads test coverage
+  - **Examples**: Update `capacitor-vue` example app to use `QuilttConnector` bridge component (replaces `QuilttContainer` for the inline panel), matching the React example pattern
+  - **Examples**: Update capacitor-vue e2e tests (`home.spec.ts`, `connector-flow.spec.ts`) to target the new iframe-based component
+
+### Patch Changes
+
+- Updated dependencies [[`9e01caa`](https://github.com/quiltt/quiltt-sdks/commit/9e01caacabc3288b48f0a40fb4473c0e1998158f)]:
+  - @quiltt/vue@6.1.0
+  - @quiltt/react@6.1.0
+
 ## 6.0.2
 
 ### Patch Changes
