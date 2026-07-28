@@ -11,23 +11,26 @@ allowBuilds:
   esbuild: true
   sharp: true
 overrides:
-  h3@<=1.15.8: ^1.15.9
-  iltorb: npm:noop2@^2.0.0
-  lodash@<=4.17.23: ^4.18.0
-  node-forge@<=1.4.0: ^1.4.0
-  serialize-javascript@<=7.0.5: ^7.0.5
-  srvx@<0.11.13: ^0.11.13
-  vite@<=7.3.2: ^7.3.2 || ^8.0.7
-  '@xmldom/xmldom@<=0.8.13': 0.8.13
-  uuid@<=11.1.1: 11.1.1
-  '@turbo/windows-64@<=2.9.18': 2.9.18
   '@turbo/darwin-64@<=2.9.18': 2.9.18
   '@turbo/linux-64@<=2.9.18': 2.9.18
-  undici@<=7.28.0: 7.28.0
-  fast-uri@<=3.1.4: 3.1.4
-  tar@<=7.5.19: 7.5.19
-  ws@<=8.21.1: 8.21.1
-  sharp@<=0.35.0: 0.35.0
-  unhead@<=3.1.7: 3.1.7
-  js-yaml@<=4.3.0: 4.3.0
-  brace-expansion@<=2.1.2: 2.1.2
+  '@turbo/windows-64@<=2.9.18': 2.9.18
+  '@vue/compiler-dom@<=3.5.40': 3.5.40
+  '@vue/compiler-sfc@<=3.5.40': 3.5.40
+  '@vue/shared@<=3.5.40': 3.5.40
+  '@xmldom/xmldom@<=0.8.13': 0.8.13
+  'brace-expansion@>4.0.0 <5.0.8': ^5.0.8
+  'fast-uri@<=3.1.4': 3.1.4
+  'h3@<=1.15.8': ^1.15.9
+  'iltorb': npm:noop2@^2.0.0
+  'js-yaml@<=4.3.0': 4.3.0
+  'lodash@<=4.17.23': ^4.18.0
+  'node-forge@<=1.4.0': ^1.4.0
+  'serialize-javascript@<=7.0.5': ^7.0.5
+  'sharp@<=0.35.0': 0.35.0
+  'srvx@<=0.12.0': 0.12.0
+  'tar@<=7.5.21': 7.5.21
+  'undici@<=7.28.0': 7.28.0
+  'unhead@<=3.1.7': 3.1.7
+  'uuid@<=11.1.1': 11.1.1
+  'vite@<=7.3.2': ^7.3.2 || ^8.0.7
+  'ws@<=8.21.1': 8.21.1
