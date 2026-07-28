@@ -38,12 +38,12 @@ npm-debug.log
 .npmrc
 
 # Android
-packages/android/.gradle/
-packages/android/**/build/
-packages/android/local.properties
-packages/android/**/*.apk
-packages/android/**/*.aab
-packages/android/**/*.keystore
+**/android/.gradle/
+**/android/**/build/
+**/android/local.properties
+**/android/**/*.apk
+**/android/**/*.aab
+**/android/**/*.keystore
 
 # Flutter
 packages/flutter/build/
@@ -53,12 +53,14 @@ packages/flutter/.flutter-plugins-dependencies
 
 # iOS
 .build/
-packages/ios/.build/
-packages/ios/DerivedData/
-packages/ios/Pods/
+**/ios/.build/
+**/ios/DerivedData/
+**/ios/Pods/
 
 # Tests
 coverage/**/*
 **/coverage/**/*
 **/test-results/**/*
 **/playwright-report/**/*
+
+
