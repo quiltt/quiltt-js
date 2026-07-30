@@ -62,11 +62,15 @@ dependencies {
     
     // Direct dependencies to fix security vulnerabilities in transitive dependencies
     implementation("org.bouncycastle:bcprov-jdk18on:1.84")
-    implementation("io.netty:netty-codec:4.1.135.Final")
-    implementation("io.netty:netty-codec-http:4.1.135.Final")
-    implementation("io.netty:netty-codec-http2:4.1.135.Final")
-    implementation("io.netty:netty-handler:4.1.135.Final")
-    implementation("io.netty:netty-handler-proxy:4.1.135.Final")
+    implementation("io.netty:netty-codec:4.1.136.Final")
+    implementation("io.netty:netty-codec-http:4.1.136.Final")
+    implementation("io.netty:netty-codec-http2:4.1.136.Final")
+    implementation("io.netty:netty-handler:4.1.136.Final")
+    implementation("io.netty:netty-handler-proxy:4.1.136.Final")
+    
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
+    }
 }
 
 publishing {
