@@ -67,10 +67,7 @@ dependencies {
     implementation("io.netty:netty-codec-http2:4.1.136.Final")
     implementation("io.netty:netty-handler:4.1.136.Final")
     implementation("io.netty:netty-handler-proxy:4.1.136.Final")
-    
-    constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
-    }
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 }
 
 publishing {
