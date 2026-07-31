@@ -11,7 +11,7 @@ type FetchWithRetryOptions = RequestInit & {
 }
 
 export type FetchResponse<T> = {
-  data: T
+  data: T | null
   status: number
   statusText: string
   headers: Headers

@@ -66,12 +66,12 @@ export const useQuilttResolvable = (
       )
 
       if (response.status === 200) {
-        const result = (response.data as ResolvableData).resolvable
+        const result = (response.data as ResolvableData | null)?.resolvable ?? null
         isResolvable.value = result
         return result
       }
 
-      handleError((response.data as ErrorData).message || 'Failed to check resolvability')
+      handleError((response.data as ErrorData)?.message || 'Failed to check resolvability')
       isResolvable.value = null
       return null
     } catch (caught: any) {

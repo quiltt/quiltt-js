@@ -29,10 +29,14 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
       const response = await auth.identify(payload)
 
       switch (response.status) {
-        case 201: // Created
-          setSession((response as SessionResponse).data.token)
+        case 201: {
+          // Created
+          const sessionData = (response as SessionResponse).data
+          if (!sessionData) throw new Error(`AuthAPI.identify: Missing data on 201`)
+          setSession(sessionData.token)
           if (callbacks.onSuccess) return callbacks.onSuccess()
           break
+        }
 
         case 202: // Accepted
           if (callbacks.onChallenged) return callbacks.onChallenged()
@@ -42,9 +46,13 @@ export const useIdentifySession: UseIdentifySession = (auth, setSession) => {
           if (callbacks.onForbidden) return callbacks.onForbidden()
           break
 
-        case 422: // Unprocessable Content
-          if (callbacks.onError) return callbacks.onError((response as UnprocessableResponse).data)
+        case 422: {
+          // Unprocessable Content
+          const errorData = (response as UnprocessableResponse).data
+          if (!errorData) throw new Error(`AuthAPI.identify: Missing data on 422`)
+          if (callbacks.onError) return callbacks.onError(errorData)
           break
+        }
 
         default:
           throw new Error(`AuthAPI.identify: Unexpected response status ${response.status}`)

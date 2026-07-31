@@ -3,7 +3,7 @@
 Monorepo for Quiltt's SDKs — a unified fintech API platform that simplifies
 integration with open banking providers.
 
-**See [`AGENTS.md`](../AGENTS.md) for the full dispatch table** — it maps every
+**See [`AGENTS.md`](./AGENTS.md) for the full dispatch table** — it maps every
 file type and directory in this repo to the correct skills, MCP servers, and
 toolchain commands. Load it before editing any code.
 

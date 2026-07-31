@@ -79,9 +79,14 @@ export const useQuilttInstitutions = (
         }
 
         if (response.status === 200) {
-          searchResults.value = response.data as InstitutionsData
+          // A 200 must carry an array; null/empty body is an error, not "no results".
+          if (Array.isArray(response.data)) {
+            searchResults.value = response.data
+          } else {
+            handleError('Failed to fetch institutions')
+          }
         } else {
-          handleError((response.data as ErrorData).message || 'Failed to fetch institutions')
+          handleError((response.data as ErrorData)?.message || 'Failed to fetch institutions')
         }
       } catch (error: any) {
         if (abortController.value === controller && !controller.signal.aborted) {

@@ -4,8 +4,8 @@ Demonstrates how to use the quiltt_connector plugin.
 
 ## Getting Started
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+For help getting started with Flutter, view the official
+[documentation](https://docs.flutter.dev/).
 
 ## Run the example (iOS simulator)
 
