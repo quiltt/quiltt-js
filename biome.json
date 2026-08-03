@@ -6,6 +6,7 @@
       "!**/*.gen.ts",
       "!**/.build",
       "!**/.next",
+      "!**/android/build",
       "!**/coverage",
       "!**/dist",
       "!**/generated",
