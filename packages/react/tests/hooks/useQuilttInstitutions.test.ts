@@ -296,6 +296,33 @@ describe('useQuilttInstitutions', async () => {
       expect(result.current.searchResults).toEqual(mockInstitutions)
     })
 
+    it('treats a 200 response with null data as an error, not empty results', async () => {
+      const mockErrorCallback = vi.fn()
+      mockSearchInstitutions.mockResolvedValue({
+        status: 200,
+        data: null,
+      })
+
+      const { result } = renderHook(() =>
+        useQuilttInstitutions('mockConnectorId', mockErrorCallback)
+      )
+
+      act(() => {
+        result.current.setSearchTerm('test')
+      })
+
+      await waitFor(() => {
+        expect(result.current.isSearching).toBe(false)
+      })
+
+      expect(mockErrorCallback).toHaveBeenCalledWith('Failed to fetch institutions')
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        'Quiltt Institutions Search Error:',
+        'Failed to fetch institutions'
+      )
+      expect(result.current.searchResults).toEqual([])
+    })
+
     it('calls error handler when API returns non-200 status', async () => {
       const mockErrorCallback = vi.fn()
       mockSearchInstitutions.mockResolvedValue({

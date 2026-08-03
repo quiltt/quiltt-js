@@ -28,18 +28,24 @@ export const useAuthenticateSession: UseAuthenticateSession = (auth, setSession)
       const response = await auth.authenticate(payload)
 
       switch (response.status) {
-        case 201:
-          setSession((response as SessionResponse).data.token)
+        case 201: {
+          const sessionData = (response as SessionResponse).data
+          if (!sessionData) throw new Error(`AuthAPI.authenticate: Missing data on 201`)
+          setSession(sessionData.token)
           if (callbacks.onSuccess) return callbacks.onSuccess()
           break
+        }
 
         case 401:
           if (callbacks.onFailure) return callbacks.onFailure()
           break
 
-        case 422:
-          if (callbacks.onError) return callbacks.onError((response as UnprocessableResponse).data)
+        case 422: {
+          const errorData = (response as UnprocessableResponse).data
+          if (!errorData) throw new Error(`AuthAPI.authenticate: Missing data on 422`)
+          if (callbacks.onError) return callbacks.onError(errorData)
           break
+        }
 
         default:
           throw new Error(`AuthAPI.authenticate: Unexpected response status ${response.status}`)

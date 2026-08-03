@@ -62,6 +62,9 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup-js
+        with:
+          # Pin Node 22 — Detox 20.x crashes on Node 24 (yargs.scriptName not a function). Remove pin once Detox supports Node 24.
+          node-version: "22"
 
       - name: Enable KVM group perms
         if: matrix.platform == 'android'
@@ -432,6 +435,9 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup-js
+        with:
+          # Pin Node 22 — Detox 20.x crashes on Node 24 (yargs.scriptName not a function). Remove pin once Detox supports Node 24.
+          node-version: "22"
 
       - name: Enable KVM group perms
         run: |
@@ -595,6 +601,9 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup-js
+        with:
+          # Pin Node 22 — Detox 20.x crashes on Node 24 (yargs.scriptName not a function). Remove pin once Detox supports Node 24.
+          node-version: "22"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -82,9 +82,14 @@ export const useQuilttInstitutions: UseQuilttInstitutions = (connectorId, onErro
       .then((response) => {
         if (!abortController.signal.aborted) {
           if (response.status === 200) {
-            setSearchResults(response.data as InstitutionsData)
+            // A 200 must carry an array; null/empty body is an error, not "no results".
+            if (Array.isArray(response.data)) {
+              setSearchResults(response.data)
+            } else {
+              handleError('Failed to fetch institutions')
+            }
           } else {
-            handleError((response.data as ErrorData).message || 'Failed to fetch institutions')
+            handleError((response.data as ErrorData)?.message || 'Failed to fetch institutions')
           }
           setIsSearching(false)
         }

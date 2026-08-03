@@ -138,4 +138,33 @@ describe('useQuilttInstitutions', () => {
 
     unmount()
   })
+
+  it('treats a 200 response with null data as an error, not empty results', async () => {
+    vi.useFakeTimers()
+    const onError = vi.fn()
+
+    mocks.searchInstitutionsMock.mockResolvedValueOnce({
+      status: 200,
+      data: null,
+    } as any)
+
+    const { result, unmount } = mountComposable(() =>
+      useQuilttInstitutions('connector_test', onError)
+    )
+
+    result.setSearchTerm('de')
+    await vi.advanceTimersByTimeAsync(350)
+    await nextTick()
+    await Promise.resolve()
+    await Promise.resolve()
+    await nextTick()
+
+    expect(mocks.searchInstitutionsMock).toHaveBeenCalledTimes(1)
+
+    expect(onError).toHaveBeenCalledWith('Failed to fetch institutions')
+    expect(result.searchResults.value).toEqual([])
+    expect(result.isSearching.value).toBe(false)
+
+    unmount()
+  })
 })
