@@ -342,8 +342,11 @@ importers:
         specifier: 4.1.18
         version: 4.1.18
       typescript:
-        specifier: 7.0.2
-        version: 7.0.2
+        specifier: npm:@typescript/typescript6@^6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      typescript-7:
+        specifier: npm:typescript@7.0.2
+        version: typescript@7.0.2
 
   examples/vue-nuxt:
     dependencies:
