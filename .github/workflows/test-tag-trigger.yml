@@ -1,0 +1,14 @@
+name: Tag Trigger Test
+
+# TEMPORARY diagnostic workflow - delete after debugging
+on:
+  push:
+    tags:
+      - "flutter/test-*"
+      - "flutter/v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "TAG TRIGGER WORKED ref=$GITHUB_REF"
