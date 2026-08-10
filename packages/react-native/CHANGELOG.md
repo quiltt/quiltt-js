@@ -1,5 +1,13 @@
 # @quiltt/react-native
 
+## 6.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`a3cabf9`](https://github.com/quiltt/quiltt-sdks/commit/a3cabf9d2efa6121fe6959a569a9f651db9340e4)]:
+  - @quiltt/core@6.1.1
+  - @quiltt/react@6.1.1
+
 ## 6.1.0
 
 ### Patch Changes
