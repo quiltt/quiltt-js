@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -116,6 +117,17 @@ jobs:
           if [ ${#tags_to_push[@]} -gt 0 ]; then
             git push --atomic origin "${tags_to_push[@]}"
           fi
+
+      - name: Dispatch Flutter release
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          # Run release-flutter.yml at the flutter/v* tag ref so the OIDC token
+          # carries refs/tags/flutter/v*, matching the pub.dev tag pattern.
+          gh workflow run release-flutter.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "flutter/$VERSION"
+          echo "Dispatched release-flutter.yml at flutter/$VERSION"
 
   # ── 3a. Build, test, and publish Android to Maven Central ────────────────────
   publish-android:
