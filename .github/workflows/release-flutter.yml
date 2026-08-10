@@ -6,12 +6,8 @@ name: Release Flutter SDK
 on:
   push:
     tags:
-      - "flutter/v*"
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to release (e.g., 5.3.0)"
-        required: true
+      # Must align with the tag pattern configured on pub.dev (flutter/v{{version}})
+      - "flutter/v[0-9]+.[0-9]+.[0-9]+"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -34,31 +30,12 @@ jobs:
           ref: ${{ github.ref }}
           token: ${{ secrets.QUILTTY_RELEASE_GITHUB_TOKEN }}
 
-      - name: Validate ref is a flutter/v* tag
-        run: |
-          case "$GITHUB_REF" in
-            refs/tags/flutter/v*) ;;
-            *)
-              echo "ERROR: This workflow must run against a flutter/v* tag ref (got: $GITHUB_REF)"
-              echo "For workflow_dispatch, select a flutter/v* tag from the 'Use workflow from' dropdown."
-              exit 1
-              ;;
-          esac
-
       - name: Extract version from tag
         id: version
-        env:
-          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            VERSION="$INPUT_VERSION"
-          else
-            VERSION="${GITHUB_REF#refs/tags/flutter/v}"
-          fi
+          VERSION="${GITHUB_REF#refs/tags/flutter/v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Releasing Flutter SDK v$VERSION"
-
-      - uses: dart-lang/setup-dart@v1
 
       - uses: ./.github/actions/setup-flutter
 
@@ -69,7 +46,7 @@ jobs:
         run: flutter analyze lib
 
       - name: Validate package
-        run: flutter pub publish --dry-run
+        run: dart pub publish --dry-run
 
       - name: Check if version already published
         id: check_published
@@ -85,7 +62,7 @@ jobs:
 
       - name: Publish to pub.dev
         if: steps.check_published.outputs.already_published != 'true'
-        run: flutter pub publish --force
+        run: dart pub publish --force
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
