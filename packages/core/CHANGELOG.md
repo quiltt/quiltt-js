@@ -1,5 +1,13 @@
 # @quiltt/core
 
+## 6.1.1
+
+### Patch Changes
+
+- [#522](https://github.com/quiltt/quiltt-sdks/pull/522) [`a3cabf9`](https://github.com/quiltt/quiltt-sdks/commit/a3cabf9d2efa6121fe6959a569a9f651db9340e4) Thanks [@zubairaziz](https://github.com/zubairaziz)! - Mark `FetchResponse<T>.data` as `T | null` to match runtime reality — `fetchWithRetry` already returns `null` when `response.json()` fails (empty or malformed bodies).
+
+  Add optional chaining guards across `react` and `vue` session, institutions, and resolvable hooks to prevent `Cannot read properties of null` crashes. Previously `data.token` or `data.message` would throw when the response body was unparseable. Now those paths safely short-circuit.
+
 ## 6.1.0
 
 ## 6.0.2
