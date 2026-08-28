@@ -24,7 +24,7 @@ overrides:
   'browserslist@<=4.28.6': 4.28.7
   'baseline-browser-mapping@<=2.10.44': 2.11.0
   'detox>yargs': 18.1.0
-  'fast-uri@<=3.1.4': 3.1.5
+  'fast-uri@<=3.1.5': 3.1.6
   'h3@<=1.15.8': ^1.15.9
   'iltorb': npm:noop2@^2.0.0
   'ioredis@<6.0.0': 6.0.0
