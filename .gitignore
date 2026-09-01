@@ -10,6 +10,7 @@ dist
 .DS_Store
 *.pem
 CLAUDE.local.md
+.claude/worktrees/
 
 # debug
 npm-debug.log*
@@ -62,5 +63,3 @@ coverage/**/*
 **/coverage/**/*
 **/test-results/**/*
 **/playwright-report/**/*
-
-
