@@ -34,7 +34,8 @@ vi.mock('@apollo/client/react', () => ({
 
 vi.mock('@quiltt/core', () => {
   class MockQuilttClient {
-    resetStore = vi.fn()
+    // resetStore must return a promise since the provider chains .catch() on it
+    resetStore = vi.fn(() => Promise.resolve())
   }
   class MockInMemoryCache {}
   class MockTerminatingLink {}
